@@ -1,6 +1,6 @@
 @echo off
 
-set libgai=..\src
+set libgai=..\gai
 set compilerflags=-Od -MTd -EHsc -Z7 -FC -I%LibGAI%
 set linkerflags=-incremental:no -opt:ref
 
