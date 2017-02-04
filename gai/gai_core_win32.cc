@@ -1,4 +1,3 @@
-#define GAI_EXPORT
 #include "gai_core.h"
 
 BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved )

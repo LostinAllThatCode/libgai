@@ -1,4 +1,4 @@
-GAI_DEF i32
+i32
 gaiWindowCreate(gaiWindow *window, const char *title, i32 width, i32 height, i32 x = 0, i32 y = 0)
 {
     GAI_ASSERT(window);

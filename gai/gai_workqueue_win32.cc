@@ -30,7 +30,7 @@ gaiWorkQueueThreadProc(LPVOID lpParameter)
     }
 }
 
-GAI_DEF void
+void
 gaiWorkQueueWaitForCompletion(gaiWorkQueue *queue)
 {
     while(queue->completion_goal != queue->completion_count)
@@ -42,7 +42,7 @@ gaiWorkQueueWaitForCompletion(gaiWorkQueue *queue)
     queue->completion_count = 0;
 }
 
-GAI_DEF int
+int
 gaiWorkQueueCreate(gaiWorkQueue *queue, u32 thread_count)
 {
     ZeroMemory(queue, sizeof(gaiWorkQueue));
@@ -67,7 +67,7 @@ gaiWorkQueueCreate(gaiWorkQueue *queue, u32 thread_count)
     return 1;
 }
 
-GAI_DEF void
+void
 gaiWorkQueueAddEntry(gaiWorkQueue *queue, gaiWorkQueueCallback *callback, void *data)
 {
     u32 original_next_entry_to_write = queue->next_entry_to_write;
@@ -83,7 +83,7 @@ gaiWorkQueueAddEntry(gaiWorkQueue *queue, gaiWorkQueueCallback *callback, void *
     ReleaseSemaphore(queue->platform.semaphore_handle, 1, 0);
 }
 
-GAI_DEF u32
+u32
 gaiWorkQueueGetCurrentThreadId()
 {
     return (u32) GetCurrentThreadId();

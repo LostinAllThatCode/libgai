@@ -5,8 +5,7 @@ typedef HGLRC (WINAPI * PFNWGLCREATECONTEXTATTRIBSARBPROC) (HDC hDC, HGLRC hShar
 typedef int   (WINAPI * PFNWGLSWAPINTERVALEXTPROC)         (int interval);
 typedef int   (WINAPI * PFNWGLGETSWAPINTERVALEXTPROC)      (void);
 
-
-GAI_DEF b32
+b32
 gaiOpenGLIsSupported(const char *extension)
 {
     const size_t extlen = strlen(extension);
@@ -36,14 +35,14 @@ gaiOpenGLIsSupported(const char *extension)
     }
 }
 
-GAI_DEF void
+void
 gaiOpenGLSwapBuffers(gaiWindow *window)
 {
     GAI_ASSERT(window);
     SwapBuffers(window->platform.ctx);
 }
 
-GAI_DEF i32
+i32
 gaiOpenGLCheckMSAASupport(gaiWindow *window, PIXELFORMATDESCRIPTOR *pfd, i32 samples)
 {
     if (gaiOpenGLIsSupported("WGL_ARB_multisample"))
@@ -84,7 +83,7 @@ gaiOpenGLCheckMSAASupport(gaiWindow *window, PIXELFORMATDESCRIPTOR *pfd, i32 sam
 }
 
 
-GAI_DEF b32
+b32
 gaiOpenGLGetSwapInterval()
 {
     if (gaiOpenGLIsSupported("WGL_EXT_swap_control"))
@@ -98,7 +97,7 @@ gaiOpenGLGetSwapInterval()
     return false;
 }
 
-GAI_DEF void
+void
 gaiOpenGLSetSwapInterval(b32 vsync)
 {
     if (gaiOpenGLIsSupported("WGL_EXT_swap_control"))
@@ -226,8 +225,7 @@ gaiOpenGLCreateContextEx(gaiWindow *window, const char *title, i32 width, i32 he
     return 1;
 }
 
-
-GAI_DEF i32
+i32
 gaiOpenGLCreateContext(gaiWindow *window, const char *title, i32 width, i32 height, i32 x, i32 y, i32 major, i32 minor, b32 vsync, i32 multisample, u8 color_bits, u8 depth_bits, u8 stencil_bits)
 {
     GAI_ASSERT(window);

@@ -6,15 +6,19 @@
 	#define GAI_API __declspec (dllimport)
 #endif
 
-#ifdef GAI_STATIC
+#ifdef GAI_SOURCE
+	#ifdef GAI_STATIC
+		#define GAI_DEF static
+	#else
+		#define GAI_DEF extern
+	#endif
 	#undef  GAI_API
-	#define GAI_API
-	#define GAI_DEF static
+	#define GAI_API static
 #else
-	#define GAI_DEF GAI_API extern
+	#define GAI_DEF GAI_API
 #endif
 
-#if defined GAI_STATIC || defined GAI_EXPORT 
+#if defined GAI_SOURCE || defined GAI_EXPORT
 	#define GAI_WORKQUEUE_IMPLEMENTATION
 	#define GAI_WINDOW_IMPLEMENTATION
 	#define GAI_OPENGL_IMPLEMENTATION
@@ -28,6 +32,7 @@
 #include "stb_image.h"        /* image loading support library */
 #include "stb_truetype.h"     /* font loading support library */
 
+#include "gai_math.h"
 #include "gai_workqueue.h"
 #include "gai_timer.h"
 #include "gai_window.h"

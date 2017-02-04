@@ -1,4 +1,4 @@
-@echo off
+echo off
 
 set libgai=..\gai
 set compilerflags=-Od -MTd -EHsc -Z7 -FC -I%libgai%
@@ -9,7 +9,7 @@ REM del *.pdb > NUL 2> NUL
 if "%1"=="dll" (
 	echo "Building dynamically linked executable."
 	REM build .dll and .lib file from libgai and link the executable with those
-	cl %compilerflags% ../gai/gai_core_win32.cc /LD /link /IMPLIB:libgai.lib /OUT:libgai.dll
+	cl %compilerflags% -DGAI_EXPORT ../gai/gai_core_win32.cc /LD /link /IMPLIB:libgai.lib /OUT:libgai.dll
 	
 	if "%2"=="clang" (
 		set ogl="C:\Program Files (x86)\Windows Kits\8.1\Lib\winv6.3\um\x64\OpenGL32.Lib"
@@ -21,9 +21,8 @@ if "%1"=="dll" (
 ) else (
 	echo "Building statically linked executable."
 	if "%1"=="clang" (
-		clang -DGAI_STATIC -O0 -Wno-deprecated-declarations -I%libgai% opengl_win32.cc -o opengl_win32.exe
+		clang -DGAI_SOURCE -O0 -Wno-deprecated-declarations -I%libgai% opengl_win32.cc -o opengl_win32.exe
 	) else (
-		cl %compilerflags% -DGAI_STATIC opengl_win32.cc /link %linkerflags%
+		cl %compilerflags% -DGAI_SOURCE opengl_win32.cc /link %linkerflags%
 	)
 )
-

@@ -1,4 +1,4 @@
-GAI_DEF i32
+i32
 gaiOpenGLShaderCreate(gaiShader *shader)
 {
     GAI_ASSERT(shader);
@@ -6,14 +6,14 @@ gaiOpenGLShaderCreate(gaiShader *shader)
     return (shader->id != 0);
 }
 
-GAI_DEF void
+void
 gaiOpenGLShaderFree(gaiShader *shader)
 {
     GAI_ASSERT(shader);
     glDeleteProgram(shader->id);
 }
 
-GAI_DEF i32
+i32
 gaiOpenGLShaderCompileAttach(gaiShader *shader, const char *source, GLenum type)
 {
     b32 result = false;
@@ -49,7 +49,7 @@ gaiOpenGLShaderCompileAttach(gaiShader *shader, const char *source, GLenum type)
 }
 
 
-GAI_DEF i32
+i32
 gaiOpenGLShaderLoadCompileAttach(gaiShader *shader, const char *filename, GLenum type)
 {
     i32 result;
@@ -72,7 +72,7 @@ gaiOpenGLShaderLoadCompileAttach(gaiShader *shader, const char *filename, GLenum
     return result;
 }
 
-GAI_DEF b32
+b32
 gaiOpenGLShaderLink(gaiShader *shader)
 {
     b32 result = false;
@@ -108,7 +108,7 @@ gaiOpenGLShaderLink(gaiShader *shader)
     return result;
 }
 
-GAI_DEF i32
+i32
 gaiOpenGLShaderGetUniform(gaiShader *shader, const char *name)
 {
     return glGetUniformLocation(shader->id, name);

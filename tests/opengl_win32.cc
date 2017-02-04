@@ -4,11 +4,6 @@
 #define GAI_FREE(pointer)            VirtualFree(pointer, 0, MEM_RELEASE);
 */
 
-//#define GAI_EXPORT
-
-//#define GAI_STATIC
-//#define GAI_OPENGL
-
 #include <gai_core.h>
 #include <stdio.h>
 #include <math.h>
@@ -28,6 +23,7 @@ typedef struct
 
 int main(int argc, char **argv)
 {
+    mat3x3 whatever = Mat3(1);
     gaiTimer timer = {};
     DefaultShader def;
     gaiWindow wnd = {0};
@@ -90,7 +86,7 @@ int main(int argc, char **argv)
         {
             r32 dt = (gaiTimerGetTicks(&timer) / 1000000.f);
             time += dt;
-            color = (cosf(sinf(time)));
+            color = gaiMathLerp(0.0f, 1.0f, (cosf(sinf(time))) );
 
             glViewport(0, 0, wnd.width, wnd.height);
 

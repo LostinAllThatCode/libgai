@@ -71,19 +71,7 @@ gaiWindowCreateEx(gaiWindow* window, const char *title, const char *classname,
 	return 1;
 }
 
-GAI_DEF inline void
-gaiWindowUpdateMouseCoords(gaiWindow *window)
-{
-	POINT mpos;
-	GetCursorPos(&mpos);
-	window->input.dtx     = mpos.x - window->input.scrx;
-	window->input.dty     = mpos.y - window->input.scry;
-	window->input.scrx    = mpos.x;
-	window->input.scry    = mpos.y;
-	window->input.dtwheel = 0;
-}
-
-GAI_DEF i32
+i32
 gaiWindowCreate(gaiWindow *window, const char *title, i32 width, i32 height, i32 x, i32 y, const char *classname)
 {
 	DWORD dwStyle = WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
@@ -91,13 +79,13 @@ gaiWindowCreate(gaiWindow *window, const char *title, i32 width, i32 height, i32
 	return gaiWindowCreateEx(window, title, classname, dwStyle, x, y, width, height, 0, 0, instance, 0, 1);
 }
 
-GAI_DEF void
+void
 gaiWindowShow(gaiWindow *window, u32 flag)
 {
 	ShowWindow(window->platform.hWnd, flag);
 }
 
-GAI_DEF void
+void
 gaiWindowReplaceWndProc(gaiWindow *window, LRESULT (__stdcall * dwp)(HWND, UINT, WPARAM, LPARAM))
 {
 	GAI_ASSERT(window);
@@ -105,12 +93,18 @@ gaiWindowReplaceWndProc(gaiWindow *window, LRESULT (__stdcall * dwp)(HWND, UINT,
 	SetWindowLongPtr(window->platform.hWnd, GWLP_WNDPROC, (LONG_PTR)dwp);
 }
 
-GAI_DEF inline i32
+inline i32
 gaiWindowUpdate(gaiWindow *window, i32 block = 1)
 {
 	GAI_ASSERT(window);
 
-	gaiWindowUpdateMouseCoords(window);
+	POINT mpos;
+	GetCursorPos(&mpos);
+	window->input.dtx     = mpos.x - window->input.scrx;
+	window->input.dty     = mpos.y - window->input.scry;
+	window->input.scrx    = mpos.x;
+	window->input.scry    = mpos.y;
+	window->input.dtwheel = 0;
 
 	for (i32 i = 0; i < 256; i++)
 	{
@@ -140,7 +134,6 @@ gaiWindowUpdate(gaiWindow *window, i32 block = 1)
 		switch (msg.message)
 		{
 			case WM_QUIT: { gaiWindowDestroy(window); return 0; }
-#if 0
 			case WM_MOUSEMOVE:   { window->input.x = LOWORD(msg.lParam); window->input.y = HIWORD(msg.lParam); } break;
 			case WM_MOUSEWHEEL:  { window->input.dtwheel = GET_WHEEL_DELTA_WPARAM(msg.wParam); } break;
 			case WM_MBUTTONUP:   { window->input.buttons[2].ended_down = true; } break;
@@ -164,27 +157,26 @@ gaiWindowUpdate(gaiWindow *window, i32 block = 1)
 					state->ended_down = true;
 				}
 			} break;
-#endif
 		}
 	}
 	return 1;
 }
 
-GAI_DEF void
+void
 gaiWindowSetSize(gaiWindow *window, i32 width, i32 height)
 {
 	GAI_ASSERT(window);
 	SetWindowPos(window->platform.hWnd, 0, 0, 0, width, height, SWP_NOMOVE);
 }
 
-GAI_DEF void
+void
 gaiWindowSetTitle(gaiWindow *window, const char *title)
 {
 	GAI_ASSERT(window);
 	SetWindowText(window->platform.hWnd, title);
 }
 
-GAI_DEF void
+void
 gaiWindowDestroy(gaiWindow* window)
 {
 	char classname[1024];
@@ -195,7 +187,7 @@ gaiWindowDestroy(gaiWindow* window)
 	UnregisterClass(classname,  window->platform.instance);
 }
 
-GAI_DEF void
+void
 gaiWindowQuit(gaiWindow *window)
 {
 	GAI_ASSERT(window);

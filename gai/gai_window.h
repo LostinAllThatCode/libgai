@@ -72,7 +72,7 @@ GAI_DEF void gaiWindowSetSize (gaiWindow *window, i32 width, i32 height);
 GAI_DEF void gaiWindowShow    (gaiWindow *window, u32 flag);
 GAI_DEF void gaiWindowDestroy (gaiWindow *window);
 GAI_DEF void gaiWindowQuit    (gaiWindow *window);
-GAI_DEF void gaiWindowSetTitle(gaiWindow * window, const char *title);
+GAI_DEF void gaiWindowSetTitle(gaiWindow *window, const char *title);
 
 #ifdef __cplusplus
 }
