@@ -1,14 +1,14 @@
 /*
 ==========================================================================================
 $Name: gai_workqueue.h$
-$Description: 
+$Description:
 Simple quick and easy workqueue implmentation. NOTE: Only the thread which created the
-queue should add work entries to the queue. It's not safe to push new entries from a 
+queue should add work entries to the queue. It's not safe to push new entries from a
 thread's callback function.
 $
 $Creator: Andreas Gaida$
 $Copyright: $
-$Example: 
+$Example:
 
 #define GAI_WORKQUEUE_IMPLEMENTATION
 #include "gai_workqueue.h"
@@ -16,7 +16,7 @@ $Example:
 #include <stdio.h>
 #include <time.h>
 
-GAI_WORKQUEUE_CALLBACK(worker) 
+GAI_WORKQUEUE_CALLBACK(worker)
 {
     int *delay = (int *) data;
     Sleep(*delay);
@@ -30,7 +30,7 @@ main(int argc, char** argv)
 {
     srand(time(0));
     int timings[] { rand()%1000, rand()%1000, rand()%1000, rand()%1000, rand()%1000, rand()%1000};
-    
+
     gaiWorkQueue queue;
     if(gaiWorkQueueCreate(&queue, 6)) {
         gaiWorkQueueAddEntry(&queue, worker, timings);
@@ -55,48 +55,43 @@ $
 #include "gai_utils.h"
 
 #ifndef GAI_WORKQUEUE_MAX
-#   define GAI_WORKQUEUE_MAX 12
-#endif
-    
-#ifndef GAI_WORKQUEUE_ENTRY_MAX
-#   define GAI_WORKQUEUE_ENTRY_MAX 256
+#define GAI_WORKQUEUE_MAX 12
 #endif
 
-#ifdef __cplusplus
-extern "C" {
+#ifndef GAI_WORKQUEUE_ENTRY_MAX
+#define GAI_WORKQUEUE_ENTRY_MAX 256
 #endif
 
 struct gaiWorkQueuePlatform;
-
 #if _WIN32
-#   include <windows.h>
-    typedef struct gaiWorkQueuePlatform
-    {
-        HANDLE semaphore_handle;
-    } gaiWorkQueuePlatform;
+#include <windows.h>
+typedef struct gaiWorkQueuePlatform
+{
+    HANDLE semaphore_handle;
+} gaiWorkQueuePlatform;
 #elif __linux__
-    typedef struct gaiWorkQueuePlatform
-    {
-        void *not_implemented_yet;
-    } gaiWorkQueuePlatform;    
+typedef struct gaiWorkQueuePlatform
+{
+    void *not_implemented_yet;
+} gaiWorkQueuePlatform;
 #elif __APPLE__
-    typedef struct gaiWorkQueuePlatform
-    {
-        void *not_implemented_yet;
-    } gaiWorkQueuePlatform;    
+typedef struct gaiWorkQueuePlatform
+{
+    void *not_implemented_yet;
+} gaiWorkQueuePlatform;
 #else
 #endif
-    
+
 struct gaiWorkQueue;
 #define GAI_WORKQUEUE_CALLBACK(name) void name(gaiWorkQueue *queue, void *data)
 typedef GAI_WORKQUEUE_CALLBACK(gaiWorkQueueCallback);
-    
+
 typedef struct
 {
     gaiWorkQueueCallback *callback;
     void *data;
 } gaiWorkQueueEntry;
-    
+
 struct gaiWorkQueuePlatform; // This structure will be defined differently on each platform
 typedef struct gaiWorkQueue
 {
@@ -105,41 +100,37 @@ typedef struct gaiWorkQueue
     u32 volatile         next_entry_to_read;
     u32 volatile         next_entry_to_write;
     gaiWorkQueueEntry    work_entries[GAI_WORKQUEUE_ENTRY_MAX];
-    
-    gaiWorkQueuePlatform platform; 
+
+    gaiWorkQueuePlatform platform;
 } gaiWorkQueue;
 
-    
 // $FUNCTIONS$
 
-GAI_DEF int  gaiWorkQueueCreate(gaiWorkQueue *queue, u32 thread_count);
-GAI_DEF void gaiWorkQueueCleanup(gaiWorkQueue *queue);
-GAI_DEF void gaiWorkQueueAddEntry(gaiWorkQueue *queue, gaiWorkQueueCallback *callback, void *data);
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+GAI_DEF int  gaiWorkQueueCreate(gaiWorkQueue * queue, u32 thread_count);
+GAI_DEF void gaiWorkQueueCleanup(gaiWorkQueue * queue);
+GAI_DEF void gaiWorkQueueAddEntry(gaiWorkQueue * queue, gaiWorkQueueCallback * callback, void *data);
+GAI_DEF void gaiWorkQueueWaitForCompletion(gaiWorkQueue *queue);
 GAI_DEF u32  gaiWorkQueueGetCurrentThreadId();
+
+#ifdef __cplusplus
+}
+#endif
 
 // $FUNCTIONS$
 
 // $PLATFORM LAYER IMPLEMENTATION$
 
 #ifdef GAI_WORKQUEUE_IMPLEMENTATION
-#   if _WIN32
-#      ifdef GAI_WORKQUEUE_WIN32_MEMORY_ALLOC
-#         undef  GAI_MALLOC
-#         undef  GAI_REALLOC
-#         undef  GAI_FREE
-#         define GAI_MALLOC(size)              VirtualAlloc(0, size, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE)
-#         define GAI_REALLOC(pointer, newsize) VirtualAlloc(pointer, size, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE)
-#         define GAI_FREE(pointer)             VirtualFree(pointer, 0, MEM_RELEASE)
-#      endif
-#      include "gai_workqueue_win32.cc"
-#   elif __linux__
-#   elif __APPLE__
-#   endif
-#endif //GAI_WORKQUEUE_IMPLEMENTATION
-    
-#ifdef __cplusplus
-}
+#if _WIN32
+#include "gai_workqueue_win32.cc"
+#elif __linux__
+#elif __APPLE__
 #endif
+#endif //GAI_WORKQUEUE_IMPLEMENTATION
 
 // $PLATFORM LAYER IMPLEMENTATION$
 #define _GAI_WORKQUEUE_H_

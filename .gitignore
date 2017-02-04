@@ -22,6 +22,8 @@
 *.la
 *.a
 *.lib
+*.exp
+*.ilk
 
 # Executables
 *.exe
@@ -30,4 +32,6 @@
 
 # Others
 *.pdb
+*.vs
 TAGS
+*.sublime*

@@ -26,10 +26,11 @@ void
 gaiLinkedListDestroy(gaiLinkedList *list)
 {
     gaiLinkedListNode *node = list->head;
-    while(node->next) {
+    while (node->next)
+    {
         gaiLinkedListNode *del_node = node;
         node = del_node->next;
-        
+
         free(del_node->data);
         free(del_node);
     }
@@ -48,13 +49,16 @@ gaiLinkedListPrepend(gaiLinkedList *list, void *data, size_t size)
     memset(new_node->data, 0, size);
     memcpy(new_node->data, data, size);
 
-    if(!list->head && !list->tail) {
+    if (!list->head && !list->tail)
+    {
         list->head = new_node;
         list->tail = new_node;
-    } else {
+    }
+    else
+    {
         gaiLinkedListNode *it = list->head;
         it->prev = new_node;
-        
+
         list->head = new_node;
         new_node->next = it;
     }
