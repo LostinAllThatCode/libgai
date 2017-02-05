@@ -12,29 +12,21 @@ $Example: $
 #include "gai_types.h"
 #include "gai_utils.h"
 
-inline r32
-gaiMathLerp(r32 A, r32 B, r32 t)
+inline r32 gaiMathLerp(r32 v0, r32 v1, r32 t) { return (1 - t) * v0 + t * v1; }
+inline r32 gaiMathLerpPrecise(r32 v0, r32 v1, r32 t) { return (v0 + t*(v1-v0)); }
+inline r32 gaiMathClamp(r32 x, r32 min, r32 max)
 {
-    r32 Result;
-    Result = A + t*(B-A);
-    return Result;
+    if (x < min) x = min;
+    else if (x > max) x = max;
+    return x;
 }
 
 // NOTE: 2D vector implementation
 union v2
 {
-    struct
-    {
-        r32 x, y;
-    };
-    struct
-    {
-        r32 u, v;
-    };
-    struct
-    {
-        r32 w, h;
-    };
+    struct { r32 x, y; };
+    struct { r32 u, v; };
+    struct { r32 w, h; };
     r32 E[2];
 };
 

@@ -1,4 +1,4 @@
-echo off
+@echo off
 
 set libgai=..\gai
 set compilerflags=-Od -MTd -EHsc -Z7 -FC -I%libgai%

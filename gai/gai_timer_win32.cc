@@ -1,4 +1,4 @@
-GAI_DEF void 
+void 
 gaiTimerInit(gaiTimer *timer)
 {
     static b32 initialized;
@@ -10,7 +10,7 @@ gaiTimerInit(gaiTimer *timer)
     }
 }
 
-GAI_DEF r32
+r32
 gaiTimerGetTicks(gaiTimer *timer)
 {
     LARGE_INTEGER now, elapsed;

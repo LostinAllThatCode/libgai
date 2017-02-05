@@ -12,26 +12,16 @@ $Example: $
 #include "gai_types.h"
 #include "gai_utils.h"
 
-typedef struct
-{
-	i32 id;
-	i32 GetUniform(const char *name)
-	{
-		return glGetUniformLocation(id, name);
-	};
-} gaiShader;
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-GAI_DEF i32  gaiOpenGLShaderCreate(gaiShader *shader);
-GAI_DEF i32  gaiOpenGLShaderCreate(gaiShader *shader);
-GAI_DEF void gaiOpenGLShaderFree(gaiShader *shader);
-GAI_DEF i32  gaiOpenGLShaderCompileAttach(gaiShader *shader, const char *source, GLenum type);
-GAI_DEF i32  gaiOpenGLShaderLoadCompileAttach(gaiShader *shader, const char *filename, GLenum type);
-GAI_DEF b32  gaiOpenGLShaderLink(gaiShader *shader);
-GAI_DEF i32  gaiOpenGLShaderGetUniform(gaiShader *shader, const char *name);
+GAI_DEF i32  gaiOpenGLProgramCreate(void);
+GAI_DEF void gaiOpenGLProgramFree(i32 id);
+GAI_DEF i32  gaiOpenGLShaderLoad(i32 id, const char *source, GLenum type);
+GAI_DEF i32  gaiOpenGLShaderLoadFromFile(i32 id, const char *filename, GLenum type);
+GAI_DEF b32  gaiOpenGLProgramLink(i32 id);
+GAI_DEF i32  gaiOpenGLProgramGetUniform(i32 id, const char *name);
 
 #ifdef __cplusplus
 }

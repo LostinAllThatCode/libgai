@@ -1,45 +1,40 @@
 i32
-gaiOpenGLShaderCreate(gaiShader *shader)
+gaiOpenGLProgramCreate()
 {
-    GAI_ASSERT(shader);
-    shader->id = glCreateProgram();
-    return (shader->id != 0);
+    return glCreateProgram();
 }
 
 void
-gaiOpenGLShaderFree(gaiShader *shader)
+gaiOpenGLProgramFree(i32 id)
 {
-    GAI_ASSERT(shader);
-    glDeleteProgram(shader->id);
+    glDeleteProgram(id);
 }
 
 i32
-gaiOpenGLShaderCompileAttach(gaiShader *shader, const char *source, GLenum type)
+gaiOpenGLShaderLoad(i32 id, const char *source, GLenum type)
 {
     b32 result = false;
-    i32 id = glCreateShader(type);
-    i32 programid = shader->id;
-    
+    i32 sid = glCreateShader(type);
     if(glGetError() != GL_INVALID_ENUM)
     {
-        glShaderSource(id, 1, &source, 0);
-        glCompileShader(id);
+        glShaderSource(sid, 1, &source, 0);
+        glCompileShader(sid);
 
         i32 status;
-        glGetShaderStatus(id, &status);
+        glGetShaderStatus(sid, &status);
         if(status == GL_FALSE)
         {
             i32 length = 0;
             char error[1024];
-            glGetShaderInfoLog(id, 1024, &length, error);
-            printf("error: %s\n %s", error, source);
+            glGetShaderInfoLog(sid, 1024, &length, error);
+            printf("[info] %s:\n%s", __FILE__, error);
             GAI_ASSERT(!"Shader compile error");
             result = false;
         } else {
-            glAttachShader(programid, id);
+            glAttachShader(id, sid);
             result = true;
         }
-        glDeleteShader(id);
+        glDeleteShader(sid);
     }
     else
     {
@@ -50,13 +45,13 @@ gaiOpenGLShaderCompileAttach(gaiShader *shader, const char *source, GLenum type)
 
 
 i32
-gaiOpenGLShaderLoadCompileAttach(gaiShader *shader, const char *filename, GLenum type)
+gaiOpenGLShaderLoadFromFile(i32 id, const char *filename, GLenum type)
 {
     i32 result;
     char *source;
     FILE *fp = fopen(filename, "rb");
     if(fp) {
-        i64 size = 0;
+        i32 size = 0;
         fseek(fp, 0, SEEK_END);
         size = ftell(fp);
         fseek(fp, 0, SEEK_SET);
@@ -64,44 +59,38 @@ gaiOpenGLShaderLoadCompileAttach(gaiShader *shader, const char *filename, GLenum
         fread(source, sizeof(char), size, fp);
         source[size] = '\0';
         fclose(fp);
-        
-        result = gaiOpenGLShaderCompileAttach(shader, source, type);
+        result = gaiOpenGLShaderLoad(id, source, type);
         GAI_FREE(source);
     }
-    
     return result;
 }
 
 b32
-gaiOpenGLShaderLink(gaiShader *shader)
+gaiOpenGLProgramLink(i32 id)
 {
     b32 result = false;
-    i32 programid = shader->id;
-    
-    glLinkProgram(programid);
+    glLinkProgram(id);
     if(glGetError() != GL_INVALID_VALUE && glGetError() != GL_INVALID_OPERATION)
     {
         i32 status;
-        glGetProgramStatus(programid, &status);
+        glGetProgramStatus(id, &status);
         if(status == GL_FALSE)
         {
             i32 length = 0; 
             char error[1024];
-            glGetProgramInfoLog(programid, 1024, &length, error);
-            printf("error: %s\n", error);
+            glGetProgramInfoLog(id, 1024, &length, error);
+            printf("[info] %s:\n%s", __FILE__, error);
             GAI_ASSERT(!"Shader link error");
             result = false;
         } else {
-
             u32 shaders[12] = {};
             i32 attached = 0;
-            glGetAttachedShaders(shader->id, sizeof(shaders) / sizeof(shaders[0]), &attached, shaders);
+            glGetAttachedShaders(id, sizeof(shaders) / sizeof(shaders[0]), &attached, shaders);
             for(i32 i=0; i < attached; i++)
             {
-                glDetachShader(shader->id, shaders[i]);
+                glDetachShader(id, shaders[i]);
             }
-            
-            glUseProgram(programid);
+            glUseProgram(id);
             result = true;
         }
     } else GAI_ASSERT(!"Shader link error");
@@ -109,7 +98,7 @@ gaiOpenGLShaderLink(gaiShader *shader)
 }
 
 i32
-gaiOpenGLShaderGetUniform(gaiShader *shader, const char *name)
+gaiOpenGLProgramGetUniform(i32 id, const char *name)
 {
-    return glGetUniformLocation(shader->id, name);
+    return glGetUniformLocation(id, name);
 }

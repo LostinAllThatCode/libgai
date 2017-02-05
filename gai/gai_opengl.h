@@ -13,6 +13,8 @@ $Example: $
 #include "gai_utils.h"
 #include "gai_window.h"
 
+#include "stb_easy_font.h"
+
 #include <gl\gl.h>
 #include "glext.h"
 
