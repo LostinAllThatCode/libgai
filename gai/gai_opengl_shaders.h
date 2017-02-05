@@ -9,8 +9,8 @@ $Example: $
 */
 #ifndef _GAI_OPENGL_SHADERS_H_
 
-#include "gai_types.h"
-#include "gai_utils.h"
+#include <gai_types.h>
+#include <gai_utils.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -28,7 +28,7 @@ GAI_DEF i32  gaiOpenGLProgramGetUniform(i32 id, const char *name);
 #endif
 
 #ifdef GAI_OPENGL_SHADERS_IMPLEMENTATION
-	#include "gai_opengl_shaders.cc"
+	#include <gai_opengl_shaders.cc>
 #endif
 
 #define _GAI_OPENGL_SHADERS_H_

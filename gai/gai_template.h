@@ -9,8 +9,8 @@ $Example: $
 */
 #ifndef _GAI_TEMPLATE_H_
 
-#include "gai_types.h"
-#include "gai_utils.h"
+#include <gai_types.h>
+#include <gai_utils.h>
 
 #define _GAI_TEMPLATE_H_
 #endif

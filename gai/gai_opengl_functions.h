@@ -9,8 +9,8 @@ $Example: $
 */
 #ifndef _GAI_OPENGL_FUNCTIONS_H_
 
-#include "gai_types.h"
-#include "gai_utils.h"
+#include <gai_types.h>
+#include <gai_utils.h>
 
 #define GAI_OPENGL_EXTENSIONS_CORE                                      \
     GAI_OPENGL_FUNC_DEF(GENERATEMIPMAP           , GenerateMipmap      ) \

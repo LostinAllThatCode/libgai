@@ -10,8 +10,8 @@ $Dependencies: win32(user32.lib), linux(X11)$
 */
 #ifndef _GAI_WINDOW_H_
 
-#include "gai_types.h"
-#include "gai_utils.h"
+#include <gai_types.h>
+#include <gai_utils.h>
 //#include "gai_input.h"
 
 #if _WIN32
@@ -86,9 +86,9 @@ GAI_DEF void gaiWindowSetTitle(gaiWindow *window, const char *title);
             #define GAI_MAIN int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
         #endif
         #pragma comment(lib, "user32.lib")
-        #include "gai_window_win32.cc"
+        #include <gai_window_win32.cc>
     #elif __linux__
-        #include "gai_window_linux.cc"
+        #include <gai_window_linux.cc>
     #elif __APPLE__
     #endif
 #endif

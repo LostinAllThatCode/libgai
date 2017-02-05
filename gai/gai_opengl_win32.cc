@@ -220,7 +220,6 @@ gaiOpenGLCreateContextEx(gaiWindow *window, const char *title, i32 width, i32 he
     }
 
     gaiOpenGLInitialzeFunctions();
-
     gaiWindowShow(window, SW_SHOW);
     return 1;
 }

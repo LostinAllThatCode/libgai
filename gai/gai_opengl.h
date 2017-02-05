@@ -9,14 +9,13 @@ $Example: $
 */
 #ifndef _GAI_OPENGL_H_
 
-#include "gai_types.h"
-#include "gai_utils.h"
-#include "gai_window.h"
-
-#include "stb_easy_font.h"
+#include <gai_types.h>
+#include <gai_utils.h>
+#include <gai_window.h>
 
 #include <gl\gl.h>
-#include "glext.h"
+#include <glext.h>
+#include <stb_easy_font.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -24,7 +23,7 @@ extern "C" {
 
 /* Every platform has a specific CreateContextEx function which can be used when you need more control */
 GAI_DEF i32  gaiOpenGLCreateContext   (gaiWindow * window, const char *title, i32 width = 640, i32 height = 480, i32 x = 0, i32 y = 0,
-                                       i32 major = 0, i32 minor = 0, b32 vsync = true, i32 multisample = 0,
+                                       i32 major = 0, i32 minor = 0, b32 vsync = false, i32 multisample = 0,
                                        u8 color_bits = 32, u8 depth_bits = 24, u8 stencil_bits = 8);
 GAI_DEF void gaiOpenGLSwapBuffers     (gaiWindow * window);
 GAI_DEF b32  gaiOpenGLIsSupported     (const char *extension);

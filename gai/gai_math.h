@@ -21,7 +21,6 @@ inline r32 gaiMathClamp(r32 x, r32 min, r32 max)
     return x;
 }
 
-// NOTE: 2D vector implementation
 union v2
 {
     struct { r32 x, y; };
@@ -30,7 +29,6 @@ union v2
     r32 E[2];
 };
 
-// NOTE: 2d vector initialization
 inline v2
 V2(r32 x, r32 y)
 {
@@ -52,7 +50,6 @@ V2i(i32 x, i32 y)
     return Result;
 }
 
-// NOTE: 2D vector operator overloading
 inline v2
 operator*(r32 A, v2 B)
 {
@@ -129,8 +126,6 @@ operator-=(v2 &A, v2 B)
     return(A);
 }
 
-// NOTE: 3D vector implementation
-
 union v3
 {
     struct { r32 x, y, z; };
@@ -143,7 +138,6 @@ union v3
     r32 E[3];
 };
 
-// NOTE: 3D vector initialization
 inline v3
 V3(r32 x, r32 y, r32 z)
 {
@@ -172,7 +166,6 @@ V3(r32 xyz)
     return Result;
 }
 
-// NOTE: 3D vector operator overloading
 inline v3
 operator*(r32 A, v3 B)
 {
@@ -253,7 +246,6 @@ operator-=(v3 &A, v3 B)
     return(A);
 }
 
-// NOTE: 4D vector implementation
 union v4
 {
     struct
@@ -283,7 +275,6 @@ union v4
 };
 typedef v4 quat;
 
-// NOTE: 4D vector initialization
 inline v4
 V4(r32 x, r32 y, r32 z, r32 w)
 {
@@ -298,7 +289,6 @@ V4(v3 xyz, r32 w)
     return Result;
 }
 
-// NOTE: 4D vector operator overloading
 inline v4
 operator*(r32 A, v4 B)
 {
@@ -383,9 +373,6 @@ operator-=(v4 &A, v4 B)
     return(A);
 }
 
-// NOTE: General vector math operations
-
-// NOTE: Dot product / inner product of two vectors
 inline r32
 gaiMathDotV3(v3 A, v3 B)
 {
@@ -473,7 +460,6 @@ gaiMathLerpV3(v3 A, v3 B, r32 t)
     return Result;
 }
 
-// NOTE: 3x3 and 4x4 matrix implementation (opengl coloum order)
 union mat3x3
 {
     struct
@@ -497,7 +483,6 @@ union mat4x4
     r32 E[16];
 };
 
-// NOTE: General 3x3 and 4x4 matrix operations
 inline mat3x3
 Mat3(r32 e)
 {

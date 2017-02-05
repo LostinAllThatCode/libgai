@@ -2,7 +2,7 @@
 ==========================================================================================
 $Name: gai_workqueue.h$
 $Description:
-Simple quick and easy workqueue implmentation. NOTE: Only the thread which created the
+Simple quick and easy workqueue implmentation. Only the thread which created the
 queue should add work entries to the queue. It's not safe to push new entries from a
 thread's callback function.
 $
@@ -51,8 +51,8 @@ $
 */
 #ifndef _GAI_WORKQUEUE_H_
 
-#include "gai_types.h"
-#include "gai_utils.h"
+#include <gai_types.h>
+#include <gai_utils.h>
 
 #ifndef GAI_WORKQUEUE_MAX
 #define GAI_WORKQUEUE_MAX 12
@@ -92,7 +92,7 @@ typedef struct
     void *data;
 } gaiWorkQueueEntry;
 
-struct gaiWorkQueuePlatform; // This structure will be defined differently on each platform
+struct gaiWorkQueuePlatform; // NOTE: This structure is different on each platform
 typedef struct gaiWorkQueue
 {
     u32 volatile         completion_goal;
@@ -126,7 +126,7 @@ GAI_DEF u32  gaiWorkQueueGetCurrentThreadId();
 
 #ifdef GAI_WORKQUEUE_IMPLEMENTATION
 #if _WIN32
-#include "gai_workqueue_win32.cc"
+#include <gai_workqueue_win32.cc>
 #elif __linux__
 #elif __APPLE__
 #endif

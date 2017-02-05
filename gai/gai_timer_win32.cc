@@ -21,3 +21,15 @@ gaiTimerGetTicks(gaiTimer *timer)
     timer->starttime = now;
     return elapsed.QuadPart;
 }
+
+r32
+gaiTimerGetTicksSeconds(gaiTimer *timer)
+{
+    return gaiTimerGetTicks(timer) / 1000000.f;
+}
+
+r32
+gaiTimerGetTicksMillis(gaiTimer *timer)
+{
+    return gaiTimerGetTicks(timer) / 1000.f;
+}

@@ -13,7 +13,7 @@
 		#define GAI_DEF extern
 	#endif
 	#undef  GAI_API
-	#define GAI_API static
+	#define GAI_API
 #else
 	#define GAI_DEF GAI_API
 #endif
@@ -26,18 +26,18 @@
 	#define GAI_TIMER_IMPLEMENTATION
 #endif
 
-#include "gai_types.h"
-#include "gai_utils.h"
+#include <gai_types.h>
+#include <gai_utils.h>
 
-#include "stb_image.h"        /* image loading support library */
-#include "stb_truetype.h"     /* font loading support library */
+#include <stb_image.h>        /* image loading support library */
+#include <stb_truetype.h>     /* font loading support library */
 
-#include "gai_math.h"
-#include "gai_workqueue.h"
-#include "gai_timer.h"
-#include "gai_window.h"
-#include "gai_opengl.h"
-#include "gai_opengl_shaders.h"
+#include <gai_math.h>
+#include <gai_workqueue.h>
+#include <gai_timer.h>
+#include <gai_window.h>
+#include <gai_opengl.h>
+#include <gai_opengl_shaders.h>
 
 #define _GAI_CORE_H
 #endif

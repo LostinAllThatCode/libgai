@@ -22,8 +22,9 @@ int main(int argc, char **argv)
     gaiTimerInit(&timer);
 
     gaiWindow wnd;
-    if (gaiOpenGLCreateContext(&wnd, "asd", 1024, 768, 0, 0, 3, 1, true, 8))
+    if (gaiOpenGLCreateContext(&wnd, "asd", 1024, 768))
     {
+        gaiOpenGLSetSwapInterval(1);
         gaiWindowSetTitle(&wnd, (const char *)glGetString(GL_VERSION));
         def.id = gaiOpenGLProgramCreate();
         if (def.id)
@@ -76,10 +77,21 @@ int main(int argc, char **argv)
         r32 color = 0.f;
         r32 time = 0;
 
+        r32 frametime = 0.f;
+        i32 fps = 0;
         while (gaiWindowUpdate(&wnd, 0))
         {
-            time += (gaiTimerGetTicks(&timer) / 1000000.f);
-            color = gaiMathClamp(sinf(time), 0.2f, 1.0f);
+            r32 dt = gaiTimerGetTicksSeconds(&timer);
+            frametime += dt;
+
+            fps++;
+            if(frametime >= 1.0f) {
+                printf("%f ms per frame, %i fps, %f dt\n", (1000.0 / double(fps)), fps, dt);
+                fps = 0;
+                frametime = 0;
+            }
+            
+            color = gaiMathClamp(sinf(frametime), 0.2f, 1.0f);
             glViewport(0, 0, wnd.width, wnd.height);
             glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glUseProgram(def.id);
