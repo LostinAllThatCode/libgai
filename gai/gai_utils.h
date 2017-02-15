@@ -28,6 +28,7 @@
 	#define GAI_FREE(pointer)             free(pointer);
 #endif
 
+#define gai_array_reset(array) (memset(array, 0, sizeof(array)))
 #define gai_length(array) (sizeof(array)/sizeof(array[0]))
 #define gai_fiz(n)        for(u32 i = 0; i < n; i++)
 #define gai_fei(v)        for(u32 i = 0; i < GAI_ARRAYCOUNT(v); i++)

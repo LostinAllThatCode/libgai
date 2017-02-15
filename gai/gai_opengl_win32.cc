@@ -5,6 +5,36 @@ typedef HGLRC (WINAPI * PFNWGLCREATECONTEXTATTRIBSARBPROC) (HDC hDC, HGLRC hShar
 typedef int   (WINAPI * PFNWGLSWAPINTERVALEXTPROC)         (int interval);
 typedef int   (WINAPI * PFNWGLGETSWAPINTERVALEXTPROC)      (void);
 
+
+void APIENTRY
+gaiOpenGLDebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, GLvoid *userParam)
+{
+    SYSTEMTIME time = {};
+    GetLocalTime(&time);
+
+    switch(source)
+    {
+        case GL_DEBUG_SOURCE_API: { printf("gl_debug_source_api"); } break;
+        case GL_DEBUG_SOURCE_WINDOW_SYSTEM: { printf("gl_debug_source_window_system"); } break;
+        case GL_DEBUG_SOURCE_SHADER_COMPILER: { printf("gl_debug_source_shader_compiler"); } break;
+        case GL_DEBUG_SOURCE_APPLICATION: { printf("gl_debug_source_libgai"); } break;
+        default: { printf("gl_debug_source_third_party"); } break;
+    }
+
+    printf(":%i,%i,%i ", type, id, severity);
+    printf("[%.4i/%.2i/%.2i:%.2i:%.2i:%.2i.%.3i]", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds);
+    printf(" %s\n", message);
+}
+
+#ifdef GAI_OPENGL_DEBUG
+static char _DEBUG_BUFFER[4096] = {};
+#define gaiOpenGLDebugMessage(id, ...) \
+    snprintf(_DEBUG_BUFFER, 4096, __VA_ARGS__); \
+    glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_OTHER, (id), GL_DEBUG_SEVERITY_HIGH, strlen(_DEBUG_BUFFER), _DEBUG_BUFFER)
+#else
+    #define gaiOpenGLDebugMessage
+#endif
+
 b32
 gaiOpenGLIsSupported(const char *extension)
 {
@@ -158,7 +188,6 @@ gaiOpenGLCreateDummy(gaiWindow *window, const char *title = "gaiOpenGLDummyCtx",
         return 0;
     }
 
-
     if (!wglMakeCurrent(hdc, oglrc))
     {
         wglDeleteContext(oglrc);
@@ -220,6 +249,13 @@ gaiOpenGLCreateContextEx(gaiWindow *window, const char *title, i32 width, i32 he
     }
 
     gaiOpenGLInitialzeFunctions();
+
+    #ifdef GAI_OPENGL_DEBUG
+    glEnable(GL_DEBUG_OUTPUT);
+    glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+    glDebugMessageCallback((GLDEBUGPROC)gaiOpenGLDebugCallback, 0);
+    #endif
+
     gaiWindowShow(window, SW_SHOW);
     return 1;
 }
@@ -233,7 +269,11 @@ gaiOpenGLCreateContext(gaiWindow *window, const char *title, i32 width, i32 heig
     {
         WGL_CONTEXT_MAJOR_VERSION_ARB, major,
         WGL_CONTEXT_MINOR_VERSION_ARB, minor,
-        WGL_CONTEXT_FLAGS_ARB, 0,
+        WGL_CONTEXT_FLAGS_ARB, 0
+        #ifdef GAI_OPENGL_DEBUG
+        |WGL_CONTEXT_DEBUG_BIT_ARB
+        #endif
+        ,
         WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
         0
     };

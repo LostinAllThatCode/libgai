@@ -22,15 +22,8 @@ gaiOpenGLShaderLoad(i32 id, const char *source, GLenum type)
 
         i32 status;
         glGetShaderStatus(sid, &status);
-        if(status == GL_FALSE)
+        if(status == GL_TRUE)
         {
-            i32 length = 0;
-            char error[1024];
-            glGetShaderInfoLog(sid, 1024, &length, error);
-            printf("[info] %s:\n%s", __FILE__, error);
-            GAI_ASSERT(!"Shader compile error");
-            result = false;
-        } else {
             glAttachShader(id, sid);
             result = true;
         }
@@ -74,15 +67,8 @@ gaiOpenGLProgramLink(i32 id)
     {
         i32 status;
         glGetProgramStatus(id, &status);
-        if(status == GL_FALSE)
+        if(status == GL_TRUE)
         {
-            i32 length = 0; 
-            char error[1024];
-            glGetProgramInfoLog(id, 1024, &length, error);
-            printf("[info] %s:\n%s", __FILE__, error);
-            GAI_ASSERT(!"Shader link error");
-            result = false;
-        } else {
             u32 shaders[12] = {};
             i32 attached = 0;
             glGetAttachedShaders(id, sizeof(shaders) / sizeof(shaders[0]), &attached, shaders);

@@ -15,11 +15,19 @@ $Example: $
 
 #include <gl\gl.h>
 #include <glext.h>
-#include <stb_easy_font.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+enum
+{
+	GAI_OGL_NONE  = 0x0,
+	GAI_OGL_VSYNC = 0x1,
+	GAI_OGL_MSAA2 = 0x2,
+	GAI_OGL_MSAA4 = 0x4,
+	GAI_OGL_MSAA8 = 0x8,
+};
 
 /* Every platform has a specific CreateContextEx function which can be used when you need more control */
 GAI_DEF i32  gaiOpenGLCreateContext   (gaiWindow * window, const char *title, i32 width = 640, i32 height = 480, i32 x = 0, i32 y = 0,

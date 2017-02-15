@@ -6,7 +6,15 @@ gaiWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 		switch (uMsg)
 		{
-			case WM_SIZE:        { wnd->width = LOWORD(lParam); wnd->height = HIWORD(lParam); } break;
+			case WM_SIZE:
+			{
+				wnd->width = LOWORD(lParam);
+				wnd->height = HIWORD(lParam);
+			} break;
+			case WM_MOUSEMOVE:
+			{
+				//i32 x = ((i16) lParam), y = ((i16)((lParam >> 16) & 0xFFFF));
+			} break;
 			case WM_DESTROY:
 			{
 				PostQuitMessage(0);
@@ -21,7 +29,7 @@ i32
 gaiWindowRegister(HINSTANCE instance, const char *classname)
 {
 	GAI_ASSERT(instance);
-	
+
 	WNDCLASSEXA wnd_class   = {};
 	wnd_class.cbSize        = sizeof(wnd_class);
 	wnd_class.style         = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
@@ -58,6 +66,7 @@ gaiWindowCreateEx(gaiWindow* window, const char *title, const char *classname,
 
 	SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR) window);
 
+	window->platform.classname = classname;
 	window->platform.instance = instance;
 	window->platform.hWnd     = hWnd;
 	window->platform.ctx      = GetDC(hWnd);
@@ -97,15 +106,15 @@ inline i32
 gaiWindowUpdate(gaiWindow *window, i32 block = 1)
 {
 	GAI_ASSERT(window);
-
-	POINT mpos;
-	GetCursorPos(&mpos);
-	window->input.dtx     = mpos.x - window->input.scrx;
-	window->input.dty     = mpos.y - window->input.scry;
-	window->input.scrx    = mpos.x;
-	window->input.scry    = mpos.y;
-	window->input.dtwheel = 0;
-
+	/*
+		POINT mpos;
+		GetCursorPos(&mpos);
+		window->input.dtx     = mpos.x - window->input.scrx;
+		window->input.dty     = mpos.y - window->input.scry;
+		window->input.scrx    = mpos.x;
+		window->input.scry    = mpos.y;
+		window->input.dtwheel = 0;
+	
 	for (i32 i = 0; i < 256; i++)
 	{
 		gaiKeyState *state = window->input.keys + i;
@@ -124,16 +133,16 @@ gaiWindowUpdate(gaiWindow *window, i32 block = 1)
 			state->ended_down = false;
 		}
 	}
-
+*/
 	MSG msg;
 	while ( (block ? GetMessage(&msg, 0, 0, 0) : PeekMessageA(&msg, 0, 0, 0, PM_REMOVE)) )
 	{
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
-
 		switch (msg.message)
 		{
 			case WM_QUIT: { gaiWindowDestroy(window); return 0; }
+			#if 0
 			case WM_MOUSEMOVE:   { window->input.x = LOWORD(msg.lParam); window->input.y = HIWORD(msg.lParam); } break;
 			case WM_MOUSEWHEEL:  { window->input.dtwheel = GET_WHEEL_DELTA_WPARAM(msg.wParam); } break;
 			case WM_MBUTTONUP:   { window->input.buttons[2].ended_down = true; } break;
@@ -157,6 +166,7 @@ gaiWindowUpdate(gaiWindow *window, i32 block = 1)
 					state->ended_down = true;
 				}
 			} break;
+			#endif
 		}
 	}
 	return 1;
@@ -179,12 +189,9 @@ gaiWindowSetTitle(gaiWindow *window, const char *title)
 void
 gaiWindowDestroy(gaiWindow* window)
 {
-	char classname[1024];
-	GetClassName(window->platform.hWnd, classname, 1024);
-
 	GAI_ASSERT(window);
 	DestroyWindow(window->platform.hWnd);
-	UnregisterClass(classname,  window->platform.instance);
+	UnregisterClass(window->platform.classname,  window->platform.instance);
 }
 
 void

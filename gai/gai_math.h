@@ -12,8 +12,15 @@ $Example: $
 #include "gai_types.h"
 #include "gai_utils.h"
 
+#define DEG2RAD(d) ((d)*(M_PI/180))
+#define RAD2DEG(r) ((r)*(180/M_PI))
+
+#define _sin(v) sinf(v)
+#define _cos(v) cosf(v)
+#define _tan(v) tanf(v)
+
 inline r32 gaiMathLerp(r32 v0, r32 v1, r32 t) { return (1 - t) * v0 + t * v1; }
-inline r32 gaiMathLerpPrecise(r32 v0, r32 v1, r32 t) { return (v0 + t*(v1-v0)); }
+inline r32 gaiMathLerpPrecise(r32 v0, r32 v1, r32 t) { return (v0 + t * (v1 - v0)); }
 inline r32 gaiMathClamp(r32 x, r32 min, r32 max)
 {
     if (x < min) x = min;
@@ -55,18 +62,18 @@ operator*(r32 A, v2 B)
 {
     v2 Result;
 
-    Result.x = A*B.x;
-    Result.y = A*B.y;
-    
-    return(Result);
+    Result.x = A * B.x;
+    Result.y = A * B.y;
+
+    return (Result);
 }
 
 inline v2
 operator*(v2 B, r32 A)
 {
-    v2 Result = A*B;
+    v2 Result = A * B;
 
-    return(Result);
+    return (Result);
 }
 
 inline v2 &
@@ -74,7 +81,7 @@ operator*=(v2 &B, r32 A)
 {
     B = A * B;
 
-    return(B);
+    return (B);
 }
 
 inline v2
@@ -85,7 +92,7 @@ operator-(v2 A)
     Result.x = -A.x;
     Result.y = -A.y;
 
-    return(Result);
+    return (Result);
 }
 
 inline v2
@@ -96,7 +103,7 @@ operator+(v2 A, v2 B)
     Result.x = A.x + B.x;
     Result.y = A.y + B.y;
 
-    return(Result);
+    return (Result);
 }
 
 inline v2 &
@@ -104,7 +111,7 @@ operator+=(v2 &A, v2 B)
 {
     A = A + B;
 
-    return(A);
+    return (A);
 }
 
 inline v2
@@ -115,7 +122,7 @@ operator-(v2 A, v2 B)
     Result.x = A.x - B.x;
     Result.y = A.y - B.y;
 
-    return(Result);
+    return (Result);
 }
 
 inline v2 &
@@ -123,7 +130,7 @@ operator-=(v2 &A, v2 B)
 {
     A = A - B;
 
-    return(A);
+    return (A);
 }
 
 union v3
@@ -171,19 +178,19 @@ operator*(r32 A, v3 B)
 {
     v3 Result;
 
-    Result.x = A*B.x;
-    Result.y = A*B.y;
-    Result.z = A*B.z;
-    
-    return(Result);
+    Result.x = A * B.x;
+    Result.y = A * B.y;
+    Result.z = A * B.z;
+
+    return (Result);
 }
 
 inline v3
 operator*(v3 B, r32 A)
 {
-    v3 Result = A*B;
+    v3 Result = A * B;
 
-    return(Result);
+    return (Result);
 }
 
 inline v3 &
@@ -191,7 +198,7 @@ operator*=(v3 &B, r32 A)
 {
     B = A * B;
 
-    return(B);
+    return (B);
 }
 
 inline v3
@@ -203,7 +210,7 @@ operator-(v3 A)
     Result.y = -A.y;
     Result.z = -A.z;
 
-    return(Result);
+    return (Result);
 }
 
 inline v3
@@ -215,7 +222,7 @@ operator+(v3 A, v3 B)
     Result.y = A.y + B.y;
     Result.z = A.z + B.z;
 
-    return(Result);
+    return (Result);
 }
 
 inline v3 &
@@ -223,7 +230,7 @@ operator+=(v3 &A, v3 B)
 {
     A = A + B;
 
-    return(A);
+    return (A);
 }
 
 inline v3
@@ -235,7 +242,7 @@ operator-(v3 A, v3 B)
     Result.y = A.y - B.y;
     Result.z = A.z - B.z;
 
-    return(Result);
+    return (Result);
 }
 
 inline v3 &
@@ -243,7 +250,7 @@ operator-=(v3 &A, v3 B)
 {
     A = A - B;
 
-    return(A);
+    return (A);
 }
 
 union v4
@@ -255,9 +262,9 @@ union v4
             v3 xyz;
             struct { r32 x, y, z; };
         };
-        r32 w;        
+        r32 w;
     };
-    
+
     struct
     {
         union
@@ -265,9 +272,9 @@ union v4
             v3 rgb;
             struct { r32 r, g, b; };
         };
-        r32 a;        
+        r32 a;
     };
-    
+
     struct { v2 xy; r32 Ignored0_; r32 Ignored1_; };
     struct { r32 Ignored2_; v2 yz; r32 Ignored3_; };
     struct { r32 Ignored4_; r32 Ignored5_; v2 zw; };
@@ -294,20 +301,20 @@ operator*(r32 A, v4 B)
 {
     v4 Result;
 
-    Result.x = A*B.x;
-    Result.y = A*B.y;
-    Result.z = A*B.z;
-    Result.w = A*B.w;
-    
-    return(Result);
+    Result.x = A * B.x;
+    Result.y = A * B.y;
+    Result.z = A * B.z;
+    Result.w = A * B.w;
+
+    return (Result);
 }
 
 inline v4
 operator*(v4 B, r32 A)
 {
-    v4 Result = A*B;
+    v4 Result = A * B;
 
-    return(Result);
+    return (Result);
 }
 
 inline v4 &
@@ -315,7 +322,7 @@ operator*=(v4 &B, r32 A)
 {
     B = A * B;
 
-    return(B);
+    return (B);
 }
 
 inline v4
@@ -328,7 +335,7 @@ operator-(v4 A)
     Result.z = -A.z;
     Result.w = -A.w;
 
-    return(Result);
+    return (Result);
 }
 
 inline v4
@@ -341,7 +348,7 @@ operator+(v4 A, v4 B)
     Result.z = A.z + B.z;
     Result.w = A.w + B.w;
 
-    return(Result);
+    return (Result);
 }
 
 inline v4 &
@@ -349,7 +356,7 @@ operator+=(v4 &A, v4 B)
 {
     A = A + B;
 
-    return(A);
+    return (A);
 }
 
 inline v4
@@ -362,7 +369,7 @@ operator-(v4 A, v4 B)
     Result.z = A.z - B.z;
     Result.w = A.w - B.w;
 
-    return(Result);
+    return (Result);
 }
 
 inline v4 &
@@ -370,32 +377,32 @@ operator-=(v4 &A, v4 B)
 {
     A = A - B;
 
-    return(A);
+    return (A);
 }
 
 inline r32
 gaiMathDotV3(v3 A, v3 B)
 {
-    r32 Result = A.x*B.x + A.y*B.y + A.z*B.z;
+    r32 Result = A.x * B.x + A.y * B.y + A.z * B.z;
 
-    return(Result);
+    return (Result);
 }
 
 inline r32
 gaiMathDotV4(v4 A, v4 B)
 {
-    r32 Result = A.x*B.x + A.y*B.y + A.z*B.z + A.w*B.w;
+    r32 Result = A.x * B.x + A.y * B.y + A.z * B.z + A.w * B.w;
 
-    return(Result);
+    return (Result);
 }
 
 inline v3
 gaiMathCrossV3(v3 A, v3 B)
 {
     v3 Result;
-    Result.x = (A.y*B.z) - (A.z*B.y);
-    Result.y = (A.z*B.x) - (A.x*B.z);
-    Result.z = (A.x*B.y) - (A.y*B.x);
+    Result.x = (A.y * B.z) - (A.z * B.y);
+    Result.y = (A.z * B.x) - (A.x * B.z);
+    Result.z = (A.x * B.y) - (A.y * B.x);
     return Result;
 }
 
@@ -403,10 +410,10 @@ inline v4
 gaiMathCrossV4(v4 A, v4 B)
 {
     v4 Result;
-    Result.x = (A.y*B.z) - (A.z*B.y);
-    Result.y = (A.z*B.w) - (A.w*B.z);
-    Result.z = (A.w*B.x) - (A.x*B.w);
-    Result.w = (A.x*B.y) - (A.y*B.x);
+    Result.x = (A.y * B.z) - (A.z * B.y);
+    Result.y = (A.z * B.w) - (A.w * B.z);
+    Result.z = (A.w * B.x) - (A.x * B.w);
+    Result.w = (A.x * B.y) - (A.y * B.x);
     return Result;
 }
 
@@ -414,377 +421,373 @@ inline r32
 gaiMathLengthSqV3(v3 A)
 {
     r32 Result = gaiMathDotV3(A, A);
-    return(Result);
+    return (Result);
 }
 
 inline r32
 gaiMathLengthSqV4(v4 A)
 {
     r32 Result = gaiMathDotV4(A, A);
-    return(Result);
+    return (Result);
 }
 
 inline r32
 gaiMathLengthV3(v3 A)
 {
     r32 Result = sqrt(gaiMathLengthSqV3(A));
-    return(Result);
+    return (Result);
 }
 
 inline r32
 gaiMathLengthV4(v4 A)
 {
     r32 Result = sqrt(gaiMathLengthSqV4(A));
-    return(Result);
+    return (Result);
 }
 
 inline v3
 gaiMathNormalizeV3(v3 A)
 {
     v3 Result = A * (1.0f / gaiMathLengthV3(A));
-    return(Result);
+    return (Result);
 }
 
 inline v4
 gaiMathNormalizeV4(v4 A)
 {
     v4 Result = A * (1.0f / gaiMathLengthV4(A));
-    return(Result);
+    return (Result);
 }
 
+inline v3
+Normalize(v3 a)
+{
+    v3 result = a * (1.0f / gaiMathLengthV3(a));
+    return (result);
+}
+
+inline v3
+Cross(v3 a, v3 b)
+{
+    v3 result;
+    result.x = (a.y * b.z) - (a.z * b.y);
+    result.y = (a.z * b.x) - (a.x * b.z);
+    result.z = (a.x * b.y) - (a.y * b.x);
+    return result;
+}
+
+inline r32
+Dot(v3 a, v3 b)
+{
+    r32 result = a.x * b.x + a.y * b.y + a.z * b.z;
+    return (result);
+}
+
+/*
 inline v3
 gaiMathLerpV3(v3 A, v3 B, r32 t)
 {
     v3 Result;
-    Result = A + t*(B-A);
+    Result = A + t * (B - A);
+    return Result;
+}
+*/
+
+struct m3x3
+{
+    r32 E[3][3];
+};
+
+struct m4x4
+{
+    r32 E[4][4];
+};
+
+inline m3x3
+Identity3()
+{
+    m3x3 Result =
+    {
+        1.0f, 0.0f, 0.0f,
+        0.0f, 1.0f, 0.0f,
+        0.0f, 0.0f, 1.0f
+    };
     return Result;
 }
 
-union mat3x3
+inline m4x4
+Identity4()
 {
-    struct
+    m4x4 Result =
     {
-        r32 m0, m3, m6;
-        r32 m1, m4, m7;
-        r32 m2, m5, m8;
-    };
-    r32 E[9];
-};
-
-union mat4x4
-{
-    struct
-    {
-        r32 m0, m4, m8,  m12;
-        r32 m1, m5, m9,  m13;
-        r32 m2, m6, m10, m14;
-        r32 m3, m7, m11, m15;
-    };
-    r32 E[16];
-};
-
-inline mat3x3
-Mat3(r32 e)
-{
-  mat3x3 Result = {
-      e, 0.0f, 0.0f,
-      0.0f, e, 0.0f,
-      0.0f, 0.0f, e
-  };
-  return Result;  
-}
-
-inline mat3x3
-Mat3(i32 e)
-{
-    mat3x3 Result = {
-        (r32) e, 0.0f, 0.0f,
-        0.0f, (r32) e, 0.0f,
-        0.0f, 0.0f, (r32) e
-    };
-    return Result;  
-}
-
-inline mat4x4
-Mat4(r32 e)
-{
-  mat4x4 Result = {
-      e, 0.0f, 0.0f, 0.0f, 
-      0.0f, e, 0.0f, 0.0f,
-      0.0f, 0.0f, e, 0.0f,
-      0.0f, 0.0f, 0.0f, e
-  };
-  return Result;  
-}
-
-inline mat4x4
-Mat4(i32 e)
-{
-  mat4x4 Result = {
-      (r32) e, 0.0f, 0.0f, 0.0f, 
-      0.0f, (r32) e, 0.0f, 0.0f,
-      0.0f, 0.0f, (r32) e, 0.0f,
-      0.0f, 0.0f, 0.0f, (r32) e
-  };
-  return Result;  
-}
-
-inline mat4x4
-gaiMathTrlMat(r32 x, r32 y, r32 z)
-{
-    mat4x4 Result = {
         1.0f, 0.0f, 0.0f, 0.0f,
         0.0f, 1.0f, 0.0f, 0.0f,
         0.0f, 0.0f, 1.0f, 0.0f,
-        x,    y,    z,    1.0f
-    };
-    return Result;
-}
-
-inline mat4x4
-gaiMathSclMat(r32 x, r32 y, r32 z)
-{
-    mat4x4 Result = {
-        x,    0.0f, 0.0f, 0.0f,
-        0.0f, y,    0.0f, 0.0f,
-        0.0f, 0.0f, z,    0.0f,
         0.0f, 0.0f, 0.0f, 1.0f
     };
     return Result;
 }
 
-inline mat4x4
-gaiMathRotMat(r32 Angle, r32 x, r32 y, r32 z)
+extern v3
+Transform(m4x4 A, v3 P, r32 Pw = 1.0f)
 {
-    r32 s = sinf(Angle);
-    mat4x4 Result = {
-        
-    };
-    return Result;    
+    v3 R;
+    #if 1
+    R.x = P.x * A.E[0][0] + P.y * A.E[0][1] + P.z * A.E[0][2] + Pw * A.E[0][3];
+    R.y = P.x * A.E[1][0] + P.y * A.E[1][1] + P.z * A.E[1][2] + Pw * A.E[1][3];
+    R.z = P.x * A.E[2][0] + P.y * A.E[2][1] + P.z * A.E[2][2] + Pw * A.E[2][3];
+    #else
+    R.x = P.x * A.E[0][0] + P.y * A.E[1][0] + P.z * A.E[2][0] + Pw * A.E[3][0];
+    R.y = P.x * A.E[0][1] + P.y * A.E[1][1] + P.z * A.E[2][1] + Pw * A.E[3][1];
+    R.z = P.x * A.E[0][2] + P.y * A.E[1][2] + P.z * A.E[2][2] + Pw * A.E[3][2];
+    #endif
+    return (R);
 }
 
-inline mat3x3
-gaiMathMulMat3(mat3x3 A, mat3x3 B)
+m4x4
+operator*(m4x4 A, m4x4 B)
 {
-    mat3x3 Result;
-    Result.m0 = (A.m0 * B.m0) + (A.m3 * B.m1) + (A.m6 * B.m2);
-    Result.m3 = (A.m0 * B.m3) + (A.m3 * B.m4) + (A.m6 * B.m5);
-    Result.m6 = (A.m0 * B.m6) + (A.m3 * B.m7) + (A.m6 * B.m8);
-    Result.m1 = (A.m1 * B.m0) + (A.m4 * B.m1) + (A.m7 * B.m2);
-    Result.m4 = (A.m1 * B.m3) + (A.m4 * B.m4) + (A.m7 * B.m5);
-    Result.m7 = (A.m1 * B.m6) + (A.m4 * B.m7) + (A.m7 * B.m8);
-    Result.m2 = (A.m2 * B.m0) + (A.m5 * B.m1) + (A.m8 * B.m2);
-    Result.m5 = (A.m2 * B.m3) + (A.m5 * B.m4) + (A.m8 * B.m5);
-    Result.m8 = (A.m2 * B.m6) + (A.m5 * B.m7) + (A.m8 * B.m8);
-    return Result;
-}
+    // NOTE(casey): This is written to be instructive, not optimal!
 
-inline mat3x3
-gaiMathMulMat3(mat3x3 A, r32 V)
-{
-    mat3x3 Result;
-    Result.m0 *= V; Result.m3 *= V; Result.m6 *= V;
-    Result.m1 *= V; Result.m4 *= V; Result.m7 *= V;
-    Result.m2 *= V; Result.m5 *= V; Result.m8 *= V;
-    return Result;
-}
+    m4x4 R = {};
 
-inline mat4x4
-gaiMathMulMat4(mat4x4 A, mat4x4 B)
-{
-    mat4x4 Result;
-    Result.m0  = (A.m0 * B.m0)  + (A.m4 * B.m1)  + (A.m8  * B.m2)  + (A.m12 * B.m3);
-    Result.m1  = (A.m1 * B.m0)  + (A.m5 * B.m1)  + (A.m9  * B.m2)  + (A.m13 * B.m3);
-    Result.m2  = (A.m2 * B.m0)  + (A.m6 * B.m1)  + (A.m10 * B.m2)  + (A.m14 * B.m3);
-    Result.m3  = (A.m3 * B.m0)  + (A.m7 * B.m1)  + (A.m11 * B.m2)  + (A.m15 * B.m3);
-    Result.m4  = (A.m0 * B.m4)  + (A.m4 * B.m5)  + (A.m8  * B.m6)  + (A.m12 * B.m7);
-    Result.m5  = (A.m1 * B.m4)  + (A.m5 * B.m5)  + (A.m9  * B.m6)  + (A.m13 * B.m7);
-    Result.m6  = (A.m2 * B.m4)  + (A.m6 * B.m5)  + (A.m10 * B.m6)  + (A.m14 * B.m7);
-    Result.m7  = (A.m3 * B.m4)  + (A.m7 * B.m5)  + (A.m11 * B.m6)  + (A.m15 * B.m7);
-    Result.m8  = (A.m0 * B.m8)  + (A.m4 * B.m9)  + (A.m8  * B.m10) + (A.m12 * B.m11);
-    Result.m9  = (A.m1 * B.m8)  + (A.m5 * B.m9)  + (A.m9  * B.m10) + (A.m13 * B.m11);
-    Result.m10 = (A.m2 * B.m8)  + (A.m6 * B.m9)  + (A.m10 * B.m10) + (A.m14 * B.m11);
-    Result.m11 = (A.m3 * B.m8)  + (A.m7 * B.m9)  + (A.m11 * B.m10) + (A.m15 * B.m11);
-    Result.m12 = (A.m0 * B.m12) + (A.m4 * B.m13) + (A.m8  * B.m14) + (A.m12 * B.m15);
-    Result.m13 = (A.m1 * B.m12) + (A.m5 * B.m13) + (A.m9  * B.m14) + (A.m13 * B.m15);
-    Result.m14 = (A.m2 * B.m12) + (A.m6 * B.m13) + (A.m10 * B.m14) + (A.m14 * B.m15);
-    Result.m15 = (A.m3 * B.m12) + (A.m7 * B.m13) + (A.m11 * B.m14) + (A.m15 * B.m15);
-    return Result;
-}
-
-inline mat4x4
-gaiMathMulMat4(mat4x4 A, r32 V)
-{
-    mat4x4 Result;
-    Result.m0 *= V; Result.m4 *= V; Result.m8 *= V;  Result.m12 *= V; 
-    Result.m1 *= V; Result.m5 *= V; Result.m9 *= V;  Result.m13 *= V; 
-    Result.m2 *= V; Result.m6 *= V; Result.m10 *= V; Result.m14 *= V; 
-    Result.m3 *= V; Result.m7 *= V; Result.m11 *= V; Result.m15 *= V; 
-    return Result;
-}
-
-inline mat4x4
-gaiMathTransposeMat4(mat4x4 M)
-{
-    mat4x4 Temp;
-    Temp.m0 = M.m0;   Temp.m4 = M.m1;   Temp.m8 = M.m2;   Temp.m12 = M.m3;
-    Temp.m1 = M.m4;   Temp.m5 = M.m5;   Temp.m9 = M.m6;   Temp.m13 = M.m7;
-    Temp.m2 = M.m8;   Temp.m6 = M.m9;   Temp.m10 = M.m10; Temp.m14 = M.m11;
-    Temp.m3 = M.m12;  Temp.m7 = M.m13;  Temp.m11 = M.m14; Temp.m15 = M.m15;
-    return Temp;
-}
-
-/*
-inline r32
-DeterminantMat4x4(mat4x4 A)
-{
-    r32 Result =
-        (A.m0 * (A.m5 * A.m10 * A.m15 + A.m9 * A.m14 * A.m7 + A.m13 * A.m6 * A.m11 - A.m7 * A.m10 * A.m13 - A.m11 * A.m14 * A.m5 - A.m15 * A.m6 * A.m9)) -
-        (A.m1 * (A.m4 * A.m10 * A.m15 + A.m8 * A.m14 * A.m7 + A.m12 * A.m6 * A.m11 - A.m7 * A.m10 * A.m12 - A.m11 * A.m14 * A.m4 - A.m15 * A.m6 * A.m8)) +
-        (A.m2 * (A.m4 * A.m9 * A.m15 + A.m8 * A.m13 * A.m7 + A.m12 * A.m5 * A.m11 - A.m7 * A.m9 * A.m12 - A.m11 * A.m13 * A.m4 - A.m15 * A.m5 * A.m8)) -
-        (A.m3 * (A.m4 * A.m9 * A.m14 + A.m8 * A.m13 * A.m6 + A.m12 * A.m5 * A.m10 - A.m6 * A.m9 * A.m12 - A.m10 * A.m13 * A.m4 - A.m14 * A.m5 * A.m8));
-     return Result;
-}
-*/
-
-
-inline r32
-gaiMathDeterminantMat4(mat4x4 A)
-{
-    r32 det = 0;
-    r32 *m = A.E;
-    r32 inv[16];
-    
-    inv[0]  = m[5]  * m[10] * m[15] - m[5]  * m[11] * m[14] - m[9]  * m[6]  * m[15] + m[9]  * m[7]  * m[14] + m[13] * m[6]  * m[11] - m[13] * m[7]  * m[10];
-    inv[4]  = -m[4]  * m[10] * m[15] + m[4]  * m[11] * m[14] + m[8]  * m[6]  * m[15] - m[8]  * m[7]  * m[14] - m[12] * m[6]  * m[11] + m[12] * m[7]  * m[10];
-    inv[8]  = m[4]  * m[9] * m[15] - m[4]  * m[11] * m[13] - m[8]  * m[5] * m[15] + m[8]  * m[7] * m[13] + m[12] * m[5] * m[11] - m[12] * m[7] * m[9];
-    inv[12] = -m[4]  * m[9] * m[14] + m[4]  * m[10] * m[13] + m[8]  * m[5] * m[14] - m[8]  * m[6] * m[13] - m[12] * m[5] * m[10] +  m[12] * m[6] * m[9];
-    inv[1]  = -m[1]  * m[10] * m[15] + m[1]  * m[11] * m[14] + m[9]  * m[2] * m[15] - m[9]  * m[3] * m[14] - m[13] * m[2] * m[11] + m[13] * m[3] * m[10];
-    inv[5]  = m[0]  * m[10] * m[15] - m[0]  * m[11] * m[14] - m[8]  * m[2] * m[15] + m[8]  * m[3] * m[14] +  m[12] * m[2] * m[11] - m[12] * m[3] * m[10];
-    inv[9]  = -m[0]  * m[9] * m[15] + m[0]  * m[11] * m[13] + m[8]  * m[1] * m[15] - m[8]  * m[3] * m[13] - m[12] * m[1] * m[11] + m[12] * m[3] * m[9];
-    inv[13] = m[0]  * m[9] * m[14] - m[0]  * m[10] * m[13] - m[8]  * m[1] * m[14] + m[8]  * m[2] * m[13] + m[12] * m[1] * m[10] - m[12] * m[2] * m[9];
-    inv[2]  = m[1]  * m[6] * m[15] -  m[1]  * m[7] * m[14] - m[5]  * m[2] * m[15] + m[5]  * m[3] * m[14] +  m[13] * m[2] * m[7] - m[13] * m[3] * m[6];
-    inv[6]  = -m[0]  * m[6] * m[15] + m[0]  * m[7] * m[14] + m[4]  * m[2] * m[15] - m[4]  * m[3] * m[14] - m[12] * m[2] * m[7] + m[12] * m[3] * m[6];
-    inv[10] = m[0]  * m[5] * m[15] - m[0]  * m[7] * m[13] - m[4]  * m[1] * m[15] + m[4]  * m[3] * m[13] + m[12] * m[1] * m[7] - m[12] * m[3] * m[5];
-    inv[14] = -m[0]  * m[5] * m[14] + m[0]  * m[6] * m[13] + m[4]  * m[1] * m[14] - m[4]  * m[2] * m[13] - m[12] * m[1] * m[6] + m[12] * m[2] * m[5];
-    inv[3]  = -m[1] * m[6] * m[11] + m[1] * m[7] * m[10] + m[5] * m[2] * m[11] - m[5] * m[3] * m[10] - m[9] * m[2] * m[7] + m[9] * m[3] * m[6];
-    inv[7]  = m[0] * m[6] * m[11] - m[0] * m[7] * m[10] - m[4] * m[2] * m[11] + m[4] * m[3] * m[10] + m[8] * m[2] * m[7] - m[8] * m[3] * m[6];
-    inv[11] = -m[0] * m[5] * m[11] + m[0] * m[7] * m[9] + m[4] * m[1] * m[11] - m[4] * m[3] * m[9] - m[8] * m[1] * m[7] + m[8] * m[3] * m[5];
-    inv[15] = m[0] * m[5] * m[10] - m[0] * m[6] * m[9] - m[4] * m[1] * m[10] + m[4] * m[2] * m[9] + m[8] * m[1] * m[6] - m[8] * m[2] * m[5];
-
-    det = m[0] * inv[0] + m[1] * inv[4] + m[2] * inv[8] + m[3] * inv[12];
-    return det;
-}
-
-
-inline mat4x4
-gaiMathInverseMat4(mat4x4 A)
-{
-    mat4x4 Result = A;
-    r32 *m = A.E;    
-    r32 det = 0;
-    r32 inv[16];
-    
-    inv[0]  = m[5]  * m[10] * m[15] - m[5]  * m[11] * m[14] - m[9]  * m[6]  * m[15] + m[9]  * m[7]  * m[14] + m[13] * m[6]  * m[11] - m[13] * m[7]  * m[10];
-    inv[4]  = -m[4]  * m[10] * m[15] + m[4]  * m[11] * m[14] + m[8]  * m[6]  * m[15] - m[8]  * m[7]  * m[14] - m[12] * m[6]  * m[11] + m[12] * m[7]  * m[10];
-    inv[8]  = m[4]  * m[9] * m[15] - m[4]  * m[11] * m[13] - m[8]  * m[5] * m[15] + m[8]  * m[7] * m[13] + m[12] * m[5] * m[11] - m[12] * m[7] * m[9];
-    inv[12] = -m[4]  * m[9] * m[14] + m[4]  * m[10] * m[13] + m[8]  * m[5] * m[14] - m[8]  * m[6] * m[13] - m[12] * m[5] * m[10] +  m[12] * m[6] * m[9];
-    inv[1]  = -m[1]  * m[10] * m[15] + m[1]  * m[11] * m[14] + m[9]  * m[2] * m[15] - m[9]  * m[3] * m[14] - m[13] * m[2] * m[11] + m[13] * m[3] * m[10];
-    inv[5]  = m[0]  * m[10] * m[15] - m[0]  * m[11] * m[14] - m[8]  * m[2] * m[15] + m[8]  * m[3] * m[14] +  m[12] * m[2] * m[11] - m[12] * m[3] * m[10];
-    inv[9]  = -m[0]  * m[9] * m[15] + m[0]  * m[11] * m[13] + m[8]  * m[1] * m[15] - m[8]  * m[3] * m[13] - m[12] * m[1] * m[11] + m[12] * m[3] * m[9];
-    inv[13] = m[0]  * m[9] * m[14] - m[0]  * m[10] * m[13] - m[8]  * m[1] * m[14] + m[8]  * m[2] * m[13] + m[12] * m[1] * m[10] - m[12] * m[2] * m[9];
-    inv[2]  = m[1]  * m[6] * m[15] -  m[1]  * m[7] * m[14] - m[5]  * m[2] * m[15] + m[5]  * m[3] * m[14] +  m[13] * m[2] * m[7] - m[13] * m[3] * m[6];
-    inv[6]  = -m[0]  * m[6] * m[15] + m[0]  * m[7] * m[14] + m[4]  * m[2] * m[15] - m[4]  * m[3] * m[14] - m[12] * m[2] * m[7] + m[12] * m[3] * m[6];
-    inv[10] = m[0]  * m[5] * m[15] - m[0]  * m[7] * m[13] - m[4]  * m[1] * m[15] + m[4]  * m[3] * m[13] + m[12] * m[1] * m[7] - m[12] * m[3] * m[5];
-    inv[14] = -m[0]  * m[5] * m[14] + m[0]  * m[6] * m[13] + m[4]  * m[1] * m[14] - m[4]  * m[2] * m[13] - m[12] * m[1] * m[6] + m[12] * m[2] * m[5];
-    inv[3]  = -m[1] * m[6] * m[11] + m[1] * m[7] * m[10] + m[5] * m[2] * m[11] - m[5] * m[3] * m[10] - m[9] * m[2] * m[7] + m[9] * m[3] * m[6];
-    inv[7]  = m[0] * m[6] * m[11] - m[0] * m[7] * m[10] - m[4] * m[2] * m[11] + m[4] * m[3] * m[10] + m[8] * m[2] * m[7] - m[8] * m[3] * m[6];
-    inv[11] = -m[0] * m[5] * m[11] + m[0] * m[7] * m[9] + m[4] * m[1] * m[11] - m[4] * m[3] * m[9] - m[8] * m[1] * m[7] + m[8] * m[3] * m[5];
-    inv[15] = m[0] * m[5] * m[10] - m[0] * m[6] * m[9] - m[4] * m[1] * m[10] + m[4] * m[2] * m[9] + m[8] * m[1] * m[6] - m[8] * m[2] * m[5];
-    det = m[0] * inv[0] + m[1] * inv[4] + m[2] * inv[8] + m[3] * inv[12];
-    
-    if(det)
+    for (int r = 0; r <= 3; ++r) // NOTE(casey): Rows (of A)
     {
-        det = 1.0f / det;
-        for (int i=0;i<16;i++)
+        for (int c = 0; c <= 3; ++c) // NOTE(casey): Column (of B)
         {
-            Result.E[i] = inv[i] * det;
+            for (int i = 0; i <= 3; ++i) // NOTE(casey): Columns of A, rows of B!
+            {
+                R.E[r][c] += A.E[r][i] * B.E[i][c];
+            }
         }
     }
-    return Result;   
+
+    return (R);
 }
 
-inline mat4x4
-gaiMathFrustum(r32 Left, r32 Right, r32 Bottom, r32 Top, r32 Near, r32 Far)
+inline v3
+operator*(m4x4 A, v3 P)
 {
-    mat4x4 Result = Mat4(0);
-#if 0
-    Result.m0  = (Near * 2.0f) / (Right - Left);
-    Result.m5  = (Near * 2.0f) / (Top - Bottom);
-    Result.m8  = (Right + Left) / (Right - Left);
-    Result.m9  = (Top + Bottom) / (Top - Bottom);
-    Result.m10 = -((Far + Near) / (Far - Near));
-    Result.m11 = -1.0f;
-    Result.m14 = -((2.0f * Far * Near) / (Far - Near));
-    Result = gaiMathTransposeMat4(Result);
-#else
-    Result.m0  = (Near * 2.0f) / (Right - Left);
-    Result.m2  = (Right + Left) / (Right - Left);
-    Result.m5  = (Near * 2.0f) / (Top - Bottom);
-    Result.m6  = (Top + Bottom) / (Top - Bottom);
-    Result.m10 = -(Far + Near) / (Far - Near);
-    Result.m11 = -(2.0f * Far * Near) / (Far - Near);
-    Result.m14 = -1.0f;
-#endif
-    
-    return Result;
+    v3 R = Transform(A, P, 1.0f);
+    return (R);
 }
 
-inline mat4x4
-gaiMathPerspective(r32 FoV, r32 Aspect, r32 Near, r32 Far)
+
+inline m4x4
+Scale(r32 x, r32 y, r32 z)
 {
-    r32 Top   = Near * tanf(FoV * M_PI / 360);
-    r32 Right = Top * Aspect;
-    return gaiMathFrustum(-Right, Right, -Top, Top, Near, Far);
+    m4x4 result =
+    {
+        {
+            { x, 0, 0, 0 },
+            { 0, y, 0, 0 },
+            { 0, 0, z, 0 },
+            { 0, 0, 0, 1 }
+        }
+    };
+    return result;
 }
 
-inline mat4x4
-gaiMathLookAt(v3 Eye, v3 Target, v3 Up)
+inline m4x4
+XRotation(r32 angle)
 {
-    mat4x4 Result = Mat4(0);
-    v3 z = gaiMathNormalizeV3(Eye - Target);
-    v3 x = gaiMathNormalizeV3(gaiMathCrossV3(Up, z));
-    v3 y = gaiMathNormalizeV3(gaiMathCrossV3(z, x));
-    Result.m0 = x.x;
-    Result.m1 = x.y;
-    Result.m2 = x.z;
-    Result.m3 = gaiMathDotV3(x, -Eye);
-    Result.m4 = y.x;
-    Result.m5 = y.y;
-    Result.m6 = y.z;
-    Result.m7 = gaiMathDotV3(y, -Eye);
-    Result.m8 = z.x;
-    Result.m9 = z.y;
-    Result.m10 = z.z;
-    Result.m11 = gaiMathDotV3(z, -Eye);
-    Result.m15 = 1.0f;
-    return Result;
+    r32 c = _cos(angle);
+    r32 s = _sin(angle);
+    m4x4 result =
+    {
+        {
+            { 1, 0,  0, 0 },
+            { 0, c, -s, 0 },
+            { 0, s,  c, 0 },
+            { 0, 0,  0, 1 }
+        }
+    };
+    return result;
 }
 
-inline mat4x4
-gaiMathOrtho(r32 Left, r32 Right, r32 Bottom, r32 Top, r32 Near, r32 Far)
+inline m4x4
+YRotation(r32 angle)
 {
-    mat4x4 Result = Mat4(0);
-    Result.m0 = 2 / (Right - Left);
-    Result.m5 = 2 / (Top - Bottom);
-    Result.m10 = -2 / (Far - Near);
-    Result.m12 = -((Right + Left) / (Right - Left));
-    Result.m13 = -((Top + Bottom) / (Top - Bottom));
-    Result.m14 = -((Far + Near) / (Far - Near));
-    Result.m15 = 1;
-    
-    Result = gaiMathTransposeMat4(Result);
-    return Result;
+    r32 c = _cos(angle);
+    r32 s = _sin(angle);
+    m4x4 result =
+    {
+        {
+            {  c, 0,  s, 0 },
+            {  0, 1,  0, 0 },
+            { -s, 0,  c, 0 },
+            {  0, 0,  0, 1 }
+        }
+    };
+    return result;
+}
+
+
+inline m4x4
+ZRotation(r32 angle)
+{
+    r32 c = _cos(angle);
+    r32 s = _sin(angle);
+    m4x4 result =
+    {
+        {
+            { c, -s,  0,  0 },
+            { s,  c,  0,  0 },
+            { 0,  0,  1,  0 },
+            { 0,  0,  0,  1 }
+        }
+    };
+    return result;
+}
+
+
+
+extern m4x4
+Columns3x3(v3 X, v3 Y, v3 Z)
+{
+    m4x4 R =
+    {
+        {   {X.x, Y.x, Z.x, 0},
+            {X.y, Y.y, Z.y, 0},
+            {X.z, Y.z, Z.z, 0},
+            {  0,   0,   0, 1}
+        }
+    };
+
+    return (R);
+}
+
+extern m4x4
+Rows3x3(v3 X, v3 Y, v3 Z)
+{
+    m4x4 R =
+    {
+        {   {X.x, X.y, X.z, 0},
+            {Y.x, Y.y, Y.z, 0},
+            {Z.x, Z.y, Z.z, 0},
+            {  0,   0,   0, 1}
+        }
+    };
+
+    return (R);
+}
+
+inline v3
+GetColumn(m4x4 A, u32 C)
+{
+    v3 R = {A.E[0][C], A.E[1][C], A.E[2][C]};
+    return (R);
+}
+
+inline v3
+GetRow(m4x4 A, u32 R)
+{
+    v3 Result = {A.E[R][0], A.E[R][1], A.E[R][2]};
+    return (Result);
+}
+
+inline m4x4
+Transpose(m4x4 A)
+{
+    m4x4 R;
+
+    for (int j = 0; j <= 3; ++j)
+    {
+        for (int i = 0; i <= 3; ++i)
+        {
+            R.E[j][i] = A.E[i][j];
+        }
+    }
+
+    return (R);
+}
+
+extern m4x4
+Translate(m4x4 A, v3 T)
+{
+    m4x4 R = A;
+    R.E[0][3] += T.x;
+    R.E[1][3] += T.y;
+    R.E[2][3] += T.z;
+    return (R);
+}
+
+extern m4x4
+CameraTransform(v3 X, v3 Y, v3 Z, v3 P)
+{
+    // TODO(casey): It seems really suspicious that unary negation binds first
+    // to the m4x4... is that actually the C++ grammar?  I guess it is :(
+    m4x4 R = Rows3x3(X, Y, Z);
+    R = Translate(R, -(R * P));
+    return (R);
+}
+
+inline m4x4
+Perspective(r32 aspect, r32 fov, r32 znear, r32 zfar)
+{
+    r32 s = _tan(DEG2RAD(fov) * .5f)  * znear;
+    r32 r = aspect * s, l = -r, t = s, b = -t;
+    r32 n = znear;
+    r32 f = zfar;
+
+    r32 t1 = (r + l) / (r - l);
+    r32 t2 = (t + b) / (t - b);
+
+    r32 _a = 2 * n / (r - l);
+    r32 _b = 2 * n / (t - b);
+    r32 _c = -(f + n) / (f - n);
+    r32 _d = -2 * f * n / (f - n);
+    m4x4 R =
+    {
+        {
+            { _a,  0,  0,  0 },
+            {  0, _b,  0,  0 },
+            {  0,  0, _c, _d },
+            {  0,  0, -1,  0 }
+        }
+    };
+    return R;
+}
+
+inline m4x4
+Orthographic(r32 left, r32 right, r32 top, r32 bottom, r32 znear, r32 zfar)
+{
+    r32 a = 2 / (right - left);
+    r32 b = 2 / (top - bottom);
+    r32 c = -2 / (zfar - znear);
+    r32 d = -( (zfar + znear) / (zfar - znear) );
+    r32 e = -( (right + left) / (right - left) );
+    r32 f = -( (top + bottom) / (top - bottom) );
+    m4x4 R =
+    {
+        {
+            {  a,  0,  0,  e },
+            {  0,  b,  0,  f },
+            {  0,  0,  c,  d },
+            {  0,  0,  0,  1 }
+        }
+    };
+    return (R);
+}
+
+inline m4x4
+CameraOrbit(v3 eye, r32 pitch, r32 yaw)
+{
+    m4x4 cam =  YRotation(yaw) * XRotation(pitch);
+    v3 _e = V3(-Dot(GetColumn(cam, 0), eye), -Dot(GetColumn(cam, 1), eye), -Dot(GetColumn(cam, 2), eye));
+    m4x4 R = Translate(cam, _e);
+    return (R);
+}
+
+inline m4x4
+CameraTrans(v3 eye, v3 target, v3 up)
+{
+    v3 f  = Normalize(eye - target);
+    v3 s  = Normalize(Cross(up, f));
+    v3 _u = Cross(f, s);
+    v3 _e = V3(-Dot(s, eye), -Dot(_u, eye), -Dot(f, eye));
+    m4x4 R = Translate(Columns3x3(s, _u, f), _e);
+    return (R);
 }
 
 #define _GAI_MATH_H_

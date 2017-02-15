@@ -13,6 +13,8 @@ $Example: $
 #include <gai_utils.h>
 
 #define GAI_OPENGL_EXTENSIONS_CORE                                      \
+    GAI_OPENGL_FUNC_DEF(DEBUGMESSAGECALLBACK     , DebugMessageCallback) \
+    GAI_OPENGL_FUNC_DEF(DEBUGMESSAGEINSERT       , DebugMessageInsert  ) \
     GAI_OPENGL_FUNC_DEF(GENERATEMIPMAP           , GenerateMipmap      ) \
     GAI_OPENGL_FUNC_DEF(GENVERTEXARRAYS          , GenVertexArrays     ) \
     GAI_OPENGL_FUNC_DEF(DELETEVERTEXARRAYS       , DeleteVertexArrays  ) \
@@ -20,6 +22,7 @@ $Example: $
     GAI_OPENGL_FUNC_DEF(GENFRAMEBUFFERS          , GenFramebuffers     ) \
     GAI_OPENGL_FUNC_DEF(DELETEFRAMEBUFFERS       , DeleteFramebuffers  ) \
     GAI_OPENGL_FUNC_DEF(BINDFRAMEBUFFER          , BindFramebuffer     ) \
+    GAI_OPENGL_FUNC_DEF(BLENDEQUATION            , BlendEquation       ) \
     GAI_OPENGL_FUNC_DEF(FRAMEBUFFERTEXTURE2D     , FramebufferTexture2D)
 
 #define GAI_OPENGL_EXTENSIONS_DEF_OR_ARB                                \
@@ -46,7 +49,7 @@ $Example: $
     GAI_OPENGL_FUNC_DEF(UNIFORM4IV               , Uniform4iv          ) \
     GAI_OPENGL_FUNC_DEF(UNIFORMMATRIX2FV         , UniformMatrix2fv    ) \
     GAI_OPENGL_FUNC_DEF(UNIFORMMATRIX3FV         , UniformMatrix3fv    ) \
-    GAI_OPENGL_FUNC_DEF(UNIFORMMATRIX3FV         , UniformMatrix4fv    ) \
+    GAI_OPENGL_FUNC_DEF(UNIFORMMATRIX4FV         , UniformMatrix4fv    ) \
     GAI_OPENGL_FUNC_DEF(ENABLEVERTEXATTRIBARRAY  , EnableVertexAttribArray ) \
     GAI_OPENGL_FUNC_DEF(DISABLEVERTEXATTRIBARRAY , DisableVertexAttribArray ) \
     GAI_OPENGL_FUNC_DEF(VERTEXATTRIBPOINTER      , VertexAttribPointer ) \
@@ -137,6 +140,9 @@ gaiOpenGLInitialzeFunctions()
 #define glDeleteFramebuffers         __glDeleteFramebuffers
 #define glBindFramebuffer            __glBindFramebuffer
 #define glFramebufferTexture2D       __glFramebufferTexture2D
+#define glBlendEquation              __glBlendEquation
+#define glDebugMessageCallback       __glDebugMessageCallback
+#define glDebugMessageInsert         __glDebugMessageInsert
 
 #ifdef GAI_OPENGL_EXTENSIONS_USE_ARB
     #define glCreateShader               __glCreateShaderObjectARB

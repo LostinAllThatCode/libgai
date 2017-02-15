@@ -19,17 +19,19 @@ $Dependencies: win32(user32.lib), linux(X11)$
 /* WIN32 platform structure which helds the window handle and the instance handle */
 typedef struct gaiWindowPlatform
 {
-    HWND      hWnd;
-    HDC       ctx;
-    HINSTANCE instance;
+    HWND        hWnd;
+    HDC         ctx;
+    HINSTANCE   instance;
+    const char  *classname;
 } gaiWindowPlatform;
+
 #elif __linux__
 #include <X11/Xlib.h>
 typedef struct gaiWindowPlatform
 {
     Display *display;
-    Visual *visual;
-    Window *window;
+    Visual  *visual;
+    Window  *window;
 } gaiWindowPlatform;
 #elif __APPLE__
 #else
@@ -52,7 +54,7 @@ typedef struct
 
 typedef struct
 {
-    r32                  delta;
+    r32                  dt;
     r32                  step;
     i32                  width, height;
     gaiInput             input;
@@ -60,11 +62,11 @@ typedef struct
     void*                userdata;
 } gaiWindow;
 
-#define GAI_WINDOW_UUID "49186d43-91c8-4fbd-9192-2e30297c9838"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#define GAI_WINDOW_UUID "49186d43-91c8-4fbd-9192-2e30297c9838"
 
 GAI_DEF i32  gaiWindowCreate  (gaiWindow *window, const char *title, i32 width, i32 height, i32 x, i32 y, const char *classname = GAI_WINDOW_UUID);
 GAI_DEF i32  gaiWindowUpdate  (gaiWindow *window, i32 block);
