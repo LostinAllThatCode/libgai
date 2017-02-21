@@ -1,7 +1,12 @@
 #define GAI_DEBUG
-#define GAI_OPENGL_DEBUG
 #include <gai_core.h>
-#include <gai_renderer.h>
+
+i32 window_ext[] =
+{
+    GAI_OPENGL_VSYNC, true,
+    GAI_OPENGL_MSAA, 0,
+    GAI_OPENGL_DEBUG, true,
+};
 
 int main(int argc, char **argv)
 {
@@ -9,62 +14,77 @@ int main(int argc, char **argv)
     gaiTimerInit(&timer);
 
     gaiWindow wnd;
-    if (gaiOpenGLCreateContext(&wnd, "asd", 1024, 768, 0, 0, 0, 0, 0, 0))
-    {        
-        gaiOpenGLSetSwapInterval(-1);
+    if (gaiWindowCreate(&wnd, "title", -1, -1, -1, -1, GAI_WINDOW_UUID, gaiWindowFlagsOpenGL, window_ext, gai_array_length(window_ext)))
+    {
         char window_title_buffer[1024];
         char *ogl_version = (char *)glGetString(GL_VERSION);
-
         r32 frametime = 0.f;
         i32 fps = 0;
         r32 time = 0.f;
 
-        gaiRenderer renderer = {};
-        if(!gaiRendererCreate(&renderer, wnd.width, wnd.height)) return -1;
+        r32 aspect = ((r32) wnd.width / (r32) wnd.height);
 
-        r32 rot = 0;
+        gaiRenderer renderer = {};
+        if (!gaiRendererCreate(&renderer, wnd.width, wnd.height)) return -1;
+
+        gaiRendererMesh quad[11];
+        gai_fei(quad)
+        {
+            quad[i] = gaiRendererPushQuad(&renderer, V3i(5 - i, 0, 0), 1.f, 1.f, V4(1, 0, 1, 1));
+        }
+
+        gaiRendererMesh grid = gaiRendererPushGrid(&renderer, 1.f, 128, V4(.2f,.2f,.2f,.8f));
+
+        r32 yaw     = -10;
+        r32 pitch   = -30;
+        v3  cam_pos = V3(0, 5, 5);
+        r32 rot     = 0;
+        
+        b32 render = true;
+        b32 vsync  = gaiOpenGLGetSwapInterval();
         while (gaiWindowUpdate(&wnd, 0))
         {
             r32 dt = gaiTimerGetTicksSeconds(&timer);
-            time += dt;
-
-            rot += 1;;
-            if (rot > 360) rot -= rot;
-
-            #if 1
             frametime += dt;
             fps++;
-            if (frametime >= .5f)
+            if (frametime >= 1.f)
             {
-                snprintf(window_title_buffer, 1024, "%ix%i %ifps %ims(%f), %s", wnd.width, wnd.height, fps * 2, (i32)(500.0 / double(fps)), dt, ogl_version);
+                snprintf(window_title_buffer, 1024, "%ix%i %ifps %ims(%f), %s, %s", wnd.width, wnd.height, fps, (i32)(dt * 1000), dt, ogl_version, gai_getosname());
                 gaiWindowSetTitle(&wnd, window_title_buffer);
                 fps = 0;
                 frametime = 0;
             }
-            #endif
 
-            glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-            r32 aspect = ((r32) wnd.width / (r32) wnd.height);
-            m4x4 ident = Identity4();
-            m4x4 model = ZRotation(DEG2RAD(-rot)) * YRotation(DEG2RAD(rot)) * XRotation(DEG2RAD(rot));
+            glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            if(wnd.input.keys['R'].ended_down) render = !render;
+            if(wnd.input.keys['V'].ended_down) {
+                gaiOpenGLSetSwapInterval(!vsync);
+                vsync  = gaiOpenGLGetSwapInterval();
+            }
+            if (render)
+            {
+                if (wnd.input.buttons[0].count > 0)
+                {
+                    yaw   += wnd.input.dtx * 0.07f;
+                    pitch += wnd.input.dty * 0.07f;
+                }
 
-            m4x4 proj = Perspective(aspect, 90, 0.1f, 100.f);
+                m4x4 proj       = Perspective(aspect, 60, 0.1f, 100.f);
+                m4x4 view_front = CameraOrbit(cam_pos, DEG2RAD(pitch), DEG2RAD(yaw));
+                gaiRendererSetProjection(&renderer, &proj, &view_front);
 
-            glViewport(0, 0, wnd.width, wnd.height);
-            m4x4 view_front = CameraTrans(V3(0,0,10),V3(0,0,0),V3(0,1,0));
-            gaiRendererSetProjection(&renderer, &proj, &view_front);
-            gaiRendererDrawTriangleImmediate(&renderer, &model, V4(1, 0, 1, 1));            
-    
-            glViewport(wnd.width/2, 0, wnd.width / 2, wnd.height / 2);
-            m4x4 view_side = CameraTrans(V3(10,0,0),V3(0,0,0),V3(0,1,0));
-            gaiRendererSetProjection(&renderer, &proj, &view_side);
-            gaiRendererDrawTriangleImmediate(&renderer, &model, V4(1, 0, 1, 1));
+                time += dt;
 
-            glViewport(wnd.width / 2, wnd.height / 2, wnd.width / 2, wnd.height / 2);
-            m4x4 view_top = CameraTrans(V3(0,10,.1f),V3(0,0,0),V3(0,1,0));
-            gaiRendererSetProjection(&renderer, &proj, &view_top);
-            gaiRendererDrawTriangleImmediate(&renderer, &model, V4(1, 0, 1, 1));
+                glUniformMatrix4fv(renderer.mesh_shader.model, 1, GL_TRUE,  (const GLfloat*) Identity4().E);
+                gaiRendererDraw(&renderer, GL_LINES, grid.start, grid.count);
 
+                gai_fei(quad)
+                {
+                    m4x4 model = Translate(Identity4(), V3(0, _sin(time * 2.f + (i * 0.1f)), 0));
+                    glUniformMatrix4fv(renderer.mesh_shader.model, 1, GL_TRUE,  (const GLfloat*) model.E);
+                    gaiRendererDraw(&renderer, GL_TRIANGLES, quad[i].start, quad[i].count);
+                }
+            }
             gaiOpenGLSwapBuffers(&wnd);
         }
     }

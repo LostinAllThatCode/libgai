@@ -773,20 +773,20 @@ Orthographic(r32 left, r32 right, r32 top, r32 bottom, r32 znear, r32 zfar)
 inline m4x4
 CameraOrbit(v3 eye, r32 pitch, r32 yaw)
 {
-    m4x4 cam =  YRotation(yaw) * XRotation(pitch);
-    v3 _e = V3(-Dot(GetColumn(cam, 0), eye), -Dot(GetColumn(cam, 1), eye), -Dot(GetColumn(cam, 2), eye));
-    m4x4 R = Translate(cam, _e);
+    m4x4 cam = YRotation(yaw) * XRotation(pitch);
+    m4x4 R = Rows3x3(GetColumn(cam, 0), GetColumn(cam, 1), GetColumn(cam, 2));
+    R = Translate(R, -(R * eye));
     return (R);
 }
 
 inline m4x4
-CameraTrans(v3 eye, v3 target, v3 up)
+CameraLookAt(v3 eye, v3 target, v3 up)
 {
     v3 f  = Normalize(eye - target);
     v3 s  = Normalize(Cross(up, f));
     v3 _u = Cross(f, s);
     v3 _e = V3(-Dot(s, eye), -Dot(_u, eye), -Dot(f, eye));
-    m4x4 R = Translate(Columns3x3(s, _u, f), _e);
+    m4x4 R = Translate(Rows3x3(s, _u, f), _e);
     return (R);
 }
 

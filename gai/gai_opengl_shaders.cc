@@ -31,11 +31,10 @@ gaiOpenGLShaderLoad(i32 id, const char *source, GLenum type)
     }
     else
     {
-        GAI_ASSERT(!"Shader compile error");
+        gai_assert(!"Shader compile error");
     }
     return result;
 }
-
 
 i32
 gaiOpenGLShaderLoadFromFile(i32 id, const char *filename, GLenum type)
@@ -48,12 +47,14 @@ gaiOpenGLShaderLoadFromFile(i32 id, const char *filename, GLenum type)
         fseek(fp, 0, SEEK_END);
         size = ftell(fp);
         fseek(fp, 0, SEEK_SET);
-        source = (char *) GAI_MALLOC(sizeof(char) * (size+1));
+        source = (char *) gai_malloc(sizeof(char) * (size+1));
         fread(source, sizeof(char), size, fp);
         source[size] = '\0';
         fclose(fp);
         result = gaiOpenGLShaderLoad(id, source, type);
-        GAI_FREE(source);
+        gai_free(source);
+    } else {
+        gaiOpenGLDebugMessage(GAI_OPENGL_DBG_SHADER_FILENOTFOUND, "asd");
     }
     return result;
 }
@@ -79,12 +80,16 @@ gaiOpenGLProgramLink(i32 id)
             glUseProgram(id);
             result = true;
         }
-    } else GAI_ASSERT(!"Shader link error");
+    } else gai_assert(!"Shader link error");
     return result;
 }
 
 i32
 gaiOpenGLProgramGetUniform(i32 id, const char *name)
 {
+    i32 result = glGetUniformLocation(id, name);
+    if(result == -1) {
+        gaiOpenGLDebugMessage(GAI_OPENGL_DBG_SHADER_BINDLOCATION, "uniform \"%s\" is not declared or used in this shader (program: %i)", name, id);
+    }
     return glGetUniformLocation(id, name);
 }

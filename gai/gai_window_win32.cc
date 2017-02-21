@@ -28,7 +28,7 @@ gaiWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 i32
 gaiWindowRegister(HINSTANCE instance, const char *classname)
 {
-	GAI_ASSERT(instance);
+	gai_assert(instance);
 
 	WNDCLASSEXA wnd_class   = {};
 	wnd_class.cbSize        = sizeof(wnd_class);
@@ -49,7 +49,7 @@ gaiWindowCreateEx(gaiWindow* window, const char *title, const char *classname,
                   DWORD style, i32 x, i32 y, i32 width, i32 height, HWND parent,
                   HMENU menu, HINSTANCE instance, void *lparam, b32 show)
 {
-	GAI_ASSERT(window);
+	gai_assert(window);
 
 	ZeroMemory(window, sizeof(gaiWindow));
 
@@ -57,8 +57,9 @@ gaiWindowCreateEx(gaiWindow* window, const char *title, const char *classname,
 	{
 		return 0;
 	}
-
-	HWND hWnd = CreateWindowA(classname, title, style, x, y, width, height, parent, menu, instance, lparam);
+	HWND hWnd = CreateWindowA(classname, title, style,
+	                          (x == -1 ? CW_USEDEFAULT : x), (y == -1 ? CW_USEDEFAULT : y), (width == -1 ? CW_USEDEFAULT : width), (height == -1 ? CW_USEDEFAULT : height),
+	                          parent, menu, instance, lparam);
 	if (!hWnd)
 	{
 		return 0;
@@ -81,11 +82,68 @@ gaiWindowCreateEx(gaiWindow* window, const char *title, const char *classname,
 }
 
 i32
-gaiWindowCreate(gaiWindow *window, const char *title, i32 width, i32 height, i32 x, i32 y, const char *classname)
+gaiWindowCreate(gaiWindow *window, const char *title, i32 width, i32 height, i32 x, i32 y, const char *classname, gaiWindowFlagsEnum flags, i32 *ext, i32 count)
 {
-	DWORD dwStyle = WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
-	HINSTANCE instance = GetModuleHandle(0);
-	return gaiWindowCreateEx(window, title, classname, dwStyle, x, y, width, height, 0, 0, instance, 0, 1);
+	switch (flags)
+	{
+		case gaiWindowFlagsNone:
+		{
+			DWORD dwStyle = WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
+			HINSTANCE instance = GetModuleHandle(0);
+			if (ext)
+			{
+				for (i32 i = 0; i < count; i += 2)
+				{
+					switch (ext[i])
+					{
+						case GAI_WINDOW_EXT_STYLE: { dwStyle = ext[i + 1]; } break;
+					}
+				}
+			}
+			return gaiWindowCreateEx(window, title, classname, dwStyle, x, y, width, height, 0, 0, instance, 0, 1);
+		} break;
+		case gaiWindowFlagsOpenGL:
+		{
+			b32 vsync = false;
+			i32 minor = 0;
+			i32 major = 0;
+			i32 msaa  = 0;
+			i32 color_bits = 0;
+			i32 depth_bits = 0;
+			i32 stencil_bits = 0;
+			i32 defined_bits = 0;
+			b32 debug = false;
+
+			if (ext)
+			{
+				for (i32 i = 0; i < count; i += 2)
+				{
+					switch (ext[i])
+					{
+						case GAI_OPENGL_VSYNC: 			{ vsync = ext[i + 1]; } break;
+						case GAI_OPENGL_MAJOR: 			{ major = ext[i + 1]; } break;
+						case GAI_OPENGL_MINOR: 			{ minor = ext[i + 1]; } break;
+						case GAI_OPENGL_MSAA:  			{ msaa  = ext[i + 1]; } break;
+						case GAI_OPENGL_DEBUG: 			{ debug = ext[i + 1]; } break;
+						case GAI_OPENGL_COLOR_BITS: 	{ color_bits  = ext[i + 1]; defined_bits = 1; } break;
+						case GAI_OPENGL_DEPTH_BITS:		{ depth_bits  = ext[i + 1]; defined_bits = 1; } break;
+						case GAI_OPENGL_STENCIL_BITS: 	{ stencil_bits  = ext[i + 1]; defined_bits = 1; } break;
+					}
+				}
+				if (defined_bits == 1)
+				{
+					return gaiOpenGLCreateContext(window, title, width, height, x, y, major, minor, vsync, msaa, debug, color_bits, depth_bits, stencil_bits);
+				}
+			}
+			return gaiOpenGLCreateContext(window, title, width, height, x, y, major, minor, vsync, msaa, debug);
+		} break;
+		case gaiWindowFlagsDirectX:
+		{
+			printf("directx is currently not supported by this api\n");
+			return 0;
+		} break;
+	}
+	return 0;
 }
 
 void
@@ -97,7 +155,7 @@ gaiWindowShow(gaiWindow *window, u32 flag)
 void
 gaiWindowReplaceWndProc(gaiWindow *window, LRESULT (__stdcall * dwp)(HWND, UINT, WPARAM, LPARAM))
 {
-	GAI_ASSERT(window);
+	gai_assert(window);
 
 	SetWindowLongPtr(window->platform.hWnd, GWLP_WNDPROC, (LONG_PTR)dwp);
 }
@@ -105,8 +163,8 @@ gaiWindowReplaceWndProc(gaiWindow *window, LRESULT (__stdcall * dwp)(HWND, UINT,
 inline i32
 gaiWindowUpdate(gaiWindow *window, i32 block = 1)
 {
-	GAI_ASSERT(window);
-	/*
+	gai_assert(window);
+	
 		POINT mpos;
 		GetCursorPos(&mpos);
 		window->input.dtx     = mpos.x - window->input.scrx;
@@ -114,7 +172,7 @@ gaiWindowUpdate(gaiWindow *window, i32 block = 1)
 		window->input.scrx    = mpos.x;
 		window->input.scry    = mpos.y;
 		window->input.dtwheel = 0;
-	
+
 	for (i32 i = 0; i < 256; i++)
 	{
 		gaiKeyState *state = window->input.keys + i;
@@ -133,7 +191,7 @@ gaiWindowUpdate(gaiWindow *window, i32 block = 1)
 			state->ended_down = false;
 		}
 	}
-*/
+	
 	MSG msg;
 	while ( (block ? GetMessage(&msg, 0, 0, 0) : PeekMessageA(&msg, 0, 0, 0, PM_REMOVE)) )
 	{
@@ -142,7 +200,7 @@ gaiWindowUpdate(gaiWindow *window, i32 block = 1)
 		switch (msg.message)
 		{
 			case WM_QUIT: { gaiWindowDestroy(window); return 0; }
-			#if 0
+				#if 1
 			case WM_MOUSEMOVE:   { window->input.x = LOWORD(msg.lParam); window->input.y = HIWORD(msg.lParam); } break;
 			case WM_MOUSEWHEEL:  { window->input.dtwheel = GET_WHEEL_DELTA_WPARAM(msg.wParam); } break;
 			case WM_MBUTTONUP:   { window->input.buttons[2].ended_down = true; } break;
@@ -175,21 +233,21 @@ gaiWindowUpdate(gaiWindow *window, i32 block = 1)
 void
 gaiWindowSetSize(gaiWindow *window, i32 width, i32 height)
 {
-	GAI_ASSERT(window);
+	gai_assert(window);
 	SetWindowPos(window->platform.hWnd, 0, 0, 0, width, height, SWP_NOMOVE);
 }
 
 void
 gaiWindowSetTitle(gaiWindow *window, const char *title)
 {
-	GAI_ASSERT(window);
+	gai_assert(window);
 	SetWindowText(window->platform.hWnd, title);
 }
 
 void
 gaiWindowDestroy(gaiWindow* window)
 {
-	GAI_ASSERT(window);
+	gai_assert(window);
 	DestroyWindow(window->platform.hWnd);
 	UnregisterClass(window->platform.classname,  window->platform.instance);
 }
@@ -197,7 +255,7 @@ gaiWindowDestroy(gaiWindow* window)
 void
 gaiWindowQuit(gaiWindow *window)
 {
-	GAI_ASSERT(window);
+	gai_assert(window);
 	gaiWindowDestroy(window);
 	while (gaiWindowUpdate(window, 0));
 }

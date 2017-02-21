@@ -15,6 +15,7 @@ $Example: $
 #define GAI_OPENGL_EXTENSIONS_CORE                                      \
     GAI_OPENGL_FUNC_DEF(DEBUGMESSAGECALLBACK     , DebugMessageCallback) \
     GAI_OPENGL_FUNC_DEF(DEBUGMESSAGEINSERT       , DebugMessageInsert  ) \
+    GAI_OPENGL_FUNC_DEF(DEBUGMESSAGECONTROL      , DebugMessageControl  ) \
     GAI_OPENGL_FUNC_DEF(GENERATEMIPMAP           , GenerateMipmap      ) \
     GAI_OPENGL_FUNC_DEF(GENVERTEXARRAYS          , GenVertexArrays     ) \
     GAI_OPENGL_FUNC_DEF(DELETEVERTEXARRAYS       , DeleteVertexArrays  ) \
@@ -63,7 +64,7 @@ $Example: $
     GAI_OPENGL_FUNC_DEF(ACTIVETEXTURE            , ActiveTexture       )
 
 #ifdef GAI_OPENGL_EXTENSIONS_USE_ARB
-#   define GAI_OPENGL_EXTENSIONS_DYNAMIC                                \
+#define GAI_OPENGL_EXTENSIONS_DYNAMIC                                \
     GAI_OPENGL_FUNC_DEF(ATTACHOBJECT        , AttachObject        )     \
     GAI_OPENGL_FUNC_DEF(CREATEPROGRAMOBJECT , CreateProgramObject )     \
     GAI_OPENGL_FUNC_DEF(CREATESHADEROBJECT  , CreateShaderObject  )     \
@@ -74,7 +75,7 @@ $Example: $
     GAI_OPENGL_FUNC_DEF(GETOBJECTPARAMETERIV, GetObjectParameteriv)     \
     GAI_OPENGL_FUNC_DEF(GETINFOLOG          , GetInfoLog          )
 #else
-#   define GAI_OPENGL_EXTENSIONS_DYNAMIC                                \
+#define GAI_OPENGL_EXTENSIONS_DYNAMIC                                \
     GAI_OPENGL_FUNC_DEF(ATTACHSHADER        , AttachShader        )     \
     GAI_OPENGL_FUNC_DEF(CREATEPROGRAM       , CreateProgram       )     \
     GAI_OPENGL_FUNC_DEF(DELETEPROGRAM       , DeleteProgram       )     \
@@ -97,8 +98,8 @@ extern "C" {
 GAI_OPENGL_EXTENSIONS_CORE
 
 #ifdef GAI_OPENGL_EXTENSIONS_USE_ARB
-    #undef  GAI_OPENGL_FUNC_DEF
-    #define GAI_OPENGL_FUNC_DEF(x,y) GAI_API PFNGL##x##ARBPROC __gl##y##ARB;
+#undef GAI_OPENGL_FUNC_DEF
+#define GAI_OPENGL_FUNC_DEF(x,y) GAI_API PFNGL##x##ARBPROC __gl##y##ARB;
 #endif
 
 GAI_OPENGL_EXTENSIONS_DEF_OR_ARB
@@ -116,12 +117,12 @@ gaiOpenGLInitialzeFunctions()
     if (initialized) return;
     initialized = true;
 
-#define GAI_OPENGL_FUNC_DEF(x,y) __gl##y = (PFNGL##x##PROC) wglGetProcAddress("gl" #y); if (!__gl##y) printf("error mapping %s\n", "gl" #y);
+#define GAI_OPENGL_FUNC_DEF(x,y) __gl##y = (PFNGL##x##PROC) gaiOpenGLGetProcAddress("gl" #y); if (!__gl##y) printf("getprocaddes failed for %s\n", "gl" #y);
     GAI_OPENGL_EXTENSIONS_CORE
 
     #ifdef GAI_OPENGL_EXTENSIONS_USE_ARB
 #undef  GAI_OPENGL_FUNC_DEF
-#define GAI_OPENGL_FUNC_DEF(x,y) __gl##y##ARB = (PFNGL##x##ARBPROC) wglGetProcAddress("gl" #y "ARB"); if (!__gl##y) printf("error mapping %s\n", "gl" #y "ARB");
+#define GAI_OPENGL_FUNC_DEF(x,y) __gl##y##ARB = (PFNGL##x##ARBPROC) gaiOpenGLGetProcAddress("gl" #y "ARB"); if (!__gl##y) printf("getprocaddes failed for %s\n", "gl" #y "ARB");
     #endif
 
     GAI_OPENGL_EXTENSIONS_DEF_OR_ARB
@@ -143,6 +144,7 @@ gaiOpenGLInitialzeFunctions()
 #define glBlendEquation              __glBlendEquation
 #define glDebugMessageCallback       __glDebugMessageCallback
 #define glDebugMessageInsert         __glDebugMessageInsert
+#define glDebugMessageControl        __glDebugMessageControl
 
 #ifdef GAI_OPENGL_EXTENSIONS_USE_ARB
     #define glCreateShader               __glCreateShaderObjectARB

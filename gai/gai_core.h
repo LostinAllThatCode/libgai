@@ -35,9 +35,9 @@
 #include <gai_math.h>
 #include <gai_workqueue.h>
 #include <gai_timer.h>
+
 #include <gai_window.h>
-#include <gai_opengl.h>
-#include <gai_opengl_shaders.h>
+#include <gai_renderer.h>
 
 #define _GAI_CORE_H
 #endif

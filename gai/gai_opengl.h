@@ -9,42 +9,51 @@ $Example: $
 */
 #ifndef _GAI_OPENGL_H_
 
-#include <gai_types.h>
-#include <gai_utils.h>
-#include <gai_window.h>
-
 #include <gl\gl.h>
 #include <glext.h>
 
+#define GAI_OPENGL_DBG_SHADER_FILENOTFOUND 109
+#define GAI_OPENGL_DBG_SHADER_BINDLOCATION 110
+
+enum
+{
+	GAI_OPENGL_NONE, GAI_OPENGL_MINOR, GAI_OPENGL_MAJOR, GAI_OPENGL_VSYNC, 	GAI_OPENGL_MSAA,
+	GAI_OPENGL_DEBUG, GAI_OPENGL_COLOR_BITS, GAI_OPENGL_DEPTH_BITS, GAI_OPENGL_STENCIL_BITS,
+};
+
+/* Use GAI_OPENGL_EXTENSIONS_USE_ARB to use all available ARB functions. */
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-enum
-{
-	GAI_OGL_NONE  = 0x0,
-	GAI_OGL_VSYNC = 0x1,
-	GAI_OGL_MSAA2 = 0x2,
-	GAI_OGL_MSAA4 = 0x4,
-	GAI_OGL_MSAA8 = 0x8,
-};
+GAI_DEF b32   gaiOpenGLLoadFunctions   (void);
+GAI_DEF i32   gaiOpenGLCreateContext   (gaiWindow * window, const char *title, i32 width = 640, i32 height = 480, i32 x = 0, i32 y = 0,
+                                        i32 major = 0, i32 minor = 0, b32 vsync = false, i32 multisample = 0, b32 debug = false,
+                                        u8 color_bits = 32, u8 depth_bits = 24, u8 stencil_bits = 8);
+GAI_DEF void  gaiOpenGLSwapBuffers     (gaiWindow * window);
+GAI_DEF void* gaiOpenGLGetProcAddress  (const char *proc);
+GAI_DEF b32   gaiOpenGLIsSupported     (const char *extension);
+GAI_DEF b32   gaiOpenGLGetSwapInterval (void);
+GAI_DEF void  gaiOpenGLSetSwapInterval (b32 vsync);
 
-/* Every platform has a specific CreateContextEx function which can be used when you need more control */
-GAI_DEF i32  gaiOpenGLCreateContext   (gaiWindow * window, const char *title, i32 width = 640, i32 height = 480, i32 x = 0, i32 y = 0,
-                                       i32 major = 0, i32 minor = 0, b32 vsync = false, i32 multisample = 0,
-                                       u8 color_bits = 32, u8 depth_bits = 24, u8 stencil_bits = 8);
-GAI_DEF void gaiOpenGLSwapBuffers     (gaiWindow * window);
-GAI_DEF b32  gaiOpenGLIsSupported     (const char *extension);
-GAI_DEF b32  gaiOpenGLGetSwapInterval (void);
-GAI_DEF void gaiOpenGLSetSwapInterval (b32 vsync);
-GAI_DEF b32  gaiOpenGLLoadFunctions   (void);
 
 #ifdef __cplusplus
 }
 #endif
 
-/* Use GAI_OPENGL_EXTENSIONS_USE_ARB to use all available ARB functions. */
-#include "gai_opengl_functions.h"
+static char __gaiOpenGLDebugTextBuffer[4096] = {};
+#define gaiOpenGLDebugInfo(id, format, ...) \
+	snprintf(__gaiOpenGLDebugTextBuffer, 4096, "%s(%i): %s()\n -> "format, __FILE__, __LINE__, __FUNCTION__, __VA_ARGS__); \
+	glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_OTHER, (id), GL_DEBUG_SEVERITY_LOW, strlen(__gaiOpenGLDebugTextBuffer), __gaiOpenGLDebugTextBuffer)
+#define gaiOpenGLDebugMessage(id, format, ...) \
+	snprintf(__gaiOpenGLDebugTextBuffer, 4096, "%s(%i): %s()\n -> "format, __FILE__, __LINE__, __FUNCTION__, __VA_ARGS__); \
+	glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_OTHER, (id), GL_DEBUG_SEVERITY_MEDIUM, strlen(__gaiOpenGLDebugTextBuffer), __gaiOpenGLDebugTextBuffer)
+#define gaiOpenGLDebugError(id, format, ...) \
+	snprintf(__gaiOpenGLDebugTextBuffer, 4096, "%s(%i): %s()\n -> "format, __FILE__, __LINE__, __FUNCTION__, __VA_ARGS__); \
+	glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, (id), GL_DEBUG_SEVERITY_HIGH, strlen(__gaiOpenGLDebugTextBuffer), __gaiOpenGLDebugTextBuffer)
+
+#include <gai_opengl_functions.h>
+#include <gai_opengl_shaders.h>
 
 #ifdef GAI_OPENGL_IMPLEMENTATION
 	#if _WIN32

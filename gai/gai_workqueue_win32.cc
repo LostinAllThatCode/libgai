@@ -4,7 +4,7 @@ gaiWorkQueueNext(gaiWorkQueue *queue)
     b32 do_sleep = false;
     
     u32 original_next_entry_to_read = queue->next_entry_to_read;
-    u32 new_next_entry_to_read = (original_next_entry_to_read + 1) % gai_length(queue->work_entries);
+    u32 new_next_entry_to_read = (original_next_entry_to_read + 1) % gai_array_length(queue->work_entries);
     if(original_next_entry_to_read != queue->next_entry_to_write) {
         u32 index = InterlockedCompareExchange((LONG volatile *) &queue->next_entry_to_read,
                                                new_next_entry_to_read, original_next_entry_to_read);
@@ -46,7 +46,7 @@ int
 gaiWorkQueueCreate(gaiWorkQueue *queue, u32 thread_count)
 {
     ZeroMemory(queue, sizeof(gaiWorkQueue));
-    GAI_ASSERT(thread_count <= GAI_WORKQUEUE_MAX);
+    gai_assert(thread_count <= GAI_WORKQUEUE_MAX);
     
     if(thread_count > GAI_WORKQUEUE_MAX) return 0;
 
@@ -71,8 +71,8 @@ void
 gaiWorkQueueAddEntry(gaiWorkQueue *queue, gaiWorkQueueCallback *callback, void *data)
 {
     u32 original_next_entry_to_write = queue->next_entry_to_write;
-    u32 new_next_entry_to_write = (queue->next_entry_to_write + 1) % gai_length(queue->work_entries);
-    GAI_ASSERT(new_next_entry_to_write != queue->next_entry_to_read);
+    u32 new_next_entry_to_write = (queue->next_entry_to_write + 1) % gai_array_length(queue->work_entries);
+    gai_assert(new_next_entry_to_write != queue->next_entry_to_read);
     
     gaiWorkQueueEntry *entry = queue->work_entries + queue->next_entry_to_write;
     entry->callback = callback;
