@@ -13,15 +13,18 @@ $Dependencies: win32(user32.lib), linux(X11)$
 #include <gai_types.h>
 #include <gai_utils.h>
 
+#define GAI_WINDOW_UUID  "49186d43-91c8-4fbd-9192-2e30297c9838"
+
 #if _WIN32
 #include <windows.h>
 /* WIN32 platform structure which helds the window handle and the instance handle */
 typedef struct gaiWindowPlatform
 {
-    HWND        hWnd;
-    HDC         ctx;
-    HINSTANCE   instance;
-    const char  *classname;
+    HWND            hWnd;
+    HDC             hDC;
+    HINSTANCE       instance;
+    WINDOWPLACEMENT position;
+    const char      *classname;
 } gaiWindowPlatform;
 
 #elif __linux__
@@ -37,17 +40,17 @@ typedef struct gaiWindowPlatform
 struct gaiWindowPlatform;
 #endif
 
-enum gaiWindowFlagsEnum
+enum gaiWindowTypeEnum
 {
-    gaiWindowFlagsNone       = 0,
-    gaiWindowFlagsOpenGL     = 1,
-    gaiWindowFlagsDirectX    = 2,
-    gaiWindowFlagsFullscreen = 3,
+    gaiWindowTypeDefault    = 0,
+    gaiWindowTypeOpenGL     = 1,
+    gaiWindowTypeDirectX    = 2,
 };
 
-enum gaiWindowExtFlagsEnum
+enum gaiWindowFlagsEnum
 {
-    GAI_WINDOW_EXT_STYLE,
+    gaiWindowFlagsStyle,
+    gaiWindowFlagsFullscreen,
 };
 
 typedef struct
@@ -56,7 +59,12 @@ typedef struct
     b32 ended_down;
 } gaiKeyState;
 
-enum { GAI_ENUM_MOUSE_LEFT = 0, GAI_ENUM_MOUSE_RIGHT = 1, GAI_ENUM_MOUSE_MIDDLE = 2 };
+enum gaiInputMouseEnum { 
+    gaiInputMouseLeft   = 0, 
+    gaiInputMouseRight  = 1, 
+    gaiInputMouseMiddle = 2,
+};
+
 typedef struct
 {
     gaiKeyState keys[256], buttons[3];
@@ -66,23 +74,22 @@ typedef struct
 
 typedef struct
 {
-    gaiWindowFlagsEnum      flags;
     r32                     dt;
     r32                     step;
     i32                     width, height;
     gaiInput                input;
+    gaiWindowTypeEnum       flags;
     gaiWindowPlatform       platform;
     void*                   userdata;
 
 } gaiWindow;
 
-#define GAI_WINDOW_UUID "49186d43-91c8-4fbd-9192-2e30297c9838"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-GAI_DEF i32  gaiWindowCreate        (gaiWindow *window, const char *title, i32 width, i32 height, i32 x, i32 y, const char *classname = GAI_WINDOW_UUID, gaiWindowFlagsEnum flags = gaiWindowFlagsNone, i32 *ext = 0, i32 count = 0);
+GAI_DEF i32  gaiWindowCreate        (gaiWindow *window, const char *title = 0, i32 width = -1, i32 height = -1, i32 x = -1, i32 y = -1, const char *classname = GAI_WINDOW_UUID, gaiWindowTypeEnum flags = gaiWindowTypeDefault, i32 *ext = 0, i32 count = 0);
+GAI_DEF i32  gaiWindowCreate2       (gaiWindow *window, gaiWindowTypeEnum flags = gaiWindowTypeDefault, i32 *ext = 0, i32 count = 0);
 GAI_DEF i32  gaiWindowUpdate        (gaiWindow *window, i32 block);
 GAI_DEF void gaiWindowSetSize       (gaiWindow *window, i32 width, i32 height);
 GAI_DEF void gaiWindowShow          (gaiWindow *window, u32 flag);
@@ -104,7 +111,7 @@ GAI_DEF void gaiWindowSetTitle      (gaiWindow *window, const char *title);
             #define GAI_MAIN int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
         #endif
         #pragma comment(lib, "user32.lib")
-        #include <gai_window_win32.cc>        
+        #include <gai_window_win32.cc>
     #elif __linux__
         #include <gai_window_linux.cc>
     #elif __APPLE__

@@ -1,5 +1,7 @@
 #ifndef _GAI_UTILS_H
 
+static char __libgai_global_textbuffer[4096];
+
 #ifdef GAI_DEBUG
 	#if _MSC_VER
 		#define gai_assert(exp) 				( (exp) ? (void) 0 : *(int *)0 = 0)
@@ -22,7 +24,7 @@
 	#ifndef GAI_MALLOC
 		#define gai_malloc(size)              	malloc(size)
 		#define gai_realloc(pointer,newsize)  	realloc(pointer, newsize)
-		#define gai_free(pointer)             	free(pointer);
+		#define gai_free(pointer)             	free(pointer)
 	#endif
 #endif
 
@@ -35,8 +37,11 @@ enum GAI_PLATFORM_OS_ENUM
 	GAI_PLATFORM_OS_ENUM_ANDROID 				= 4,
 };
 
-#define gai_memset(ptr, value, num)  			memset(ptr, value, num);
-#define gai_memcpy(dest, source, num)  			memcpy(dest, source, num);
+#define gai_memset(ptr, value, num)  					memset( (ptr), (value) , (num) )
+#define gai_memcpy(dest, source, num)  					memcpy( (dest) , (source) , (num) )
+#define gai_strlen(s)                      				strlen( (s) )
+#define gai_printf(format, ...)          				printf( format , __VA_ARGS__)
+#define gai_snprintf(buffer, buflen, format,...)        snprintf( (buffer), (buflen) , (format) , __VA_ARGS__)
 
 #define gai_array_reset(array)       			(gai_memset(array, 0, sizeof(array)))
 #define gai_array_length(array)      			(sizeof(array)/sizeof(array[0]))

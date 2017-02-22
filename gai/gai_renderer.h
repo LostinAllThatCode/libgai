@@ -48,6 +48,13 @@ struct gaiRenderMeshShader
 	u32 view;
 	u32 model;
 
+	u32 vao;
+	u32 vbo;
+	u32 ibo;
+	u32 size;
+	u32 vbo_max;
+	u32 offset;
+
 	const char *vs =
 	{
 		"#version 430\n"
@@ -102,30 +109,24 @@ struct gaiRenderDebugFontShader
 struct gaiRenderer
 {
 	gaiRenderMeshShader mesh_shader;
-	gaiRenderDebugFontShader debug_font_shader;
-	u32 debug_font_vao;
-	u32 debug_font_vbo;
+
+//	gaiRenderDebugFontShader debug_font_shader;
 
 	m4x4 last_projection;
 	m4x4 last_view;
-
-	u32 data_size;
-	u32 vbo_offset;
-	u32 max_size_vbo;
-	u32 vao;
-	u32 vbo;
-	u32 ibo;
 };
 
 void
-gaiRendererSetViewport(gaiRenderer *renderer, i32 width, i32 height)
+gaiRendererSetViewport(gaiRenderer *renderer, r32 width, r32 height)
 {
 	glViewport(0, 0, width, height);	
 }
 
 i32
-gaiRendererCreate(gaiRenderer *renderer, i32 width, i32 height)
+gaiRendererCreate(gaiRenderer *renderer, r32 width, r32 height)
 {
+	gaiRendererSetViewport(renderer, width, height);
+
 	renderer->last_view = Identity4();
 	renderer->last_projection = Identity4();
 
@@ -136,8 +137,7 @@ gaiRendererCreate(gaiRenderer *renderer, i32 width, i32 height)
 	glEnable(GL_BLEND);
 	glEnable(GL_MULTISAMPLE_ARB);
 
-	gaiRendererSetViewport(renderer, width, height);
-
+#if 0
 	u32 program = gaiOpenGLProgramCreate();
 	gaiOpenGLShaderLoad(program, renderer->debug_font_shader.vs, GL_VERTEX_SHADER);
 	gaiOpenGLShaderLoad(program, renderer->debug_font_shader.fs, GL_FRAGMENT_SHADER);
@@ -147,6 +147,7 @@ gaiRendererCreate(gaiRenderer *renderer, i32 width, i32 height)
 
 	m4x4 ortho = Orthographic(0.f, (r32) width, (r32) height, 0.f, -1.f, 1.f);
 	glUniformMatrix4fv(renderer->debug_font_shader.projection, 1, GL_FALSE,  (const GLfloat*) &ortho);
+
 
 	glGenVertexArrays(1, &renderer->debug_font_vao);
 	glBindVertexArray(renderer->debug_font_vao);
@@ -159,8 +160,9 @@ gaiRendererCreate(gaiRenderer *renderer, i32 width, i32 height)
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, (void *) (i64) 0);
 
 	glBindVertexArray(0);
+#endif
 
-	program = gaiOpenGLProgramCreate();
+	u32 program = gaiOpenGLProgramCreate();
 	gaiOpenGLShaderLoad(program, renderer->mesh_shader.vs, GL_VERTEX_SHADER);
 	gaiOpenGLShaderLoad(program, renderer->mesh_shader.fs, GL_FRAGMENT_SHADER);
 	if (!gaiOpenGLProgramLink(program)) return -2;
@@ -173,11 +175,11 @@ gaiRendererCreate(gaiRenderer *renderer, i32 width, i32 height)
 	u32 data_size    = sizeof(gaiRendererData);
 	u32 max_size     = data_size * max_elements;
 
-	glGenVertexArrays(1, &renderer->vao);
-	glBindVertexArray(renderer->vao);
+	glGenVertexArrays(1, &renderer->mesh_shader.vao);
+	glBindVertexArray(renderer->mesh_shader.vao);
 
-	glGenBuffers(1, &renderer->vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, renderer->vbo);
+	glGenBuffers(1, &renderer->mesh_shader.vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, renderer->mesh_shader.vbo);
 	glBufferData(GL_ARRAY_BUFFER, max_size, 0, GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
@@ -194,16 +196,16 @@ gaiRendererCreate(gaiRenderer *renderer, i32 width, i32 height)
 
 	glBindVertexArray(0);
 
-	renderer->data_size  = data_size;
-	renderer->max_size_vbo = max_size;
-	renderer->vbo_offset = 0;
+	renderer->mesh_shader.size  = data_size;
+	renderer->mesh_shader.vbo_max = max_size;
+	renderer->mesh_shader.offset = 0;
 	return 1;
 }
 
 void
 gaiRendererDraw(gaiRenderer *renderer)
 {
-	glDrawArrays(GL_TRIANGLES, 0, renderer->vbo_offset / renderer->data_size);
+	glDrawArrays(GL_TRIANGLES, 0, renderer->mesh_shader.offset / renderer->mesh_shader.size);
 }
 
 void
@@ -230,8 +232,8 @@ gaiRendererSetProjection(gaiRenderer *renderer, m4x4 *projection, m4x4 *view)
 	renderer->last_projection = *projection;
 	renderer->last_view       = *view;
 	glUseProgram(renderer->mesh_shader.program);
-	glBindVertexArray(renderer->vao);
-	glBindBuffer(GL_ARRAY_BUFFER, renderer->vbo);
+	glBindVertexArray(renderer->mesh_shader.vao);
+	glBindBuffer(GL_ARRAY_BUFFER, renderer->mesh_shader.vbo);
 	glUniformMatrix4fv(renderer->mesh_shader.view, 1, GL_TRUE,  (const GLfloat*) &renderer->last_view);
 	glUniformMatrix4fv(renderer->mesh_shader.projection, 1, GL_TRUE,  (const GLfloat*) &renderer->last_projection);
 }
@@ -241,7 +243,7 @@ gaiRendererPushGrid(gaiRenderer *renderer, r32 cell_size, i32 size, v4 color = V
 {
 	gaiRendererMesh mesh = {};
 	r32 s = (r32) size * cell_size;
-	mesh.start = renderer->vbo_offset / renderer->data_size;
+	mesh.start = renderer->mesh_shader.offset / renderer->mesh_shader.size;
 	mesh.count = ((size*2)+1)*4;
 	gaiRendererData data[] = {
 		0.f, 0.f, color.r, color.g, color.b, color.a, 0.f, 0.f, 0.f, 0, 0, (r32)  s, 0.f, 0.f, 0.f, 0.f,
@@ -249,8 +251,8 @@ gaiRendererPushGrid(gaiRenderer *renderer, r32 cell_size, i32 size, v4 color = V
 		0.f, 0.f, color.r, color.g, color.b, color.a, 0.f, 0.f, 0.f, (r32)  s, 0, 0, 0.f, 0.f, 0.f, 0.f,
 		0.f, 0.f, color.r, color.g, color.b, color.a, 0.f, 0.f, 0.f, (r32) -s, 0, 0, 0.f, 0.f, 0.f, 0.f,
 	};
-	glBufferSubData(GL_ARRAY_BUFFER, renderer->vbo_offset, sizeof(data), data);
-	renderer->vbo_offset += sizeof(data);
+	glBufferSubData(GL_ARRAY_BUFFER, renderer->mesh_shader.offset, sizeof(data), data);
+	renderer->mesh_shader.offset += sizeof(data);
 	for(i32 i=1; i <= s; i++)
 	{
 		r32 x = i * cell_size;
@@ -266,8 +268,8 @@ gaiRendererPushGrid(gaiRenderer *renderer, r32 cell_size, i32 size, v4 color = V
 			0.f, 0.f, color.r, color.g, color.b, color.a, 0.f, 0.f, 0.f, -s, 0, -z, 0.f, 0.f, 0.f, 0.f,
 			0.f, 0.f, color.r, color.g, color.b, color.a, 0.f, 0.f, 0.f,  s, 0, -z, 0.f, 0.f, 0.f, 0.f,
 		};
-		glBufferSubData(GL_ARRAY_BUFFER, renderer->vbo_offset, sizeof(data), data);
-		renderer->vbo_offset += sizeof(data);	
+		glBufferSubData(GL_ARRAY_BUFFER, renderer->mesh_shader.offset, sizeof(data), data);
+		renderer->mesh_shader.offset += sizeof(data);	
 	}
 	return mesh;
 }
@@ -282,8 +284,8 @@ gaiRendererPushTriangle(gaiRenderer *renderer, v3 offset = V3(0,0,0), v4 color =
 		{0.f, 0.f, color.r, color.g, color.b, color.a, 0.f, 0.f, 0.f,  0.f + offset.x,  1.f + offset.y, 0.f + offset.z, 0.f, 0.f, 0.f, 0.f},
 	};
 	i32 size = sizeof(data);
-	glBufferSubData(GL_ARRAY_BUFFER, renderer->vbo_offset, size, data);
-	renderer->vbo_offset += size;
+	glBufferSubData(GL_ARRAY_BUFFER, renderer->mesh_shader.offset, size, data);
+	renderer->mesh_shader.offset += size;
 }
 
 void
@@ -296,8 +298,8 @@ gaiRendererPushTriangle(gaiRenderer *renderer, v3 p1, v2 uv1, v4 c1, v3 p2, v2 u
 		{uv3.u, uv3.v, c3.r, c3.g, c3.b, c3.a, 0.f, 0.f, 0.f, p3.x, p3.y, p3.z},
 	};
 	i32 size = sizeof(data);
-	glBufferSubData(GL_ARRAY_BUFFER, renderer->vbo_offset, size, data);
-	renderer->vbo_offset += size;
+	glBufferSubData(GL_ARRAY_BUFFER, renderer->mesh_shader.offset, size, data);
+	renderer->mesh_shader.offset += size;
 }
 
 void
@@ -329,7 +331,7 @@ gaiRendererPushQuad(gaiRenderer *renderer, v3 center = V3(0,0,0), r32 width = 1.
 	v4 c1     = V4(top.r, top.g, top.b, color.a);
 	v4 c2     = V4(bottom.r, bottom.g, bottom.b, color.a);
 
-	mesh.start = renderer->vbo_offset / renderer->data_size;
+	mesh.start = renderer->mesh_shader.offset / renderer->mesh_shader.size;
 	gaiRendererPushRectangle(renderer, p1, uv, c2, p2, uv, c2, p3, uv, c1, p4, uv, c1);
 	gaiRendererPushRectangle(renderer, p5, uv, c2, p8, uv, c1, p7, uv, c1, p6, uv, c2);
 	gaiRendererPushRectangle(renderer, p1, uv, c2, p2, uv, c2, p6, uv, c2, p5, uv, c2);
@@ -346,8 +348,8 @@ void
 gaiRendererDrawTriangleImmediate(gaiRenderer *renderer, m4x4 *model, v4 color = V4(1, 1, 1, 1))
 {
 	glUseProgram(renderer->mesh_shader.program);
-	glBindVertexArray(renderer->vao);
-	glBindBuffer(GL_ARRAY_BUFFER, renderer->vbo);
+	glBindVertexArray(renderer->mesh_shader.vao);
+	glBindBuffer(GL_ARRAY_BUFFER, renderer->mesh_shader.vbo);
 
 	gaiRendererData data[] =
 	{
@@ -371,10 +373,10 @@ gaiRendererDrawMeshImmediate(gaiRenderer *renderer, m4x4 *model, gaiRendererData
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_BLEND);
 
-	gai_assert(size < renderer->max_size_vbo);
+	gai_assert(size < renderer->mesh_shader.vbo_max);
 
-	glBindVertexArray(renderer->vao);
-	glBindBuffer(GL_ARRAY_BUFFER, renderer->vbo);
+	glBindVertexArray(renderer->mesh_shader.vao);
+	glBindBuffer(GL_ARRAY_BUFFER, renderer->mesh_shader.vbo);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
 	if (model) glUniformMatrix4fv(renderer->mesh_shader.model, 1, GL_TRUE,  (const GLfloat*) model);
 	else glUniformMatrix4fv(renderer->mesh_shader.model, 1, GL_TRUE,  (const GLfloat*) Identity4().E);

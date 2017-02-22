@@ -9,9 +9,6 @@ $Example: $
 */
 #ifndef _GAI_MATH_H_
 
-#include "gai_types.h"
-#include "gai_utils.h"
-
 #define DEG2RAD(d) ((d)*(M_PI/180))
 #define RAD2DEG(r) ((r)*(180/M_PI))
 
@@ -730,8 +727,10 @@ Perspective(r32 aspect, r32 fov, r32 znear, r32 zfar)
     r32 n = znear;
     r32 f = zfar;
 
+    #if 0
     r32 t1 = (r + l) / (r - l);
     r32 t2 = (t + b) / (t - b);
+    #endif
 
     r32 _a = 2 * n / (r - l);
     r32 _b = 2 * n / (t - b);
@@ -750,8 +749,14 @@ Perspective(r32 aspect, r32 fov, r32 znear, r32 zfar)
 }
 
 inline m4x4
-Orthographic(r32 left, r32 right, r32 top, r32 bottom, r32 znear, r32 zfar)
+Orthographic(r32 width, r32 height, r32 znear, r32 zfar)
 {
+
+    r32 right  = width;
+    r32 left   = -right;
+    r32 top    = height;
+    r32 bottom = -top;
+
     r32 a = 2 / (right - left);
     r32 b = 2 / (top - bottom);
     r32 c = -2 / (zfar - znear);

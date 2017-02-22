@@ -12,13 +12,16 @@ $Example: $
 #include <gl\gl.h>
 #include <glext.h>
 
+#define GAI_OPENGL_UUID "5a11ddb6-bccc-49a2-a2ca-0cf1223d70a8"
+
 #define GAI_OPENGL_DBG_SHADER_FILENOTFOUND 109
 #define GAI_OPENGL_DBG_SHADER_BINDLOCATION 110
 
-enum
+enum gaiOpenGLFlagsEnum
 {
-	GAI_OPENGL_NONE, GAI_OPENGL_MINOR, GAI_OPENGL_MAJOR, GAI_OPENGL_VSYNC, 	GAI_OPENGL_MSAA,
-	GAI_OPENGL_DEBUG, GAI_OPENGL_COLOR_BITS, GAI_OPENGL_DEPTH_BITS, GAI_OPENGL_STENCIL_BITS,
+	gaiOpenGLFlagsNone, gaiOpenGLFlagsMinor, gaiOpenGLFlagsMajor, gaiOpenGLFlagsVSYNC, gaiOpenGLFlagsMSAA,
+	gaiOpenGLFlagsDebug, gaiOpenGLFlagsColorBits, gaiOpenGLFlagsDepthBits, gaiOpenGLFlagsStencilBits,
+	gaiOpenGLFlagsFullscreen,
 };
 
 /* Use GAI_OPENGL_EXTENSIONS_USE_ARB to use all available ARB functions. */
@@ -27,30 +30,30 @@ extern "C" {
 #endif
 
 GAI_DEF b32   gaiOpenGLLoadFunctions   (void);
-GAI_DEF i32   gaiOpenGLCreateContext   (gaiWindow * window, const char *title, i32 width = 640, i32 height = 480, i32 x = 0, i32 y = 0,
+GAI_DEF i32   gaiOpenGLCreateContext   (gaiWindow * window, const char *title, const char *wndclass = GAI_OPENGL_UUID, i32 width = 640, i32 height = 480, i32 x = 0, i32 y = 0,
                                         i32 major = 0, i32 minor = 0, b32 vsync = false, i32 multisample = 0, b32 debug = false,
                                         u8 color_bits = 32, u8 depth_bits = 24, u8 stencil_bits = 8);
+GAI_DEF i32   gaiOpenGLDestroyContext  (void);
 GAI_DEF void  gaiOpenGLSwapBuffers     (gaiWindow * window);
 GAI_DEF void* gaiOpenGLGetProcAddress  (const char *proc);
 GAI_DEF b32   gaiOpenGLIsSupported     (const char *extension);
 GAI_DEF b32   gaiOpenGLGetSwapInterval (void);
 GAI_DEF void  gaiOpenGLSetSwapInterval (b32 vsync);
 
-
 #ifdef __cplusplus
 }
 #endif
 
-static char __gaiOpenGLDebugTextBuffer[4096] = {};
+static char __libgai_global_opengldbgbuffer[4096] = {};
 #define gaiOpenGLDebugInfo(id, format, ...) \
-	snprintf(__gaiOpenGLDebugTextBuffer, 4096, "%s(%i): %s()\n -> "format, __FILE__, __LINE__, __FUNCTION__, __VA_ARGS__); \
-	glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_OTHER, (id), GL_DEBUG_SEVERITY_LOW, strlen(__gaiOpenGLDebugTextBuffer), __gaiOpenGLDebugTextBuffer)
+	snprintf(__libgai_global_opengldbgbuffer, 4096, "%s(%i): %s()\n -> "format, __FILE__, __LINE__, __FUNCTION__, __VA_ARGS__); \
+	glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_OTHER, (id), GL_DEBUG_SEVERITY_LOW, strlen(__libgai_global_opengldbgbuffer), __libgai_global_opengldbgbuffer)
 #define gaiOpenGLDebugMessage(id, format, ...) \
-	snprintf(__gaiOpenGLDebugTextBuffer, 4096, "%s(%i): %s()\n -> "format, __FILE__, __LINE__, __FUNCTION__, __VA_ARGS__); \
-	glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_OTHER, (id), GL_DEBUG_SEVERITY_MEDIUM, strlen(__gaiOpenGLDebugTextBuffer), __gaiOpenGLDebugTextBuffer)
+	snprintf(__libgai_global_opengldbgbuffer, 4096, "%s(%i): %s()\n -> "format, __FILE__, __LINE__, __FUNCTION__, __VA_ARGS__); \
+	glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_OTHER, (id), GL_DEBUG_SEVERITY_MEDIUM, strlen(__libgai_global_opengldbgbuffer), __libgai_global_opengldbgbuffer)
 #define gaiOpenGLDebugError(id, format, ...) \
-	snprintf(__gaiOpenGLDebugTextBuffer, 4096, "%s(%i): %s()\n -> "format, __FILE__, __LINE__, __FUNCTION__, __VA_ARGS__); \
-	glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, (id), GL_DEBUG_SEVERITY_HIGH, strlen(__gaiOpenGLDebugTextBuffer), __gaiOpenGLDebugTextBuffer)
+	snprintf(__libgai_global_opengldbgbuffer, 4096, "%s(%i): %s()\n -> "format, __FILE__, __LINE__, __FUNCTION__, __VA_ARGS__); \
+	glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, (id), GL_DEBUG_SEVERITY_HIGH, strlen(__libgai_global_opengldbgbuffer), __libgai_global_opengldbgbuffer)
 
 #include <gai_opengl_functions.h>
 #include <gai_opengl_shaders.h>

@@ -23,7 +23,7 @@
 	#define GAI_WINDOW_IMPLEMENTATION
 	#define GAI_OPENGL_IMPLEMENTATION
 	#define GAI_OPENGL_SHADERS_IMPLEMENTATION
-	#define GAI_TIMER_IMPLEMENTATION
+	#define GAI_TIME_IMPLEMENTATION
 #endif
 
 #include <gai_types.h>
@@ -34,7 +34,7 @@
 
 #include <gai_math.h>
 #include <gai_workqueue.h>
-#include <gai_timer.h>
+#include <gai_time.h>
 
 #include <gai_window.h>
 #include <gai_renderer.h>

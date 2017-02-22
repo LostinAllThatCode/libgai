@@ -25,6 +25,39 @@ gaiWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 
+void
+gaiWindowToggleFullscreen(gaiWindow *window)
+{
+	HWND hWnd = window->platform.hWnd;
+	// NOTE(casey): This follows Raymond Chen's prescription
+	// for fullscreen toggling, see:
+	// http://blogs.msdn.com/b/oldnewthing/archive/2010/04/12/9994016.aspx
+
+	DWORD Style = GetWindowLong(hWnd, GWL_STYLE);
+	if (Style & WS_OVERLAPPEDWINDOW)
+	{
+		MONITORINFO MonitorInfo = {sizeof(MonitorInfo)};
+		if (GetWindowPlacement(hWnd, &window->platform.position) &&
+		        GetMonitorInfo(MonitorFromWindow(hWnd, MONITOR_DEFAULTTOPRIMARY), &MonitorInfo))
+		{
+			SetWindowLong(hWnd, GWL_STYLE, Style & ~WS_OVERLAPPEDWINDOW);
+			SetWindowPos(hWnd, HWND_TOP,
+			             MonitorInfo.rcMonitor.left, MonitorInfo.rcMonitor.top,
+			             MonitorInfo.rcMonitor.right - MonitorInfo.rcMonitor.left,
+			             MonitorInfo.rcMonitor.bottom - MonitorInfo.rcMonitor.top,
+			             SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
+		}
+	}
+	else
+	{
+		SetWindowLong(hWnd, GWL_STYLE, Style | WS_OVERLAPPEDWINDOW);
+		SetWindowPlacement(hWnd, &window->platform.position);
+		SetWindowPos(hWnd, 0, 0, 0, 0, 0,
+		             SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER |
+		             SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
+	}
+}
+
 i32
 gaiWindowRegister(HINSTANCE instance, const char *classname)
 {
@@ -70,7 +103,7 @@ gaiWindowCreateEx(gaiWindow* window, const char *title, const char *classname,
 	window->platform.classname = classname;
 	window->platform.instance = instance;
 	window->platform.hWnd     = hWnd;
-	window->platform.ctx      = GetDC(hWnd);
+	window->platform.hDC      = GetDC(hWnd);
 
 	if (show)
 	{
@@ -82,37 +115,46 @@ gaiWindowCreateEx(gaiWindow* window, const char *title, const char *classname,
 }
 
 i32
-gaiWindowCreate(gaiWindow *window, const char *title, i32 width, i32 height, i32 x, i32 y, const char *classname, gaiWindowFlagsEnum flags, i32 *ext, i32 count)
+gaiWindowCreate(gaiWindow *window, const char *title, i32 width, i32 height, i32 x, i32 y, const char *classname, gaiWindowTypeEnum flags, i32 *ext, i32 count)
 {
+
 	switch (flags)
 	{
-		case gaiWindowFlagsNone:
+		case gaiWindowTypeDefault:
 		{
-			DWORD dwStyle = WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
+			if(!classname) classname = GAI_WINDOW_UUID;
+
+			DWORD dwStyle      = WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
 			HINSTANCE instance = GetModuleHandle(0);
+			b32 fullscreen     = false;
 			if (ext)
 			{
 				for (i32 i = 0; i < count; i += 2)
 				{
 					switch (ext[i])
 					{
-						case GAI_WINDOW_EXT_STYLE: { dwStyle = ext[i + 1]; } break;
+						case gaiWindowFlagsStyle:      { dwStyle    = ext[i + 1]; } break;
+						case gaiWindowFlagsFullscreen: { fullscreen = ext[i + 1]; } break;
 					}
 				}
 			}
-			return gaiWindowCreateEx(window, title, classname, dwStyle, x, y, width, height, 0, 0, instance, 0, 1);
+			i32 result = gaiWindowCreateEx(window, title, classname, dwStyle, x, y, width, height, 0, 0, instance, 0, 0);
+			if (result && fullscreen) gaiWindowToggleFullscreen(window);
+			return result;
 		} break;
-		case gaiWindowFlagsOpenGL:
+		case gaiWindowTypeOpenGL:
 		{
-			b32 vsync = false;
-			i32 minor = 0;
-			i32 major = 0;
-			i32 msaa  = 0;
-			i32 color_bits = 0;
-			i32 depth_bits = 0;
+			i32 result       = 0;
+			b32 vsync        = false;
+			i32 minor        = 0;
+			i32 major        = 0;
+			i32 msaa         = 0;
+			i32 color_bits   = 0;
+			i32 depth_bits   = 0;
 			i32 stencil_bits = 0;
 			i32 defined_bits = 0;
-			b32 debug = false;
+			b32 fullscreen   = false;
+			b32 debug        = false;
 
 			if (ext)
 			{
@@ -120,30 +162,44 @@ gaiWindowCreate(gaiWindow *window, const char *title, i32 width, i32 height, i32
 				{
 					switch (ext[i])
 					{
-						case GAI_OPENGL_VSYNC: 			{ vsync = ext[i + 1]; } break;
-						case GAI_OPENGL_MAJOR: 			{ major = ext[i + 1]; } break;
-						case GAI_OPENGL_MINOR: 			{ minor = ext[i + 1]; } break;
-						case GAI_OPENGL_MSAA:  			{ msaa  = ext[i + 1]; } break;
-						case GAI_OPENGL_DEBUG: 			{ debug = ext[i + 1]; } break;
-						case GAI_OPENGL_COLOR_BITS: 	{ color_bits  = ext[i + 1]; defined_bits = 1; } break;
-						case GAI_OPENGL_DEPTH_BITS:		{ depth_bits  = ext[i + 1]; defined_bits = 1; } break;
-						case GAI_OPENGL_STENCIL_BITS: 	{ stencil_bits  = ext[i + 1]; defined_bits = 1; } break;
+						case gaiOpenGLFlagsVSYNC: 			{ vsync 		= ext[i + 1]; 					} break;
+						case gaiOpenGLFlagsMajor: 			{ major 		= ext[i + 1]; 					} break;
+						case gaiOpenGLFlagsMinor: 			{ minor 		= ext[i + 1]; 					} break;
+						case gaiOpenGLFlagsMSAA:  			{ msaa  		= ext[i + 1]; 					} break;
+						case gaiOpenGLFlagsDebug: 			{ debug 		= ext[i + 1]; 					} break;
+						case gaiOpenGLFlagsFullscreen:		{ fullscreen    = ext[i + 1]; 					} break;
+						case gaiOpenGLFlagsColorBits: 		{ color_bits    = ext[i + 1]; defined_bits = 1; } break;
+						case gaiOpenGLFlagsDepthBits:		{ depth_bits    = ext[i + 1]; defined_bits = 1; } break;
+						case gaiOpenGLFlagsStencilBits: 	{ stencil_bits  = ext[i + 1]; defined_bits = 1; } break;
 					}
 				}
-				if (defined_bits == 1)
-				{
-					return gaiOpenGLCreateContext(window, title, width, height, x, y, major, minor, vsync, msaa, debug, color_bits, depth_bits, stencil_bits);
-				}
 			}
-			return gaiOpenGLCreateContext(window, title, width, height, x, y, major, minor, vsync, msaa, debug);
+			if(!classname) classname = GAI_OPENGL_UUID;
+			if (defined_bits == 1)
+			{
+				result =  gaiOpenGLCreateContext(window, title, classname, width, height, x, y, major, minor, vsync, msaa, debug, color_bits, depth_bits, stencil_bits);
+			}
+			else
+			{
+				result = gaiOpenGLCreateContext(window, title, classname, width, height, x, y, major, minor, vsync, msaa, debug);
+			}
+
+			if (result && fullscreen) gaiWindowToggleFullscreen(window);
+			return result;
 		} break;
-		case gaiWindowFlagsDirectX:
+		case gaiWindowTypeDirectX:
 		{
-			printf("directx is currently not supported by this api\n");
+			gai_printf("directx is currently not supported by this api\n");
 			return 0;
 		} break;
 	}
 	return 0;
+}
+
+i32
+gaiWindowCreate2(gaiWindow *window, gaiWindowTypeEnum flags, i32 *ext, i32 count)
+{
+	return gaiWindowCreate(window, 0, -1, -1, -1, -1, 0, flags, ext, count);
 }
 
 void
@@ -164,14 +220,15 @@ inline i32
 gaiWindowUpdate(gaiWindow *window, i32 block = 1)
 {
 	gai_assert(window);
-	
-		POINT mpos;
-		GetCursorPos(&mpos);
-		window->input.dtx     = mpos.x - window->input.scrx;
-		window->input.dty     = mpos.y - window->input.scry;
-		window->input.scrx    = mpos.x;
-		window->input.scry    = mpos.y;
-		window->input.dtwheel = 0;
+	window->dt = gaiTimeGetTicksSeconds();
+
+	POINT mpos;
+	GetCursorPos(&mpos);
+	window->input.dtx     = mpos.x - window->input.scrx;
+	window->input.dty     = mpos.y - window->input.scry;
+	window->input.scrx    = mpos.x;
+	window->input.scry    = mpos.y;
+	window->input.dtwheel = 0;
 
 	for (i32 i = 0; i < 256; i++)
 	{
@@ -191,7 +248,7 @@ gaiWindowUpdate(gaiWindow *window, i32 block = 1)
 			state->ended_down = false;
 		}
 	}
-	
+
 	MSG msg;
 	while ( (block ? GetMessage(&msg, 0, 0, 0) : PeekMessageA(&msg, 0, 0, 0, PM_REMOVE)) )
 	{
@@ -199,8 +256,14 @@ gaiWindowUpdate(gaiWindow *window, i32 block = 1)
 		DispatchMessage(&msg);
 		switch (msg.message)
 		{
-			case WM_QUIT: { gaiWindowDestroy(window); return 0; }
-				#if 1
+			case WM_QUIT:
+			{
+				gaiWindowDestroy(window);
+				if (window->flags == gaiWindowTypeOpenGL) gaiOpenGLDestroyContext();
+				return 0;
+
+			}
+			#if 1
 			case WM_MOUSEMOVE:   { window->input.x = LOWORD(msg.lParam); window->input.y = HIWORD(msg.lParam); } break;
 			case WM_MOUSEWHEEL:  { window->input.dtwheel = GET_WHEEL_DELTA_WPARAM(msg.wParam); } break;
 			case WM_MBUTTONUP:   { window->input.buttons[2].ended_down = true; } break;
@@ -243,6 +306,8 @@ gaiWindowSetTitle(gaiWindow *window, const char *title)
 	gai_assert(window);
 	SetWindowText(window->platform.hWnd, title);
 }
+#define gaiWindowSetTitle(window, format, ...) gai_snprintf(__libgai_global_textbuffer, 4096, format, __VA_ARGS__); gaiWindowSetTitle(window, __libgai_global_textbuffer)
+
 
 void
 gaiWindowDestroy(gaiWindow* window)

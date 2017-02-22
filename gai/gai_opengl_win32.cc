@@ -1,10 +1,3 @@
-#define GAI_OPENGL_WIN32_DEFAULT_CLASSNAME "5a11ddb6-bccc-49a2-a2ca-0cf1223d70a8"
-
-typedef int   (WINAPI * PFNWGLCHOOSEPIXELFORMATARBPROC)    (HDC hdc, const int *piAttribIList, const float *pfAttribFList, unsigned int nMaxFormats, int *piFormats, unsigned int *nNumFormats);
-typedef HGLRC (WINAPI * PFNWGLCREATECONTEXTATTRIBSARBPROC) (HDC hDC, HGLRC hShareContext, const int *attribList);
-typedef int   (WINAPI * PFNWGLSWAPINTERVALEXTPROC)         (int interval);
-typedef int   (WINAPI * PFNWGLGETSWAPINTERVALEXTPROC)      (void);
-
 
 GAI_DEF void*
 gaiOpenGLGetProcAddress(const char *proc)
@@ -87,7 +80,7 @@ void
 gaiOpenGLSwapBuffers(gaiWindow *window)
 {
     gai_assert(window);
-    SwapBuffers(window->platform.ctx);
+    SwapBuffers(window->platform.hDC);
 }
 
 i32
@@ -99,7 +92,7 @@ gaiOpenGLCheckMSAASupport(gaiWindow *window, i32 samples)
         wglChoosePixelFormatARB = (PFNWGLCHOOSEPIXELFORMATARBPROC) wglGetProcAddress("wglChoosePixelFormatARB");
         if (!wglChoosePixelFormatARB) return 0;
 
-        HDC     hDC = window->platform.ctx;
+        HDC     hDC = window->platform.hDC;
         i32     pixelFormat;
         i32     valid;
         u32     numFormats;
@@ -124,20 +117,6 @@ gaiOpenGLCheckMSAASupport(gaiWindow *window, i32 samples)
         valid = wglChoosePixelFormatARB(hDC, iAttributes, fAttributes, 1, &pixelFormat, &numFormats);
         if (valid && numFormats >= 1)
         {
-            /*
-            PFNWGLGETPIXELFORMATATTRIBIVARBPROC wglGetPixelFormatAttribivARB = (PFNWGLGETPIXELFORMATATTRIBIVARBPROC) wglGetProcAddress("wglGetPixelFormatAttribivARB");
-            if (wglGetPixelFormatAttribivARB)
-            {
-                //(HDC hdc, int iPixelFormat, int iLayerPlane, UINT nAttributes, const int *piAttributes, int *piValues);
-                wglGetPixelFormatAttribivARB(hDC, pixelFormat, )
-                #if 0
-                for (i32 i = 0; i < numFormats; i++)
-                {
-
-                }
-                #endif
-            }
-            */
             return pixelFormat;
         }
     }
@@ -175,12 +154,12 @@ gaiOpenGLSetSwapInterval(b32 vsync)
 
 i32
 gaiOpenGLCreateDummy(gaiWindow *window, PIXELFORMATDESCRIPTOR *pfd, const char *title = "gaiOpenGLDummyCtx", const char *wndclass = "gaiOpenGLDummyContextCreate",
-                     i32 width = 1, i32 height = 1, i32 x = 0, i32 y = 0, u32 pf = 0)
+                     i32 width = -1, i32 height = -1, i32 x = -1, i32 y = -1, u32 pf = 0)
 {
     gai_assert(window);
 
-    i32 ext[] = { GAI_WINDOW_EXT_STYLE, WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN};
-    if (!gaiWindowCreate(window, title, width, height, x, y, wndclass, gaiWindowFlagsNone, ext, gai_array_length(ext)))
+    i32 ext[] = { gaiWindowFlagsStyle, WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN };
+    if (!gaiWindowCreate(window, title, width, height, x, y, wndclass, gaiWindowTypeDefault, ext, gai_array_length(ext)))
     {
         return 0;
     }
@@ -226,7 +205,7 @@ gaiOpenGLCreateDummy(gaiWindow *window, PIXELFORMATDESCRIPTOR *pfd, const char *
 i32
 gaiOpenGLCreateContextEx(gaiWindow *window, const char *title, i32 width, i32 height, i32 x, i32 y,
                          PIXELFORMATDESCRIPTOR *pfd, int *attribs, b32 vsync, i32 multisample, b32 debug,
-                         const char *wndclass = GAI_OPENGL_WIN32_DEFAULT_CLASSNAME)
+                         const char *wndclass)
 {
     gai_assert(window);
 
@@ -280,12 +259,13 @@ gaiOpenGLCreateContextEx(gaiWindow *window, const char *title, i32 width, i32 he
         glDebugMessageCallback((GLDEBUGPROC)gaiOpenGLDebugCallback, 0);
     }
 
+    window->flags = gaiWindowTypeOpenGL;
     gaiWindowShow(window, SW_SHOW);
     return 1;
 }
 
 i32
-gaiOpenGLCreateContext(gaiWindow *window, const char *title, i32 width, i32 height, i32 x, i32 y, i32 major, i32 minor, b32 vsync, i32 multisample, b32 debug, u8 color_bits, u8 depth_bits, u8 stencil_bits)
+gaiOpenGLCreateContext(gaiWindow *window, const char *title, const char *wndclass, i32 width, i32 height, i32 x, i32 y, i32 major, i32 minor, b32 vsync, i32 multisample, b32 debug, u8 color_bits, u8 depth_bits, u8 stencil_bits)
 {
     gai_assert(window);
 
@@ -309,5 +289,13 @@ gaiOpenGLCreateContext(gaiWindow *window, const char *title, i32 width, i32 heig
         0, PFD_MAIN_PLANE, 0, 0, 0, 0
     };
 
-    return gaiOpenGLCreateContextEx(window, title, width, height, x, y, &pfd, attribs, vsync, multisample, debug);
+    return gaiOpenGLCreateContextEx(window, title, width, height, x, y, &pfd, attribs, vsync, multisample, debug, wndclass);
+}
+
+i32
+gaiOpenGLDestroyContext(void)
+{
+    HGLRC context = wglGetCurrentContext();
+    if(context) return wglDeleteContext(context);
+    return -1;
 }

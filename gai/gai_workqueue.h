@@ -51,9 +51,6 @@ $
 */
 #ifndef _GAI_WORKQUEUE_H_
 
-#include <gai_types.h>
-#include <gai_utils.h>
-
 #ifndef GAI_WORKQUEUE_MAX
 #define GAI_WORKQUEUE_MAX 12
 #endif
