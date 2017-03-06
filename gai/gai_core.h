@@ -28,6 +28,7 @@
 
 #include <gai_types.h>
 #include <gai_utils.h>
+#include <gai_hotreload.h>
 
 #include <stb_image.h>        /* image loading support library */
 #include <stb_truetype.h>     /* font loading support library */

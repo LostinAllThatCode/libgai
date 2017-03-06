@@ -12,7 +12,6 @@ $Example: $
 #include <gai_types.h>
 #include <gai_utils.h>
 #include <gai_math.h>
-#include <gai_window.h>
 
 struct gaiRendererData
 {

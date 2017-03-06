@@ -144,48 +144,13 @@ gaiWindowCreate(gaiWindow *window, const char *title, i32 width, i32 height, i32
 		} break;
 		case gaiWindowTypeOpenGL:
 		{
-			i32 result       = 0;
-			b32 vsync        = false;
-			i32 minor        = 0;
-			i32 major        = 0;
-			i32 msaa         = 0;
-			i32 color_bits   = 0;
-			i32 depth_bits   = 0;
-			i32 stencil_bits = 0;
-			i32 defined_bits = 0;
-			b32 fullscreen   = false;
-			b32 debug        = false;
-
-			if (ext)
-			{
-				for (i32 i = 0; i < count; i += 2)
-				{
-					switch (ext[i])
-					{
-						case gaiOpenGLFlagsVSYNC: 			{ vsync 		= ext[i + 1]; 					} break;
-						case gaiOpenGLFlagsMajor: 			{ major 		= ext[i + 1]; 					} break;
-						case gaiOpenGLFlagsMinor: 			{ minor 		= ext[i + 1]; 					} break;
-						case gaiOpenGLFlagsMSAA:  			{ msaa  		= ext[i + 1]; 					} break;
-						case gaiOpenGLFlagsDebug: 			{ debug 		= ext[i + 1]; 					} break;
-						case gaiOpenGLFlagsFullscreen:		{ fullscreen    = ext[i + 1]; 					} break;
-						case gaiOpenGLFlagsColorBits: 		{ color_bits    = ext[i + 1]; defined_bits = 1; } break;
-						case gaiOpenGLFlagsDepthBits:		{ depth_bits    = ext[i + 1]; defined_bits = 1; } break;
-						case gaiOpenGLFlagsStencilBits: 	{ stencil_bits  = ext[i + 1]; defined_bits = 1; } break;
-					}
-				}
-			}
-			if(!classname) classname = GAI_OPENGL_UUID;
+			/*
 			if (defined_bits == 1)
 			{
 				result =  gaiOpenGLCreateContext(window, title, classname, width, height, x, y, major, minor, vsync, msaa, debug, color_bits, depth_bits, stencil_bits);
 			}
-			else
-			{
-				result = gaiOpenGLCreateContext(window, title, classname, width, height, x, y, major, minor, vsync, msaa, debug);
-			}
-
-			if (result && fullscreen) gaiWindowToggleFullscreen(window);
-			return result;
+			*/
+			return gaiOpenGLCreateContext(window, title, classname, width, height, x, y, ext, count);;
 		} break;
 		case gaiWindowTypeDirectX:
 		{
@@ -265,7 +230,7 @@ gaiWindowUpdate(gaiWindow *window, i32 block = 1)
 			}
 			#if 1
 			case WM_MOUSEMOVE:   { window->input.x = LOWORD(msg.lParam); window->input.y = HIWORD(msg.lParam); } break;
-			case WM_MOUSEWHEEL:  { window->input.dtwheel = GET_WHEEL_DELTA_WPARAM(msg.wParam); } break;
+			case WM_MOUSEWHEEL:  { window->input.dtwheel = GET_WHEEL_DELTA_WPARAM(msg.wParam);} break;
 			case WM_MBUTTONUP:   { window->input.buttons[2].ended_down = true; } break;
 			case WM_RBUTTONUP:   { window->input.buttons[1].ended_down = true; } break;
 			case WM_LBUTTONUP:   { window->input.buttons[0].ended_down = true; } break;
@@ -306,8 +271,6 @@ gaiWindowSetTitle(gaiWindow *window, const char *title)
 	gai_assert(window);
 	SetWindowText(window->platform.hWnd, title);
 }
-#define gaiWindowSetTitle(window, format, ...) gai_snprintf(__libgai_global_textbuffer, 4096, format, __VA_ARGS__); gaiWindowSetTitle(window, __libgai_global_textbuffer)
-
 
 void
 gaiWindowDestroy(gaiWindow* window)

@@ -1,5 +1,6 @@
 #include <gai_core.h>
 
+#if 0
 BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved )
 {
     // Perform actions based on the reason for calling.
@@ -24,3 +25,4 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved )
     }
     return TRUE;  // Successful DLL_PROCESS_ATTACH.
 }
+#endif

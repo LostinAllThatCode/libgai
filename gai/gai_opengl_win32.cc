@@ -256,7 +256,7 @@ gaiOpenGLCreateContextEx(gaiWindow *window, const char *title, i32 width, i32 he
     {
         glEnable(GL_DEBUG_OUTPUT);
         glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-        glDebugMessageCallback((GLDEBUGPROC)gaiOpenGLDebugCallback, 0);
+        glDebugMessageCallback( (GLDEBUGPROC) gaiOpenGLDebugCallback, 0);
     }
 
     window->flags = gaiWindowTypeOpenGL;
@@ -265,18 +265,47 @@ gaiOpenGLCreateContextEx(gaiWindow *window, const char *title, i32 width, i32 he
 }
 
 i32
-gaiOpenGLCreateContext(gaiWindow *window, const char *title, const char *wndclass, i32 width, i32 height, i32 x, i32 y, i32 major, i32 minor, b32 vsync, i32 multisample, b32 debug, u8 color_bits, u8 depth_bits, u8 stencil_bits)
+gaiOpenGLCreateContext(gaiWindow *window, const char *title, const char *wndclass, i32 width, i32 height, i32 x, i32 y, i32 *ext, i32 count)
 {
     gai_assert(window);
 
+    b32 vsync         = false;
+    BYTE minor        = 0;
+    BYTE major        = 0;
+    BYTE msaa         = 0;
+    BYTE color_bits   = 32;
+    BYTE depth_bits   = 24;
+    BYTE stencil_bits = 8;
+    b32 fullscreen    = false;
+    b32 debug         = false;
+
+    if (ext)
+    {
+        for (i32 i = 0; i < count; i += 2)
+        {
+            switch (ext[i])
+            {
+                case gaiOpenGLFlagsVSYNC:           { vsync         = ext[i+1]; } break;
+                case gaiOpenGLFlagsMajor:           { major         = ext[i+1]; } break;
+                case gaiOpenGLFlagsMinor:           { minor         = ext[i+1]; } break;
+                case gaiOpenGLFlagsMSAA:            { msaa          = ext[i+1]; } break;
+                case gaiOpenGLFlagsDebug:           { debug         = ext[i+1]; } break;
+                case gaiOpenGLFlagsFullscreen:      { fullscreen    = ext[i+1]; } break;
+                case gaiOpenGLFlagsColorBits:       { color_bits    = ext[i+1]; } break;
+                case gaiOpenGLFlagsDepthBits:       { depth_bits    = ext[i+1]; } break;
+                case gaiOpenGLFlagsStencilBits:     { stencil_bits  = ext[i+1]; } break;
+            }
+        }
+    }
+    if (!wndclass) wndclass = GAI_OPENGL_UUID;
     u8 debug_flag = (debug == 1 ? WGL_CONTEXT_DEBUG_BIT_ARB : 0);
 
     i32 attribs[] =
     {
-        WGL_CONTEXT_MAJOR_VERSION_ARB, major,
-        WGL_CONTEXT_MINOR_VERSION_ARB, minor,
-        WGL_CONTEXT_FLAGS_ARB, debug_flag,
-        WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
+        WGL_CONTEXT_MAJOR_VERSION_ARB,  major,
+        WGL_CONTEXT_MINOR_VERSION_ARB,  minor,
+        WGL_CONTEXT_FLAGS_ARB,          debug_flag,
+        WGL_CONTEXT_PROFILE_MASK_ARB,   WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
         0
     };
 
@@ -289,7 +318,12 @@ gaiOpenGLCreateContext(gaiWindow *window, const char *title, const char *wndclas
         0, PFD_MAIN_PLANE, 0, 0, 0, 0
     };
 
-    return gaiOpenGLCreateContextEx(window, title, width, height, x, y, &pfd, attribs, vsync, multisample, debug, wndclass);
+    if(gaiOpenGLCreateContextEx(window, title, width, height, x, y, &pfd, attribs, vsync, msaa, debug, wndclass))
+    {
+        if(fullscreen) gaiWindowToggleFullscreen(window);
+        return 1;
+    }
+    return 0;
 }
 
 i32

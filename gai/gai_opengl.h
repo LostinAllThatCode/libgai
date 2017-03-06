@@ -30,9 +30,7 @@ extern "C" {
 #endif
 
 GAI_DEF b32   gaiOpenGLLoadFunctions   (void);
-GAI_DEF i32   gaiOpenGLCreateContext   (gaiWindow * window, const char *title, const char *wndclass = GAI_OPENGL_UUID, i32 width = 640, i32 height = 480, i32 x = 0, i32 y = 0,
-                                        i32 major = 0, i32 minor = 0, b32 vsync = false, i32 multisample = 0, b32 debug = false,
-                                        u8 color_bits = 32, u8 depth_bits = 24, u8 stencil_bits = 8);
+GAI_DEF i32   gaiOpenGLCreateContext   (gaiWindow * window, const char *title, const char *wndclass = GAI_OPENGL_UUID, i32 width = 640, i32 height = 480, i32 x = 0, i32 y = 0, i32 *ext = 0, i32 count = 0);
 GAI_DEF i32   gaiOpenGLDestroyContext  (void);
 GAI_DEF void  gaiOpenGLSwapBuffers     (gaiWindow * window);
 GAI_DEF void* gaiOpenGLGetProcAddress  (const char *proc);

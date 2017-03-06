@@ -88,14 +88,15 @@ typedef struct
 extern "C" {
 #endif
 
-GAI_DEF i32  gaiWindowCreate        (gaiWindow *window, const char *title = 0, i32 width = -1, i32 height = -1, i32 x = -1, i32 y = -1, const char *classname = GAI_WINDOW_UUID, gaiWindowTypeEnum flags = gaiWindowTypeDefault, i32 *ext = 0, i32 count = 0);
-GAI_DEF i32  gaiWindowCreate2       (gaiWindow *window, gaiWindowTypeEnum flags = gaiWindowTypeDefault, i32 *ext = 0, i32 count = 0);
-GAI_DEF i32  gaiWindowUpdate        (gaiWindow *window, i32 block);
-GAI_DEF void gaiWindowSetSize       (gaiWindow *window, i32 width, i32 height);
-GAI_DEF void gaiWindowShow          (gaiWindow *window, u32 flag);
-GAI_DEF void gaiWindowDestroy       (gaiWindow *window);
-GAI_DEF void gaiWindowQuit          (gaiWindow *window);
-GAI_DEF void gaiWindowSetTitle      (gaiWindow *window, const char *title);
+GAI_DEF i32  gaiWindowCreate                (gaiWindow *window, const char *title = 0, i32 width = -1, i32 height = -1, i32 x = -1, i32 y = -1, const char *classname = GAI_WINDOW_UUID, gaiWindowTypeEnum flags = gaiWindowTypeDefault, i32 *ext = 0, i32 count = 0);
+GAI_DEF i32  gaiWindowCreate2               (gaiWindow *window, gaiWindowTypeEnum flags = gaiWindowTypeDefault, i32 *ext = 0, i32 count = 0);
+GAI_DEF i32  gaiWindowUpdate                (gaiWindow *window, i32 block);
+GAI_DEF void gaiWindowSetSize               (gaiWindow *window, i32 width, i32 height);
+GAI_DEF void gaiWindowShow                  (gaiWindow *window, u32 flag);
+GAI_DEF void gaiWindowDestroy               (gaiWindow *window);
+GAI_DEF void gaiWindowQuit                  (gaiWindow *window);
+GAI_DEF void gaiWindowSetTitle              (gaiWindow *window, const char *title);
+GAI_DEF void gaiWindowToggleFullscreen      (gaiWindow *window);
 
 #ifdef __cplusplus
 }
