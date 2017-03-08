@@ -19,9 +19,7 @@ if "%1"=="static" (
 )
 
 if "%1"=="partial" (
-	echo standard build with static linking
 	cl %compilerflags% -DGAI_SOURCE game.cc /LD /link /OUT:game.dll -PDB:game%random%.pdb
-	//move game.pdb game1.pdb
 	cl %compilerflags% -DGAI_SOURCE opengl_win32.cc /link %linkerflags%
 	goto :end
 )

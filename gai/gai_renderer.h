@@ -134,7 +134,7 @@ gaiRendererCreate(gaiRenderer *renderer, r32 width, r32 height)
 	glEnable(GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_BLEND);
-	glEnable(GL_MULTISAMPLE_ARB);
+	glEnable(GL_MULTISAMPLE);
 
 #if 0
 	u32 program = gaiOpenGLProgramCreate();
@@ -198,6 +198,7 @@ gaiRendererCreate(gaiRenderer *renderer, r32 width, r32 height)
 	renderer->mesh_shader.size  = data_size;
 	renderer->mesh_shader.vbo_max = max_size;
 	renderer->mesh_shader.offset = 0;
+
 	return 1;
 }
 

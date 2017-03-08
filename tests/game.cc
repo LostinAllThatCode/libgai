@@ -24,30 +24,20 @@ external void
 InitGame(GameMemory *memory)
 {
     gaiOpenGLInitialzeFunctions();
-    #if 0
     aspect  = ((r32) memory->window.width / (r32) memory->window.height);
     vsync       = gaiOpenGLGetSwapInterval();
     proj        = Perspective(aspect, 90, 0.1f, 100.f);
-    #endif
 }
 
 external void 
 UpdateAndRender(GameMemory *memory)
 {
-    static int init;
-    if (init == 0)
-    {
-        //gaiOpenGLInitialzeFunctions();
-        aspect  = ((r32) memory->window.width / (r32) memory->window.height);
-        vsync       = gaiOpenGLGetSwapInterval();
-        proj        = Perspective(aspect, 90, 0.1f, 100.f);
-        init = 1;
-    }
 
     frametime += memory->window.dt;
     fps++;
     if (frametime >= 1.f)
     {
+
         gai_snprintf(__libgai_global_textbuffer, 4096, "%ix%i %ifps %ims(%f) fov(%i), %s, %s", memory->window.width, memory->window.height, fps, (i32)(memory->window.dt * 1000), memory->window.dt, (i32)fov, (char *) glGetString(GL_VERSION), gai_getosname());
         gaiWindowSetTitle(&memory->window, __libgai_global_textbuffer);
         fps = 0;
@@ -55,6 +45,7 @@ UpdateAndRender(GameMemory *memory)
     }
 
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    if (memory->window.input.keys[VK_ESCAPE].ended_down) gaiWindowDestroy(&memory->window);
     if (memory->window.input.keys['R'].ended_down) render = !render;
     if (memory->window.input.keys['M'].ended_down)
     {

@@ -1,5 +1,11 @@
 #ifndef _GAI_UTILS_H
 
+#ifdef GAI_STATIC
+	#define GAI_DEF static
+#else
+	#define GAI_DEF extern
+#endif
+
 static char __libgai_global_textbuffer[4096];
 
 #ifdef GAI_DEBUG
@@ -33,7 +39,7 @@ enum gaiPlatformOSEnum
 	gaiPlatformOSUnknown 				= 0,
 	gaiPlatformOSWindows 				= 1,
 	gaiPlatformOSLinux   				= 2,
-	gaiPlatformOSApple   				= 3,	
+	gaiPlatformOSApple   				= 3,
 	gaiPlatformOSAndroid 				= 4,
 };
 
@@ -44,15 +50,15 @@ enum gaiPlatformOSEnum
 #define gai_snprintf(buffer, buflen, fmt, ...)       	snprintf( (buffer), (buflen) , (fmt) , __VA_ARGS__ )
 
 #define gai_array_reset(array)       					(gai_memset(array, 0, sizeof(array)))
-#define gai_array_length(array)      					(sizeof(array)/sizeof(array[0]))
+#define gai_array_length(array)      					(sizeof(array)/sizeof((array)[0]))
 #define gai_fiz(n)                   					for(u32 i = 0; i < n; i++)
 #define gai_fei(v)                   					for(u32 i = 0; i < gai_array_length(v); i++)
 
 #define gai_bitset(a, pos)                              ((a) & (1>>(pos)))
 #define gai_bitget(a, pos)                              ((a) & (1<<(pos)))
 #define gai_bitxor(a, b)                                ((a) ^ (b))
-#define gai_bitand(a, b)                                ((a) & (b)) 
-#define gai_bitor(a, b)                                 ((a) | (b)) 
+#define gai_bitand(a, b)                                ((a) & (b))
+#define gai_bitor(a, b)                                 ((a) | (b))
 
 
 #ifdef __cplusplus

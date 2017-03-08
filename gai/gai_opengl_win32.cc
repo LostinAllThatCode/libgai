@@ -145,9 +145,12 @@ gaiOpenGLSetSwapInterval(b32 vsync)
     {
         PFNWGLSWAPINTERVALEXTPROC wglSwapInterval = (PFNWGLSWAPINTERVALEXTPROC) wglGetProcAddress("wglSwapIntervalEXT");
         if (wglSwapInterval)
-        {
+        {   
+            wglSwapInterval(vsync);
+            /*
             int swap_interval = gaiOpenGLGetSwapInterval();
-            if (swap_interval != vsync) wglSwapInterval(vsync);
+            if (swap_interval != vsync) 
+            */
         }
     }
 }

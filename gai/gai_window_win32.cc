@@ -150,7 +150,7 @@ gaiWindowCreate(gaiWindow *window, const char *title, i32 width, i32 height, i32
 				result =  gaiOpenGLCreateContext(window, title, classname, width, height, x, y, major, minor, vsync, msaa, debug, color_bits, depth_bits, stencil_bits);
 			}
 			*/
-			return gaiOpenGLCreateContext(window, title, classname, width, height, x, y, ext, count);;
+			return gaiOpenGLCreateContext(window, title, classname, width, height, x, y, ext, count);
 		} break;
 		case gaiWindowTypeDirectX:
 		{
