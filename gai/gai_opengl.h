@@ -11,7 +11,7 @@ $Example: $
 
 #include <gl\gl.h>
 //#include <glext.h>
-#include "glcorearb.h"
+//#include "glcorearb.h"
 #define GAI_OPENGL_UUID "5a11ddb6-bccc-49a2-a2ca-0cf1223d70a8"
 
 #define GAI_OPENGL_DBG_SHADER_FILENOTFOUND 109

@@ -6,19 +6,30 @@
 	#define GAI_DEF extern
 #endif
 
-static char __libgai_global_textbuffer[4096];
+#ifdef _DEBUG
+#if _MSC_VER
+	#define gai_assert(exp) if (!(exp)) { gai_debug("ASSERTION ERROR: "#exp"\n"); *(int *)0 = 0; }
+	static char _xwnd_global_dbg_buffer[4096];
+#define gai_debug(fmt, ...) gai_snprintf(_xwnd_global_dbg_buffer, 4096, "\"%s\" %s(%i): "fmt, __FILE__, __FUNCTION__, __LINE__, __VA_ARGS__); OutputDebugStringA(_xwnd_global_dbg_buffer)
+#endif
+#if __clang__
+	#include "assert.h"
+	#undef gai_assert
+	#define gai_assert(exp)  				assert(exp)
+#endif
 
-#ifdef GAI_DEBUG
-	#if _MSC_VER
-		#define gai_assert(exp) 				( (exp) ? (void) 0 : *(int *)0 = 0)
-	#endif
-	#if __clang__
-		#include "assert.h"
-		#undef gai_assert
-		#define gai_assert(exp)  				assert(exp)
-	#endif
+#ifdef GAI_DBGCONSOLE
+	#undef gai_debug
+	#define gai_debug(fmt, ...) gai_printf("\"%s\" %s(%i): "fmt, __FILE__, __FUNCTION__, __LINE__, __VA_ARGS__)
+#endif
 #else
-	#define gai_assert(exp)
+#define gai_assert(exp)
+#ifdef GAI_DBGCONSOLE
+	#undef gai_debug
+	#define gai_debug(fmt, ...) gai_printf("%s: "fmt, __FUNCTION__, __VA_ARGS__)
+#else
+	#define gai_debug(...)
+#endif
 #endif
 
 #if _WIN32
@@ -33,15 +44,6 @@ static char __libgai_global_textbuffer[4096];
 		#define gai_free(pointer)             	free(pointer)
 	#endif
 #endif
-
-enum gaiPlatformOSEnum
-{
-	gaiPlatformOSUnknown 				= 0,
-	gaiPlatformOSWindows 				= 1,
-	gaiPlatformOSLinux   				= 2,
-	gaiPlatformOSApple   				= 3,
-	gaiPlatformOSAndroid 				= 4,
-};
 
 #define gai_memset(ptr, value, num)  					memset( (ptr), (value) , (num) )
 #define gai_memcpy(dest, source, num)  					memcpy( (dest) , (source) , (num) )
@@ -60,47 +62,9 @@ enum gaiPlatformOSEnum
 #define gai_bitand(a, b)                                ((a) & (b))
 #define gai_bitor(a, b)                                 ((a) | (b))
 
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-GAI_DEF gaiPlatformOSEnum 						gai_getos();
-GAI_DEF char* 									gai_getosname();
-
-#ifdef __cplusplus
-}
-#endif
-
-#if defined GAI_SOURCE || defined GAI_EXPORT
-inline gaiPlatformOSEnum
-gai_getos()
-{
-	gaiPlatformOSEnum result = gaiPlatformOSUnknown;
-	#if _WIN32
-	result = gaiPlatformOSWindows;
-	#elif __linux__
-	result = gaiPlatformOSLinux;
-	#elif __APPLE__
-	result = gaiPlatformOSApple;
-	#endif
-	return result;
-}
-
-inline char *
-gai_getosname()
-{
-	char *result = "unknown";
-	switch (gai_getos())
-	{
-		case gaiPlatformOSWindows: { result = "windows"; } break;
-		case gaiPlatformOSLinux:   { result = "linux"; } break;
-		case gaiPlatformOSApple:   { result = "apple"; } break;
-	}
-	return result;
-}
-#endif
-
+#define gai_bytes_kb(val)								((val) * 1024)
+#define gai_bytes_mb(val)								(gai_bytes_kb((val)) * 1024)
+#define gai_bytes_gb(val)								(gai_bytes_mb((val)) * 1024)
 
 #define _GAI_UTILS_H
 #endif

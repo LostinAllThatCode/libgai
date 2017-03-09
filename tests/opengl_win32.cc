@@ -60,58 +60,22 @@ int main(int argc, char **argv)
 }
 #else
 
-#define XWND_OPENGL_DEBUG
-#define XWND_IMPLEMENTATION
-#define GAI_DEBUG
-#include "gai_xwindow.h"
+#include "gai_core.h"
 
 int main(int argc, char **argv)
 {
     gai_xwnd window;
-    gaiXWindow(&window, "yolo", -1, -1, -1, -1, XWND_RENDERER_OPENGL);    
-    glClearColor(1, 0, 1, 1);
-
-    char *version = R"GLSL( 
-        #version 440
-    )GLSL";
-
-    char *vs = R"GLSL(
-        layout (location = 0) in vec2 uv;
-        layout (location = 1) in vec4 color;
-        layout (location = 2) in vec3 normal;
-        layout (location = 3) in vec3 vertex;
-        uniform mat4 model = mat4(1);
-        uniform mat4 view  = mat4(1);
-        uniform mat4 proj  = mat4(1);
-        out vec4 _color;
-        void main() {
-           gl_Position = proj * view * model * vec4(vertex, 1);
-           _color = vec4(color);
-        }
-    )GLSL";
-
-    char *fs = R"GLSL(
-        in vec4 _color;
-        out vec4 color;
-        void main() {
-            color = _color;
-        }
-    )GLSL";
-
-    u32 a = gaiOpenGLCreateProgram(version, vs, fs);
-
+    if (!gaiXWindow(&window, "yolo", -1, -1, -1, -1, XWND_RENDERER_OPENGL)) return -1;
+    //gaiGLSetSwapInterval(0);
     char title[4096] = { 0 };
-    i32 running = 1;
-    while (running)
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    while (window.is_running)
     {
-
         glClear(GL_COLOR_BUFFER_BIT);
-
-        gai_snprintf(title, 4096, "%f, %s\n", window.dt.seconds, (char*) glGetString(GL_VERSION));
-        gaiXWindowSetTitle(&window, title);
-
-        running = gaiXWindowUpdate(&window);
-
+        gaiXWindowUpdate(&window);
         gaiXWindowRender(&window);
     }
     return 0;

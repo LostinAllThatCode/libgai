@@ -776,6 +776,27 @@ Orthographic(r32 width, r32 height, r32 znear, r32 zfar)
 }
 
 inline m4x4
+Orthographic(r32 left, r32 right, r32 top, r32 bottom,  r32 znear, r32 zfar)
+{
+    r32 a = 2 / ( right - left);
+    r32 b = 2 / ( top - bottom);
+    r32 c = -2 / (zfar - znear);
+    r32 d = -((right + left) / (right - left));
+    r32 e = -((top + bottom) / (top - bottom));
+    r32 f = -((zfar + znear) / (zfar - znear));
+    m4x4 R =
+    {
+        {
+            {  a,  0,  0,  d },
+            {  0,  b,  0,  e },
+            {  0,  0,  c,  f },
+            {  0,  0,  0,  1 }
+        }
+    };
+    return (R);
+}
+
+inline m4x4
 CameraOrbit(v3 eye, r32 pitch, r32 yaw)
 {
     m4x4 cam = YRotation(yaw) * XRotation(pitch);
