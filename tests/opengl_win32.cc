@@ -66,7 +66,6 @@ int main(int argc, char **argv)
 {
     gai_xwnd window;
     if (!gaiXWindow(&window, "yolo", -1, -1, -1, -1, XWND_RENDERER_OPENGL)) return -1;
-    //gaiGLSetSwapInterval(0);
     char title[4096] = { 0 };
 
     glEnable(GL_BLEND);
