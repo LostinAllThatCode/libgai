@@ -64,13 +64,25 @@ int main(int argc, char **argv)
 
 int main(int argc, char **argv)
 {
+    gai_dynamic_array a;
+
+    gaiDynArrayInit(&a, int, 5);
+    for (int i = 0; i < 100; i++)
+    {
+        gaiDynArrayInsert(&a, i);
+    }
+
+    gai_fiz(gaiDynArraySize(&a, int))  
+    {
+        printf("%i", *gaiDynArrayGet(&a, i, int));
+    }
+
+    gaiDynArrayClear(&a);
+
     gai_xwnd window;
+    gai_xwnd* w = &window;
     if (!gaiXWindow(&window, "yolo", -1, -1, -1, -1, XWND_RENDERER_OPENGL)) return -1;
-    char title[4096] = { 0 };
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
+    gaiXWindowSetVSYNC(&window, 0);
     while (window.is_running)
     {
         glClear(GL_COLOR_BUFFER_BIT);
@@ -80,4 +92,3 @@ int main(int argc, char **argv)
     return 0;
 }
 #endif
-

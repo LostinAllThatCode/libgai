@@ -17,6 +17,7 @@
 	#define _USE_MATH_DEFINES
 	#include <math.h>
 	#include <stdio.h>
+	#include <stdbool.h>
 	#include <string.h>
 #endif
 
@@ -33,6 +34,8 @@ typedef int64_t  i64;
 
 typedef float    r32;
 typedef double   r64;
+
+
 
 #define _GAI_TYPES_H_
 #endif

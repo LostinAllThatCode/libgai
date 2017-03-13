@@ -13,13 +13,6 @@
 #else
 #endif
 
-struct gai_input_key
-{
-	b32 is_pressed;
-	b32 was_pressed;
-	b32 was_released;
-};
-
 enum gai_xwnd_renderer_enum
 {
 	XWND_RENDERER_GDI, XWND_RENDERER_DX10, XWND_RENDERER_DX11, XWND_RENDERER_DX12,
@@ -29,14 +22,9 @@ enum gai_xwnd_renderer_enum
 
 enum gai_xwnd_renderer_attrib_enum
 {
-	XWND_ATTRIB_FULLSCREEN,
-	XWND_ATTRIB_VSYNC,
-
-	XWND_ATTRIB_OPENGL_MINOR,
-	XWND_ATTRIB_OPENGL_MAJOR,
-	XWND_ATTRIB_OPENGL_DEBUG,
-
-	XWND_ATTRIB_MAX,
+	XWND_NONE     		= 0x0,
+	XWND_FULLSCREEN     = 0x1,
+	XWND_VSYNC			= 0x2
 };
 
 struct gai_xwnd
@@ -62,7 +50,6 @@ struct gai_xwnd
 
 	struct
 	{
-		gai_input_key keys[256];
 		i32 x, y, dx, dy, wheel, dwheel;
 	} input;
 
@@ -72,6 +59,7 @@ struct gai_xwnd
 		HWND            	hwnd;
 		HDC             	hdc;
 		HINSTANCE       	instance;
+		WINDOWPLACEMENT     position;
 		#elif __linux__
 		Display *display;
 		Visual  *visual;
@@ -84,6 +72,7 @@ struct gai_xwnd
 	struct
 	{
 		gai_xwnd_renderer_enum type;
+		i32 attributes;
 		union
 		{
 			struct
@@ -98,6 +87,9 @@ struct gai_xwnd
 		struct
 		{
 			void *data;
+			size_t data_size;
+			size_t offset;
+
 			i32   char_count;
 			stbtt_packedchar char_data[255];
 			i32 texture_size;
@@ -111,10 +103,12 @@ struct gai_xwnd
 	} renderer;
 
 	b32 is_running;
-	b32 is_fullscreen;
 	b32 is_visible;
-	b32 is_vsync_enabled;
 };
+
+static u8  gai_input_keys[256];
+static u8  gai_input_history[256];
+static i32 gai_input_alt_down, gai_input_shift_down, gai_input_ctrl_down;
 
 #ifdef __cplusplus
 extern "C" {
@@ -126,6 +120,7 @@ inline extern float  	gaiXWindowUpdate			(gai_xwnd *window);
 extern void 			gaiXWindowRender			(gai_xwnd *window);
 extern int  			gaiXWindowSetVSYNC			(gai_xwnd *window, b32 state);
 extern void* 			gaiXWindowGetProc			(gai_xwnd *window, const char *name);
+extern void  			gaiXWindowToggleFullscreen  (gai_xwnd *window);
 
 #ifdef __cplusplus
 }
@@ -133,14 +128,60 @@ extern void* 			gaiXWindowGetProc			(gai_xwnd *window, const char *name);
 
 #ifdef XWND_IMPLEMENTATION
 
+#if 1
+gai_xwnd *_dbg_context_window;
+char _dbg_txt_buffer[4096]; int _dbg_txt_xoff, _dbg_txt_yoff;
+#define gai_dbg_begin(window) _dbg_context_window = window
+#define gai_dbg_end() _dbg_context_window = 0; _dbg_txt_xoff = 0; _dbg_txt_yoff = 0
+#define gai_dbg_sprint(prefix, fmt, ...) gai_snprintf( (_dbg_txt_buffer), 4095, "[ %-16s ] "fmt, prefix, __VA_ARGS__); \
+	gaiDrawDbgText( (_dbg_context_window), (_dbg_txt_xoff), (_dbg_txt_yoff), (_dbg_txt_buffer) ); \
+	_dbg_txt_yoff+=_dbg_context_window->renderer.debug_font_shader.font_height
+#define gai_dbg_print(text) gaiDrawDbgText( (_dbg_context_window), (_dbg_txt_xoff), (_dbg_txt_yoff), (text) ); \
+	_dbg_txt_yoff+=_dbg_context_window->renderer.debug_font_shader.font_height
+
+//#undef gai_dbg_print
+#else
+#define gai_dbg_begin(...)
+#define gai_dbg_end(...)
+#define gai_dbg_print(...)
+#endif
+
+
+
+b32
+gaiKeyDown(int key)
+{
+	return gai_input_keys[key];
+}
+
+b32
+gaiKeyPressed(int key)
+{
+	b32 previousState = gai_input_history[key];
+	gai_input_history[key] = gaiKeyDown(key);
+	return (gai_input_history[key] && !previousState);
+}
+
+b32
+gaiKeyReleased(int key)
+{
+	b32 previousState = gai_input_history[key];
+	gai_input_history[key] = gaiKeyDown(key);
+	return (!gai_input_history[key] && previousState);
+}
+
 char *
 gaiXWindowGetRendererType(gai_xwnd *window)
 {
-	gai_assert(window);
 	switch (window->renderer.type)
 	{
-		case XWND_RENDERER_OPENGL: { return "OpenGL"; } break;
-		default: return "Unknown";
+		case XWND_RENDERER_GDI: 	{ return "GDI"; } break;
+		case XWND_RENDERER_DX10:	{ return "DirectX10"; } break;
+		case XWND_RENDERER_DX11:	{ return "DirectX11"; } break;
+		case XWND_RENDERER_DX12:	{ return "DirectX12"; } break;
+		case XWND_RENDERER_OPENGL: 	{ return "OpenGL"; } break;
+		case XWND_RENDERER_VULCAN:	{ return "Vulcan"; } break;
+		default: 					{ return "Unknown"; }
 	}
 }
 
@@ -184,6 +225,17 @@ typedef ptrdiff_t GLintptr;
 #define GL_DYNAMIC_DRAW                   0x88E8
 #define GL_DYNAMIC_READ                   0x88E9
 #define GL_DYNAMIC_COPY                   0x88EA
+
+#define GL_MAP_READ_BIT                   0x0001
+#define GL_MAP_WRITE_BIT                  0x0002
+#define GL_MAP_INVALIDATE_RANGE_BIT       0x0004
+#define GL_MAP_INVALIDATE_BUFFER_BIT      0x0008
+#define GL_MAP_FLUSH_EXPLICIT_BIT         0x0010
+#define GL_MAP_UNSYNCHRONIZED_BIT         0x0020
+
+#define GL_MAX_COLOR_TEXTURE_SAMPLES      0x910E
+#define GL_MAX_DEPTH_TEXTURE_SAMPLES      0x910F
+#define GL_MAX_INTEGER_SAMPLES            0x9110
 
 #define GL_DEBUG_SOURCE_API               0x8246
 #define GL_DEBUG_SOURCE_WINDOW_SYSTEM     0x8247
@@ -256,11 +308,12 @@ typedef void (APIENTRY  *GLDEBUGPROC)(GLenum source, GLenum type, GLuint id, GLe
 	gaiXWindowFN(, gen_buffers_fn, 					void,    	GenBuffers, GLsizei, GLuint*) \
 	gaiXWindowFN(, buffer_data_fn, 					void,	 	BufferData, GLenum, GLsizeiptr, const void*, GLenum) \
 	gaiXWindowFN(, buffer_sub_data_fn,				void, 	 	BufferSubData, GLenum, GLintptr, GLsizeiptr, const void *) \
-	gaiXWindowFN(, map_buffer_fn, 					void*, 	 	MapBuffer, GLenum, GLenum) \
+	gaiXWindowFN(, map_buffer_fn, 					GLvoid*, 	MapBuffer, GLenum, GLenum) \
 	gaiXWindowFN(, unmap_buffer_fn, 				void, 	 	UnmapBuffer, GLenum) \
 	gaiXWindowFN(, bind_vertex_array_fn,			void, 		BindVertexArray, GLuint) \
 	gaiXWindowFN(, delete_vertex_arrays_fn,			void, 		DeleteVertexArrays, GLsizei, const GLuint*) \
-	gaiXWindowFN(, gen_vertex_arrays_fn,			void, 		GenVertexArrays, GLsizei, GLuint*)
+	gaiXWindowFN(, gen_vertex_arrays_fn,			void, 		GenVertexArrays, GLsizei, GLuint*) \
+	gaiXWindowFN(, map_buffer_range_fn,				GLvoid*,	MapBufferRange, GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access)
 
 #define gaiXWindowFN(ext, def, a, b, ...) typedef a (gl_##def) (__VA_ARGS__);
 gaiXWindowFNWrapper
@@ -343,11 +396,11 @@ gaiGLDebugFontShader(gai_xwnd *window)
 	static b32 initialized;
 	if (!initialized)
 	{
-		window->renderer.debug_font_shader.texture_size = 1024;
+		window->renderer.debug_font_shader.texture_size = 4096;
 		window->renderer.debug_font_shader.font_height  = 12;
 
 		int   	debug_font_oversample                   = 4;
-		int 	debug_font_texture_size                 = 1024;
+		int 	debug_font_texture_size                 = 4096;
 		char   	*debug_font                             = "C:/windows/fonts/consolab.ttf";
 
 		stbtt_pack_context debug_font_ctx;
@@ -386,7 +439,7 @@ gaiGLDebugFontShader(gai_xwnd *window)
 		free(font_buffer);
 
 		char *version = R"GLSL(#version 440)GLSL";
-		char *vertex = R"GLSL(
+		char *vertex  = R"GLSL(
 			layout (location = 0) in vec2 vertex;
 			layout (location = 1) in vec2 uv;
 			uniform vec4 tint;
@@ -413,7 +466,8 @@ gaiGLDebugFontShader(gai_xwnd *window)
 
 		window->renderer.debug_font_shader.program           = gaiGLCreateProgram(version, vertex, frag);
 		window->renderer.debug_font_shader.uniform_transform = glGetUniformLocation(window->renderer.debug_font_shader.program, "transform");
-		window->renderer.debug_font_shader.data              = gai_malloc( gai_bytes_mb(1) );
+		window->renderer.debug_font_shader.data_size         = gai_bytes_mb(30);
+		window->renderer.debug_font_shader.data              = gai_malloc( window->renderer.debug_font_shader.data_size );
 		window->renderer.debug_font_shader.char_count        = 0;
 
 		glGenVertexArrays(1, &window->renderer.debug_font_shader.vao);
@@ -421,8 +475,7 @@ gaiGLDebugFontShader(gai_xwnd *window)
 
 		glGenBuffers(1, &window->renderer.debug_font_shader.vbo);
 		glBindBuffer(GL_ARRAY_BUFFER, window->renderer.debug_font_shader.vbo);
-		glBufferData(GL_ARRAY_BUFFER, 0, 0, GL_STREAM_DRAW);
-		//glBufferData(GL_ARRAY_BUFFER, gai_bytes_mb(1), 0, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, gai_bytes_mb(30), 0, GL_STREAM_DRAW);
 
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 16, (const GLvoid*) 0);
@@ -461,7 +514,7 @@ gaiDrawDbgText(gai_xwnd *window, float x, float y, char *text)
 			q.x1, q.y0, q.s1, q.t0,
 			q.x1, q.y1, q.s1, q.t1,
 		};
-		memcpy(cdata, buffer, 96);
+		gai_memcpy(cdata, buffer, 96);
 		cdata += 24;
 		*text++;
 		count++;
@@ -475,10 +528,11 @@ gaiGLDebugFontShaderUpdateAndRender(gai_xwnd *window)
 	GLsizei bytes_to_copy = window->renderer.debug_font_shader.char_count * 96;
 	glBindBuffer(GL_ARRAY_BUFFER, window->renderer.debug_font_shader.vbo);
 	#if 1
-	glBufferData(GL_ARRAY_BUFFER, bytes_to_copy, window->renderer.debug_font_shader.data, GL_STREAM_DRAW);
-	//glBufferSubData(GL_ARRAY_BUFFER, 0, bytes_to_copy, window->renderer.debug_font_shader.data);
+	//glBufferData(GL_ARRAY_BUFFER, bytes_to_copy, window->renderer.debug_font_shader.data, GL_STREAM_DRAW);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, bytes_to_copy, window->renderer.debug_font_shader.data);
 	#else
-	GLvoid* buffer = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+	//GLvoid* buffer = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+	GLvoid* buffer = glMapBufferRange(GL_ARRAY_BUFFER, 0, bytes_to_copy, GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT);
 	if (buffer)
 	{
 		memcpy(buffer, window->renderer.debug_font_shader.data, bytes_to_copy);
@@ -487,7 +541,16 @@ gaiGLDebugFontShaderUpdateAndRender(gai_xwnd *window)
 	#endif
 	glDrawArrays(GL_TRIANGLES, 0, (window->renderer.debug_font_shader.char_count) * 6);
 	window->renderer.debug_font_shader.char_count = 0;
+	gai_dbg_end();
+}
 
+void
+gaiGLInitMultisampling(gai_xwnd *window)
+{
+	GLint samples;
+	//glGetIntegerv(GL_MAX_COLOR_TEXTURE_SAMPLES, &samples);
+	glGetIntegerv(GL_MAX_INTEGER_SAMPLES, &samples);
+	printf("%i\n", samples);
 }
 
 #ifdef _WIN32  // WIN32 LAYER FOR WINDOW MANAGEMENT
@@ -632,12 +695,23 @@ gaiXWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				window->info.y = (int)(short) HIWORD(lParam);
 				return 0;
 			} break;
-			/*
-			case WM_MOUSEMOVE:
+			case WM_KEYDOWN:
 			{
-				i32 x = ((i16) lParam), y = ((i16)((lParam >> 16) & 0xFFFF));
+				gai_input_history[wParam] = gai_input_keys[wParam];
+				gai_input_keys[wParam] = 1;
 			} break;
-			*/
+			case WM_KEYUP:
+			{
+				gai_input_history[wParam] = gai_input_keys[wParam];
+				gai_input_keys[wParam] = 0;
+
+			} break;
+			/*
+						case WM_MOUSEMOVE:
+						{
+							i32 x = ((i16) lParam), y = ((i16)((lParam >> 16) & 0xFFFF));
+						} break;
+						*/
 			case WM_DESTROY:
 			{
 				if (window->renderer.type == XWND_RENDERER_OPENGL)
@@ -664,6 +738,41 @@ gaiXWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 }
 
 GAI_DEF void
+gaiXWindowToggleFullscreen(gai_xwnd *window)
+{
+	HWND hWnd = window->platform.hwnd;
+	// NOTE(casey): This follows Raymond Chen's prescription
+	// for fullscreen toggling, see:
+	// http://blogs.msdn.com/b/oldnewthing/archive/2010/04/12/9994016.aspx
+
+	DWORD Style = GetWindowLong(hWnd, GWL_STYLE);
+	if (Style & WS_OVERLAPPEDWINDOW)
+	{
+		MONITORINFO MonitorInfo = {sizeof(MonitorInfo)};
+		if (GetWindowPlacement(hWnd, &window->platform.position) &&
+		        GetMonitorInfo(MonitorFromWindow(hWnd, MONITOR_DEFAULTTOPRIMARY), &MonitorInfo))
+		{
+			SetWindowLong(hWnd, GWL_STYLE, Style & ~WS_OVERLAPPEDWINDOW);
+			SetWindowPos(hWnd, HWND_TOP,
+			             MonitorInfo.rcMonitor.left, MonitorInfo.rcMonitor.top,
+			             MonitorInfo.rcMonitor.right - MonitorInfo.rcMonitor.left,
+			             MonitorInfo.rcMonitor.bottom - MonitorInfo.rcMonitor.top,
+			             SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
+		}
+		window->renderer.attributes |= XWND_FULLSCREEN;
+	}
+	else
+	{
+		SetWindowLong(hWnd, GWL_STYLE, Style | WS_OVERLAPPEDWINDOW);
+		SetWindowPlacement(hWnd, &window->platform.position);
+		SetWindowPos(hWnd, 0, 0, 0, 0, 0,
+		             SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER |
+		             SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
+		window->renderer.attributes &= ~XWND_FULLSCREEN;
+	}
+}
+
+GAI_DEF void
 gaiXWindowSetTitle(gai_xwnd *window, const char *title)
 {
 	SetWindowText(window->platform.hwnd, title);
@@ -674,25 +783,20 @@ gaiXWindowRender(gai_xwnd *window)
 {
 	if (window->renderer.type == XWND_RENDERER_OPENGL)
 	{
-		char buffer[4096];
-		int  offset = window->renderer.debug_font_shader.font_height;
-		int  xoff   = 12;
-		int  yoff   = 12 - offset;
-
-		#if 1
-#define gai_dbg_print(fmt, ...) gai_snprintf( (buffer), 4096, (fmt), __VA_ARGS__); gaiDrawDbgText( (window), (xoff), (yoff+=offset), (buffer))
-		gai_dbg_print("[ Viewport ] %ix%i x:%i, y:%i, fps:%i, dt:%f, vsync:%i", window->info.width, window->info.height, window->info.x, window->info.y, window->info.fps, window->info.dt, window->is_vsync_enabled);
-		gai_dbg_print("[ Renderer ] %s, %s, %s, %s, %s", gaiXWindowGetRendererType(window), window->renderer.info.opengl.version, window->renderer.info.opengl.vendor, window->renderer.info.opengl.renderer, window->renderer.info.opengl.shading_language_version);
-#undef gai_dbg_print
-		#endif
-
 		glUseProgram(window->renderer.debug_font_shader.program);
 		glViewport(0, 0, window->info.width, window->info.height);
 		glBindVertexArray(window->renderer.debug_font_shader.vao);
 		glBindTexture(GL_TEXTURE_2D, window->renderer.debug_font_shader.texture);
 		m4x4 transform = Orthographic(0, window->info.width, 0, window->info.height, 1, -1);
 		glUniformMatrix4fv(window->renderer.debug_font_shader.uniform_transform, 1, GL_TRUE, (const GLfloat*) &transform);
+
+		gai_dbg_sprint("Buffer", "Usage (%.2f%%): %zu/%i bytes", ((float)(window->renderer.debug_font_shader.char_count * 96) / (float)window->renderer.debug_font_shader.data_size) * 100.f,
+		               window->renderer.debug_font_shader.data_size, window->renderer.debug_font_shader.char_count * 96);
+
 		gaiGLDebugFontShaderUpdateAndRender(window);
+
+		glUseProgram(0);
+		glBindVertexArray(0);
 
 		SwapBuffers(window->platform.hdc);
 	}
@@ -701,15 +805,20 @@ gaiXWindowRender(gai_xwnd *window)
 GAI_DEF int
 gaiXWindowSetVSYNC(gai_xwnd *window, b32 state)
 {
-	b32 *result = &window->is_vsync_enabled;
+	b32 result;
 	gaiGLSetSwapInterval(state);
-	*result = gaiGLGetSwapInterval();
-	return *result;
+	result = gaiGLGetSwapInterval();
+	window->renderer.attributes = (result == 1 ? window->renderer.attributes | XWND_VSYNC : window->renderer.attributes & ~XWND_VSYNC);
+	return result;
 }
 
 inline GAI_DEF float
 gaiXWindowUpdate(gai_xwnd *window)
 {
+	gai_dbg_begin(window);
+	if (gaiKeyReleased(VK_F1)) gaiXWindowToggleFullscreen(window);
+	if (gaiKeyReleased(VK_F2)) gaiXWindowSetVSYNC(window, !(window->renderer.attributes & XWND_VSYNC));
+
 	static LARGE_INTEGER _frequency;
 	static LARGE_INTEGER _ltframetime;
 	static i32 fps;
@@ -763,10 +872,10 @@ gaiXWindowUpdate(gai_xwnd *window)
 		}
 	}
 
-	if (frametime >= 1.0f)
+	if (frametime >= 2.0f)
 	{
-		window->info.fps = frames;
-		window->info.dt  = 1.f / frames;
+		window->info.fps = frames / 2;
+		window->info.dt  = frametime / frames;
 		frames = 0;
 		frametime = 0;
 	}
@@ -775,6 +884,14 @@ gaiXWindowUpdate(gai_xwnd *window)
 		frametime += window->dt.seconds;
 		frames++;
 	}
+
+	gai_dbg_sprint("Viewport", "%ix%i x:%i, y:%i, fps:%i, dt:%f, vsync:%i, fullscreen:%i",
+	               window->info.width, window->info.height, window->info.x, window->info.y,
+	               window->info.fps, window->info.dt,
+	               (window->renderer.attributes & XWND_VSYNC ? 1 : 0), (window->renderer.attributes & XWND_FULLSCREEN ? 1 : 0));
+	gai_dbg_sprint("Renderer", "%s, %s, %s, %s, %s",
+	               gaiXWindowGetRendererType(window), window->renderer.info.opengl.version,
+	               window->renderer.info.opengl.vendor, window->renderer.info.opengl.renderer, window->renderer.info.opengl.shading_language_version);
 
 	return window->dt.seconds;
 }
@@ -905,11 +1022,14 @@ gaiXWindow(gai_xwnd *window, const char *title, int width, int height, int x, in
 					wglMakeCurrent(hdc, new_oglctx);
 					gaiXWindowSetVSYNC(window, 1);
 					gaiGLGetFunctions(window);
+					gaiGLInitMultisampling(window);
+
 					#ifdef _DEBUG
 					glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 					glDebugMessageCallback( (GLDEBUGPROC) gaiGLDebugCallback, 0);
 					gaiGLDebugFontShader(window);
 					#endif
+
 				}
 				else
 				{
@@ -931,6 +1051,7 @@ gaiXWindow(gai_xwnd *window, const char *title, int width, int height, int x, in
 		window->renderer.info.opengl.renderer                 = (char *) glGetString(GL_RENDERER);
 		window->renderer.info.opengl.shading_language_version = (char *) glGetString(GL_SHADING_LANGUAGE_VERSION);
 	}
+
 	window->is_running = true;
 	ShowWindow(hwnd, SW_SHOW);
 	return 1;
