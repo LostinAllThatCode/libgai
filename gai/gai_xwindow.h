@@ -27,6 +27,16 @@ enum gai_xwnd_renderer_attrib_enum
 	XWND_VSYNC			= 0x2
 };
 
+// TEMP!!1
+struct gpu_data_segment
+{
+	v2 uv;	
+	v4 color;
+	v3 normals;
+	v3 position;
+};
+GAI_DYNAMIC( render_command, gpu_data_segment );
+
 struct gai_xwnd
 {
 	const char *title;
@@ -86,12 +96,7 @@ struct gai_xwnd
 
 		struct
 		{
-			void *data;
-			size_t data_size;
-			size_t offset;
-
-			i32   char_count;
-			stbtt_packedchar char_data[255];
+			stbtt_packedchar char_data[255];			
 			i32 texture_size;
 			i32 font_height;
 			u32 program;
@@ -99,6 +104,7 @@ struct gai_xwnd
 			u32 texture;
 			u32 vao;
 			u32 vbo;
+			size_t vbo_size;
 		} debug_font_shader;
 	} renderer;
 
@@ -109,6 +115,7 @@ struct gai_xwnd
 static u8  gai_input_keys[256];
 static u8  gai_input_history[256];
 static i32 gai_input_alt_down, gai_input_shift_down, gai_input_ctrl_down;
+static render_command commands;
 
 #ifdef __cplusplus
 extern "C" {
@@ -143,7 +150,7 @@ char _dbg_txt_buffer[4096]; int _dbg_txt_xoff, _dbg_txt_yoff;
 #else
 #define gai_dbg_begin(...)
 #define gai_dbg_end(...)
-#define gai_dbg_print(...)
+#define gai_dbg_sprint(...)
 #endif
 
 
@@ -396,11 +403,11 @@ gaiGLDebugFontShader(gai_xwnd *window)
 	static b32 initialized;
 	if (!initialized)
 	{
-		window->renderer.debug_font_shader.texture_size = 4096;
+		window->renderer.debug_font_shader.texture_size = 1024;
 		window->renderer.debug_font_shader.font_height  = 12;
 
 		int   	debug_font_oversample                   = 4;
-		int 	debug_font_texture_size                 = 4096;
+		int 	debug_font_texture_size                 = 1024;
 		char   	*debug_font                             = "C:/windows/fonts/consolab.ttf";
 
 		stbtt_pack_context debug_font_ctx;
@@ -425,6 +432,7 @@ gaiGLDebugFontShader(gai_xwnd *window)
 		stbtt_PackFontRange(&debug_font_ctx, font_buffer, 0, window->renderer.debug_font_shader.font_height, 0, 255, window->renderer.debug_font_shader.char_data);
 		stbtt_PackEnd(&debug_font_ctx);
 
+
 		glGenTextures(1, &window->renderer.debug_font_shader.texture);
 		glBindTexture(GL_TEXTURE_2D, window->renderer.debug_font_shader.texture);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -440,47 +448,48 @@ gaiGLDebugFontShader(gai_xwnd *window)
 
 		char *version = R"GLSL(#version 440)GLSL";
 		char *vertex  = R"GLSL(
-			layout (location = 0) in vec2 vertex;
-			layout (location = 1) in vec2 uv;
-			uniform vec4 tint;
+			layout (location = 0) in vec2 in_uv;
+			layout (location = 1) in vec4 in_color;
+			layout (location = 2) in vec3 in_normal;
+			layout (location = 3) in vec3 in_vertex;
 			uniform mat4 transform;
-			out vec4 _color;
-			out vec2 _uv;
+			out vec4 out_color;
+			out vec2 out_uv;
 			void main()
 			{
-				gl_Position = transform * vec4(vertex.x, vertex.y, 0, 1);
-				_color = vec4(1,1,1,1);
-				_uv    = uv;
+				gl_Position = transform * vec4(in_vertex.x, in_vertex.y, 0, 1);
+				out_color 	= in_color;
+				out_uv    	= in_uv;
 			})GLSL";
 
 		char *frag = R"GLSL(
-	        in vec4 _color;
-	        in vec2 _uv;
+	        in vec4 out_color;
+	        in vec2 out_uv;
 	        out vec4 color;
 	        uniform sampler2D font_texture;
 	        void main() {
-	            color = texture(font_texture, _uv);
-	            color = vec4(color.r * _color.r, color.r * _color.g, color.r * _color.b, color.a * _color.a);
-	            //color = _color;
+	            color = vec4(out_color.r, out_color.g, out_color.b, texture(font_texture, out_uv).r);
 	        })GLSL";
 
 		window->renderer.debug_font_shader.program           = gaiGLCreateProgram(version, vertex, frag);
 		window->renderer.debug_font_shader.uniform_transform = glGetUniformLocation(window->renderer.debug_font_shader.program, "transform");
-		window->renderer.debug_font_shader.data_size         = gai_bytes_mb(30);
-		window->renderer.debug_font_shader.data              = gai_malloc( window->renderer.debug_font_shader.data_size );
-		window->renderer.debug_font_shader.char_count        = 0;
 
 		glGenVertexArrays(1, &window->renderer.debug_font_shader.vao);
 		glBindVertexArray(window->renderer.debug_font_shader.vao);
 
+		window->renderer.debug_font_shader.vbo_size = gai_bytes_mb(1);
 		glGenBuffers(1, &window->renderer.debug_font_shader.vbo);
 		glBindBuffer(GL_ARRAY_BUFFER, window->renderer.debug_font_shader.vbo);
-		glBufferData(GL_ARRAY_BUFFER, gai_bytes_mb(30), 0, GL_STREAM_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, window->renderer.debug_font_shader.vbo_size, 0, GL_STREAM_DRAW);
 
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 16, (const GLvoid*) 0);
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(gpu_data_segment), (const GLvoid*) gai_offsetof(gpu_data_segment, uv));
 		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 16, (const GLvoid*) 8);
+		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(gpu_data_segment), (const GLvoid*) gai_offsetof(gpu_data_segment, color));
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(gpu_data_segment), (const GLvoid*) gai_offsetof(gpu_data_segment, normals));
+		glEnableVertexAttribArray(3);
+		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(gpu_data_segment), (const GLvoid*) gai_offsetof(gpu_data_segment, position));
 
 		glBindVertexArray(0);
 	}
@@ -489,12 +498,6 @@ gaiGLDebugFontShader(gai_xwnd *window)
 void
 gaiDrawDbgText(gai_xwnd *window, float x, float y, char *text)
 {
-	GLsizei offset = 0;
-	GLint count    = 0;
-
-	r32 *cdata = (r32 *) window->renderer.debug_font_shader.data;
-	cdata      += window->renderer.debug_font_shader.char_count * 24;
-
 	stbtt_packedchar *char_data = window->renderer.debug_font_shader.char_data;
 	int texture_size            = window->renderer.debug_font_shader.texture_size;
 	int font_height             = window->renderer.debug_font_shader.font_height;
@@ -505,31 +508,24 @@ gaiDrawDbgText(gai_xwnd *window, float x, float y, char *text)
 		stbtt_aligned_quad q;
 		int c = *text;
 		stbtt_GetPackedQuad(char_data, texture_size, texture_size, c, &x, &y, &q, 0);
-		r32 buffer[24] =
-		{
-			q.x0, q.y0, q.s0, q.t0,
-			q.x1, q.y1, q.s1, q.t1,
-			q.x0, q.y1, q.s0, q.t1,
-			q.x0, q.y0, q.s0, q.t0,
-			q.x1, q.y0, q.s1, q.t0,
-			q.x1, q.y1, q.s1, q.t1,
-		};
-		gai_memcpy(cdata, buffer, 96);
-		cdata += 24;
 		*text++;
-		count++;
+	
+		commands.append( {V2(q.s0, q.t0), V4(1,1,0,1), V3(0,0,0), V3(q.x0, q.y0, 0)} );
+		commands.append( {V2(q.s1, q.t1), V4(1,1,0,1), V3(0,0,0), V3(q.x1, q.y1, 0)} );
+		commands.append( {V2(q.s0, q.t1), V4(1,1,0,1), V3(0,0,0), V3(q.x0, q.y1, 0)} );
+		commands.append( {V2(q.s0, q.t0), V4(1,1,0,1), V3(0,0,0), V3(q.x0, q.y0, 0)} );
+		commands.append( {V2(q.s1, q.t0), V4(1,1,0,1), V3(0,0,0), V3(q.x1, q.y0, 0)} );
+		commands.append( {V2(q.s1, q.t1), V4(1,1,0,1), V3(0,0,0), V3(q.x1, q.y1, 0)} );
 	}
-	window->renderer.debug_font_shader.char_count += count;
 }
 
 void
 gaiGLDebugFontShaderUpdateAndRender(gai_xwnd *window)
 {
-	GLsizei bytes_to_copy = window->renderer.debug_font_shader.char_count * 96;
 	glBindBuffer(GL_ARRAY_BUFFER, window->renderer.debug_font_shader.vbo);
 	#if 1
 	//glBufferData(GL_ARRAY_BUFFER, bytes_to_copy, window->renderer.debug_font_shader.data, GL_STREAM_DRAW);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, bytes_to_copy, window->renderer.debug_font_shader.data);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, commands.used, commands.elements);
 	#else
 	//GLvoid* buffer = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
 	GLvoid* buffer = glMapBufferRange(GL_ARRAY_BUFFER, 0, bytes_to_copy, GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT);
@@ -539,8 +535,9 @@ gaiGLDebugFontShaderUpdateAndRender(gai_xwnd *window)
 		glUnmapBuffer(GL_ARRAY_BUFFER);
 	}
 	#endif
-	glDrawArrays(GL_TRIANGLES, 0, (window->renderer.debug_font_shader.char_count) * 6);
-	window->renderer.debug_font_shader.char_count = 0;
+
+	glDrawArrays(GL_TRIANGLES, 0, commands.length());
+	commands.clear();
 	gai_dbg_end();
 }
 
@@ -783,6 +780,7 @@ gaiXWindowRender(gai_xwnd *window)
 {
 	if (window->renderer.type == XWND_RENDERER_OPENGL)
 	{
+
 		glUseProgram(window->renderer.debug_font_shader.program);
 		glViewport(0, 0, window->info.width, window->info.height);
 		glBindVertexArray(window->renderer.debug_font_shader.vao);
@@ -790,9 +788,11 @@ gaiXWindowRender(gai_xwnd *window)
 		m4x4 transform = Orthographic(0, window->info.width, 0, window->info.height, 1, -1);
 		glUniformMatrix4fv(window->renderer.debug_font_shader.uniform_transform, 1, GL_TRUE, (const GLfloat*) &transform);
 
-		gai_dbg_sprint("Buffer", "Usage (%.2f%%): %zu/%i bytes", ((float)(window->renderer.debug_font_shader.char_count * 96) / (float)window->renderer.debug_font_shader.data_size) * 100.f,
-		               window->renderer.debug_font_shader.data_size, window->renderer.debug_font_shader.char_count * 96);
-
+/*
+		gai_dbg_sprint("GPU Buffer", "Usage (%.2f%%): %zu/%zu bytes", 
+			((float)(commands.used) / (float)(window->renderer.debug_font_shader.vbo_size) ) * 100.f, 
+			commands.used, window->renderer.debug_font_shader.vbo_size);
+*/
 		gaiGLDebugFontShaderUpdateAndRender(window);
 
 		glUseProgram(0);
@@ -872,9 +872,9 @@ gaiXWindowUpdate(gai_xwnd *window)
 		}
 	}
 
-	if (frametime >= 2.0f)
+	if (frametime >= 1.0f)
 	{
-		window->info.fps = frames / 2;
+		window->info.fps = frames;
 		window->info.dt  = frametime / frames;
 		frames = 0;
 		frametime = 0;
@@ -884,6 +884,7 @@ gaiXWindowUpdate(gai_xwnd *window)
 		frametime += window->dt.seconds;
 		frames++;
 	}
+
 
 	gai_dbg_sprint("Viewport", "%ix%i x:%i, y:%i, fps:%i, dt:%f, vsync:%i, fullscreen:%i",
 	               window->info.width, window->info.height, window->info.x, window->info.y,
@@ -904,7 +905,7 @@ gaiXWindow(gai_xwnd *window, const char *title, int width, int height, int x, in
 		gai_assert(!"This function does not allocate memory for the window!");
 	}
 
-	if (!ConvertThreadToFiber(0) ) return -1;
+	//if (!ConvertThreadToFiber(0) ) return -1;
 
 	gai_xwnd init = { title, {0}, {width, height, x, y}, {0}, {0, 0, GetModuleHandle(0)}, { renderer } };
 	*window = init;
@@ -947,10 +948,10 @@ gaiXWindow(gai_xwnd *window, const char *title, int width, int height, int x, in
 		PIXELFORMATDESCRIPTOR pfd =
 		{
 			sizeof(PIXELFORMATDESCRIPTOR),
-			1, PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER,
-			PFD_TYPE_RGBA, 24,
+			1, PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER | PFD_DEPTH_DONTCARE,
+			PFD_TYPE_RGBA, 32,
 			0, 0, 0, 0, 0, 0, 0, 0,
-			0, 0, 0, 0, 0, 32, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0,
 			PFD_MAIN_PLANE,
 			0, 0, 0, 0
 		};
@@ -993,26 +994,21 @@ gaiXWindow(gai_xwnd *window, const char *title, int width, int height, int x, in
 			{
 				int attribs[] =
 				{
-					WGL_CONTEXT_MAJOR_VERSION_ARB,  0,
-					WGL_CONTEXT_MINOR_VERSION_ARB,  0,
-					WGL_CONTEXT_FLAGS_ARB, 0,
-					WGL_CONTEXT_PROFILE_MASK_ARB,   WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
+					#ifndef XWND_OPENGL_MAJOR
+					0, 0,
+					#else
+					WGL_CONTEXT_MAJOR_VERSION_ARB,  XWND_OPENGL_MAJOR,
+					#endif
+					#ifndef XWND_OPENGL_MINOR
+					0, 0,
+					#else
+					WGL_CONTEXT_MINOR_VERSION_ARB,  XWND_OPENGL_MINOR,
+					#endif
+					#ifdef _DEBUG
+					WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_DEBUG_BIT_ARB,
+					#endif
 					0
 				};
-
-				#ifndef XWND_OPENGL_MAJOR
-				glGetIntegerv(GL_MAJOR_VERSION, attribs + 1);
-				#else
-				attribs[1] = XWND_OPENGL_MAJOR;
-				#endif
-				#ifndef XWND_OPENGL_MINOR
-				glGetIntegerv(GL_MINOR_VERSION, attribs + 3);
-				#else
-				attribs[3] = XWND_OPENGL_MINOR;
-				#endif
-				#ifdef _DEBUG
-				attribs[5] |= WGL_CONTEXT_DEBUG_BIT_ARB;
-				#endif
 
 				HGLRC new_oglctx = wglCreateContextAttribsARB(hdc, 0, attribs);
 				if (new_oglctx)
@@ -1045,7 +1041,6 @@ gaiXWindow(gai_xwnd *window, const char *title, int width, int height, int x, in
 		{
 			gai_debug("Warning: This graphics card does not support \"WGL_ARB_create_context\".");
 		}
-
 		window->renderer.info.opengl.vendor                   = (char *) glGetString(GL_VENDOR);
 		window->renderer.info.opengl.version                  = (char *) glGetString(GL_VERSION);
 		window->renderer.info.opengl.renderer                 = (char *) glGetString(GL_RENDERER);

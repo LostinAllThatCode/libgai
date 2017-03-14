@@ -36,6 +36,5 @@ typedef float    r32;
 typedef double   r64;
 
 
-
 #define _GAI_TYPES_H_
 #endif
