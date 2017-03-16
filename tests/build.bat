@@ -1,7 +1,7 @@
 @echo off
 set libgai=..\gai
 set compilerflags=/nologo -Od -MTd -EHsc -Z7 -I%libgai%
-set linkerflags=-incremental:no -opt:ref opengl32.lib
+set linkerflags=-incremental:no -opt:ref user32.lib gdi32.lib opengl32.lib winmm.lib
 
 del *.pdb > NUL 2> NUL
 

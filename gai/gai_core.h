@@ -18,5 +18,7 @@
 #include "gai_xwindow.h"
 #include "gai_xgraphics.h"
 
+
+
 #define _GAI_CORE_H
 #endif

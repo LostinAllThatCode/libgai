@@ -101,7 +101,8 @@
 		/* Functions to actually use. */ \
 		name()  							{ gaiDynArrayInit(this, this->type_size); }; \
 		~name() 							{ gaiDynArrayFree(this); }; \
-		void  append( type  element ) 		{ gaiDynArrayInsert(this, &element, this->type_size ); }; \
+		type* append()				 		{ return (type *) gaiDynArrayInsert(this, 0, this->type_size); }; \
+		type* append( type  element ) 		{ return (type *) gaiDynArrayInsert(this, &element, sizeof(element) ); }; \
 		type* get( int index ) 				{ return (type *) gaiDynArrayGet(this, index, this->type_size ); }; \
 		void  set( int index, type element) { gaiDynArraySet(this, index, &element, this->type_size ); }; \
 		void  clear()	 					{ gaiDynArrayClear(this); }; \
@@ -178,15 +179,23 @@ void gaiDynArrayFree(void *dynamic)
 	free(array->elements);
 }
 
-void gaiDynArrayInsert(void *dynamic, void *element, size_t element_size)
+void *gaiDynArrayInsert(void *dynamic, void *element, size_t element_size)
 {
 	gai_dynarray *array = (gai_dynarray *) dynamic;
 	gai_assert(array);
 	if ( (array->used + element_size) < array->size )
 	{
 		void *dest = ((u8*) array->elements) + array->used;
-		memcpy(dest, element, element_size);
+		if (element == 0)
+		{
+			memset(dest, 0, element_size);
+		}
+		else
+		{
+			memcpy(dest, element, element_size);
+		}
 		array->used += element_size;
+		return dest;
 	}
 	else
 	{
@@ -195,11 +204,12 @@ void gaiDynArrayInsert(void *dynamic, void *element, size_t element_size)
 		{
 			array->elements = (u8*)new_address;
 			array->size = array->size * 2;
-			gaiDynArrayInsert(array, element, element_size);
+			return gaiDynArrayInsert(array, element, element_size);
 		}
 		else
 		{
 			gai_assert(!"Memory reallocation failed.");
+			return 0;
 		}
 	}
 }
@@ -209,7 +219,7 @@ void* gaiDynArrayGet(void *dynamic, int index, size_t element_size)
 	gai_dynarray *array = (gai_dynarray *) dynamic;
 	gai_assert(array);
 	if ( (index * element_size) > array->used ) return 0;
-	void *address = ((u8*) array->elements) + (index + element_size);
+	void *address = ((u8*) array->elements) + (index * element_size);
 	if (address != 0)
 	{
 		return address;
