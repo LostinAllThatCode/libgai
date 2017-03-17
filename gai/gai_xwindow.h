@@ -642,7 +642,7 @@ gaiXWindowToggleFullscreen(gai_xwnd *window)
 GAI_DEF void
 gaiXWindowSetTitle(gai_xwnd *window, const char *title)
 {
-	SetWindowText(window->platform.hwnd, title);
+	SetWindowTextA(window->platform.hwnd, title);
 }
 
 GAI_DEF void

@@ -18,13 +18,13 @@
 		#define gai_assert(exp)  				assert(exp)
 	#endif
 
-	#ifdef GAI_DBGCONSOLE
+	#ifdef GAI_DEBUG_TO_CONSOLE
 		#undef gai_debug
 		#define gai_debug(fmt, ...) gai_printf("\"%s\" %s(%i): "fmt, __FILE__, __FUNCTION__, __LINE__, __VA_ARGS__)
 	#endif
 #else
 	#define gai_assert(exp)
-	#ifdef GAI_DBGCONSOLE
+	#ifdef GAI_DEBUG_TO_CONSOLE
 		#undef gai_debug
 		#define gai_debug(fmt, ...) gai_printf("%s: "fmt, __FUNCTION__, __VA_ARGS__)
 	#else
@@ -45,32 +45,40 @@
 	#endif
 #endif
 
-#define gai_memset(ptr, value, num)  					memset( (ptr), (value) , (num) )
-#define gai_memcpy(dest, source, num)  					memcpy( (dest) , (source) , (num) )
-#define gai_strlen(s)                      				strlen( (s) )
-#define gai_printf(fmt, ...)          					printf( fmt , __VA_ARGS__ )
-#define gai_snprintf(buffer, buflen, fmt, ...)       	snprintf( (buffer), (buflen) , (fmt) , __VA_ARGS__ )
+#ifndef gai_memset
+	#define gai_memset(ptr, value, num)  					memset( (ptr), (value) , (num) )
+#endif
+#ifndef gai_memcpy
+	#define gai_memcpy(dest, source, num)  					memcpy( (dest) , (source) , (num) )
+#endif
+#ifndef gai_strlen
+	#define gai_strlen(s)                      				strlen( (s) )
+#endif
+#ifndef gai_printf
+	#define gai_printf(fmt, ...)          					printf( fmt , __VA_ARGS__ )
+#endif
+#ifndef gai_snprintf
+	#define gai_snprintf(buffer, buflen, fmt, ...)       	snprintf( (buffer), (buflen) , (fmt) , __VA_ARGS__ )
+#endif
 
-#define gai_array_reset(array)       					(gai_memset(array, 0, sizeof(array)))
-#define gai_array_length(array)      					(sizeof(array)/sizeof((array)[0]))
-#define gai_fiz(n)                   					for(u32 i = 0; i < n; i++)
-#define gai_fxz(x, n)                   				for(u32 x = 0; x < n; x++)
-#define gai_fei(v)                   					for(u32 i = 0; i < gai_array_length(v); i++)
+#define gai_array_reset(array)       						(gai_memset(array, 0, sizeof(array)))
+#define gai_array_length(array)      						(sizeof(array)/sizeof((array)[0]))
+#define gai_fiz(n)                   						for(u32 i = 0; i < n; i++)
+#define gai_fjz(n)		                   					for(u32 j = 0; j < n; j++)
+#define gai_fkz(n)		                   					for(u32 k = 0; k < n; k++)
+#define gai_fei(v)                   						for(u32 i = 0; i < gai_array_length(v); i++)
 
-#define gai_bitset(a, pos)                              ((a) & (1>>(pos)))
-#define gai_bitget(a, pos)                              ((a) & (1<<(pos)))
-#define gai_bitxor(a, b)                                ((a) ^ (b))
-#define gai_bitand(a, b)                                ((a) & (b))
-#define gai_bitor(a, b)                                 ((a) | (b))
+#define gai_bitset(a, pos)                              	((a) & (1>>(pos)))
+#define gai_bitget(a, pos)                              	((a) & (1<<(pos)))
+#define gai_bitxor(a, b)                                	((a) ^ (b))
+#define gai_bitand(a, b)                                	((a) & (b))
+#define gai_bitor(a, b)                                 	((a) | (b))
 
-#define gai_bytes_kb(val)								((val) * 1024)
-#define gai_bytes_mb(val)								(gai_bytes_kb((val)) * 1024)
-#define gai_bytes_gb(val)								(gai_bytes_mb((val)) * 1024)
-#define gai_kb_bytes(val)								((val) / 1024)
-#define gai_mb_bytes(val)								(gai_kb_bytes((val)) / 1024)
-#define gai_gb_bytes(val)								(gai_mb_bytes((val)) / 1024)
+#define gai_kilobytes(val)									((val) * 1024LL)
+#define gai_megabytes(val)									(gai_kilobytes((val)) * 1024LL)
+#define gai_gigabytes(val)									(gai_megabytes((val)) * 1024LL)
 
-#define gai_offsetof(st, m) 							((size_t)&(((st *)0)->m))
+#define gai_offsetof(st, m) 								((size_t)&(((st *)0)->m))
 
 
 
@@ -249,6 +257,14 @@ int gaiDynArraySize(void *dynamic, size_t element_size)
 	return (array->used / element_size);
 }
 
+
+GAI_DEF int
+gai_file_exists(char *filename)
+{
+	struct stat buffer;
+	int result = stat(filename, &buffer);
+	return (result == 0);
+}
 
 #define _GAI_UTILS_H
 #endif

@@ -14,11 +14,13 @@
 	#include <limits.h>
 	#include <float.h>
 	#include <stdlib.h>
-	#define _USE_MATH_DEFINES
-	#include <math.h>
 	#include <stdio.h>
 	#include <stdbool.h>
 	#include <string.h>
+	#include <sys/stat.h>
+
+	#define _USE_MATH_DEFINES
+	#include <math.h>
 #endif
 
 typedef uint8_t  u8;

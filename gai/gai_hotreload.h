@@ -87,7 +87,7 @@ gaiHotReloadWin32Thread(void *data)
 	while (hotreloadable)
 	{
 		WIN32_FILE_ATTRIBUTE_DATA file_info_now;
-		GetFileAttributesEx(hotreloadable->filename, GetFileExInfoStandard, &file_info_now);
+		GetFileAttributesExA(hotreloadable->filename, GetFileExInfoStandard, &file_info_now);
 		if ( CompareFileTime(&hotreloadable->platform.last_write_time, &file_info_now.ftLastWriteTime) != 0 )
 		{
 			hotreloadable->platform.last_write_time = file_info_now.ftLastWriteTime;
