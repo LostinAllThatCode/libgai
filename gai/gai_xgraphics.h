@@ -194,7 +194,7 @@ gaiXGraphicsDrawDynamicText2D(gai_xgp_context *context, float x, float y, wchar_
 
 		stbtt_GetPackedQuad(font->characters, font->texture_size, font->texture_size, *text, &x, &y, &q, 0);
 		*text++;
-
+		#if 0
 		gai_xgp_layout64 data[] =
 		{
 			{q.s1, q.t1, color.r, color.g, color.b, color.a, 0, 0, 0, q.x1, q.y1, 0, 0, 0, 0, 0},
@@ -204,7 +204,15 @@ gaiXGraphicsDrawDynamicText2D(gai_xgp_context *context, float x, float y, wchar_
 			{q.s0, q.t0, color.r, color.g, color.b, color.a, 0, 0, 0, q.x0, q.y0, 0, 0, 0, 0, 0},
 			{q.s1, q.t1, color.r, color.g, color.b, color.a, 0, 0, 0, q.x1, q.y1, 0, 0, 0, 0, 0},
 		};
-
+		#else
+		gai_xgp_layout64 data[] =
+		{
+			{q.s1, q.t1, color.r, color.g, color.b, color.a, 0, 0, 0, q.x1, q.y1, 0, 0, 0, 0, 0},
+			{q.s0, q.t1, color.r, color.g, color.b, color.a, 0, 0, 0, q.x0, q.y1, 0, 0, 0, 0, 0},
+			{q.s0, q.t0, color.r, color.g, color.b, color.a, 0, 0, 0, q.x0, q.y0, 0, 0, 0, 0, 0},
+			//{q.s1, q.t0, color.r, color.g, color.b, color.a, 0, 0, 0, q.x1, q.y0, 0, 0, 0, 0, 0},
+		};
+		#endif
 		gaiXGraphicsBufferPushSubData(context, font->buffer, data, sizeof(data));
 	}
 }
