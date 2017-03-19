@@ -33,6 +33,7 @@
 #endif
 
 #if _WIN32
+	#define WIN32_LEAN_AND_MEAN
 	#include <windows.h>
 	#define gai_malloc(size)              		VirtualAlloc(0, (size), MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE)
 	#define gai_realloc(pointer, newsize) 		VirtualAlloc((pointer), (newsize), MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE)
@@ -109,7 +110,7 @@
 		/* Functions to actually use. */ \
 		name()  							{ gaiDynArrayInit(this, this->type_size); }; \
 		~name() 							{ gaiDynArrayFree(this); }; \
-		type* append()				 		{ return (type *) gaiDynArrayInsert(this, 0, this->type_size); }; \
+		type* append( void )		 		{ return (type *) gaiDynArrayInsert(this, 0, this->type_size); }; \
 		type* append( type  element ) 		{ return (type *) gaiDynArrayInsert(this, &element, sizeof(element) ); }; \
 		type* get( int index ) 				{ return (type *) gaiDynArrayGet(this, index, this->type_size ); }; \
 		void  set( int index, type element) { gaiDynArraySet(this, index, &element, this->type_size ); }; \

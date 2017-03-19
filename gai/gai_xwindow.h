@@ -13,87 +13,87 @@
 typedef char GLchar;
 typedef ptrdiff_t GLsizeiptr;
 typedef ptrdiff_t GLintptr;
-#define GL_MAJOR_VERSION                  0x821B
-#define GL_MINOR_VERSION                  0x821C
-#define GL_NUM_EXTENSIONS                 0x821D
+#define GL_MAJOR_VERSION                  		0x821B
+#define GL_MINOR_VERSION                  		0x821C
+#define GL_NUM_EXTENSIONS                 		0x821D
 
-#define GL_TEXTURE0                       0x84C0
-#define GL_TEXTURE1                       0x84C1
-#define GL_TEXTURE2                       0x84C2
-#define GL_TEXTURE3                       0x84C3
-#define GL_TEXTURE4                       0x84C4
-#define GL_TEXTURE5                       0x84C5
-#define GL_TEXTURE6                       0x84C6
-#define GL_TEXTURE7                       0x84C7
-#define GL_TEXTURE8                       0x84C8
-#define GL_TEXTURE9                       0x84C9
-#define GL_TEXTURE10                      0x84CA
+#define GL_TEXTURE0                       		0x84C0
+#define GL_TEXTURE1                       		0x84C1
+#define GL_TEXTURE2                       		0x84C2
+#define GL_TEXTURE3                       		0x84C3
+#define GL_TEXTURE4                       		0x84C4
+#define GL_TEXTURE5                       		0x84C5
+#define GL_TEXTURE6                       		0x84C6
+#define GL_TEXTURE7                       		0x84C7
+#define GL_TEXTURE8                       		0x84C8
+#define GL_TEXTURE9                       		0x84C9
+#define GL_TEXTURE10                      		0x84CA
 
-#define GL_FRAGMENT_SHADER                0x8B30
-#define GL_VERTEX_SHADER                  0x8B31
-#define GL_SHADING_LANGUAGE_VERSION       0x8B8C
-#define GL_COMPILE_STATUS                 0x8B81
-#define GL_LINK_STATUS                    0x8B82
-#define GL_VALIDATE_STATUS                0x8B83
-#define GL_ARRAY_BUFFER                   0x8892
-#define GL_ELEMENT_ARRAY_BUFFER           0x8893
-#define GL_ARRAY_BUFFER_BINDING           0x8894
-#define GL_ELEMENT_ARRAY_BUFFER_BINDING   0x8895
-#define GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING 0x889F
-#define GL_READ_ONLY                      0x88B8
-#define GL_WRITE_ONLY                     0x88B9
-#define GL_READ_WRITE                     0x88BA
-#define GL_BUFFER_ACCESS                  0x88BB
-#define GL_BUFFER_MAPPED                  0x88BC
-#define GL_BUFFER_MAP_POINTER             0x88BD
-#define GL_STREAM_DRAW                    0x88E0
-#define GL_STREAM_READ                    0x88E1
-#define GL_STREAM_COPY                    0x88E2
-#define GL_STATIC_DRAW                    0x88E4
-#define GL_STATIC_READ                    0x88E5
-#define GL_STATIC_COPY                    0x88E6
-#define GL_DYNAMIC_DRAW                   0x88E8
-#define GL_DYNAMIC_READ                   0x88E9
-#define GL_DYNAMIC_COPY                   0x88EA
+#define GL_FRAGMENT_SHADER                		0x8B30
+#define GL_VERTEX_SHADER                  		0x8B31
+#define GL_SHADING_LANGUAGE_VERSION       		0x8B8C
+#define GL_COMPILE_STATUS                 		0x8B81
+#define GL_LINK_STATUS                    		0x8B82
+#define GL_VALIDATE_STATUS                		0x8B83
+#define GL_ARRAY_BUFFER                   		0x8892
+#define GL_ELEMENT_ARRAY_BUFFER           		0x8893
+#define GL_ARRAY_BUFFER_BINDING           		0x8894
+#define GL_ELEMENT_ARRAY_BUFFER_BINDING   		0x8895
+#define GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING 	0x889F
+#define GL_READ_ONLY                      		0x88B8
+#define GL_WRITE_ONLY                     		0x88B9
+#define GL_READ_WRITE                     		0x88BA
+#define GL_BUFFER_ACCESS                  		0x88BB
+#define GL_BUFFER_MAPPED                  		0x88BC
+#define GL_BUFFER_MAP_POINTER             		0x88BD
+#define GL_STREAM_DRAW                    		0x88E0
+#define GL_STREAM_READ                    		0x88E1
+#define GL_STREAM_COPY                    		0x88E2
+#define GL_STATIC_DRAW                    		0x88E4
+#define GL_STATIC_READ                    		0x88E5
+#define GL_STATIC_COPY                    		0x88E6
+#define GL_DYNAMIC_DRAW                   		0x88E8
+#define GL_DYNAMIC_READ                   		0x88E9
+#define GL_DYNAMIC_COPY                   		0x88EA
 
-#define GL_MAP_READ_BIT                   0x0001
-#define GL_MAP_WRITE_BIT                  0x0002
-#define GL_MAP_INVALIDATE_RANGE_BIT       0x0004
-#define GL_MAP_INVALIDATE_BUFFER_BIT      0x0008
-#define GL_MAP_FLUSH_EXPLICIT_BIT         0x0010
-#define GL_MAP_UNSYNCHRONIZED_BIT         0x0020
+#define GL_MAP_READ_BIT                   		0x0001
+#define GL_MAP_WRITE_BIT                  		0x0002
+#define GL_MAP_INVALIDATE_RANGE_BIT       		0x0004
+#define GL_MAP_INVALIDATE_BUFFER_BIT      		0x0008
+#define GL_MAP_FLUSH_EXPLICIT_BIT         		0x0010
+#define GL_MAP_UNSYNCHRONIZED_BIT         		0x0020
 
-#define GL_MAP_PERSISTENT_BIT             0x0040
-#define GL_MAP_COHERENT_BIT               0x0080
-#define GL_DYNAMIC_STORAGE_BIT            0x0100
-#define GL_CLIENT_STORAGE_BIT             0x0200
+#define GL_MAP_PERSISTENT_BIT             		0x0040
+#define GL_MAP_COHERENT_BIT               		0x0080
+#define GL_DYNAMIC_STORAGE_BIT            		0x0100
+#define GL_CLIENT_STORAGE_BIT             		0x0200
 
-#define GL_MAX_COLOR_TEXTURE_SAMPLES      0x910E
-#define GL_MAX_DEPTH_TEXTURE_SAMPLES      0x910F
-#define GL_MAX_INTEGER_SAMPLES            0x9110
+#define GL_MAX_COLOR_TEXTURE_SAMPLES      		0x910E
+#define GL_MAX_DEPTH_TEXTURE_SAMPLES      		0x910F
+#define GL_MAX_INTEGER_SAMPLES            		0x9110
 
-#define GL_DEBUG_SOURCE_API               0x8246
-#define GL_DEBUG_SOURCE_WINDOW_SYSTEM     0x8247
-#define GL_DEBUG_SOURCE_SHADER_COMPILER   0x8248
-#define GL_DEBUG_SOURCE_THIRD_PARTY       0x8249
-#define GL_DEBUG_SOURCE_APPLICATION       0x824A
-#define GL_DEBUG_SOURCE_OTHER             0x824B
-#define GL_DEBUG_TYPE_ERROR               0x824C
-#define GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR 0x824D
-#define GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR  0x824E
-#define GL_DEBUG_TYPE_PORTABILITY         0x824F
-#define GL_DEBUG_TYPE_PERFORMANCE         0x8250
-#define GL_DEBUG_TYPE_OTHER               0x8251
-#define GL_DEBUG_LOGGED_MESSAGES          0x9145
-#define GL_DEBUG_SEVERITY_HIGH            0x9146
-#define GL_DEBUG_SEVERITY_MEDIUM          0x9147
-#define GL_DEBUG_SEVERITY_LOW             0x9148
-#define GL_DEBUG_TYPE_MARKER              0x8268
-#define GL_DEBUG_TYPE_PUSH_GROUP          0x8269
-#define GL_DEBUG_TYPE_POP_GROUP           0x826A
-#define GL_DEBUG_SEVERITY_NOTIFICATION    0x826B
-#define GL_DEBUG_OUTPUT                   0x92E0
-#define GL_DEBUG_OUTPUT_SYNCHRONOUS       0x8242
+#define GL_DEBUG_SOURCE_API               		0x8246
+#define GL_DEBUG_SOURCE_WINDOW_SYSTEM     		0x8247
+#define GL_DEBUG_SOURCE_SHADER_COMPILER   		0x8248
+#define GL_DEBUG_SOURCE_THIRD_PARTY       		0x8249
+#define GL_DEBUG_SOURCE_APPLICATION       		0x824A
+#define GL_DEBUG_SOURCE_OTHER             		0x824B
+#define GL_DEBUG_TYPE_ERROR               		0x824C
+#define GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR 		0x824D
+#define GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR  		0x824E
+#define GL_DEBUG_TYPE_PORTABILITY         		0x824F
+#define GL_DEBUG_TYPE_PERFORMANCE         		0x8250
+#define GL_DEBUG_TYPE_OTHER               		0x8251
+#define GL_DEBUG_LOGGED_MESSAGES          		0x9145
+#define GL_DEBUG_SEVERITY_HIGH            		0x9146
+#define GL_DEBUG_SEVERITY_MEDIUM          		0x9147
+#define GL_DEBUG_SEVERITY_LOW             		0x9148
+#define GL_DEBUG_TYPE_MARKER              		0x8268
+#define GL_DEBUG_TYPE_PUSH_GROUP          		0x8269
+#define GL_DEBUG_TYPE_POP_GROUP           		0x826A
+#define GL_DEBUG_SEVERITY_NOTIFICATION    		0x826B
+#define GL_DEBUG_OUTPUT                   		0x92E0
+#define GL_DEBUG_OUTPUT_SYNCHRONOUS       		0x8242
 
 typedef void (APIENTRY  *GLDEBUGPROC)(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam);
 
@@ -597,7 +597,7 @@ gaiXWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 							wglDeleteContext(ctx);
 						}
 					}
-					timeEndPeriod(1);
+//					timeEndPeriod(1);
 				}
 
 				PostQuitMessage(0);
@@ -795,7 +795,7 @@ gaiXWindow(gai_xwnd *window, const char *title, int width, int height, int x, in
 
 	if (renderer == XWND_RENDERER_OPENGL)
 	{
-		timeBeginPeriod(1);
+		//timeBeginPeriod(1);
 		PIXELFORMATDESCRIPTOR pfd = {};
 		pfd.nSize                 = sizeof(pfd);
 		pfd.nVersion              = 1;

@@ -69,14 +69,13 @@ int main(int argc, char **argv)
 
 #if 1
 gai_xgp_context *_dbg_ctx = 0;
-char _dbg_txt_buffer[4096]; int _dbg_txt_xoff, _dbg_txt_yoff;
+char _dbg_txt_buffer[4096]; float _dbg_txt_xoff, _dbg_txt_yoff;
 #define gai_dbg_begin(ctx) _dbg_ctx = ctx
 #define gai_dbg_end() _dbg_ctx = 0; _dbg_txt_xoff = 0; _dbg_txt_yoff = 0
-#define gai_dbg_sprint(prefix, fmt, ...) if(graphics.default_font)  \
+#define gai_dbg_sprint(prefix, fmt, ...) \
     { \
         gai_snprintf( (_dbg_txt_buffer), 4095, "[ %-16s ] "fmt, prefix, __VA_ARGS__); \
-        gaiXGraphicsDrawDynamicText2D( (_dbg_ctx), (_dbg_txt_xoff), (_dbg_txt_yoff), (_dbg_txt_buffer) , {1,1,1,1}); \
-        _dbg_txt_yoff+=graphics.default_font->height; \
+        gaiXGraphicsDrawDynamicText2D( (_dbg_ctx), &(_dbg_txt_xoff), &(_dbg_txt_yoff), (_dbg_txt_buffer) , {1,1,1,1}); \
     }
 #else
 #define gai_dbg_begin(...)
@@ -84,7 +83,11 @@ char _dbg_txt_buffer[4096]; int _dbg_txt_xoff, _dbg_txt_yoff;
 #define gai_dbg_sprint(...)
 #endif
 
-#include <clocale>
+void reload()
+{
+
+}
+
 int main(int argc, char **argv)
 {
     gai_xwnd window;
@@ -96,22 +99,21 @@ int main(int argc, char **argv)
     gai_xgp_font *f = gaiXGraphicsLoadFont(&graphics, "C:/windows/fonts/impact.ttf", 48);
     glClearColor(0, 0, 0, 1);
 
-    while (window.is_running)
+    for (;;)
     {
         glClear(GL_COLOR_BUFFER_BIT);
         gaiXWindowUpdate(&window);
+        if (!window.is_running) break;
 
         #if 1
         gai_dbg_begin(&graphics);
-
-        gai_dbg_sprint("Viewport", "%ix%i x:%i, y:%i, fps:%i, frametime:%f, vsync:%i, fullscreen:%i", window.info.width, window.info.height, window.info.x, window.info.y, window.info.fps, window.frametime.seconds, (window.renderer.attributes & XWND_VSYNC ? 1 : 0), (window.renderer.attributes & XWND_FULLSCREEN ? 1 : 0));
-        gai_dbg_sprint("Mouse", "x:%i, y:%i, dx:%i, dy:%i, wheel:%i, dwheel:%i, left:%i, middle:%i, right:%i", window.input.x, window.input.y, window.input.dx, window.input.dy, window.input.wheel, window.input.dwheel, gai_input_mouse[0], gai_input_mouse[1], gai_input_mouse[2]);
-        gai_dbg_sprint("Renderer", "OpenGL, %s, %s, %s, %s", window.renderer.info.opengl.version, window.renderer.info.opengl.vendor, window.renderer.info.opengl.renderer, window.renderer.info.opengl.shading_language_version);
-        gai_dbg_sprint("Renderer", "Triangles: %i", (int)(graphics.default_font->buffer->used / graphics.default_font->buffer->size_per_segment / 3));
+        gai_dbg_sprint("Viewport", "%ix%i x:%i, y:%i, fps:%i, frametime:%f, vsync(f2):%i, fullscreen(f1):%i\n", window.info.width, window.info.height, window.info.x, window.info.y, window.info.fps, window.frametime.seconds, (window.renderer.attributes & XWND_VSYNC ? 1 : 0), (window.renderer.attributes & XWND_FULLSCREEN ? 1 : 0));
+        gai_dbg_sprint("Mouse", "x:%i, y:%i, dx:%i, dy:%i, wheel:%i, dwheel:%i, left:%i, middle:%i, right:%i\n", window.input.x, window.input.y, window.input.dx, window.input.dy, window.input.wheel, window.input.dwheel, gai_input_mouse[0], gai_input_mouse[1], gai_input_mouse[2]);
+        gai_dbg_sprint("Renderer", "OpenGL, %s, %s, %s, %s\n", window.renderer.info.opengl.version, window.renderer.info.opengl.vendor, window.renderer.info.opengl.renderer, window.renderer.info.opengl.shading_language_version);
         gai_dbg_end();
         #endif
-        gaiXGraphicsDrawDynamicText2D(&graphics, 100, 600, "Münster", V4(1, 0, 0, 1), f);
 
+        gaiXGraphicsDrawDynamicText2D(&graphics, 100, 600, ";)", V4(1, 1, 0, 1), f);
         gaiXGraphicsRenderDynamicText2D(&graphics);
         gaiXWindowRender(&window);
     }

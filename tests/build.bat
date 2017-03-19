@@ -14,7 +14,7 @@ if "%1"=="dll" (
 
 if "%1"=="static" (
 	echo standard build with static linking
-	cl %compilerflags% -DGAI_SOURCE opengl_win32.cc /link %linkerflags%
+	cl %compilerflags% opengl_win32.cc /link %linkerflags%
 	goto :end
 )
 
