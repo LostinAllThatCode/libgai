@@ -267,5 +267,31 @@ gai_file_exists(char *filename)
 	return (result == 0);
 }
 
+#if 0
+#ifdef GAIXW_DONT_INCL_WIN
+#define WINAPI __stdcall
+#define APIENTRY WINAPI
+#define WINGDIAPI __declspec(dllimport)
+typedef void* HWND;
+typedef HWND HDC, HINSTANCE;
+typedef const char * LPCSTR;
+typedef struct tagPOINT { float x, y; } POINT, *PPOINT;
+typedef struct _RECT { float left, top, right, bottom; } RECT, *PRECT;
+typedef struct tagWINDOWPLACEMENT { unsigned int length, flags, showCmd; POINT ptMinPosition, ptMaxPosition; RECT  rcNormalPosition; } WINDOWPLACEMENT, *PWINDOWPLACEMENT, *LPWINDOWPLACEMENT;
+void* WINAPI wglGetProcAddress(LPCSTR lpszProc);
+#endif
+
+
+int
+gaiStringEquals(char *a, char *b)
+{
+    int result = 0;
+    while ( *a || *b )
+        if ( *a == *b ) a++, b++;
+        else return -1;
+    return result;
+}
+#endif
+
 #define _GAI_UTILS_H
 #endif

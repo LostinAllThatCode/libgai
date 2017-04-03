@@ -1,17 +1,43 @@
 #ifndef GAI_XGRAPHICS_H
 
+// ##########   ** THIS LIBRARY HAS CORE DEPENDENCIES ** ###############
 #include "gai_types.h"
 #include "gai_utils.h"
 #include "gai_math.h"
 
-struct gai_xgp_layout32 //  32 bytes, 8 floats
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"        /* image loading support library */
+#define STB_TRUETYPE_IMPLEMENTATION
+#include "stb_truetype.h"     /* font loading support library */
+
+#ifdef GAIXG_STATIC
+	#define GAIXG_API static
+#else
+	#define GAIXG_API extern
+#endif
+
+#ifndef GAIXG_ASSERT
+	#include <assert.h>
+	#define GAIXG_ASSERT(x) assert(x)
+#endif
+
+#ifdef GAIXG_DEBUG
+	#include <stdio.h>
+	#define GAIXG_PRINT(fmt, ...) printf(fmt, __VA_ARGS__)
+#else
+	#define GAIXG_PRINT(fmt, ...)
+#endif
+
+// #####################################################################
+
+struct gaixg_layout32 //  32 bytes, 8 floats
 {
 	float uv[2];
-	float color[4];
-	float position[2];
+	float color[3];
+	float position[3];
 };
 
-struct gai_xgp_layout48 //  48 bytes, 12 floats
+struct gaixg_layout48 //  48 bytes, 12 floats
 {
 	float uv[2];
 	float color[4];
@@ -19,7 +45,7 @@ struct gai_xgp_layout48 //  48 bytes, 12 floats
 	float position[3];
 }; // NOTE: Code XL interleaved data format T2F_C4F_N3F_V3F (0 bytes offset, 0 bytes stride)
 
-struct gai_xgp_layout64 //  64 bytes, 16 floats
+struct gaixg_layout64 //  64 bytes, 16 floats
 {
 	float uv[2];
 	float color[4];
@@ -28,7 +54,7 @@ struct gai_xgp_layout64 //  64 bytes, 16 floats
 	float reserved[4];
 }; // NOTE: Code XL interleaved data format T2F_C4F_N3F_V3F (0 bytes offset, 16 bytes stride) ** 16 bytes stride are reserved for possible later use
 
-enum gai_xgp_buffer_flags_enum
+enum gaixg_buffer_flags_enum
 {
 	XGP_BUFFER_STATIC,
 	XGP_BUFFER_DYNAMIC,
@@ -38,9 +64,10 @@ enum gai_xgp_buffer_flags_enum
 	XGP_BUFFER_READ,
 	XGP_BUFFER_WRITE,
 };
-struct gai_xgp_buffer
+struct gaixg_buffer
 {
-	gai_xgp_buffer_flags_enum 	flags;
+	gaixg_buffer_flags_enum 	flags;
+	u32							vao;
 	u32 						handle;
 	size_t  					size;
 	size_t  					used;
@@ -48,79 +75,87 @@ struct gai_xgp_buffer
 	void			 			*address;
 };
 
-
-struct gai_xgp_font
+struct gaixg_font
 {
 	u32               	texture;
 	i32 			 	texture_size;
 	i32					height;
 	stbtt_packedchar 	characters[255];
-	gai_xgp_buffer      *buffer;
+	gaixg_buffer      	*buffer;
 };
 
-#define GAI_XGP_DYN_STR_DEF_BUFSIZE gai_megabytes(8);
-struct gai_xgp_drawcall_dynamic_string
+#define gaixg_DYN_STR_DEF_BUFSIZE gai_megabytes(8);
+struct gaixg_drawcall_dynamic_string
 {
 	u32					start;
 	u32					length;
-	gai_xgp_font        *font;
+	gaixg_font        	*font;
 };
 
-GAI_DYNAMIC( gai_xgp_font_array,    gai_xgp_font );
-GAI_DYNAMIC( gai_xgp_buffer_array,  gai_xgp_buffer );
-GAI_DYNAMIC( gai_xgp_opengl_handles, u32 );
+GAI_DYNAMIC( gaixg_font_array,    gaixg_font );
+GAI_DYNAMIC( gaixg_buffer_array,  gaixg_buffer );
+GAI_DYNAMIC( gaixg_opengl_handles, u32 );
 
-struct gai_xgp_context
+struct gaixg_context
 {
-	gai_xwnd 				*window;
+	gaixw_context 			*window;
 
-	gai_xgp_font_array 		fonts;
-	gai_xgp_buffer_array    buffers;
+	gaixg_font_array 		fonts;
+	gaixg_buffer_array    	buffers;
 
-	gai_xgp_opengl_handles 	textures;
-	gai_xgp_opengl_handles 	programs;
+	gaixg_opengl_handles 	textures;
+	gaixg_opengl_handles 	programs;
 
 	struct
 	{
 		u32 			program;
 		u32 			transform;
 		void            *memory;
-		gai_xgp_font 	*default_font;
+		u32				vao;
+		gaixg_font 	*default_font;
 	} builtin_font_shader;
 };
 
 #define external extern
+struct gaixg_text_rect
+{
+	int x, y, w, h;
+};
 
-external int 				gaiXGraphicsCreateContext			(gai_xgp_context *context, gai_xwnd *window);
-external void 				gaiXGraphicsDrawDynamicText2D		(gai_xgp_context *context, float x, float y, char *text, v4 color = V4(1, 1, 1, 1), gai_xgp_font *font = 0);
-external void 				gaiXGraphicsDrawDynamicText2D		(gai_xgp_context *context, float *x, float *y, char *text, v4 color = V4(1, 1, 1, 1), gai_xgp_font *font = 0);
 
-external void 				gaiXGraphicsOpenGLReleaseHandles	(gai_xgp_context *context);
+external int 				gaiXGraphicsCreateContext			(gaixg_context *context, gaixw_context *window);
+external gaixg_text_rect 	gaiXGraphicsGetTextRect				(gaixg_context *context, float  x, float  y, char *text, gaixg_font *font = 0);
+GAI_DEF  void 				gaiXGraphicsDrawDynamicText2D		(gaixg_context *context, float *x, float *y, float *z, wchar_t *text, v4 color, gaixg_font * font, int random = 0);
+GAI_DEF  void 				gaiXGraphicsDrawDynamicText2D		(gaixg_context *context, float *x, float *y, float *z, char *text, v4 color = V4(1, 1, 1, 1), gaixg_font *font = 0);
+GAI_DEF  void 				gaiXGraphicsDrawDynamicText2D		(gaixg_context *context, float  x, float  y, float  z, char *text, v4 color = V4(1, 1, 1, 1), gaixg_font *font = 0);
 
-external gai_xgp_font* 		gaiXGraphicsLoadFont				(gai_xgp_context *context, char *filename, int size, bool dynamic = false);
-external gai_xgp_font*    	gaiXGraphicsLoadDynamicFont 		(gai_xgp_context *context, char *filename, int size);
-external gai_xgp_font*   	gaiXGraphicsLoadStaticFont 			(gai_xgp_context *context, char *filename, int size);
+external void			 	gaiXGraphicsOpenGLReleaseHandles	(gaixg_context *context);
 
-external int				gaiXGraphicsCompileShader			(gai_xgp_context *context, char *version, char *vertex, char *fragment);
+external gaixg_font* 		gaiXGraphicsLoadFont				(gaixg_context *context, char *filename, int size, bool dynamic = false);
+external gaixg_font*    	gaiXGraphicsLoadDynamicFont 		(gaixg_context *context, char *filename, int size);
+external gaixg_font*   		gaiXGraphicsLoadStaticFont 			(gaixg_context *context, char *filename, int size);
 
-external gai_xgp_buffer*	gaiXGraphicsBufferCreate			(gai_xgp_context *context, size_t buffer_size, size_t size_per_segment, gai_xgp_buffer_flags_enum flags = XGP_BUFFER_STATIC);
-external void 				gaiXGraphicsBufferMap 				(gai_xgp_context *context, gai_xgp_buffer *buffer);
-external void 				gaiXGraphicsBufferUnmap 			(gai_xgp_context *context, gai_xgp_buffer *buffer);
-external void 				gaiXGraphicsBufferPushData			(gai_xgp_context *context, gai_xgp_buffer *buffer, void *data, size_t size);
-external void 				gaiXGraphicsBufferPushSubData 		(gai_xgp_context *context, gai_xgp_buffer *buffer, void *data, size_t size);
-external void 				gaiXGraphicsBufferReset				(gai_xgp_context *context, gai_xgp_buffer *buffer);
+external int				gaiXGraphicsCompileShader			(gaixg_context *context, char *version, char *vertex, char *fragment);
+
+external gaixg_buffer*		gaiXGraphicsBufferCreate			(gaixg_context *context, size_t buffer_size, size_t size_per_segment, gaixg_buffer_flags_enum flags = XGP_BUFFER_STATIC);
+external void 				gaiXGraphicsBufferMap 				(gaixg_context *context, gaixg_buffer *buffer);
+external void 				gaiXGraphicsBufferUnmap 			(gaixg_context *context, gaixg_buffer *buffer);
+external void 				gaiXGraphicsBufferPushData			(gaixg_context *context, gaixg_buffer *buffer, void *data, size_t size);
+external void 				gaiXGraphicsBufferPushSubData 		(gaixg_context *context, gaixg_buffer *buffer, void *data, size_t size);
+external void 				gaiXGraphicsBufferReset				(gaixg_context *context, gaixg_buffer *buffer);
+
 
 GAI_DEF void
-gaiXGraphicsContextRelease(void *context)
+gaiXGraphicsContextRelease(gaixw_context *window, void *context)
 {
-	gai_xgp_context *c = (gai_xgp_context *) context;
-	gai_free(c->builtin_font_shader.memory);
+	gaixg_context *c = (gaixg_context *) context;
+	free(c->builtin_font_shader.memory);
 
 	gaiXGraphicsOpenGLReleaseHandles(c);
 }
 
 GAI_DEF void
-gaiXGraphicsOpenGLReleaseHandles(gai_xgp_context * context)
+gaiXGraphicsOpenGLReleaseHandles(gaixg_context * context)
 {
 	glDeleteTextures(context->textures.length(), context->textures.elements);
 
@@ -129,27 +164,27 @@ gaiXGraphicsOpenGLReleaseHandles(gai_xgp_context * context)
 }
 
 GAI_DEF int
-gaiXGraphicsCreateContext(gai_xgp_context *context, gai_xwnd *window)
+gaiXGraphicsCreateContext(gaixg_context *context, gaixw_context *window)
 {
 	context->window 							= window;
-	context->builtin_font_shader.default_font	= gaiXGraphicsLoadDynamicFont(context, "c:/windows/fonts/consolab.ttf", 10);
+	context->builtin_font_shader.default_font	= gaiXGraphicsLoadFont(context, "c:/windows/fonts/consolab.ttf", 12, false);
 	if (!context->builtin_font_shader.default_font) return 0;
 
-	context->builtin_font_shader.memory 		= gai_malloc(gai_megabytes(16));
+	context->builtin_font_shader.memory 		= malloc(gai_megabytes(16));
 	if (!context->builtin_font_shader.memory) 		return 0;
 
 	char *version = R"GLSL(#version 440)GLSL";
 	char *vertex  = R"GLSL(
 			layout (location = 0) in vec2 in_uv;
-			layout (location = 1) in vec4 in_color;
-			layout (location = 2) in vec2 in_vertex;
+			layout (location = 1) in vec3 in_color;
+			layout (location = 2) in vec3 in_vertex;
 			uniform mat4 transform;
 			out vec4 out_color;
 			out vec2 out_uv;
 			void main()
 			{
-				gl_Position = transform * vec4(in_vertex.x, in_vertex.y, 0, 1);
-				out_color 	= in_color;
+				gl_Position = transform * vec4(in_vertex.x, in_vertex.y, in_vertex.z, 1);
+				out_color 	= vec4(in_color, 1.0);
 				out_uv    	= in_uv;
 			})GLSL";
 	char *frag = R"GLSL(
@@ -169,57 +204,58 @@ gaiXGraphicsCreateContext(gai_xgp_context *context, gai_xwnd *window)
 	context->builtin_font_shader.program    = gaiXGraphicsCompileShader(context, version, vertex, frag);
 	context->builtin_font_shader.transform 	= glGetUniformLocation(context->builtin_font_shader.program, "transform");
 
-	gaiXWindowRegisterDeInitCallback(window, gaiXGraphicsContextRelease, context);
+	gaiXWindowRegisterDeInitCallback(window, gaiXGraphicsContextRelease, (void*) context);
 
 	return 1;
 }
 
 int
-_gaiXGraphicsParseEscapeSequence(float *x, float *y, wchar_t *text, float init_x, float init_y, gai_xgp_font *font, v4 *c)
+_gaiXGraphicsParseEscapeSequence(float *x, float *y, wchar_t *text, float init_x, float init_y, gaixg_font *font, v4 *c)
 {
 	switch (*text)
 	{
-		case '\n':
-		{
-			*y += font->height;
-			*x = init_x;
-			return 1;
-		} break;
-		case '\t':
-		{
-			stbtt_packedchar *space = font->characters + ' ';
-			float xadv = space->xoff2 + space->xadvance;
-			*x += xadv * 4;
-			return 1;
-		} break;
-		default:
-		{
-			if ( wcsncmp(text, L"COLOR(", 6) == 0)
-			{
-				wchar_t *color = text + 6;
-				wchar_t *end = color;
-				while (*end != L')') end++;
-				int count = (end - color);
-				if (count > 0)
-				{
-					return count + 7;
-				}
-			}
-			return 0;
-		}
+		case '\n': { *y += font->height; *x = init_x; return 1; } break;
+		case '\t': { stbtt_packedchar *space = font->characters + ' '; float xadv = space->xadvance; *x += xadv * 4; return 1; } break;
 	}
 	return 0;
 }
 
-GAI_DEF void
-gaiXGraphicsDrawDynamicText2D(gai_xgp_context *context, float *x, float *y, wchar_t *text, v4 color, gai_xgp_font *font)
+inline gaixg_text_rect
+gaiXGraphicsGetTextRect(gaixg_context *context, float x, float y, wchar_t *text, gaixg_font *font)
+{
+	gaixg_text_rect result = { (int)x, (int)y, 0, 0};
+	if ( font == 0 ) font = context->builtin_font_shader.default_font;
+	float width = 0, height = font->height;
+	while (*text)
+	{
+		stbtt_packedchar *c = font->characters + (int)(*text);
+		if (*text == '\t') 		width += c->xadvance * 4;
+		else if (*text == '\n') 	height += font->height;
+		else 					width += c->xadvance;
+		*text++;
+	}
+	result.w = (int)width;
+	result.h = (int)height;
+	return result;
+}
+
+inline gaixg_text_rect
+gaiXGraphicsGetTextRect(gaixg_context *context, float x, float y, char *text, gaixg_font *font)
+{
+	wchar_t utf8_text[4096] = {};
+	MultiByteToWideChar(CP_UTF8, 0, text, -1, utf8_text, 4095);
+	return gaiXGraphicsGetTextRect(context, x, y, utf8_text, font);
+}
+
+inline GAI_DEF void
+gaiXGraphicsDrawDynamicText2D(gaixg_context * context, float *x, float *y, float *z, wchar_t *text, v4 color, gaixg_font * font, int random)
 {
 	if ( font == 0 ) font = context->builtin_font_shader.default_font;
 
-	gai_xgp_layout32 *start 	= (gai_xgp_layout32*) context->builtin_font_shader.memory;
-	gai_xgp_layout32 *current 	= start;
+	gaixg_layout32 *start 	= (gaixg_layout32*) context->builtin_font_shader.memory;
+	gaixg_layout32 *current = start;
 
-	gai_assert(start);
+	GAIXG_ASSERT(start);
 	if (start == 0) return;
 
 	float initial_x = *x;
@@ -235,140 +271,161 @@ gaiXGraphicsDrawDynamicText2D(gai_xgp_context *context, float *x, float *y, wcha
 			continue;
 		}
 
+		if (random == 1)
+		{
+			color.g = (rand() % 255) / 255.f;
+		} else if (random == 2)
+		{
+			color.g = (rand() % 255) / 255.f;
+			*x = initial_x;
+			*y += font->height;
+		}
+
 		stbtt_aligned_quad q;
 		stbtt_GetPackedQuad(font->characters, font->texture_size, font->texture_size, *text, x, y, &q, 0);
-		*current++ = {q.s1, q.t1, color.r, color.g, color.b, color.a, q.x1, q.y1 + font->height};
-		*current++ = {q.s0, q.t1, color.r, color.g, color.b, color.a, q.x0, q.y1 + font->height};
-		*current++ = {q.s0, q.t0, color.r, color.g, color.b, color.a, q.x0, q.y0 + font->height};
-		*current++ = {q.s1, q.t0, color.r, color.g, color.b, color.a, q.x1, q.y0 + font->height};
-		*current++ = {q.s0, q.t0, color.r, color.g, color.b, color.a, q.x0, q.y0 + font->height};
-		*current++ = {q.s1, q.t1, color.r, color.g, color.b, color.a, q.x1, q.y1 + font->height};
+		*current++ = {q.s1, q.t1, color.r, color.g, color.b, q.x1, q.y1, *z};
+		*current++ = {q.s0, q.t1, color.r, color.g, color.b, q.x0, q.y1, *z};
+		*current++ = {q.s0, q.t0, color.r, color.g, color.b, q.x0, q.y0, *z};
+		*current++ = {q.s1, q.t0, color.r, color.g, color.b, q.x1, q.y0, *z};
+		*current++ = {q.s0, q.t0, color.r, color.g, color.b, q.x0, q.y0, *z};
+		*current++ = {q.s1, q.t1, color.r, color.g, color.b, q.x1, q.y1, *z};
 		*text++;
 	}
-	gaiXGraphicsBufferPushSubData(context, font->buffer, start, (current - start) * sizeof(gai_xgp_layout32) );
-	*x = initial_x;
+	gaiXGraphicsBufferPushSubData(context, font->buffer, start, (current - start) * sizeof(gaixg_layout32) );
 }
 
-GAI_DEF void
-gaiXGraphicsDrawDynamicText2D(gai_xgp_context *context, float *x, float *y, char *text, v4 color, gai_xgp_font *font)
+inline GAI_DEF void
+gaiXGraphicsDrawDynamicText2D(gaixg_context * context, float *x, float *y, float *z, char *text, v4 color, gaixg_font * font)
 {
 	wchar_t utf8_text[4096] = {};
-	MultiByteToWideChar(CP_UTF8, 0, text, strlen(text) * sizeof(char), utf8_text, 4095);
-	gaiXGraphicsDrawDynamicText2D(context, x, y, utf8_text, color, font);
+	MultiByteToWideChar(CP_UTF8, 0, text, -1, utf8_text, 4095);
+	return gaiXGraphicsDrawDynamicText2D(context, x, y, z, utf8_text, color, font);
 }
 
-
-GAI_DEF void
-gaiXGraphicsDrawDynamicText2D(gai_xgp_context *context, float x, float y, char *text, v4 color, gai_xgp_font *font)
+inline GAI_DEF void
+gaiXGraphicsDrawDynamicText2D(gaixg_context * context, float x, float y, float z, char *text, v4 color, gaixg_font * font)
 {
 	wchar_t utf8_text[4096] = {};
-	MultiByteToWideChar(CP_UTF8, 0, text, strlen(text) * sizeof(char), utf8_text, 4095);
-	gaiXGraphicsDrawDynamicText2D(context, &x, &y, utf8_text, color, font);
+	MultiByteToWideChar(CP_UTF8, 0, text, -1, utf8_text, 4095);
+	return gaiXGraphicsDrawDynamicText2D(context, &x, &y, &z, utf8_text, color, font);
 }
 
 GAI_DEF void
-gaiXGraphicsRenderDynamicText2D(gai_xgp_context *context)
+gaiXGraphicsRenderDynamicText2D(gaixg_context * context)
 {
-	gai_xwnd_renderer_enum type = context->window->renderer.type;
+	gaixw_renderer_enum type = context->window->renderer.type;
 	switch (type)
 	{
-		case XWND_RENDERER_OPENGL:
+		case gaixwRendererOpenGL:
 		{
 			glUseProgram(context->builtin_font_shader.program);
 			glViewport(0, 0, context->window->info.width, context->window->info.height);
-			m4x4 transform = Orthographic(0, context->window->info.width, 0, context->window->info.height, 1, -1);
+			m4x4 transform = Orthographic(0, context->window->info.width, 0, context->window->info.height, 10, -10);
 			glUniformMatrix4fv(context->builtin_font_shader.transform, 1, GL_TRUE, (const GLfloat*) &transform);
+
+			glEnable(GL_DEPTH_TEST);
+			glDepthRange(10, -10);
 
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-			gai_fiz(context->fonts.length())
+			//gai_fiz(context->fonts.length())
+			for (int i = context->fonts.length() - 1; i >= 0; i--)
 			{
-				gai_xgp_font* font = context->fonts.get(i);
+				gaixg_font* font = context->fonts.get(i);
 				if (font)
 				{
-					glBindBuffer(GL_ARRAY_BUFFER, font->buffer->handle);
+					glBindBuffer(0x8892 /*  GL_ARRAY_BUFFER */, font->buffer->handle);
 					glBindTexture(GL_TEXTURE_2D, font->texture);
-
-					glEnableVertexAttribArray(0); glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(gai_xgp_layout32), (const GLvoid*) gai_offsetof(gai_xgp_layout32, uv) ); \
-					glEnableVertexAttribArray(1); glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(gai_xgp_layout32), (const GLvoid*) gai_offsetof(gai_xgp_layout32, color) ); \
-					glEnableVertexAttribArray(2); glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(gai_xgp_layout32), (const GLvoid*) gai_offsetof(gai_xgp_layout32, position) ); \
+					glBindVertexArray(font->buffer->vao);
+					#if 0
+					glEnableVertexAttribArray(0); glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(gaixg_layout32), (const GLvoid*) gai_offsetof(gaixg_layout32, uv) );
+					glEnableVertexAttribArray(1); glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(gaixg_layout32), (const GLvoid*) gai_offsetof(gaixg_layout32, color) );
+					glEnableVertexAttribArray(2); glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(gaixg_layout32), (const GLvoid*) gai_offsetof(gaixg_layout32, position) );
 
 					glDrawArrays(GL_TRIANGLES, 0, font->buffer->used / font->buffer->size_per_segment);
 
 					glDisableVertexAttribArray(0);
 					glDisableVertexAttribArray(1);
 					glDisableVertexAttribArray(2);
-
+					#endif
+					glDrawArrays(GL_TRIANGLES, 0, font->buffer->used / font->buffer->size_per_segment);
 					gaiXGraphicsBufferReset(context, font->buffer);
 				}
 			}
 
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
+			glBindBuffer(0x8892 /*  GL_ARRAY_BUFFER */, 0);
 			glUseProgram(0);
 		} break;
 	}
 
 }
 
-GAI_DEF gai_xgp_buffer *
-gaiXGraphicsBufferCreate(gai_xgp_context *context, size_t buffer_size, size_t size_per_segment, gai_xgp_buffer_flags_enum flags)
+GAI_DEF gaixg_buffer *
+gaiXGraphicsBufferCreate(gaixg_context * context, size_t buffer_size, size_t size_per_segment, gaixg_buffer_flags_enum flags)
 {
-	gai_xgp_buffer *buffer      = context->buffers.append();
+	gaixg_buffer *buffer      = context->buffers.append();
 	buffer->size                = buffer_size;
 	buffer->size_per_segment    = size_per_segment;
 	buffer->used                = 0;
 	buffer->flags               = flags;
 
-	gai_xwnd_renderer_enum type = context->window->renderer.type;
+	gaixw_renderer_enum type = context->window->renderer.type;
 	switch (type)
 	{
-		case XWND_RENDERER_OPENGL:
+		case gaixwRendererOpenGL:
 		{
 			glGenBuffers(1, &buffer->handle);
-			glBindBuffer(GL_ARRAY_BUFFER, buffer->handle);
+			glBindBuffer(0x8892 /*  GL_ARRAY_BUFFER */, buffer->handle);
+
+			glGenVertexArrays(1, &buffer->vao);
+			glBindVertexArray(buffer->vao);
+			glEnableVertexAttribArray(0); glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(gaixg_layout32), (const GLvoid*) gai_offsetof(gaixg_layout32, uv) );
+			glEnableVertexAttribArray(1); glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(gaixg_layout32), (const GLvoid*) gai_offsetof(gaixg_layout32, color) );
+			glEnableVertexAttribArray(2); glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(gaixg_layout32), (const GLvoid*) gai_offsetof(gaixg_layout32, position) );
+			glBindVertexArray(0);
 
 			switch (flags)
 			{
 				case XGP_BUFFER_STATIC:
 				{
-					glBufferData(GL_ARRAY_BUFFER, buffer_size, 0, GL_STATIC_DRAW);
+					glBufferData(0x8892 /*  GL_ARRAY_BUFFER */, buffer_size, 0, 0x88E4 /* GL_STATIC_DRAW */);
 				} break;
 				case XGP_BUFFER_STREAM:
 				{
-					glBufferData(GL_ARRAY_BUFFER, buffer_size, 0, GL_STREAM_DRAW);
+					glBufferData(0x8892 /*  GL_ARRAY_BUFFER */, buffer_size, 0, 0x88E0 /* GL_STREAM_DRAW */);
 				} break;
 				case XGP_BUFFER_DYNAMIC:
 				{
-					glBufferStorage(GL_ARRAY_BUFFER, buffer_size, 0, GL_DYNAMIC_STORAGE_BIT);
+					glBufferStorage(0x8892 /*  GL_ARRAY_BUFFER */, buffer_size, 0, 0x0100 /* GL_DYNAMIC_STORAGE_BIT */);
 				} break;
 				case XGP_BUFFER_PERSISTENT_MEMORY:
 				{
 					if (flags & XGP_BUFFER_WRITE)
 					{
-						glBufferStorage(GL_ARRAY_BUFFER, buffer_size, 0, GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT);
-						buffer->address  = (gai_xgp_layout64 *) glMapBufferRange(GL_ARRAY_BUFFER, 0, buffer_size, GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT);
+						glBufferStorage(0x8892 /*  GL_ARRAY_BUFFER */, buffer_size, 0, 0x0002 /* GL_MAP_WRITE_BIT */ | 0x0040 /* GL_MAP_PERSISTENT_BIT */);
+						buffer->address  = (gaixg_layout64 *) glMapBufferRange(0x8892 /*  GL_ARRAY_BUFFER */, 0, buffer_size, 0x0002 /* GL_MAP_WRITE_BIT */ | 0x0040 /* GL_MAP_PERSISTENT_BIT */);
 					}
 					else if (flags & XGP_BUFFER_READ)
 					{
-						glBufferStorage(GL_ARRAY_BUFFER, buffer_size, 0, GL_MAP_READ_BIT | GL_MAP_PERSISTENT_BIT);
-						buffer->address  = (gai_xgp_layout64 *) glMapBufferRange(GL_ARRAY_BUFFER, 0, buffer_size, GL_MAP_READ_BIT | GL_MAP_PERSISTENT_BIT);
+						glBufferStorage(0x8892 /*  GL_ARRAY_BUFFER */, buffer_size, 0, 0x0001 /* GL_MAP_READ_BIT */ | 0x0040 /* GL_MAP_PERSISTENT_BIT */);
+						buffer->address  = (gaixg_layout64 *) glMapBufferRange(0x8892 /*  GL_ARRAY_BUFFER */, 0, buffer_size, 0x0001 /* GL_MAP_READ_BIT */ | 0x0040 /* GL_MAP_PERSISTENT_BIT */);
 					}
 				} break;
 			}
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
+			glBindBuffer(0x8892 /*  GL_ARRAY_BUFFER */, 0);
 		} break;
 	}
 	return buffer;
 }
 
 GAI_DEF void
-gaiXGraphicsBufferReset(gai_xgp_context *context, gai_xgp_buffer * buffer)
+gaiXGraphicsBufferReset(gaixg_context * context, gaixg_buffer * buffer)
 {
-	gai_xwnd_renderer_enum type = context->window->renderer.type;
+	gaixw_renderer_enum type = context->window->renderer.type;
 	switch (type)
 	{
-		case XWND_RENDERER_OPENGL:
+		case gaixwRendererOpenGL:
 		{
 			buffer->used = 0;
 		}
@@ -376,56 +433,56 @@ gaiXGraphicsBufferReset(gai_xgp_context *context, gai_xgp_buffer * buffer)
 }
 
 GAI_DEF void
-gaiXGraphicsBufferMap(gai_xgp_context *context, gai_xgp_buffer * buffer)
+gaiXGraphicsBufferMap(gaixg_context * context, gaixg_buffer * buffer)
 {
-	gai_xwnd_renderer_enum type = context->window->renderer.type;
+	gaixw_renderer_enum type = context->window->renderer.type;
 	switch (type)
 	{
-		case XWND_RENDERER_OPENGL:
+		case gaixwRendererOpenGL:
 		{
-			buffer->address = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+			buffer->address = glMapBuffer(0x8892 /*  GL_ARRAY_BUFFER */, 0x88B9 /* GL_WRITE_ONLY */);
 		}
 	}
 }
 
 GAI_DEF void
-gaiXGraphicsBufferUnmap(gai_xgp_context *context, gai_xgp_buffer * buffer)
+gaiXGraphicsBufferUnmap(gaixg_context * context, gaixg_buffer * buffer)
 {
-	gai_xwnd_renderer_enum type = context->window->renderer.type;
+	gaixw_renderer_enum type = context->window->renderer.type;
 	switch (type)
 	{
-		case XWND_RENDERER_OPENGL:
+		case gaixwRendererOpenGL:
 		{
-			if (buffer->address) glUnmapBuffer(GL_ARRAY_BUFFER);
+			if (buffer->address) glUnmapBuffer(0x8892 /*  GL_ARRAY_BUFFER */);
 		}
 	}
 }
 
 GAI_DEF void
-gaiXGraphicsBufferPushSubData(gai_xgp_context *context, gai_xgp_buffer * buffer, void *data, size_t size)
+gaiXGraphicsBufferPushSubData(gaixg_context * context, gaixg_buffer * buffer, void *data, size_t size)
 {
-	gai_assert( (buffer->used + size) < buffer->size );
-	gai_xwnd_renderer_enum type = context->window->renderer.type;
+	GAIXG_ASSERT( (buffer->used + size) < buffer->size );
+	gaixw_renderer_enum type = context->window->renderer.type;
 	switch (type)
 	{
-		case XWND_RENDERER_OPENGL:
+		case gaixwRendererOpenGL:
 		{
-			glBindBuffer(GL_ARRAY_BUFFER, buffer->handle);
-			glBufferSubData(GL_ARRAY_BUFFER, buffer->used, size, data);
+			glBindBuffer(0x8892 /*  GL_ARRAY_BUFFER */, buffer->handle);
+			glBufferSubData(0x8892 /*  GL_ARRAY_BUFFER */, buffer->used, size, data);
 			buffer->used += size;
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
+			glBindBuffer(0x8892 /*  GL_ARRAY_BUFFER */, 0);
 		}
 	}
 }
 
 GAI_DEF void
-gaiXGraphicsBufferPushData(gai_xgp_context *context, gai_xgp_buffer * buffer, void *data, size_t size)
+gaiXGraphicsBufferPushData(gaixg_context * context, gaixg_buffer * buffer, void *data, size_t size)
 {
-	gai_assert( (buffer->used + size) < buffer->size );
-	gai_xwnd_renderer_enum type = context->window->renderer.type;
+	GAIXG_ASSERT( (buffer->used + size) < buffer->size );
+	gaixw_renderer_enum type = context->window->renderer.type;
 	switch (type)
 	{
-		case XWND_RENDERER_OPENGL:
+		case gaixwRendererOpenGL:
 		{
 			if (buffer->address)
 			{
@@ -437,8 +494,8 @@ gaiXGraphicsBufferPushData(gai_xgp_context *context, gai_xgp_buffer * buffer, vo
 	}
 }
 
-GAI_DEF gai_xgp_font *
-gaiXGraphicsLoadFont(gai_xgp_context * context, char *filename, int size, bool dynamic)
+GAI_DEF gaixg_font *
+gaiXGraphicsLoadFont(gaixg_context * context, char *filename, int size, bool dynamic)
 {
 	if ( gai_file_exists(filename) == 0 ) return 0;
 
@@ -447,7 +504,7 @@ gaiXGraphicsLoadFont(gai_xgp_context * context, char *filename, int size, bool d
 	int texture_dim = 4096;
 	stbtt_pack_context font_context;
 
-	gai_xgp_font *font = context->fonts.append();
+	gaixg_font *font = context->fonts.append();
 	font->texture_size = texture_dim;
 	font->height       = size;
 
@@ -471,10 +528,10 @@ gaiXGraphicsLoadFont(gai_xgp_context * context, char *filename, int size, bool d
 	stbtt_PackFontRange(&font_context, font_buffer, 0, size, 0, 255, font->characters);
 	stbtt_PackEnd(&font_context);
 
-	gai_xwnd_renderer_enum type = context->window->renderer.type;
+	gaixw_renderer_enum type = context->window->renderer.type;
 	switch (type)
 	{
-		case XWND_RENDERER_OPENGL:
+		case gaixwRendererOpenGL:
 		{
 			#if 1
 			glGenTextures(1, &font->texture);
@@ -490,32 +547,32 @@ gaiXGraphicsLoadFont(gai_xgp_context * context, char *filename, int size, bool d
 	free(bitmap_buffer);
 	free(font_buffer);
 
-	font->buffer = gaiXGraphicsBufferCreate(context, gai_megabytes(2), sizeof(gai_xgp_layout32), (dynamic ? XGP_BUFFER_DYNAMIC : XGP_BUFFER_STATIC));
+	font->buffer = gaiXGraphicsBufferCreate(context, gai_megabytes(16), sizeof(gaixg_layout32), (dynamic ? XGP_BUFFER_DYNAMIC : XGP_BUFFER_STATIC));
 
 	context->textures.append(font->texture);
 	return font;
 }
 
-GAI_DEF gai_xgp_font *
-gaiXGraphicsLoadDynamicFont(gai_xgp_context * context, char *filename, int size)
+GAI_DEF gaixg_font *
+gaiXGraphicsLoadDynamicFont(gaixg_context * context, char *filename, int size)
 {
 	return gaiXGraphicsLoadFont(context, filename, size, true);
 }
 
 GAI_DEF void
-gaiXGraphicsCreateTexture(gai_xwnd_renderer_enum type)
+gaiXGraphicsCreateTexture(gaixw_renderer_enum type)
 {
 
 }
 
 GAI_DEF int
-gaiXGraphicsCompileShader(gai_xgp_context * context, char *version, char *vertex, char *fragment)
+gaiXGraphicsCompileShader(gaixg_context * context, char *version, char *vertex, char *fragment)
 {
 	switch (context->window->renderer.type)
 	{
-		case XWND_RENDERER_OPENGL:
+		case gaixwRendererOpenGL:
 		{
-			GLuint vertex_shader_id = glCreateShader(GL_VERTEX_SHADER);
+			GLuint vertex_shader_id = glCreateShader(0x8B31 /* GL_VERTEX_SHADER */);
 			GLchar *vertex_shader_code[] =
 			{
 				version,
@@ -524,7 +581,7 @@ gaiXGraphicsCompileShader(gai_xgp_context * context, char *version, char *vertex
 			glShaderSource(vertex_shader_id, gai_array_length(vertex_shader_code), vertex_shader_code, 0);
 			glCompileShader(vertex_shader_id);
 
-			GLuint fragment_shader_id = glCreateShader(GL_FRAGMENT_SHADER);
+			GLuint fragment_shader_id = glCreateShader(0x8B30 /* GL_FRAGMENT_SHADER */);
 			GLchar *fragment_shader_code[] =
 			{
 				version,
@@ -540,7 +597,7 @@ gaiXGraphicsCompileShader(gai_xgp_context * context, char *version, char *vertex
 
 			glValidateProgram(program_id);
 			GLint linked = false;
-			glGetProgramiv(program_id, GL_LINK_STATUS, &linked);
+			glGetProgramiv(program_id, 0x8B82 /* GL_LINK_STATUS */, &linked);
 			if (!linked)
 			{
 				GLsizei ignored;
@@ -551,7 +608,7 @@ gaiXGraphicsCompileShader(gai_xgp_context * context, char *version, char *vertex
 				glGetShaderInfoLog(fragment_shader_id, sizeof(fragment_code_errors), &ignored, fragment_code_errors);
 				glGetProgramInfoLog(program_id, sizeof(program_errors), &ignored, program_errors);
 
-				gai_assert(!"Shader validation failed");
+				GAIXG_ASSERT(!"Shader validation failed");
 			}
 
 			glDeleteShader(vertex_shader_id);
@@ -567,33 +624,33 @@ gaiXGraphicsCompileShader(gai_xgp_context * context, char *version, char *vertex
 
 /*
 GAI_DEF void
-gaiXGraphicsSetLayout(gai_xgp_context *context)
+gaiXGraphicsSetLayout(gaixg_context *context)
 {
 	switch (context->window->renderer.type)
 	{
-		case XWND_RENDERER_OPENGL:
+		case gaixwRendererOpenGL:
 		{
-			glEnableVertexAttribArray(0); glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(gai_xgp_layout64), (const GLvoid*) gai_offsetof(gai_xgp_layout64, uv) );
-			glEnableVertexAttribArray(1); glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(gai_xgp_layout64), (const GLvoid*) gai_offsetof(gai_xgp_layout64, color) );
-			glEnableVertexAttribArray(2); glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(gai_xgp_layout64), (const GLvoid*) gai_offsetof(gai_xgp_layout64, normal) );
-			glEnableVertexAttribArray(3); glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(gai_xgp_layout64), (const GLvoid*) gai_offsetof(gai_xgp_layout64, position) );
-			glEnableVertexAttribArray(4); glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(gai_xgp_layout64), (const GLvoid*) gai_offsetof(gai_xgp_layout64, reserved) );
+			glEnableVertexAttribArray(0); glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(gaixg_layout64), (const GLvoid*) gai_offsetof(gaixg_layout64, uv) );
+			glEnableVertexAttribArray(1); glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(gaixg_layout64), (const GLvoid*) gai_offsetof(gaixg_layout64, color) );
+			glEnableVertexAttribArray(2); glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(gaixg_layout64), (const GLvoid*) gai_offsetof(gaixg_layout64, normal) );
+			glEnableVertexAttribArray(3); glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(gaixg_layout64), (const GLvoid*) gai_offsetof(gaixg_layout64, position) );
+			glEnableVertexAttribArray(4); glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(gaixg_layout64), (const GLvoid*) gai_offsetof(gaixg_layout64, reserved) );
 		} break;
 	}
 }
 
 GAI_DEF void
-gaiXGraphicsClearLayout(gai_xgp_context *context)
+gaiXGraphicsClearLayout(gaixg_context *context)
 {
 	switch (context->window->renderer.type)
 	{
-		case XWND_RENDERER_OPENGL:
+		case gaixwRendererOpenGL:
 		{
-			glEnableVertexAttribArray(0); glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(gai_xgp_layout64), (const GLvoid*) gai_offsetof(gai_xgp_layout64, uv) );
-			glEnableVertexAttribArray(1); glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(gai_xgp_layout64), (const GLvoid*) gai_offsetof(gai_xgp_layout64, color) );
-			glEnableVertexAttribArray(2); glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(gai_xgp_layout64), (const GLvoid*) gai_offsetof(gai_xgp_layout64, normal) );
-			glEnableVertexAttribArray(3); glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(gai_xgp_layout64), (const GLvoid*) gai_offsetof(gai_xgp_layout64, position) );
-			glEnableVertexAttribArray(4); glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(gai_xgp_layout64), (const GLvoid*) gai_offsetof(gai_xgp_layout64, reserved) );
+			glEnableVertexAttribArray(0); glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(gaixg_layout64), (const GLvoid*) gai_offsetof(gaixg_layout64, uv) );
+			glEnableVertexAttribArray(1); glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(gaixg_layout64), (const GLvoid*) gai_offsetof(gaixg_layout64, color) );
+			glEnableVertexAttribArray(2); glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(gaixg_layout64), (const GLvoid*) gai_offsetof(gaixg_layout64, normal) );
+			glEnableVertexAttribArray(3); glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(gaixg_layout64), (const GLvoid*) gai_offsetof(gaixg_layout64, position) );
+			glEnableVertexAttribArray(4); glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(gaixg_layout64), (const GLvoid*) gai_offsetof(gaixg_layout64, reserved) );
 		} break;
 	}
 }
