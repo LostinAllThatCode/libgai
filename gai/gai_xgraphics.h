@@ -173,7 +173,7 @@ gaiXGraphicsCreateContext(gaixg_context *context, gaixw_context *window)
 	context->builtin_font_shader.memory 		= malloc(gai_megabytes(16));
 	if (!context->builtin_font_shader.memory) 		return 0;
 
-	char *version = R"GLSL(#version 440)GLSL";
+	char *version = R"GLSL(#version 330)GLSL";
 	char *vertex  = R"GLSL(
 			layout (location = 0) in vec2 in_uv;
 			layout (location = 1) in vec3 in_color;

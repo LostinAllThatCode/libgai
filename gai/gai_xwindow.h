@@ -28,7 +28,7 @@
 	}
 */
 
-#ifndef GAIXW_INCLUDE_GAI_WINDOW_H
+#ifndef GAI_INCLUDE_GAI_WINDOW_H
 
 #ifdef GAIXW_STATIC
 	#define GAIXW_API static
@@ -52,6 +52,7 @@
 
 #if _WIN32
 	#ifndef GAIXW_DONT_INCL_WIN
+		#define WIN32_LEAN_AND_MEAN
 		#include <windows.h>
 	#endif
 	#pragma comment( lib, "user32.lib" )
@@ -157,7 +158,7 @@ extern "C" {
 GAIXW_API int  			gaiXWindow        					(gaixw_context *window, const char *title = "default window title", int width = -1, int height = -1, int x = -1, int y = -1, const char *classname = "crossplatform-window-framework");
 GAIXW_API void 			gaiXWindowSetTitle					(gaixw_context *window, const char *title);
 GAIXW_API float  		gaiXWindowUpdate					(gaixw_context *window);
-GAIXW_API void 			gaiXWindowRender					(gaixw_context *window);
+GAIXW_API void 			gaiXWindowSwapBuffers				(gaixw_context *window);
 GAIXW_API int  			gaiXWindowSetVSYNC					(gaixw_context *window, unsigned int state);
 GAIXW_API void* 		gaiXWindowGetProc					(gaixw_context *window, const char *name);
 GAIXW_API void  		gaiXWindowToggleFullscreen  		(gaixw_context *window);
@@ -247,126 +248,142 @@ typedef size_t GLintptr;
 	gaiXWindowFN(, delete_vertex_arrays_fn,			void, 		DeleteVertexArrays, GLsizei, const GLuint*) \
 	gaiXWindowFN(, gen_vertex_arrays_fn,			void, 		GenVertexArrays, GLsizei, GLuint*) \
 	gaiXWindowFN(, map_buffer_range_fn,				GLvoid*,	MapBufferRange, GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access) \
-	gaiXWindowFN(, buffer_storage_fn,				void,  		BufferStorage, GLenum target, GLsizeiptr size, const void *data, GLbitfield flags) \
+	gaiXWindowFN(, buffer_storage_fn,				void,  		BufferStorage, GLenum target, GLsizeiptr size, const void *data, GLbitfield flags)
 
 #define gaiXWindowFN(ext, def, a, b, ...) typedef a (gl_##def) (__VA_ARGS__);
-	gaiXWindowFNWrapper
+gaiXWindowFNWrapper
 #undef gaiXWindowFN
 
 #define gaiXWindowFN(ext, def, a, b, ...) gl_##def *gl##b;
-	gaiXWindowFNWrapper
+gaiXWindowFNWrapper
 #undef gaiXWindowFN
 
-	GAIXW_API int
-	gaiWGLIsSupported(const char *extension)
-	{
-		const size_t extlen = strlen(extension);
-		const char *supported = 0;
-		void* wglGetExtString = wglGetProcAddress("wglGetExtensionsStringARB");
-		if (wglGetExtString)
-		{
-			supported = ((char*(__stdcall*)(HDC)) wglGetExtString)(wglGetCurrentDC());
-		}
+#define gaiXWindowFN(ext, def, a, b, ...) GAIXW_ASSERT( (gl##b = (gl_##def *) wglGetProcAddress("gl"#b#ext) ) );
+GAIXW_API void
+gaiWGLInitFunctions()
+{
+	gaiXWindowFNWrapper
+}
+#undef gaiXWindowFN
+#undef gaiXWindowFNWrapper
 
-		if (supported)
+GAIXW_API int
+gaiWGLIsSupported(const char *extension)
+{
+	const size_t extlen = strlen(extension);
+	const char *supported = 0;
+	void* wglGetExtString = wglGetProcAddress("wglGetExtensionsStringARB");
+	if (wglGetExtString)
+	{
+		supported = ((char*(__stdcall*)(HDC)) wglGetExtString)(wglGetCurrentDC());
+	}
+
+	if (supported)
+	{
+		for (const char* p = supported; ; p++)
 		{
-			for (const char* p = supported; ; p++)
+			p = strstr(p, extension);
+			if (!p) return false;
+			if ((p == supported || p[-1] == ' ') && (p[extlen] == '\0' || p[extlen] == ' ')) return true;
+		}
+	}
+	return false;
+} // This is just copy & paste from nehe prod. IIRC
+
+void
+gaiGLDebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, GLvoid *userParam)
+{
+	if (severity == 0x9146 /* HIGH */ )
+	{
+		GAIXW_PRINT("Source:   0x%04x\nType:     0x%04x\nMessage:  %s", source, type, message);
+		GAIXW_ASSERT(false);
+	}
+	#if 0
+	switch (source)
+	{
+		case 0x8246: { GAIXW_PRINT("Source: GL_DEBUG_SOURCE_API, "); } break;
+		case 0x8247: { GAIXW_PRINT("Source: GL_DEBUG_SOURCE_WINDOW_SYSTEM, "); } break;
+		case 0x8248: { GAIXW_PRINT("Source: GL_DEBUG_SOURCE_SHADER_COMPILER, "); } break;
+		case 0x8249: { GAIXW_PRINT("Source: GL_DEBUG_SOURCE_LIBGAI, "); } break;
+		default:     { GAIXW_PRINT("Source: GL_DEBUG_SOURCE_THIRD_PARTY, "); } break;
+	}
+	switch (type)
+	{
+		case 0x824C: { GAIXW_PRINT("Type: ERROR, "); } break;
+		case 0x824D: { GAIXW_PRINT("Type: DEPRECATED_BEHAVIOUR, "); } break;
+		case 0x824E: { GAIXW_PRINT("Type: UNDEFINED_BEHAVIOUR, "); } break;
+		case 0x824F: { GAIXW_PRINT("Type: PORTABILITY, "); } break;
+		case 0x8250: { GAIXW_PRINT("Type: PERFORMANCE, "); } break;
+		case 0x8251: { GAIXW_PRINT("Type: OTHER, "); } break;
+		case 0x8268: { GAIXW_PRINT("Type: MARKER, "); } break;
+		case 0x8269: { GAIXW_PRINT("Type: PUSH_GROUP, "); } break;
+		case 0x826A: { GAIXW_PRINT("Type: POP_GROUP, "); } break;
+		default:     { GAIXW_PRINT("Type: N/A, "); } break;
+	}
+	switch (severity)
+	{
+		case 0x9146: { GAIXW_PRINT("Severity: HIGH, "); } break;
+		case 0x9147: { GAIXW_PRINT("Severity: MEDIUM, "); } break;
+		case 0x9148: { GAIXW_PRINT("Severity: LOW, "); } break;
+		case 0x826B: { GAIXW_PRINT("Severity: NOTIFICATION, "); } break;
+		default:     { GAIXW_PRINT("Severity: N/A, "); } break;
+	}
+	GAIXW_PRINT("ID: %i\n%s", id, message);
+
+	#endif
+}
+
+GAIXW_API int
+gaiGLIsSupported(char *extension)
+{
+	if (glGetStringi)
+	{
+		GLint n, i;
+		glGetIntegerv(0x821D /* GL_NUM_EXTENSIONS */, &n);
+		for (i = 0; i < n; i++)
+		{
+			char *gl_extension = (char *)glGetStringi(GL_EXTENSIONS, i);
+			if (strcmp(gl_extension, extension) == 0)
 			{
-				p = strstr(p, extension);
-				if (!p) return false;
-				if ((p == supported || p[-1] == ' ') && (p[extlen] == '\0' || p[extlen] == ' ')) return true;
+				return 1;
 			}
 		}
-		return false;
-	} // This is just copy & paste from nehe prod. IIRC
-
-	void
-	gaiGLDebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, GLvoid *userParam)
-	{
-		switch (source)
-		{
-			case 0x8246: { GAIXW_PRINT("Source: GL_DEBUG_SOURCE_API, "); } break;
-			case 0x8247: { GAIXW_PRINT("Source: GL_DEBUG_SOURCE_WINDOW_SYSTEM, "); } break;
-			case 0x8248: { GAIXW_PRINT("Source: GL_DEBUG_SOURCE_SHADER_COMPILER, "); } break;
-			case 0x8249: { GAIXW_PRINT("Source: GL_DEBUG_SOURCE_LIBGAI, "); } break;
-			default:     { GAIXW_PRINT("Source: GL_DEBUG_SOURCE_THIRD_PARTY, "); } break;
-		}
-		switch (type)
-		{
-			case 0x824C: { GAIXW_PRINT("Type: ERROR, "); } break;
-			case 0x824D: { GAIXW_PRINT("Type: DEPRECATED_BEHAVIOUR, "); } break;
-			case 0x824E: { GAIXW_PRINT("Type: UNDEFINED_BEHAVIOUR, "); } break;
-			case 0x824F: { GAIXW_PRINT("Type: PORTABILITY, "); } break;
-			case 0x8250: { GAIXW_PRINT("Type: PERFORMANCE, "); } break;
-			case 0x8251: { GAIXW_PRINT("Type: OTHER, "); } break;
-			case 0x8268: { GAIXW_PRINT("Type: MARKER, "); } break;
-			case 0x8269: { GAIXW_PRINT("Type: PUSH_GROUP, "); } break;
-			case 0x826A: { GAIXW_PRINT("Type: POP_GROUP, "); } break;
-			default:     { GAIXW_PRINT("Type: N/A, "); } break;
-		}
-		switch (severity)
-		{
-			case 0x9146: { GAIXW_PRINT("Severity: HIGH, "); } break;
-			case 0x9147: { GAIXW_PRINT("Severity: MEDIUM, "); } break;
-			case 0x9148: { GAIXW_PRINT("Severity: LOW, "); } break;
-			case 0x826B: { GAIXW_PRINT("Severity: NOTIFICATION, "); } break;
-			default:     { GAIXW_PRINT("Severity: N/A, "); } break;
-		}
-		GAIXW_PRINT("ID: %i\n%s", id, message);
-		GAIXW_ASSERT(!"OpenGL debug message");
 	}
+	return 0;
+}
 
-	GAIXW_API int
-	gaiGLIsSupported(char *extension)
+void
+gaiGLInitMultisampling(gaixw_context *window)
+{
+	GLint samples;
+	glGetIntegerv(0x9110 /* GL_MAX_INTEGER_SAMPLES */, &samples);
+}
+
+GAIXW_API unsigned char
+gaiGLGetSwapInterval()
+{
+	if (gaiWGLIsSupported("WGL_EXT_swap_control"))
 	{
-		if (glGetStringi)
-		{
-			GLint n, i;
-			glGetIntegerv(0x821D /* GL_NUM_EXTENSIONS */, &n);
-			for (i = 0; i < n; i++)
-			{
-				char *gl_extension = (char *)glGetStringi(GL_EXTENSIONS, i);
-				if (strcmp(gl_extension, extension) == 0)
-				{
-					return 1;
-				}
-			}
-		}
-		return 0;
+		void *wglGetSwapInterval = wglGetProcAddress("wglGetSwapIntervalEXT");
+		if (wglGetSwapInterval) return ((int(__stdcall *)(void))wglGetSwapInterval)();
 	}
+	return false;
+}
 
-	void
-	gaiGLInitMultisampling(gaixw_context *window)
+GAIXW_API void
+gaiGLSetSwapInterval(unsigned int vsync)
+{
+	if (gaiWGLIsSupported("WGL_EXT_swap_control"))
 	{
-		GLint samples;
-		glGetIntegerv(0x9110 /* GL_MAX_INTEGER_SAMPLES */, &samples);
+		void* wglSwapInterval = wglGetProcAddress("wglSwapIntervalEXT");
+		if (wglSwapInterval) ((GLboolean(__stdcall *)(int))wglSwapInterval)(vsync);
 	}
+}
 
-	GAIXW_API unsigned char
-	gaiGLGetSwapInterval()
-	{
-		if (gaiWGLIsSupported("WGL_EXT_swap_control"))
-		{
-			void *wglGetSwapInterval = wglGetProcAddress("wglGetSwapIntervalEXT");
-			if (wglGetSwapInterval) return ((int(__stdcall *)(void))wglGetSwapInterval)();
-		}
-		return false;
-	}
-
-	GAIXW_API void
-	gaiGLSetSwapInterval(unsigned int vsync)
-	{
-		if (gaiWGLIsSupported("WGL_EXT_swap_control"))
-		{
-			void* wglSwapInterval = wglGetProcAddress("wglSwapIntervalEXT");
-			if (wglSwapInterval) ((GLboolean(__stdcall *)(int))wglSwapInterval)(vsync);
-		}
-	}
-
-	// ##########################################################################################################
-	//                                               END OF
-	//                              OPENGL WINDOWS PLATFORM IMPLEMETATION CODE
-	// ##########################################################################################################
+// ##########################################################################################################
+//                                               END OF
+//                              OPENGL WINDOWS PLATFORM IMPLEMETATION CODE
+// ##########################################################################################################
 
 #endif
 
@@ -462,7 +479,7 @@ gaiXWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			case WM_RBUTTONDOWN:	{ gai_input_mouse_history[2] = gai_input_mouse[2]; gai_input_mouse[2] = 1; return 0; }
 			case WM_RBUTTONUP:		{ gai_input_mouse_history[2] = gai_input_mouse[2]; gai_input_mouse[2] = 0; return 0; }
 			case WM_MOUSEWHEEL:		{ window->input.dwheel = GET_WHEEL_DELTA_WPARAM(wParam); window->input.wheel  += window->input.dwheel; return 0; }
-			case WM_DESTROY:		
+			case WM_DESTROY:
 			{
 				_gaiXWindowDeInit(window);
 				#ifdef GAIXW_OPENGL
@@ -521,10 +538,11 @@ gaiXWindowSetTitle(gaixw_context *window, const char *title)
 	wchar_t buffer[4096];
 	MultiByteToWideChar(CP_UTF8, 0, title, -1, buffer, 4095);
 	SetWindowTextW(window->platform.hwnd, buffer);
+	window->info.title = title;
 }
 
 GAIXW_API void
-gaiXWindowRender(gaixw_context *window)
+gaiXWindowSwapBuffers(gaixw_context *window)
 {
 	#ifdef GAIXW_OPENGL
 	SwapBuffers(window->platform.hdc);
@@ -591,7 +609,7 @@ gaiXWindowUpdate(gaixw_context *window)
 			break;
 		}
 	}
-	
+
 	window->input.dx = window->input.x - old_x;
 	window->input.dy = window->input.y - old_y;
 
@@ -719,10 +737,12 @@ gaiXWindow(gaixw_context *window, const char *title, int width, int height, int 
 				#if GAIXW_OPENGL_MINOR_VERSION
 				0x2092 /* WGL_CONTEXT_MINOR_VERSION_ARB */, GAIXW_OPENGL_MINOR_VERSION,
 				#endif
-				0x9126 /* WGL_CONTEXT_PROFILE_MASK_ARB */, 0x1 /* WGL_CONTEXT_CORE_PROFILE_BIT_ARB */,
+				0x9126 /* WGL_CONTEXT_PROFILE_MASK_ARB */, 0x00000001 /* WGL_CONTEXT_CORE_PROFILE_BIT_ARB */,
+				0x2094 /* WGL_CONTEXT_FLAGS_ARB */, 0
 				#ifdef _DEBUG
-				0x2094 /* WGL_CONTEXT_FLAGS_ARB */, 0x00000001,
+				| 0x00000001
 				#endif
+				,
 				0
 			};
 
@@ -741,25 +761,7 @@ gaiXWindow(gaixw_context *window, const char *title, int width, int height, int 
 
 				gaiXWindowSetVSYNC(window, 1);
 
-				GAIXW_PRINT("[ OPENGL  ] =======================================================================================\n");
-				GAIXW_PRINT("[ OPENGL  ] Version  		: %s\n", window->renderer.info.opengl.version);
-				GAIXW_PRINT("[ OPENGL  ] Vender   		: %s\n", window->renderer.info.opengl.vendor);
-				GAIXW_PRINT("[ OPENGL  ] Renderer 		: %s\n", window->renderer.info.opengl.renderer);
-				GAIXW_PRINT("[ OPENGL  ] Shader Verion 	: %s\n", window->renderer.info.opengl.shading_language_version);
-				GAIXW_PRINT("[ OPENGL  ] =======================================================================================\n");
-
-#define gaiXWindowFN(ext, def, a, b, ...) \
-	\
-	gl##b = (gl_##def *) wglGetProcAddress("gl"#b#ext); \
-	if (!gl##b) { \
-		GAIXW_PRINT("[ OPENGL  ]  !NOT SUPPORTED!  , gl"#b#ext"\n"); \
-		GAIXW_ASSERT(!"gaiXWindowGetProc failed.");\
-	} else { GAIXW_PRINT("[ OPENGL  ] 0x%p, gl"#b#ext"\n", gl##b); }
-
-				gaiXWindowFNWrapper
-
-#undef gaiXWindowFN
-#undef gaiXWindowFNWrapper
+				gaiWGLInitFunctions();
 
 				gaiGLInitMultisampling(window);
 
@@ -772,7 +774,7 @@ gaiXWindow(gaixw_context *window, const char *title, int width, int height, int 
 		}
 		else GAIXW_PRINT("Error: wglGetProcAddress failed for wglCreateContextAttribsARB.");
 	}
-	else GAIXW_PRINT("Warning: This graphics card does not support \"WGL_ARB_create_context\".");
+	else GAIXW_PRINT("Warning : This graphics card does not support \"WGL_ARB_create_context\".");
 
 	#else
 
@@ -793,5 +795,5 @@ gaiXWindow(gaixw_context *window, const char *title, int width, int height, int 
 
 #endif
 
-#define GAIXW_INCLUDE_GAI_WINDOW_H
+#define GAI_INCLUDE_GAI_WINDOW_H
 #endif
