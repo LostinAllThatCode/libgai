@@ -7,8 +7,198 @@ $Copyright: $
 $Example: $
 ==========================================================================================
 */
-#ifndef _GAI_RENDERER_H_
+#ifndef GAI_INCLUDE_GAI_RENDERER_H
+#include "gai_types.h"
 
+#ifdef GAIR_STATIC
+	#define GAIR_API static
+#else
+	#define GAIR_API extern
+#endif
+
+#ifndef GAIR_ASSERT
+	#include <assert.h>
+	#define GAIR_ASSERT(x) assert(x)
+#endif
+
+union v4
+{
+	struct { r32 x, y, z, w; };
+	r32 E[4];
+};
+
+union v2
+{
+	struct { r32 x, y; };
+	r32 E[2];
+};
+
+inline v2
+V2(r32 x, r32 y)
+{
+	v2 result = { x, y };
+	return result;
+}
+
+inline v4
+V4(r32 x, r32 y, r32 z, r32 w)
+{
+	v4 result = { x, y, z, w };
+	return result;
+}
+
+struct gair_textured_vertex
+{
+	v4 p;
+	v2 uv;
+};
+
+enum gair_render_entry_type_enum
+{
+	gaiRendererType_gair_textured_quads,
+};
+
+struct gair_render_group
+{
+	gair_render_entry_type_enum type;
+	v2 cliprect;
+};
+
+struct gair_textured_quads
+{
+	u32 quad_count;
+	u32 vertex_array_offset;
+};
+
+struct gair_context
+{
+	u8 *pushbuffer_base;
+	u8 *pushbuffer_at;
+	u32 pushbuffer_max;
+
+	u32 vertex_max;
+	u32 vertex_count;
+	gair_textured_vertex *vertex_array;
+
+	gair_textured_quads *current_quads;
+};
+
+
+// Give the renderer some memory it can operate on! Do not touch this memory in any kind of form from outside!!!
+GAIR_API void
+gaiRendererInit(gair_context *context, void *memory, size_t memory_size)
+{
+	GAIR_ASSERT(memory);
+
+	float vertex_buffer_memory_ratio = .6f;
+	float render_buffer_memory_ratio = .4f;
+
+	// Clear the memory to zero
+	memset(memory, 0, memory_size);
+
+	context->pushbuffer_base	= (u8*) memory;
+	context->pushbuffer_at 		= (u8*) memory;
+	context->pushbuffer_max 	= render_buffer_memory_ratio * memory_size;
+
+	context->vertex_max 		= (vertex_buffer_memory_ratio * memory_size) / sizeof(gair_textured_vertex);
+	context->vertex_count 		= 0;
+	context->vertex_array 		= (gair_textured_vertex *) ((u8 *)(context->pushbuffer_base + context->pushbuffer_max));
+
+	context->current_quads 		= 0;
+}
+
+inline gair_textured_quads *
+gaiRendererGetCurrentQuads(gair_context *context, u32 quad_count)
+{
+	if (!context->current_quads)
+	{
+		context->current_quads = (gair_textured_quads *) context->pushbuffer_at;
+		context->current_quads->vertex_array_offset += context->vertex_count;
+
+	}
+	gair_textured_quads *result = context->current_quads;
+
+	if ((context->vertex_count + 4 * quad_count) > context->vertex_max)
+	{
+		result = 0;
+	}
+
+	return result;
+}
+
+inline GAIR_API void
+gaiRendererPushRect(gair_context *context, v4 color,
+                    v4 p1, v2 uv1,
+                    v4 p2, v2 uv2,
+                    v4 p3, v2 uv3,
+                    v4 p4, v2 uv4)
+{
+	gair_textured_quads *entry = gaiRendererGetCurrentQuads(context, 1);
+	GAIR_ASSERT(entry);
+	++entry->quad_count;
+
+	gair_textured_vertex *v = context->vertex_array + context->vertex_count;
+	context->vertex_count += 4;
+
+	v[0].p 	= p1;
+	v[0].uv = uv1;
+	v[1].p 	= p2;
+	v[1].uv = uv2;
+	v[2].p 	= p3;
+	v[2].uv = uv3;
+	v[3].p 	= p4;
+	v[3].uv = uv4;
+}
+
+#define GAI_INCLUDE_GAI_RENDERER_H
+#endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#if 0
 #include <gai_types.h>
 #include <gai_utils.h>
 #include <gai_math.h>
@@ -109,7 +299,7 @@ struct gaiRenderer
 {
 	gaiRenderMeshShader mesh_shader;
 
-//	gaiRenderDebugFontShader debug_font_shader;
+	//	gaiRenderDebugFontShader debug_font_shader;
 
 	m4x4 last_projection;
 	m4x4 last_view;
@@ -118,7 +308,7 @@ struct gaiRenderer
 void
 gaiRendererSetViewport(gaiRenderer *renderer, r32 width, r32 height)
 {
-	glViewport(0, 0, width, height);	
+	glViewport(0, 0, width, height);
 }
 
 i32
@@ -136,7 +326,7 @@ gaiRendererCreate(gaiRenderer *renderer, r32 width, r32 height)
 	glEnable(GL_BLEND);
 	glEnable(GL_MULTISAMPLE);
 
-#if 0
+	#if 0
 	u32 program = gaiOpenGLProgramCreate();
 	gaiOpenGLShaderLoad(program, renderer->debug_font_shader.vs, GL_VERTEX_SHADER);
 	gaiOpenGLShaderLoad(program, renderer->debug_font_shader.fs, GL_FRAGMENT_SHADER);
@@ -159,7 +349,7 @@ gaiRendererCreate(gaiRenderer *renderer, r32 width, r32 height)
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, (void *) (i64) 0);
 
 	glBindVertexArray(0);
-#endif
+	#endif
 
 	u32 program = gaiOpenGLProgramCreate();
 	gaiOpenGLShaderLoad(program, renderer->mesh_shader.vs, GL_VERTEX_SHADER);
@@ -223,7 +413,7 @@ gaiRendererSetProjection(gaiRenderer *renderer, r32 fov, r32 aspect, m4x4 *view,
 	renderer->last_view       = *view;
 	//glUseProgram(renderer->mesh_shader.program);
 	glUniformMatrix4fv(renderer->mesh_shader.view, 1, GL_TRUE,  (const GLfloat*) &renderer->last_view);
-	glUniformMatrix4fv(renderer->mesh_shader.projection, 1, GL_TRUE,  (const GLfloat*) &renderer->last_projection);	
+	glUniformMatrix4fv(renderer->mesh_shader.projection, 1, GL_TRUE,  (const GLfloat*) &renderer->last_projection);
 }
 
 void
@@ -239,26 +429,28 @@ gaiRendererSetProjection(gaiRenderer *renderer, m4x4 *projection, m4x4 *view)
 }
 
 inline gaiRendererMesh
-gaiRendererPushGrid(gaiRenderer *renderer, r32 cell_size, i32 size, v4 color = V4(1,1,1,1))
+gaiRendererPushGrid(gaiRenderer *renderer, r32 cell_size, i32 size, v4 color = V4(1, 1, 1, 1))
 {
 	gaiRendererMesh mesh = {};
 	r32 s = (r32) size * cell_size;
 	mesh.start = renderer->mesh_shader.offset / renderer->mesh_shader.size;
-	mesh.count = ((size*2)+1)*4;
-	gaiRendererData data[] = {
+	mesh.count = ((size * 2) + 1) * 4;
+	gaiRendererData data[] =
+	{
 		0.f, 0.f, color.r, color.g, color.b, color.a, 0.f, 0.f, 0.f, 0, 0, (r32)  s, 0.f, 0.f, 0.f, 0.f,
-		0.f, 0.f, color.r, color.g, color.b, color.a, 0.f, 0.f, 0.f, 0, 0, (r32) -s, 0.f, 0.f, 0.f, 0.f,
+		0.f, 0.f, color.r, color.g, color.b, color.a, 0.f, 0.f, 0.f, 0, 0, (r32) - s, 0.f, 0.f, 0.f, 0.f,
 		0.f, 0.f, color.r, color.g, color.b, color.a, 0.f, 0.f, 0.f, (r32)  s, 0, 0, 0.f, 0.f, 0.f, 0.f,
-		0.f, 0.f, color.r, color.g, color.b, color.a, 0.f, 0.f, 0.f, (r32) -s, 0, 0, 0.f, 0.f, 0.f, 0.f,
+		0.f, 0.f, color.r, color.g, color.b, color.a, 0.f, 0.f, 0.f, (r32) - s, 0, 0, 0.f, 0.f, 0.f, 0.f,
 	};
 	glBufferSubData(GL_ARRAY_BUFFER, renderer->mesh_shader.offset, sizeof(data), data);
 	renderer->mesh_shader.offset += sizeof(data);
-	for(i32 i=1; i <= s; i++)
+	for (i32 i = 1; i <= s; i++)
 	{
 		r32 x = i * cell_size;
 		r32 z = i * cell_size;
 
-		gaiRendererData data[] = {
+		gaiRendererData data[] =
+		{
 			0.f, 0.f, color.r, color.g, color.b, color.a, 0.f, 0.f, 0.f,  x, 0,  s, 0.f, 0.f, 0.f, 0.f,
 			0.f, 0.f, color.r, color.g, color.b, color.a, 0.f, 0.f, 0.f,  x, 0, -s, 0.f, 0.f, 0.f, 0.f,
 			0.f, 0.f, color.r, color.g, color.b, color.a, 0.f, 0.f, 0.f, -x, 0,  s, 0.f, 0.f, 0.f, 0.f,
@@ -269,13 +461,13 @@ gaiRendererPushGrid(gaiRenderer *renderer, r32 cell_size, i32 size, v4 color = V
 			0.f, 0.f, color.r, color.g, color.b, color.a, 0.f, 0.f, 0.f,  s, 0, -z, 0.f, 0.f, 0.f, 0.f,
 		};
 		glBufferSubData(GL_ARRAY_BUFFER, renderer->mesh_shader.offset, sizeof(data), data);
-		renderer->mesh_shader.offset += sizeof(data);	
+		renderer->mesh_shader.offset += sizeof(data);
 	}
 	return mesh;
 }
 
 void
-gaiRendererPushTriangle(gaiRenderer *renderer, v3 offset = V3(0,0,0), v4 color = V4(1, 1, 1, 1))
+gaiRendererPushTriangle(gaiRenderer *renderer, v3 offset = V3(0, 0, 0), v4 color = V4(1, 1, 1, 1))
 {
 	gaiRendererData data[] =
 	{
@@ -310,7 +502,7 @@ gaiRendererPushRectangle(gaiRenderer *renderer, v3 p1, v2 uv1, v4 c1, v3 p2, v2 
 }
 
 inline gaiRendererMesh
-gaiRendererPushQuad(gaiRenderer *renderer, v3 center = V3(0,0,0), r32 width = 1.f, r32 height = 1.f, v4 color = V4(1,1,1,1))
+gaiRendererPushQuad(gaiRenderer *renderer, v3 center = V3(0, 0, 0), r32 width = 1.f, r32 height = 1.f, v4 color = V4(1, 1, 1, 1))
 {
 	gaiRendererMesh mesh = {};
 	r32 half_width = .5f * width;
@@ -382,6 +574,4 @@ gaiRendererDrawMeshImmediate(gaiRenderer *renderer, m4x4 *model, gaiRendererData
 	else glUniformMatrix4fv(renderer->mesh_shader.model, 1, GL_TRUE,  (const GLfloat*) Identity4().E);
 	glDrawArrays(GL_TRIANGLES, 0, size / sizeof(gaiRendererData));
 }
-
-#define _GAI_RENDERER_H_
 #endif

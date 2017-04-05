@@ -64,11 +64,12 @@ int main(int argc, char **argv)
     #define GAIXW_DEBUG
 #endif
 
+#define GAIXW_OPENGL_MAJOR_VERSION 3
+#define GAIXW_OPENGL_MINOR_VERSION 3
 #define GAIXW_OPENGL
-#define GAIXW_ASSERT
-#define GAIXW_DEBUG
 #define GAIXW_IMPLEMENTATION
 #include "gai_xwindow.h"
+
 #include "gai_xgraphics.h"
 
 #if 1
