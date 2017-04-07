@@ -8,7 +8,6 @@ $Example: $
 ==========================================================================================
 */
 
-// test change!!
 #ifndef GAI_INCLUDE_GAI_RENDERER_H
 #include "gai_types.h"
 
@@ -57,22 +56,21 @@ struct gair_textured_vertex
 
 enum gair_render_entry_type_enum
 {
-	gaiRendererType_gair_textured_quads,
+	gaiRendererType_gair_entry_textured_quads = 0x1,
 };
-
-struct gair_render_group
+struct gair_render_entry_header
 {
 	gair_render_entry_type_enum type;
-	v2 cliprect;
 };
 
-struct gair_textured_quads
+struct gair_entry_textured_quads
 {
+	gair_render_entry_header header;
 	u32 quad_count;
 	u32 vertex_array_offset;
 };
 
-struct gair_context
+struct gair_render_commands
 {
 	u8 *pushbuffer_base;
 	u8 *pushbuffer_at;
@@ -82,45 +80,74 @@ struct gair_context
 	u32 vertex_count;
 	gair_textured_vertex *vertex_array;
 
-	gair_textured_quads *current_quads;
+    struct loaded_bitmap **quad_textures;
+    struct loaded_bitmap *default_texture;
+
+    v4 clear_color;
+};
+#define gaiRenderCreateRenderCommands(pushbuffer_max, pushbuffer, vertex_max, vertexbuffer, bitmap_array, default_texture) \
+{ pushbuffer, pushbuffer, pushbuffer_max, vertex_max, 0, vertexbuffer, bitmap_array, default_texture, {0.0f, 0.f, 0.f, 1.f} }
+
+struct gair_render_setup
+{
+
 };
 
-
-// Give the renderer some memory it can operate on! Do not touch this memory in any kind of form from outside!!!
-GAIR_API void
-gaiRendererInit(gair_context *context, void *memory, size_t memory_size)
+struct gair_render_group
 {
-	GAIR_ASSERT(memory);
+	void *assets;
 
-	float vertex_buffer_memory_ratio = .6f;
-	float render_buffer_memory_ratio = .4f;
+	v2 screen_dim;
 
-	// Clear the memory to zero
-	memset(memory, 0, memory_size);
+	gair_render_commands *commands;
 
-	context->pushbuffer_base	= (u8*) memory;
-	context->pushbuffer_at 		= (u8*) memory;
-	context->pushbuffer_max 	= render_buffer_memory_ratio * memory_size;
+	gair_entry_textured_quads *current_quads;
+};
 
-	context->vertex_max 		= (vertex_buffer_memory_ratio * memory_size) / sizeof(gair_textured_vertex);
-	context->vertex_count 		= 0;
-	context->vertex_array 		= (gair_textured_vertex *) ((u8 *)(context->pushbuffer_base + context->pushbuffer_max));
-
-	context->current_quads 		= 0;
+inline GAIR_API gair_render_group
+gaiRendererBeginGroup(v2 screen_dim, gair_render_commands *commands, void *assets)
+{
+	gair_render_group result = { assets, screen_dim, commands };
+	return result;
 }
 
-inline gair_textured_quads *
-gaiRendererGetCurrentQuads(gair_context *context, u32 quad_count)
+inline GAIR_API void
+gaiRendererEndGroup(gair_render_group *group)
 {
-	if (!context->current_quads)
+
+}
+
+#define gaiRendererPushRenderElement( group, type ) (type *) gaiRendererPushRenderElement_(group, sizeof(type), gaiRendererType_##type)
+inline gair_render_entry_header *
+gaiRendererPushRenderElement_(gair_render_group *group, u32 size, gair_render_entry_type_enum type)
+{
+	gair_render_entry_header *result = 0;
+
+	u8 *pushbuffer_end = group->commands->pushbuffer_base + group->commands->pushbuffer_max;
+	if ((group->commands->pushbuffer_at + size) <= pushbuffer_end)
 	{
-		context->current_quads = (gair_textured_quads *) context->pushbuffer_at;
-		context->current_quads->vertex_array_offset += context->vertex_count;
+		result = (gair_render_entry_header*) group->commands->pushbuffer_at;
+		result->type = type;
 
+		group->commands->pushbuffer_at += size;
+	} else GAIR_ASSERT(!"pushbuffer overflow");
+
+	group->current_quads = 0;
+	return result;
+}
+
+inline gair_entry_textured_quads *
+gaiRendererGetCurrentQuads(gair_render_group *group, u32 quad_count)
+{
+	if (!group->current_quads)
+	{
+		group->current_quads = gaiRendererPushRenderElement(group, gair_entry_textured_quads);
+		group->current_quads->vertex_array_offset = group->commands->vertex_count;
+		group->current_quads->quad_count = 0;
 	}
-	gair_textured_quads *result = context->current_quads;
 
-	if ((context->vertex_count + 4 * quad_count) > context->vertex_max)
+	gair_entry_textured_quads *result = group->current_quads;
+	if ((group->commands->vertex_count + 4 * quad_count) > group->commands->vertex_max)
 	{
 		result = 0;
 	}
@@ -129,27 +156,20 @@ gaiRendererGetCurrentQuads(gair_context *context, u32 quad_count)
 }
 
 inline GAIR_API void
-gaiRendererPushRect(gair_context *context, v4 color,
-                    v4 p1, v2 uv1,
-                    v4 p2, v2 uv2,
-                    v4 p3, v2 uv3,
-                    v4 p4, v2 uv4)
+gaiRendererPushRect(gair_render_group *group, v4 color, v4 p1, v2 uv1, v4 p2, v2 uv2, v4 p3, v2 uv3, v4 p4, v2 uv4)
 {
-	gair_textured_quads *entry = gaiRendererGetCurrentQuads(context, 1);
+	gair_entry_textured_quads *entry = gaiRendererGetCurrentQuads(group, 1);
 	GAIR_ASSERT(entry);
+
 	++entry->quad_count;
 
-	gair_textured_vertex *v = context->vertex_array + context->vertex_count;
-	context->vertex_count += 4;
+	gair_textured_vertex *v = group->commands->vertex_array + group->commands->vertex_count;
+	group->commands->vertex_count += 4;
 
-	v[0].p 	= p1;
-	v[0].uv = uv1;
-	v[1].p 	= p2;
-	v[1].uv = uv2;
-	v[2].p 	= p3;
-	v[2].uv = uv3;
-	v[3].p 	= p4;
-	v[3].uv = uv4;
+	v[0].p = p1; v[0].uv = uv1;
+	v[1].p = p2; v[1].uv = uv2;
+	v[2].p = p3; v[2].uv = uv3;
+	v[3].p = p4; v[3].uv = uv4;
 }
 
 #define GAI_INCLUDE_GAI_RENDERER_H
