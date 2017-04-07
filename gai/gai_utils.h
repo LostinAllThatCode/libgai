@@ -258,7 +258,6 @@ int gaiDynArraySize(void *dynamic, size_t element_size)
 	return (array->used / element_size);
 }
 
-
 GAI_DEF int
 gai_file_exists(char *filename)
 {

@@ -1,5 +1,4 @@
 #ifndef GAI_XGRAPHICS_H
-
 // ##########   ** THIS LIBRARY HAS CORE DEPENDENCIES ** ###############
 #include "gai_types.h"
 #include "gai_utils.h"
@@ -274,7 +273,8 @@ gaiXGraphicsDrawDynamicText2D(gaixg_context * context, float *x, float *y, float
 		if (random == 1)
 		{
 			color.g = (rand() % 255) / 255.f;
-		} else if (random == 2)
+		}
+		else if (random == 2)
 		{
 			color.g = (rand() % 255) / 255.f;
 			*x = initial_x;

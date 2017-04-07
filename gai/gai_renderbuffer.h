@@ -25,8 +25,9 @@ $Example: $
 
 #include <math.h>
 #define M_PI 3.141592653589793238462643383279502884197169399375105820974944592307816406286
-#define gairb_Deg2Rad(d) ((d)*(M_PI/180))
-#define gairb_Rad2Deg(r) ((r)*(180/M_PI))
+
+#define GAIRB_DEG2RAD(d) ((d)*(M_PI/180))
+#define GAIRB_RAD2DEG(r) ((r)*(180/M_PI))
 
 #include <stdint.h>
 typedef uint8_t  u8; typedef uint16_t u16; typedef uint32_t u32; typedef uint64_t u64;
@@ -36,15 +37,15 @@ typedef int64_t  i64; typedef float    r32; typedef double   r64;
 /* quick and fast 3d math implementation with operator overloading */
 
 struct m3x3 { r32 E[3][3]; }; // ROW MAJOR ORDER
-inline m3x3 Mat3x3(r32 a = 0.f) 		{ m3x3 result = { { { a, 0.f, 0.f }, { 0.f, a, 0.f}, { 0.f, 0.f, a } } }; return result; } // Use Mat3x3(1.0f) to get an identity matrix
+inline m3x3 Mat3x3(r32 a = 0.f) { m3x3 result = { { { a, 0.f, 0.f }, { 0.f, a, 0.f}, { 0.f, 0.f, a } } }; return result; } // Use Mat3x3(1.0f) to get an identity matrix
 struct m4x4 { r32 E[4][4]; }; // ROW MAJOR ORDER
-inline m4x4 operator*(m4x4 A, m4x4 B) 	{ m4x4 R = {}; for (int r = 0; r <= 3; ++r) for (int c = 0; c <= 3; ++c) for (int i = 0; i <= 3; ++i) R.E[r][c] += A.E[r][i] * B.E[i][c]; return (R); } // TODO: Make a performance based matrix multiplication, this is NOT!
-inline m4x4 Mat4x4(r32 a = 0.f) 		{ m4x4 result = { { { a, 0.f, 0.f, 0.f }, { 0.f, a, 0.f, 0.f}, { 0.f, 0.f, a, 0.f }, { 0.f, 0.f, 0.f, a } } }; return result; }
-inline m4x4 Scale(r32 x, r32 y, r32 z) 	{ m4x4 result = { { { x, 0, 0, 0 }, { 0, y, 0, 0 }, { 0, 0, z, 0 }, { 0, 0, 0, 1 } } }; return result; }
-inline m4x4 XRotation(r32 angle)		{ r32 c = cos(angle); r32 s = sin(angle); m4x4 result = { { { 1, 0, 0, 0 }, { 0, c, -s, 0 }, { 0, s, c, 0 }, { 0, 0, 0, 1 } } }; return result; }
-inline m4x4 YRotation(r32 angle)		{ r32 c = cos(angle); r32 s = sin(angle); m4x4 result = { { { c, 0, s, 0 }, { 0, 1, 0, 0 }, { -s, 0, c, 0 }, { 0, 0, 0, 1 } } }; return result; }
-inline m4x4 ZRotation(r32 angle)		{ r32 c = cos(angle); r32 s = sin(angle); m4x4 result = { { { c, -s, 0, 0 }, { s, c, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } } }; return result; }
-inline m4x4 Transpose(m4x4 A) 			{ m4x4 R; for (int j = 0; j <= 3; ++j) for (int i = 0; i <= 3; ++i) R.E[j][i] = A.E[i][j]; return (R); }
+inline m4x4 operator*(m4x4 A, m4x4 B) { m4x4 R = {}; for (int r = 0; r <= 3; ++r) for (int c = 0; c <= 3; ++c) for (int i = 0; i <= 3; ++i) R.E[r][c] += A.E[r][i] * B.E[i][c]; return (R); } // TODO: Make a performance based matrix multiplication, this is NOT!
+inline m4x4 Mat4x4(r32 a = 0.f) { m4x4 result = { { { a, 0.f, 0.f, 0.f }, { 0.f, a, 0.f, 0.f}, { 0.f, 0.f, a, 0.f }, { 0.f, 0.f, 0.f, a } } }; return result; }
+inline m4x4 Scale(r32 x, r32 y, r32 z) { m4x4 result = { { { x, 0, 0, 0 }, { 0, y, 0, 0 }, { 0, 0, z, 0 }, { 0, 0, 0, 1 } } }; return result; }
+inline m4x4 XRotation(r32 angle) { r32 c = cos(angle); r32 s = sin(angle); m4x4 result = { { { 1, 0, 0, 0 }, { 0, c, -s, 0 }, { 0, s, c, 0 }, { 0, 0, 0, 1 } } }; return result; }
+inline m4x4 YRotation(r32 angle) { r32 c = cos(angle); r32 s = sin(angle); m4x4 result = { { { c, 0, s, 0 }, { 0, 1, 0, 0 }, { -s, 0, c, 0 }, { 0, 0, 0, 1 } } }; return result; }
+inline m4x4 ZRotation(r32 angle) { r32 c = cos(angle); r32 s = sin(angle); m4x4 result = { { { c, -s, 0, 0 }, { s, c, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } } }; return result; }
+inline m4x4 Transpose(m4x4 A) { m4x4 R; for (int j = 0; j <= 3; ++j) for (int i = 0; i <= 3; ++i) R.E[j][i] = A.E[i][j]; return (R); }
 inline m4x4 OrthographicProjection(r32 left, r32 right, r32 top, r32 bottom,  r32 znear, r32 zfar)
 {
 	r32 a = 2 / ( right - left);
@@ -57,9 +58,9 @@ inline m4x4 OrthographicProjection(r32 left, r32 right, r32 top, r32 bottom,  r3
 	return (R);
 }
 inline m4x4 OrthographicProjection(r32 width, r32 height, r32 znear, r32 zfar) { return OrthographicProjection(0, width, 0, height, znear, zfar); }
-inline m4x4 Perspective(r32 aspect, r32 fov, r32 znear, r32 zfar)
+inline m4x4 PerspectiveProjection(r32 aspect, r32 fov, r32 znear, r32 zfar)
 {
-	r32 s = tan(gairb_Deg2Rad(fov) * .5f)  * znear;
+	r32 s = tan(GAIRB_DEG2RAD(fov) * .5f)  * znear;
 	r32 r = aspect * s, l = -r, t = s, b = -t;
 	r32 n = znear;
 	r32 f = zfar;
@@ -96,6 +97,8 @@ inline v3 V3(r32 xyz) { v3 result = { xyz, xyz, xyz }; return result; }
 inline v3 V3(v2 xy, r32 z) { v3 result = { xy.x, xy.y, z }; return result; }
 inline v3 V3i(i32 x, i32 y, i32 z) { v3 result = { (r32)x, (r32)y, (r32)z }; return result; }
 inline v3 Transform(m4x4 a, v3 p, r32 pw = 1.0f) { v3 result; result.x = p.x * a.E[0][0] + p.y * a.E[0][1] + p.z * a.E[0][2] + pw * a.E[0][3]; result.y = p.x * a.E[1][0] + p.y * a.E[1][1] + p.z * a.E[1][2] + pw * a.E[1][3]; result.z = p.x * a.E[2][0] + p.y * a.E[2][1] + p.z * a.E[2][2] + pw * a.E[2][3]; return (result); }
+//inline v3 Transform(m4x4 a, v3 p, r32 pw = 1.0f) { v3 r; r.x = p.x * a.E[0][0] + p.y * a.E[1][0] + p.z * a.E[2][0] + pw * a.E[3][0]; r.y = p.x * a.E[0][1] + p.y * a.E[1][1] + p.z * a.E[2][1] + pw * a.E[3][1]; r.z = p.x * a.E[0][2] + p.y * a.E[1][2] + p.z * a.E[2][2] + pw * a.E[3][2]; return (r); }
+
 inline v3 operator*(r32 a, v3 b) { v3 result; result.x = a * b.x; result.y = a * b.y; result.z = a * b.z; return (result); }
 inline v3 operator*(v3 b, r32 a) { v3 result = a * b; return (result); }
 inline v3 &operator*=(v3 &b, r32 a) { b = a * b; return (b); }
@@ -105,27 +108,28 @@ inline v3 &operator-=(v3 &a, v3 b) { a = a - b; return (a); }
 inline v3 operator+(v3 a, v3 b) { v3 result; result.x = a.x + b.x; result.y = a.y + b.y; result.z = a.z + b.z; return (result); }
 inline v3 &operator+=(v3 &a, v3 b) { a = a + b; return (a); }
 inline v3 operator*(m4x4 a, v3 p) { v3 result = Transform(a, p, 1.0f); return (result); }
-inline v3 GetColumn(m4x4 A, u32 C) 		{ v3 R = {A.E[0][C], A.E[1][C], A.E[2][C]}; return (R); }
-inline v3 GetRow(m4x4 A, u32 R) 		{ v3 Result = {A.E[R][0], A.E[R][1], A.E[R][2]}; return (Result); }
+inline v3 GetColumn(m4x4 A, u32 C) { v3 R = {A.E[0][C], A.E[1][C], A.E[2][C]}; return (R); }
+inline v3 GetRow(m4x4 A, u32 R) { v3 Result = {A.E[R][0], A.E[R][1], A.E[R][2]}; return (Result); }
 
 union v4 { struct { union { v3 xyz; struct { r32 x, y, z; }; }; r32 w; }; struct { union { v3 rgb; struct { r32 r, g, b; }; }; r32 a; }; struct { v2 xy; r32 _ignored0_; r32 _ignored1_; }; struct { r32 _ignored0_; v2 yz; r32 _ignored1_; }; struct { r32 _ignored0_; r32 _ignored1_; v2 zw; }; r32 E[4]; };
-inline v4 V4(r32 x, r32 y, r32 z, r32 w)	{ v4 result = { x, y, z, w }; return result; }
-inline v4 V4(r32 xyzw) 						{ v4 result = { xyzw, xyzw, xyzw, xyzw }; return result; }
-inline v4 V4(v2 xy, r32 z, r32 w) 			{ v4 result = { xy.x, xy.y, z, w }; return result; }
-inline v4 V4(v3 xyz, r32 w) 				{ v4 result = { xyz.x, xyz.y, xyz.z, w }; return result; }
-inline v4 V4i(i32 x, i32 y, i32 z, i32 w) 	{ v4 result = { (r32)x, (r32)y, (r32)z, (r32)w }; return result; }
-inline v4 operator*(r32 a, v4 b) 	{ v4 result; result.x = a * b.x; result.y = a * b.y; result.z = a * b.z; result.w = a * b.w; return (result); }
-inline v4 operator*(v4 b, r32 a) 	{ v4 result = a * b; return (result); }
+inline v4 V4(r32 x, r32 y, r32 z, r32 w) { v4 result = { x, y, z, w }; return result; }
+inline v4 V4(r32 xyzw) { v4 result = { xyzw, xyzw, xyzw, xyzw }; return result; }
+inline v4 V4(v2 xy, r32 z, r32 w) { v4 result = { xy.x, xy.y, z, w }; return result; }
+inline v4 V4(v3 xyz, r32 w) { v4 result = { xyz.x, xyz.y, xyz.z, w }; return result; }
+inline v4 V4i(i32 x, i32 y, i32 z, i32 w) { v4 result = { (r32)x, (r32)y, (r32)z, (r32)w }; return result; }
+inline v4 operator*(r32 a, v4 b) { v4 result; result.x = a * b.x; result.y = a * b.y; result.z = a * b.z; result.w = a * b.w; return (result); }
+inline v4 operator*(v4 b, r32 a) { v4 result = a * b; return (result); }
 inline v4 &operator*=(v4 &b, r32 a) { b = a * b; return (b); }
-inline v4 operator-(v4 a) 			{ v4 result; result.x = -a.x; result.y = -a.y; result.z = -a.z; result.w = -a.w; return (result); }
-inline v4 operator-(v4 a, v4 b) 	{ v4 result; result.x = a.x - b.x; result.y = a.y - b.y; result.z = a.z - b.z; result.w = a.w - b.w; return (result); }
-inline v4 &operator-=(v4 &a, v4 b) 	{ a = a - b; return (a); }
-inline v4 operator+(v4 a, v4 b) 	{ v4 result; result.x = a.x + b.x; result.y = a.y + b.y; result.z = a.z + b.z; result.w = a.w + b.w; return (result); }
-inline v4 &operator+=(v4 &a, v4 b) 	{ a = a + b; return (a); }
+inline v4 operator-(v4 a) { v4 result; result.x = -a.x; result.y = -a.y; result.z = -a.z; result.w = -a.w; return (result); }
+inline v4 operator-(v4 a, v4 b) { v4 result; result.x = a.x - b.x; result.y = a.y - b.y; result.z = a.z - b.z; result.w = a.w - b.w; return (result); }
+inline v4 &operator-=(v4 &a, v4 b) { a = a - b; return (a); }
+inline v4 operator+(v4 a, v4 b) { v4 result; result.x = a.x + b.x; result.y = a.y + b.y; result.z = a.z + b.z; result.w = a.w + b.w; return (result); }
+inline v4 &operator+=(v4 &a, v4 b) { a = a + b; return (a); }
 
 inline m4x4 Columns3x3(v3 X, v3 Y, v3 Z) { m4x4 R = { { {X.x, Y.x, Z.x, 0}, {X.y, Y.y, Z.y, 0}, {X.z, Y.z, Z.z, 0}, { 0, 0, 0, 1} } }; return (R); }
-inline m4x4 Rows3x3(v3 X, v3 Y, v3 Z) 	{ m4x4 R = { { {X.x, X.y, X.z, 0}, {Y.x, Y.y, Y.z, 0}, {Z.x, Z.y, Z.z, 0}, { 0, 0, 0, 1} } }; return (R); }
-inline m4x4 Translate(m4x4 A, v3 T) 	{ m4x4 R = A; R.E[0][3] += T.x; R.E[1][3] += T.y; R.E[2][3] += T.z; return (R); }
+inline m4x4 Rows3x3(v3 X, v3 Y, v3 Z) { m4x4 R = { { {X.x, X.y, X.z, 0}, {Y.x, Y.y, Y.z, 0}, {Z.x, Z.y, Z.z, 0}, { 0, 0, 0, 1} } }; return (R); }
+inline m4x4 Translate(m4x4 A, v3 T) { m4x4 R = A; R.E[0][3] += T.x; R.E[1][3] += T.y; R.E[2][3] += T.z; return (R); }
+inline m4x4 CameraOrbit(v3 eye, r32 pitch, r32 yaw) { m4x4 cam = YRotation(yaw) * XRotation(pitch); m4x4 R = Rows3x3(GetColumn(cam, 0), GetColumn(cam, 1), GetColumn(cam, 2)); R = Translate(R, -(R * eye)); return (R); }
 
 #endif
 
@@ -134,6 +138,13 @@ struct gairb_textured_vertex
 	v4 p;
 	v2 uv;
 	v4 color;
+};
+
+struct gairb_setup
+{
+	m4x4 transform;
+
+	v3 camera_position;
 };
 
 enum gairb_entry_type_enum
@@ -148,6 +159,7 @@ struct gairb_entry_header
 struct gairb_entry_textured_quads
 {
 	gairb_entry_header header;
+	gairb_setup setup;
 	u32 quad_count;
 	u32 vertex_array_offset;
 };
@@ -175,14 +187,40 @@ struct gairb_group
 	gairb_renderbuffer *commands;
 	gairb_entry_textured_quads *current_quads;
 
-	void *setup;
+	gairb_setup last_setup;
 	void *assets;
 };
 
-inline GAIRB_API gairb_group
-gairb_BeginGroup(v2 screen_dim, gairb_renderbuffer *commands, void *setup, void *assets)
+enum { gairb_AlignToTopLeft, gairb_AlignToBottomLeft, gairb_AlignToCenter, gairb_AlignToTopRight, gairb_AlignToBottomRight };
+
+GAIRB_API gairb_group 		gairb_BeginGroup(v2 screen_dim, gairb_renderbuffer *commands, void *assets);
+GAIRB_API void 				gairb_EndGroup(gairb_group *group);
+GAIRB_API void 				gairb_PushSetup(gairb_group *group, gairb_setup *new_setup);
+GAIRB_API void				gairb_PushRect(gairb_group *group, v4 color, v4 p1, v2 uv1, v4 p2, v2 uv2, v4 p3, v2 uv3, v4 p4, v2 uv4);
+GAIRB_API void				gairb_PushRect(gairb_group *group, v4 color, v3 position, r32 width, r32 height, u16 align = gairb_AlignToTopLeft);
+GAIRB_API void				gairb_PushRectOutline(gairb_group *group, v4 color, v4 p1, v2 uv1, v4 p2, v2 uv2, v4 p3, v2 uv3, v4 p4, v2 uv4);
+
+#ifdef GAIRB_IMPLEMENTATION
+
+inline void
+gairb_PushSetup(gairb_group *group, gairb_setup *new_setup)
 {
-	gairb_group result = {  screen_dim, commands, 0, setup, assets };
+	group->last_setup = *new_setup;
+	group->current_quads = 0;
+}
+
+inline GAIRB_API gairb_group
+gairb_BeginGroup(v2 screen_dim, gairb_renderbuffer *commands, void *assets)
+{
+	gairb_group result = { };
+	result.screen_dim = screen_dim;
+	result.commands = commands;
+	result.current_quads = 0;
+
+	gairb_setup initial_setup = {};
+	initial_setup.transform = Mat4x4(1.0f);
+	gairb_PushSetup(&result, &initial_setup);
+
 	return result;
 }
 
@@ -209,13 +247,14 @@ _gairb_Push_(gairb_group *group, u32 size, gairb_entry_type_enum type)
 }
 
 inline gairb_entry_textured_quads *
-gairb_GetQuads(gairb_group *group, u32 quad_count)
+_gairb_GetQuads(gairb_group *group, u32 quad_count)
 {
 	if (!group->current_quads)
 	{
 		group->current_quads = _gairb_Push(group, gairb_entry_textured_quads);
 		group->current_quads->vertex_array_offset = group->commands->vertex_count;
 		group->current_quads->quad_count = 0;
+		group->current_quads->setup = group->last_setup;
 	}
 
 	gairb_entry_textured_quads *result = group->current_quads;
@@ -230,7 +269,7 @@ gairb_GetQuads(gairb_group *group, u32 quad_count)
 inline GAIRB_API void
 gairb_PushRect(gairb_group *group, v4 color, v4 p1, v2 uv1, v4 p2, v2 uv2, v4 p3, v2 uv3, v4 p4, v2 uv4)
 {
-	gairb_entry_textured_quads *entry = gairb_GetQuads(group, 1);
+	gairb_entry_textured_quads *entry = _gairb_GetQuads(group, 1);
 	GAIRB_ASSERT(entry);
 
 	++entry->quad_count;
@@ -244,57 +283,56 @@ gairb_PushRect(gairb_group *group, v4 color, v4 p1, v2 uv1, v4 p2, v2 uv2, v4 p3
 	v[3].p = p4; v[3].uv = uv4; v[3].color = color;
 }
 
-enum { gairb_AlignToTopLeft, gairb_AlignToBottomLeft, gairb_AlignToCenter, gairb_AlignToTopRight, gairb_AlignToBottomRight };
 inline GAIRB_API void
-gairb_PushRect(gairb_group *group, v4 color, v4 position, r32 width, r32 height, u16 align = gairb_AlignToTopLeft)
+gairb_PushRect(gairb_group *group, v4 color, v3 position, r32 width, r32 height, u16 align)
 {
-	r32 half_width = width * .5f;
+	r32 half_width 	= width * .5f;
 	r32 half_height = height * .5f;
-
 	v4 top_left, bottom_left, bottom_right, top_right;
 	switch (align)
 	{
 		case gairb_AlignToTopLeft:
 		{
-			top_left = V4(position.x, position.y, position.z, position.w);
-			bottom_left = V4(position.x, position.y + height, position.z, position.w);
-			bottom_right = V4(position.x + width, position.y + height, position.z, position.w);
-			top_right = V4(position.x + width, position.y, position.z, position.w);
+			top_left 		= V4(position.x, position.y, position.z, 1.f);
+			bottom_left		= V4(position.x, position.y + height, position.z, 1.f);
+			bottom_right	= V4(position.x + width, position.y + height, position.z, 1.f);
+			top_right 		= V4(position.x + width, position.y, position.z, 1.f);
 		} break;
 		case gairb_AlignToBottomLeft:
 		{
-			top_left = V4(position.x, position.y - height, position.z, position.w);
-			bottom_left = V4(position.x, position.y, position.z, position.w);
-			bottom_right = V4(position.x + width, position.y, position.z, position.w);
-			top_right = V4(position.x + width, position.y - height, position.z, position.w);
+			top_left 		= V4(position.x, position.y - height, position.z, 1.f);
+			bottom_left 	= V4(position.x, position.y, position.z, 1.f);
+			bottom_right 	= V4(position.x + width, position.y, position.z, 1.f);
+			top_right 		= V4(position.x + width, position.y - height, position.z, 1.f);
 		} break;
 		case gairb_AlignToCenter:
 		{
-			top_left = V4(position.x - half_width, position.y - half_height, position.z, position.w);
-			bottom_left = V4(position.x - half_width, position.y + half_height, position.z, position.w);
-			bottom_right = V4(position.x + half_width, position.y + half_height, position.z, position.w);
-			top_right = V4(position.x + half_width, position.y - half_height, position.z, position.w);
+			top_left 		= V4(position.x - half_width, position.y - half_height, position.z, 1.f);
+			bottom_left 	= V4(position.x - half_width, position.y + half_height, position.z, 1.f);
+			bottom_right 	= V4(position.x + half_width, position.y + half_height, position.z, 1.f);
+			top_right 		= V4(position.x + half_width, position.y - half_height, position.z, 1.f);
 		} break;
 		case gairb_AlignToTopRight:
 		{
-			top_left = V4(position.x - width, position.y, position.z, position.w);
-			bottom_left = V4(position.x - width, position.y + height, position.z, position.w);
-			bottom_right = V4(position.x, position.y + height, position.z, position.w);
-			top_right = V4(position.x, position.y, position.z, position.w);
+			top_left 		= V4(position.x - width, position.y, position.z, 1.f);
+			bottom_left 	= V4(position.x - width, position.y + height, position.z, 1.f);
+			bottom_right 	= V4(position.x, position.y + height, position.z, 1.f);
+			top_right 		= V4(position.x, position.y, position.z, 1.f);
 		} break;
 		case gairb_AlignToBottomRight:
 		{
-			top_left = V4(position.x - width, position.y - height, position.z, position.w);
-			bottom_left = V4(position.x - width, position.y, position.z, position.w);
-			bottom_right = V4(position.x, position.y, position.z, position.w);
-			top_right = V4(position.x, position.y - height, position.z, position.w);
+			top_left 		= V4(position.x - width, position.y - height, position.z, 1.f);
+			bottom_left 	= V4(position.x - width, position.y, position.z, 1.f);
+			bottom_right 	= V4(position.x, position.y, position.z, 1.f);
+			top_right 		= V4(position.x, position.y - height, position.z, 1.f);
 		} break;
 
 	}
 	gairb_PushRect(group, color, top_left, V2(0, 0), bottom_left, V2(0, 1), top_right, V2(1, 0), bottom_right, V2(1, 1) );
 }
 
-#define GAI_INCLUDE_GAI_RENDERER_H
+#endif
+#define GAI_INCLUDE_GAI_RENDERBUFFER_H
 #endif
 
 

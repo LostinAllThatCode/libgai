@@ -1,5 +1,5 @@
+#ifndef GAI_INCLUDE_XWINDOW_H
 /*
-
 	TODO: Make a documentation as soon as this api is somewhat useable!!!
 
 	Linker dependencies per platform:
@@ -28,8 +28,6 @@
 	}
 */
 
-#ifndef GAI_INCLUDE_GAI_WINDOW_H
-
 #ifdef GAIXW_STATIC
 	#define GAIXW_API static
 #else
@@ -43,7 +41,9 @@
 
 #ifdef GAIXW_DEBUG
 	#include <stdio.h>
-	#define GAIXW_PRINT(fmt, ...) printf(fmt, __VA_ARGS__)
+	#ifndef GAIXW_PRINT
+		#define GAIXW_PRINT(fmt, ...) printf(fmt, __VA_ARGS__)
+	#endif
 #else
 	#define GAIXW_PRINT(fmt, ...)
 #endif
@@ -795,5 +795,5 @@ gaiXWindow(gaixw_context *window, const char *title, int width, int height, int 
 
 #endif
 
-#define GAI_INCLUDE_GAI_WINDOW_H
+#define GAI_INCLUDE_XWINDOW_H
 #endif
