@@ -8,69 +8,151 @@ $Example: $
 ==========================================================================================
 */
 
-#ifndef GAI_INCLUDE_GAI_RENDERER_H
-#include "gai_types.h"
+#ifndef GAI_INCLUDE_GAI_RENDERBUFFER_H
 
-#ifdef GAIR_STATIC
-	#define GAIR_API static
+#ifdef GAIRB_STATIC
+	#define GAIRB_API static
 #else
-	#define GAIR_API extern
+	#define GAIRB_API extern
 #endif
 
-#ifndef GAIR_ASSERT
+#ifndef GAIRB_ASSERT
 	#include <assert.h>
-	#define GAIR_ASSERT(x) assert(x)
+	#define GAIRB_ASSERT(x) assert(x)
 #endif
 
-union v4
-{
-	struct { r32 x, y, z, w; };
-	r32 E[4];
-};
+#ifndef GAIRB_NO_MATH_AND_DEFINES
 
-union v2
-{
-	struct { r32 x, y; };
-	r32 E[2];
-};
+#include <math.h>
+#define M_PI 3.141592653589793238462643383279502884197169399375105820974944592307816406286
+#define gairb_Deg2Rad(d) ((d)*(M_PI/180))
+#define gairb_Rad2Deg(r) ((r)*(180/M_PI))
 
-inline v2
-V2(r32 x, r32 y)
+#include <stdint.h>
+typedef uint8_t  u8; typedef uint16_t u16; typedef uint32_t u32; typedef uint64_t u64;
+typedef int8_t   i8; typedef int16_t  i16; typedef int32_t  i32; typedef int32_t  b32;
+typedef int64_t  i64; typedef float    r32; typedef double   r64;
+
+/* quick and fast 3d math implementation with operator overloading */
+
+struct m3x3 { r32 E[3][3]; }; // ROW MAJOR ORDER
+inline m3x3 Mat3x3(r32 a = 0.f) 		{ m3x3 result = { { { a, 0.f, 0.f }, { 0.f, a, 0.f}, { 0.f, 0.f, a } } }; return result; } // Use Mat3x3(1.0f) to get an identity matrix
+struct m4x4 { r32 E[4][4]; }; // ROW MAJOR ORDER
+inline m4x4 operator*(m4x4 A, m4x4 B) 	{ m4x4 R = {}; for (int r = 0; r <= 3; ++r) for (int c = 0; c <= 3; ++c) for (int i = 0; i <= 3; ++i) R.E[r][c] += A.E[r][i] * B.E[i][c]; return (R); } // TODO: Make a performance based matrix multiplication, this is NOT!
+inline m4x4 Mat4x4(r32 a = 0.f) 		{ m4x4 result = { { { a, 0.f, 0.f, 0.f }, { 0.f, a, 0.f, 0.f}, { 0.f, 0.f, a, 0.f }, { 0.f, 0.f, 0.f, a } } }; return result; }
+inline m4x4 Scale(r32 x, r32 y, r32 z) 	{ m4x4 result = { { { x, 0, 0, 0 }, { 0, y, 0, 0 }, { 0, 0, z, 0 }, { 0, 0, 0, 1 } } }; return result; }
+inline m4x4 XRotation(r32 angle)		{ r32 c = cos(angle); r32 s = sin(angle); m4x4 result = { { { 1, 0, 0, 0 }, { 0, c, -s, 0 }, { 0, s, c, 0 }, { 0, 0, 0, 1 } } }; return result; }
+inline m4x4 YRotation(r32 angle)		{ r32 c = cos(angle); r32 s = sin(angle); m4x4 result = { { { c, 0, s, 0 }, { 0, 1, 0, 0 }, { -s, 0, c, 0 }, { 0, 0, 0, 1 } } }; return result; }
+inline m4x4 ZRotation(r32 angle)		{ r32 c = cos(angle); r32 s = sin(angle); m4x4 result = { { { c, -s, 0, 0 }, { s, c, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } } }; return result; }
+inline m4x4 Transpose(m4x4 A) 			{ m4x4 R; for (int j = 0; j <= 3; ++j) for (int i = 0; i <= 3; ++i) R.E[j][i] = A.E[i][j]; return (R); }
+inline m4x4 OrthographicProjection(r32 left, r32 right, r32 top, r32 bottom,  r32 znear, r32 zfar)
 {
-	v2 result = { x, y };
-	return result;
+	r32 a = 2 / ( right - left);
+	r32 b = 2 / ( top - bottom);
+	r32 c = -2 / (zfar - znear);
+	r32 d = -((right + left) / (right - left));
+	r32 e = -((top + bottom) / (top - bottom));
+	r32 f = -((zfar + znear) / (zfar - znear));
+	m4x4 R = { { {  a,  0,  0,  d }, {  0,  b,  0,  e }, {  0,  0,  c,  f }, {  0,  0,  0,  1 } } };
+	return (R);
+}
+inline m4x4 OrthographicProjection(r32 width, r32 height, r32 znear, r32 zfar) { return OrthographicProjection(0, width, 0, height, znear, zfar); }
+inline m4x4 Perspective(r32 aspect, r32 fov, r32 znear, r32 zfar)
+{
+	r32 s = tan(gairb_Deg2Rad(fov) * .5f)  * znear;
+	r32 r = aspect * s, l = -r, t = s, b = -t;
+	r32 n = znear;
+	r32 f = zfar;
+
+	#if 0
+	r32 t1 = (r + l) / (r - l);
+	r32 t2 = (t + b) / (t - b);
+	#endif
+
+	r32 _a = 2 * n / (r - l);
+	r32 _b = 2 * n / (t - b);
+	r32 _c = -(f + n) / (f - n);
+	r32 _d = -2 * f * n / (f - n);
+	m4x4 R = { { { _a,  0,  0,  0 }, {  0, _b,  0,  0 }, {  0,  0, _c, _d }, {  0,  0, -1,  0 } } };
+	return R;
 }
 
-inline v4
-V4(r32 x, r32 y, r32 z, r32 w)
-{
-	v4 result = { x, y, z, w };
-	return result;
-}
+union v2 { struct { r32 x, y; }; struct { r32 u, v; }; r32 E[2]; };
+inline v2 V2(r32 x, r32 y) { v2 result = { x, y }; return result; }
+inline v2 V2(r32 xy) { v2 result = { xy, xy }; return result; }
+inline v2 V2i(i32 x, i32 y) { v2 result = { (r32)x, (r32)y }; return result; }
+inline v2 operator*(r32 a, v2 b) { v2 result; result.x = a * b.x; result.y = a * b.y; return (result); }
+inline v2 operator*(v2 b, r32 a) { v2 result = a * b; return (result); }
+inline v2 &operator*=(v2 &b, r32 a) { b = a * b; return (b); }
+inline v2 operator-(v2 a) { v2 result; result.x = -a.x; result.y = -a.y; return (result); }
+inline v2 operator-(v2 a, v2 b) { v2 result; result.x = a.x - b.x; result.y = a.y - b.y; return (result); }
+inline v2 &operator-=(v2 &a, v2 b) { a = a - b; return (a); }
+inline v2 operator+(v2 a, v2 b) { v2 result; result.x = a.x + b.x; result.y = a.y + b.y; return (result); }
+inline v2 &operator+=(v2 &a, v2 b) { a = a + b; return (a); }
 
-struct gair_textured_vertex
+union v3 { struct { v2 xy; r32 _ignored0_; }; struct { r32 _ignored0_; v2 yz; }; struct { v2 uv; r32 _ignored0_; }; struct { r32 _ignored0_; v2 vw; }; struct { r32 x, y, z; }; struct { r32 r, g, b; }; struct { r32 u, v, w; }; r32 E[3]; };
+inline v3 V3(r32 x, r32 y, r32 z) { v3 result = { x, y, z }; return result; }
+inline v3 V3(r32 xyz) { v3 result = { xyz, xyz, xyz }; return result; }
+inline v3 V3(v2 xy, r32 z) { v3 result = { xy.x, xy.y, z }; return result; }
+inline v3 V3i(i32 x, i32 y, i32 z) { v3 result = { (r32)x, (r32)y, (r32)z }; return result; }
+inline v3 Transform(m4x4 a, v3 p, r32 pw = 1.0f) { v3 result; result.x = p.x * a.E[0][0] + p.y * a.E[0][1] + p.z * a.E[0][2] + pw * a.E[0][3]; result.y = p.x * a.E[1][0] + p.y * a.E[1][1] + p.z * a.E[1][2] + pw * a.E[1][3]; result.z = p.x * a.E[2][0] + p.y * a.E[2][1] + p.z * a.E[2][2] + pw * a.E[2][3]; return (result); }
+inline v3 operator*(r32 a, v3 b) { v3 result; result.x = a * b.x; result.y = a * b.y; result.z = a * b.z; return (result); }
+inline v3 operator*(v3 b, r32 a) { v3 result = a * b; return (result); }
+inline v3 &operator*=(v3 &b, r32 a) { b = a * b; return (b); }
+inline v3 operator-(v3 a) { v3 result; result.x = -a.x; result.y = -a.y; result.z = -a.z; return (result); }
+inline v3 operator-(v3 a, v3 b) { v3 result; result.x = a.x - b.x; result.y = a.y - b.y; result.z = a.z - b.z; return (result); }
+inline v3 &operator-=(v3 &a, v3 b) { a = a - b; return (a); }
+inline v3 operator+(v3 a, v3 b) { v3 result; result.x = a.x + b.x; result.y = a.y + b.y; result.z = a.z + b.z; return (result); }
+inline v3 &operator+=(v3 &a, v3 b) { a = a + b; return (a); }
+inline v3 operator*(m4x4 a, v3 p) { v3 result = Transform(a, p, 1.0f); return (result); }
+inline v3 GetColumn(m4x4 A, u32 C) 		{ v3 R = {A.E[0][C], A.E[1][C], A.E[2][C]}; return (R); }
+inline v3 GetRow(m4x4 A, u32 R) 		{ v3 Result = {A.E[R][0], A.E[R][1], A.E[R][2]}; return (Result); }
+
+union v4 { struct { union { v3 xyz; struct { r32 x, y, z; }; }; r32 w; }; struct { union { v3 rgb; struct { r32 r, g, b; }; }; r32 a; }; struct { v2 xy; r32 _ignored0_; r32 _ignored1_; }; struct { r32 _ignored0_; v2 yz; r32 _ignored1_; }; struct { r32 _ignored0_; r32 _ignored1_; v2 zw; }; r32 E[4]; };
+inline v4 V4(r32 x, r32 y, r32 z, r32 w)	{ v4 result = { x, y, z, w }; return result; }
+inline v4 V4(r32 xyzw) 						{ v4 result = { xyzw, xyzw, xyzw, xyzw }; return result; }
+inline v4 V4(v2 xy, r32 z, r32 w) 			{ v4 result = { xy.x, xy.y, z, w }; return result; }
+inline v4 V4(v3 xyz, r32 w) 				{ v4 result = { xyz.x, xyz.y, xyz.z, w }; return result; }
+inline v4 V4i(i32 x, i32 y, i32 z, i32 w) 	{ v4 result = { (r32)x, (r32)y, (r32)z, (r32)w }; return result; }
+inline v4 operator*(r32 a, v4 b) 	{ v4 result; result.x = a * b.x; result.y = a * b.y; result.z = a * b.z; result.w = a * b.w; return (result); }
+inline v4 operator*(v4 b, r32 a) 	{ v4 result = a * b; return (result); }
+inline v4 &operator*=(v4 &b, r32 a) { b = a * b; return (b); }
+inline v4 operator-(v4 a) 			{ v4 result; result.x = -a.x; result.y = -a.y; result.z = -a.z; result.w = -a.w; return (result); }
+inline v4 operator-(v4 a, v4 b) 	{ v4 result; result.x = a.x - b.x; result.y = a.y - b.y; result.z = a.z - b.z; result.w = a.w - b.w; return (result); }
+inline v4 &operator-=(v4 &a, v4 b) 	{ a = a - b; return (a); }
+inline v4 operator+(v4 a, v4 b) 	{ v4 result; result.x = a.x + b.x; result.y = a.y + b.y; result.z = a.z + b.z; result.w = a.w + b.w; return (result); }
+inline v4 &operator+=(v4 &a, v4 b) 	{ a = a + b; return (a); }
+
+inline m4x4 Columns3x3(v3 X, v3 Y, v3 Z) { m4x4 R = { { {X.x, Y.x, Z.x, 0}, {X.y, Y.y, Z.y, 0}, {X.z, Y.z, Z.z, 0}, { 0, 0, 0, 1} } }; return (R); }
+inline m4x4 Rows3x3(v3 X, v3 Y, v3 Z) 	{ m4x4 R = { { {X.x, X.y, X.z, 0}, {Y.x, Y.y, Y.z, 0}, {Z.x, Z.y, Z.z, 0}, { 0, 0, 0, 1} } }; return (R); }
+inline m4x4 Translate(m4x4 A, v3 T) 	{ m4x4 R = A; R.E[0][3] += T.x; R.E[1][3] += T.y; R.E[2][3] += T.z; return (R); }
+
+#endif
+
+struct gairb_textured_vertex
 {
 	v4 p;
 	v2 uv;
+	v4 color;
 };
 
-enum gair_render_entry_type_enum
+enum gairb_entry_type_enum
 {
-	gaiRendererType_gair_entry_textured_quads = 0x1,
+	gairb_EntryType_gairb_entry_textured_quads = 0x1,
 };
-struct gair_render_entry_header
+struct gairb_entry_header
 {
-	gair_render_entry_type_enum type;
+	gairb_entry_type_enum type;
 };
 
-struct gair_entry_textured_quads
+struct gairb_entry_textured_quads
 {
-	gair_render_entry_header header;
+	gairb_entry_header header;
 	u32 quad_count;
 	u32 vertex_array_offset;
 };
 
-struct gair_render_commands
+struct gairb_renderbuffer
 {
 	u8 *pushbuffer_base;
 	u8 *pushbuffer_at;
@@ -78,75 +160,65 @@ struct gair_render_commands
 
 	u32 vertex_max;
 	u32 vertex_count;
-	gair_textured_vertex *vertex_array;
+	gairb_textured_vertex *vertex_array;
 
-    struct loaded_bitmap **quad_textures;
-    struct loaded_bitmap *default_texture;
+	struct loaded_bitmap **quad_textures;
+	struct loaded_bitmap *default_texture;
 
-    v4 clear_color;
+	v4 clear_color;
 };
-#define gaiRenderCreateRenderCommands(pushbuffer_max, pushbuffer, vertex_max, vertexbuffer, bitmap_array, default_texture) \
-{ pushbuffer, pushbuffer, pushbuffer_max, vertex_max, 0, vertexbuffer, bitmap_array, default_texture, {0.0f, 0.f, 0.f, 1.f} }
+#define gairb_RenderBuffer(clear_color, pushbuffer_max, pushbuffer, vertex_max, vertexbuffer, bitmap_array, default_texture) { pushbuffer, pushbuffer, pushbuffer_max, vertex_max, 0, vertexbuffer, bitmap_array, default_texture, clear_color}
 
-struct gair_render_setup
+struct gairb_group
 {
-
-};
-
-struct gair_render_group
-{
-	void *assets;
-
 	v2 screen_dim;
+	gairb_renderbuffer *commands;
+	gairb_entry_textured_quads *current_quads;
 
-	gair_render_commands *commands;
-
-	gair_entry_textured_quads *current_quads;
+	void *setup;
+	void *assets;
 };
 
-inline GAIR_API gair_render_group
-gaiRendererBeginGroup(v2 screen_dim, gair_render_commands *commands, void *assets)
+inline GAIRB_API gairb_group
+gairb_BeginGroup(v2 screen_dim, gairb_renderbuffer *commands, void *setup, void *assets)
 {
-	gair_render_group result = { assets, screen_dim, commands };
+	gairb_group result = {  screen_dim, commands, 0, setup, assets };
 	return result;
 }
 
-inline GAIR_API void
-gaiRendererEndGroup(gair_render_group *group)
-{
+inline GAIRB_API void
+gairb_EndGroup(gairb_group *group)
+{}
 
-}
-
-#define gaiRendererPushRenderElement( group, type ) (type *) gaiRendererPushRenderElement_(group, sizeof(type), gaiRendererType_##type)
-inline gair_render_entry_header *
-gaiRendererPushRenderElement_(gair_render_group *group, u32 size, gair_render_entry_type_enum type)
+#define _gairb_Push( group, type ) (type *) _gairb_Push_(group, sizeof(type), gairb_EntryType_##type)
+inline gairb_entry_header *
+_gairb_Push_(gairb_group *group, u32 size, gairb_entry_type_enum type)
 {
-	gair_render_entry_header *result = 0;
+	gairb_entry_header *result = 0;
 
 	u8 *pushbuffer_end = group->commands->pushbuffer_base + group->commands->pushbuffer_max;
 	if ((group->commands->pushbuffer_at + size) <= pushbuffer_end)
 	{
-		result = (gair_render_entry_header*) group->commands->pushbuffer_at;
+		result = (gairb_entry_header*) group->commands->pushbuffer_at;
 		result->type = type;
 
 		group->commands->pushbuffer_at += size;
-	} else GAIR_ASSERT(!"pushbuffer overflow");
-
-	group->current_quads = 0;
+	}
+	else GAIRB_ASSERT(!"pushbuffer overflow");
 	return result;
 }
 
-inline gair_entry_textured_quads *
-gaiRendererGetCurrentQuads(gair_render_group *group, u32 quad_count)
+inline gairb_entry_textured_quads *
+gairb_GetQuads(gairb_group *group, u32 quad_count)
 {
 	if (!group->current_quads)
 	{
-		group->current_quads = gaiRendererPushRenderElement(group, gair_entry_textured_quads);
+		group->current_quads = _gairb_Push(group, gairb_entry_textured_quads);
 		group->current_quads->vertex_array_offset = group->commands->vertex_count;
 		group->current_quads->quad_count = 0;
 	}
 
-	gair_entry_textured_quads *result = group->current_quads;
+	gairb_entry_textured_quads *result = group->current_quads;
 	if ((group->commands->vertex_count + 4 * quad_count) > group->commands->vertex_max)
 	{
 		result = 0;
@@ -155,21 +227,71 @@ gaiRendererGetCurrentQuads(gair_render_group *group, u32 quad_count)
 	return result;
 }
 
-inline GAIR_API void
-gaiRendererPushRect(gair_render_group *group, v4 color, v4 p1, v2 uv1, v4 p2, v2 uv2, v4 p3, v2 uv3, v4 p4, v2 uv4)
+inline GAIRB_API void
+gairb_PushRect(gairb_group *group, v4 color, v4 p1, v2 uv1, v4 p2, v2 uv2, v4 p3, v2 uv3, v4 p4, v2 uv4)
 {
-	gair_entry_textured_quads *entry = gaiRendererGetCurrentQuads(group, 1);
-	GAIR_ASSERT(entry);
+	gairb_entry_textured_quads *entry = gairb_GetQuads(group, 1);
+	GAIRB_ASSERT(entry);
 
 	++entry->quad_count;
 
-	gair_textured_vertex *v = group->commands->vertex_array + group->commands->vertex_count;
+	gairb_textured_vertex *v = group->commands->vertex_array + group->commands->vertex_count;
 	group->commands->vertex_count += 4;
 
-	v[0].p = p1; v[0].uv = uv1;
-	v[1].p = p2; v[1].uv = uv2;
-	v[2].p = p3; v[2].uv = uv3;
-	v[3].p = p4; v[3].uv = uv4;
+	v[0].p = p1; v[0].uv = uv1; v[0].color = color;
+	v[1].p = p2; v[1].uv = uv2; v[1].color = color;
+	v[2].p = p3; v[2].uv = uv3; v[2].color = color;
+	v[3].p = p4; v[3].uv = uv4; v[3].color = color;
+}
+
+enum { gairb_AlignToTopLeft, gairb_AlignToBottomLeft, gairb_AlignToCenter, gairb_AlignToTopRight, gairb_AlignToBottomRight };
+inline GAIRB_API void
+gairb_PushRect(gairb_group *group, v4 color, v4 position, r32 width, r32 height, u16 align = gairb_AlignToTopLeft)
+{
+	r32 half_width = width * .5f;
+	r32 half_height = height * .5f;
+
+	v4 top_left, bottom_left, bottom_right, top_right;
+	switch (align)
+	{
+		case gairb_AlignToTopLeft:
+		{
+			top_left = V4(position.x, position.y, position.z, position.w);
+			bottom_left = V4(position.x, position.y + height, position.z, position.w);
+			bottom_right = V4(position.x + width, position.y + height, position.z, position.w);
+			top_right = V4(position.x + width, position.y, position.z, position.w);
+		} break;
+		case gairb_AlignToBottomLeft:
+		{
+			top_left = V4(position.x, position.y - height, position.z, position.w);
+			bottom_left = V4(position.x, position.y, position.z, position.w);
+			bottom_right = V4(position.x + width, position.y, position.z, position.w);
+			top_right = V4(position.x + width, position.y - height, position.z, position.w);
+		} break;
+		case gairb_AlignToCenter:
+		{
+			top_left = V4(position.x - half_width, position.y - half_height, position.z, position.w);
+			bottom_left = V4(position.x - half_width, position.y + half_height, position.z, position.w);
+			bottom_right = V4(position.x + half_width, position.y + half_height, position.z, position.w);
+			top_right = V4(position.x + half_width, position.y - half_height, position.z, position.w);
+		} break;
+		case gairb_AlignToTopRight:
+		{
+			top_left = V4(position.x - width, position.y, position.z, position.w);
+			bottom_left = V4(position.x - width, position.y + height, position.z, position.w);
+			bottom_right = V4(position.x, position.y + height, position.z, position.w);
+			top_right = V4(position.x, position.y, position.z, position.w);
+		} break;
+		case gairb_AlignToBottomRight:
+		{
+			top_left = V4(position.x - width, position.y - height, position.z, position.w);
+			bottom_left = V4(position.x - width, position.y, position.z, position.w);
+			bottom_right = V4(position.x, position.y, position.z, position.w);
+			top_right = V4(position.x, position.y - height, position.z, position.w);
+		} break;
+
+	}
+	gairb_PushRect(group, color, top_left, V2(0, 0), bottom_left, V2(0, 1), top_right, V2(1, 0), bottom_right, V2(1, 1) );
 }
 
 #define GAI_INCLUDE_GAI_RENDERER_H

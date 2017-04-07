@@ -748,35 +748,7 @@ Perspective(r32 aspect, r32 fov, r32 znear, r32 zfar)
     return R;
 }
 
-inline m4x4
-Orthographic(r32 width, r32 height, r32 znear, r32 zfar)
-{
-
-    r32 right  = width;
-    r32 left   = -right;
-    r32 top    = height;
-    r32 bottom = -top;
-
-    r32 a = 2 / (right - left);
-    r32 b = 2 / (top - bottom);
-    r32 c = -2 / (zfar - znear);
-    r32 d = -( (zfar + znear) / (zfar - znear) );
-    r32 e = -( (right + left) / (right - left) );
-    r32 f = -( (top + bottom) / (top - bottom) );
-    m4x4 R =
-    {
-        {
-            {  a,  0,  0,  e },
-            {  0,  b,  0,  f },
-            {  0,  0,  c,  d },
-            {  0,  0,  0,  1 }
-        }
-    };
-    return (R);
-}
-
-inline m4x4
-Orthographic(r32 left, r32 right, r32 top, r32 bottom,  r32 znear, r32 zfar)
+inline m4x4 Orthographic(r32 left, r32 right, r32 top, r32 bottom,  r32 znear, r32 zfar)
 {
     r32 a = 2 / ( right - left);
     r32 b = 2 / ( top - bottom);
@@ -795,6 +767,7 @@ Orthographic(r32 left, r32 right, r32 top, r32 bottom,  r32 znear, r32 zfar)
     };
     return (R);
 }
+inline m4x4 Orthographic(r32 width, r32 height, r32 znear, r32 zfar) { return Orthographic(0, width, 0, height, znear, zfar); }
 
 inline m4x4
 CameraOrbit(v3 eye, r32 pitch, r32 yaw)
