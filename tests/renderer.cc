@@ -63,6 +63,7 @@ UpdateAndRender(gaixw_context *window, gairb_renderbuffer *renderbuffer)
 	}
 
 	gairb_PushCube(&g1, V4(r, g, b, 1.f), V3(0.f, 10.f, 0.f), 41.f, 20.f );
+	gairb_PushRect(&g1, V4(1.f, 1.f, 1.f, 1.f), V3(0, 15.f, -19.f), 20, 10, gairb_AlignToCenter);
 
 	gairb_setup ortho = { OrthographicProjection((r32)window->info.width, (r32)window->info.height, 1, -1) };
 	gairb_PushSetup(&g1, &ortho);
