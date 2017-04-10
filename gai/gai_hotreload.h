@@ -16,47 +16,63 @@ $
 ==========================================================================================
 */
 
-#ifndef _GAI_HOTRELOAD_H
+#ifndef _GAI_INCLUDE_HOTRELOAD_H
 
-#include "gai_types.h"
-#include "gai_utils.h"
+#define GAIHR_TEXTLENGTH_MAX 4096
 
-#define GAI_HOTRELOAD_MAX_TEXT_LEN 4096
+#ifndef GAIHR_STATIC
+	#define GAIHR_API extern
+#else
+	#define GAIHR_API static
+#endif
 
 #if _WIN32
+
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-struct gaiHotReloadPlatform
+#pragma comment( lib, "user32.lib" )
+
+struct gaihr_platform
 {
 	HANDLE   mutex;
 	HANDLE   event;
 	FILETIME last_write_time;
 };
 #else
-struct gaiHotReloadPlatform { void *null_ptr };
+struct gaihr_platform { void *null_ptr };
 #endif
 
-enum gaiHotReloadFlagEnum
+enum gaihr_flags
 {
-	gaiHotReloadNone       			= 0x0,
-	gaiHotReloadDontHandleEvent     = 0x1,
+	gaihr_FlagsNone      		= 0x0,
+	gaihr_FlagsDontHandleEvent  = 0x1,
 };
 
-struct gaiHotReloadFile;
-typedef void gaiHotReloadCallback(gaiHotReloadFile *hotreloadable);
-struct gaiHotReloadFile
+struct gaihr_file;
+typedef void gaihr_callback(gaihr_file *hotreloadable);
+struct gaihr_file
 {
-	void                    	*userdata;
-	gaiHotReloadCallback		*callback;
-	gaiHotReloadPlatform        platform;
-	const char                  *filename;
-	int     	                interval;
-	gaiHotReloadFlagEnum        flags;
+	void          	*userdata;
+	gaihr_callback	*callback;
+	gaihr_platform	platform;
+	const char    	*filename;
+	int     	  	interval;
+	gaihr_flags   	flags;
 };
+
+GAIHR_API BOOL 	gaihr_AddFile( gaihr_file *hotreloadable, const char *filename, int interval = 0, gaihr_callback *callback = 0, void *userdata = 0, gaihr_flags flags = gaihr_FlagsNone);
+
+GAIHR_API void	gaihr_WaitForEvent(gaihr_file *hotreloadable);
+GAIHR_API BOOL 	gaihr_BeginTicketMutex(gaihr_file *hotreloadable, int timeout = INFINITE);
+GAIHR_API void 	gaihr_EndTicketMutex(gaihr_file *hotreloadable);
+
+#ifdef GAIHR_IMPLEMENTATION
 
 #if _WIN32
 
-inline void
-gaiHotReloadEventCallback(gaiHotReloadFile *hotreloadable)
+
+inline GAIHR_API void
+gaihr_WaitForEvent(gaihr_file *hotreloadable)
 {
 	if (WaitForSingleObject(hotreloadable->platform.event, 0) == WAIT_OBJECT_0)
 	{
@@ -67,23 +83,23 @@ gaiHotReloadEventCallback(gaiHotReloadFile *hotreloadable)
 	}
 }
 
-inline BOOL
-gaiHotReloadBeginMutex(gaiHotReloadFile *hotreloadable, int timeout = INFINITE)
+inline GAIHR_API BOOL
+gaihr_BeginTicketMutex(gaihr_file *hotreloadable, int timeout)
 {
 	BOOL result = (WaitForSingleObject(hotreloadable->platform.mutex, timeout) == WAIT_OBJECT_0);
 	return result;
 }
 
-inline void
-gaiHotReloadEndMutex(gaiHotReloadFile *hotreloadable)
+inline GAIHR_API void
+gaihr_EndTicketMutex(gaihr_file *hotreloadable)
 {
 	ReleaseMutex(hotreloadable->platform.mutex);
 }
 
 DWORD WINAPI
-gaiHotReloadWin32Thread(void *data)
+gaihr_WorkerThread(void *data)
 {
-	gaiHotReloadFile *hotreloadable = (gaiHotReloadFile *) data;
+	gaihr_file *hotreloadable = (gaihr_file *) data;
 	while (hotreloadable)
 	{
 		WIN32_FILE_ATTRIBUTE_DATA file_info_now;
@@ -93,9 +109,9 @@ gaiHotReloadWin32Thread(void *data)
 			hotreloadable->platform.last_write_time = file_info_now.ftLastWriteTime;
 			hotreloadable->platform.event           = CreateEvent(0, true, true, 0);
 
-			if (!gai_bitand(hotreloadable->flags, gaiHotReloadDontHandleEvent))
+			if (!(hotreloadable->flags & gaihr_FlagsDontHandleEvent))
 			{
-				gaiHotReloadEventCallback(hotreloadable);
+				gaihr_WaitForEvent(hotreloadable);
 			}
 		}
 		Sleep(hotreloadable->interval);
@@ -103,22 +119,19 @@ gaiHotReloadWin32Thread(void *data)
 	return 1;
 }
 
-BOOL gaiHotReloadAddFile( gaiHotReloadFile *hotreloadable, const char *filename, int interval = 0, gaiHotReloadCallback *callback = 0, void *userdata = 0, gaiHotReloadFlagEnum flags = gaiHotReloadNone)
+BOOL GAIHR_API
+gaihr_AddFile( gaihr_file *hotreloadable, const char *filename, int interval, gaihr_callback *callback, void *userdata, gaihr_flags flags)
 {
 	BOOL result = false;
-	gaiHotReloadFile temp =
-	{
-		userdata,
-		callback,
-		{ CreateMutex(0, 0, 0) },
-		filename,
-		interval,
-		flags
-	};
 
-	*hotreloadable = temp;
+	hotreloadable->userdata = userdata;
+	hotreloadable->callback = callback;
+	hotreloadable->platform = { CreateMutex(0, 0, 0) };
+	hotreloadable->filename = filename;
+	hotreloadable->interval = interval;
+	hotreloadable->flags    = flags;
 
-	if ( CreateThread(0, 0, gaiHotReloadWin32Thread, hotreloadable, 0, 0) != 0)
+	if ( CreateThread(0, 0, gaihr_WorkerThread, hotreloadable, 0, 0) != 0)
 	{
 		result = true;
 	}
@@ -129,6 +142,8 @@ BOOL gaiHotReloadAddFile( gaiHotReloadFile *hotreloadable, const char *filename,
 #else
 
 #pragma message("libgai [warning]: \"Hot Reloading\" is not implemented for this platform")
+
+#endif
 
 #endif
 

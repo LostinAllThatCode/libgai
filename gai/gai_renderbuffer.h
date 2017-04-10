@@ -24,14 +24,14 @@ $Example: $
 #ifndef GAIRB_NO_MATH_AND_DEFINES
 
 #include <math.h>
-#define M_PI 3.141592653589793238462643383279502884197169399375105820974944592307816406286
+#define M_PI 3.141592653589793238462643383279502884197169399375105820974944592307816406286f
 
 #define GAIRB_DEG2RAD(d) ((d)*(M_PI/180))
 #define GAIRB_RAD2DEG(r) ((r)*(180/M_PI))
 
 #include <stdint.h>
-typedef uint8_t  u8; typedef uint16_t u16; typedef uint32_t u32; typedef uint64_t u64;
-typedef int8_t   i8; typedef int16_t  i16; typedef int32_t  i32; typedef int32_t  b32;
+typedef uint8_t  u8;  typedef uint16_t u16; typedef uint32_t u32; typedef uint64_t u64;
+typedef int8_t   i8;  typedef int16_t  i16; typedef int32_t  i32; typedef int32_t  b32;
 typedef int64_t  i64; typedef float    r32; typedef double   r64;
 
 /* quick and fast 3d math implementation with operator overloading */
@@ -39,13 +39,13 @@ typedef int64_t  i64; typedef float    r32; typedef double   r64;
 struct m3x3 { r32 E[3][3]; }; // ROW MAJOR ORDER
 inline m3x3 Mat3x3(r32 a = 0.f) { m3x3 result = { { { a, 0.f, 0.f }, { 0.f, a, 0.f}, { 0.f, 0.f, a } } }; return result; } // Use Mat3x3(1.0f) to get an identity matrix
 struct m4x4 { r32 E[4][4]; }; // ROW MAJOR ORDER
+inline m4x4 Transpose(m4x4 A) { m4x4 R; for (int j = 0; j <= 3; ++j) for (int i = 0; i <= 3; ++i) R.E[j][i] = A.E[i][j]; return (R); }
 inline m4x4 operator*(m4x4 A, m4x4 B) { m4x4 R = {}; for (int r = 0; r <= 3; ++r) for (int c = 0; c <= 3; ++c) for (int i = 0; i <= 3; ++i) R.E[r][c] += A.E[r][i] * B.E[i][c]; return (R); } // TODO: Make a performance based matrix multiplication, this is NOT!
 inline m4x4 Mat4x4(r32 a = 0.f) { m4x4 result = { { { a, 0.f, 0.f, 0.f }, { 0.f, a, 0.f, 0.f}, { 0.f, 0.f, a, 0.f }, { 0.f, 0.f, 0.f, a } } }; return result; }
 inline m4x4 Scale(r32 x, r32 y, r32 z) { m4x4 result = { { { x, 0, 0, 0 }, { 0, y, 0, 0 }, { 0, 0, z, 0 }, { 0, 0, 0, 1 } } }; return result; }
-inline m4x4 XRotation(r32 angle) { r32 c = cos(angle); r32 s = sin(angle); m4x4 result = { { { 1, 0, 0, 0 }, { 0, c, -s, 0 }, { 0, s, c, 0 }, { 0, 0, 0, 1 } } }; return result; }
-inline m4x4 YRotation(r32 angle) { r32 c = cos(angle); r32 s = sin(angle); m4x4 result = { { { c, 0, s, 0 }, { 0, 1, 0, 0 }, { -s, 0, c, 0 }, { 0, 0, 0, 1 } } }; return result; }
-inline m4x4 ZRotation(r32 angle) { r32 c = cos(angle); r32 s = sin(angle); m4x4 result = { { { c, -s, 0, 0 }, { s, c, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } } }; return result; }
-inline m4x4 Transpose(m4x4 A) { m4x4 R; for (int j = 0; j <= 3; ++j) for (int i = 0; i <= 3; ++i) R.E[j][i] = A.E[i][j]; return (R); }
+inline m4x4 XRotation(r32 angle) { r32 c = cosf(angle); r32 s = sinf(angle); m4x4 result = { { { 1, 0, 0, 0 }, { 0, c, -s, 0 }, { 0, s, c, 0 }, { 0, 0, 0, 1 } } }; return result; }
+inline m4x4 YRotation(r32 angle) { r32 c = cosf(angle); r32 s = sinf(angle); m4x4 result = { { { c, 0, s, 0 }, { 0, 1, 0, 0 }, { -s, 0, c, 0 }, { 0, 0, 0, 1 } } }; return result; }
+inline m4x4 ZRotation(r32 angle) { r32 c = cosf(angle); r32 s = sinf(angle); m4x4 result = { { { c, -s, 0, 0 }, { s, c, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } } }; return result; }
 inline m4x4 OrthographicProjection(r32 left, r32 right, r32 top, r32 bottom,  r32 znear, r32 zfar)
 {
 	r32 a = 2 / ( right - left);
@@ -60,7 +60,7 @@ inline m4x4 OrthographicProjection(r32 left, r32 right, r32 top, r32 bottom,  r3
 inline m4x4 OrthographicProjection(r32 width, r32 height, r32 znear, r32 zfar) { return OrthographicProjection(0, width, 0, height, znear, zfar); }
 inline m4x4 PerspectiveProjection(r32 aspect, r32 fov, r32 znear, r32 zfar)
 {
-	r32 s = tan(GAIRB_DEG2RAD(fov) * .5f)  * znear;
+	r32 s = tanf( GAIRB_DEG2RAD(fov) * .5f)  * znear;
 	r32 r = aspect * s, l = -r, t = s, b = -t;
 	r32 n = znear;
 	r32 f = zfar;
@@ -110,6 +110,33 @@ inline v3 &operator+=(v3 &a, v3 b) { a = a + b; return (a); }
 inline v3 operator*(m4x4 a, v3 p) { v3 result = Transform(a, p, 1.0f); return (result); }
 inline v3 GetColumn(m4x4 A, u32 C) { v3 R = {A.E[0][C], A.E[1][C], A.E[2][C]}; return (R); }
 inline v3 GetRow(m4x4 A, u32 R) { v3 Result = {A.E[R][0], A.E[R][1], A.E[R][2]}; return (Result); }
+inline v3
+Cross(v3 a, v3 b)
+{
+	v3 result;
+	result.x = (a.y * b.z) - (a.z * b.y);
+	result.y = (a.z * b.x) - (a.x * b.z);
+	result.z = (a.x * b.y) - (a.y * b.x);
+	return result;
+}
+inline r32
+Dot(v3 A, v3 B)
+{
+	r32 Result = A.x * B.x + A.y * B.y + A.z * B.z;
+	return (Result);
+}
+inline r32
+LengthSq(v3 A)
+{
+	r32 Result = Dot(A, A);
+	return (Result);
+}
+inline v3
+Normalize(v3 a)
+{
+	v3 result = a * (1.0f / LengthSq(a));
+	return (result);
+}
 
 union v4 { struct { union { v3 xyz; struct { r32 x, y, z; }; }; r32 w; }; struct { union { v3 rgb; struct { r32 r, g, b; }; }; r32 a; }; struct { v2 xy; r32 _ignored0_; r32 _ignored1_; }; struct { r32 _ignored0_; v2 yz; r32 _ignored1_; }; struct { r32 _ignored0_; r32 _ignored1_; v2 zw; }; r32 E[4]; };
 inline v4 V4(r32 x, r32 y, r32 z, r32 w) { v4 result = { x, y, z, w }; return result; }
@@ -128,8 +155,18 @@ inline v4 &operator+=(v4 &a, v4 b) { a = a + b; return (a); }
 
 inline m4x4 Columns3x3(v3 X, v3 Y, v3 Z) { m4x4 R = { { {X.x, Y.x, Z.x, 0}, {X.y, Y.y, Z.y, 0}, {X.z, Y.z, Z.z, 0}, { 0, 0, 0, 1} } }; return (R); }
 inline m4x4 Rows3x3(v3 X, v3 Y, v3 Z) { m4x4 R = { { {X.x, X.y, X.z, 0}, {Y.x, Y.y, Y.z, 0}, {Z.x, Z.y, Z.z, 0}, { 0, 0, 0, 1} } }; return (R); }
-inline m4x4 Translate(m4x4 A, v3 T) { m4x4 R = A; R.E[0][3] += T.x; R.E[1][3] += T.y; R.E[2][3] += T.z; return (R); }
+inline m4x4 Translate(m4x4 A, v3 T) { m4x4 R = A; R.E[0][3] += T.x; R.E[1][3] += T.y; R.E[2][3] += T.z; return R; }
 inline m4x4 CameraOrbit(v3 eye, r32 pitch, r32 yaw) { m4x4 cam = YRotation(yaw) * XRotation(pitch); m4x4 R = Rows3x3(GetColumn(cam, 0), GetColumn(cam, 1), GetColumn(cam, 2)); R = Translate(R, -(R * eye)); return (R); }
+inline m4x4
+CameraLookAt(v3 eye, v3 target, v3 up)
+{
+	v3 f  = Normalize(eye - target);
+	v3 s  = Normalize(Cross(up, f));
+	v3 _u = Cross(f, s);
+	v3 _e = V3(-Dot(s, eye), -Dot(_u, eye), -Dot(f, eye));
+	m4x4 R = Translate(Rows3x3(s, _u, f), _e);
+	return (R);
+}
 
 #endif
 
@@ -198,7 +235,7 @@ GAIRB_API void 				gairb_EndGroup(gairb_group *group);
 GAIRB_API void 				gairb_PushSetup(gairb_group *group, gairb_setup *new_setup);
 GAIRB_API void				gairb_PushRect(gairb_group *group, v4 color, v4 p1, v2 uv1, v4 p2, v2 uv2, v4 p3, v2 uv3, v4 p4, v2 uv4);
 GAIRB_API void				gairb_PushRect(gairb_group *group, v4 color, v3 position, r32 width, r32 height, u16 align = gairb_AlignToTopLeft);
-GAIRB_API void				gairb_PushRectOutline(gairb_group *group, v4 color, v4 p1, v2 uv1, v4 p2, v2 uv2, v4 p3, v2 uv3, v4 p4, v2 uv4);
+GAIRB_API void				gairb_PushCube(gairb_group *group, v4 color, v3 position, r32 radius, r32  height);
 
 #ifdef GAIRB_IMPLEMENTATION
 
@@ -212,21 +249,19 @@ gairb_PushSetup(gairb_group *group, gairb_setup *new_setup)
 inline GAIRB_API gairb_group
 gairb_BeginGroup(v2 screen_dim, gairb_renderbuffer *commands, void *assets)
 {
-	gairb_group result = { };
-	result.screen_dim = screen_dim;
-	result.commands = commands;
+	gairb_group result   = { };
+	result.screen_dim    = screen_dim;
+	result.commands      = commands;
 	result.current_quads = 0;
 
 	gairb_setup initial_setup = {};
-	initial_setup.transform = Mat4x4(1.0f);
+	initial_setup.transform   = Mat4x4(1.0f);
 	gairb_PushSetup(&result, &initial_setup);
 
 	return result;
 }
 
-inline GAIRB_API void
-gairb_EndGroup(gairb_group *group)
-{}
+inline GAIRB_API void gairb_EndGroup(gairb_group *group) {}
 
 #define _gairb_Push( group, type ) (type *) _gairb_Push_(group, sizeof(type), gairb_EntryType_##type)
 inline gairb_entry_header *
@@ -267,7 +302,7 @@ _gairb_GetQuads(gairb_group *group, u32 quad_count)
 }
 
 inline GAIRB_API void
-gairb_PushRect(gairb_group *group, v4 color, v4 p1, v2 uv1, v4 p2, v2 uv2, v4 p3, v2 uv3, v4 p4, v2 uv4)
+gairb_PushRect(gairb_group *group, v4 p1, v2 uv1, v4 c1, v4 p2, v2 uv2, v4 c2, v4 p3, v2 uv3, v4 c3, v4 p4, v2 uv4, v4 c4)
 {
 	gairb_entry_textured_quads *entry = _gairb_GetQuads(group, 1);
 	GAIRB_ASSERT(entry);
@@ -277,58 +312,117 @@ gairb_PushRect(gairb_group *group, v4 color, v4 p1, v2 uv1, v4 p2, v2 uv2, v4 p3
 	gairb_textured_vertex *v = group->commands->vertex_array + group->commands->vertex_count;
 	group->commands->vertex_count += 4;
 
-	v[0].p = p1; v[0].uv = uv1; v[0].color = color;
-	v[1].p = p2; v[1].uv = uv2; v[1].color = color;
-	v[2].p = p3; v[2].uv = uv3; v[2].color = color;
-	v[3].p = p4; v[3].uv = uv4; v[3].color = color;
+	v[0].p = p1; v[0].uv = uv1; v[0].color = c1;
+	v[1].p = p2; v[1].uv = uv2; v[1].color = c2;
+	v[2].p = p3; v[2].uv = uv3; v[2].color = c3;
+	v[3].p = p4; v[3].uv = uv4; v[3].color = c4;
+}
+
+inline GAIRB_API void
+gairb_PushRect(gairb_group *group, v4 color, v4 p1, v2 uv1, v4 p2, v2 uv2, v4 p3, v2 uv3, v4 p4, v2 uv4)
+{
+	gairb_PushRect(group, p1, uv1, color, p2, uv2, color, p3, uv3, color, p4, uv4, color);
 }
 
 inline GAIRB_API void
 gairb_PushRect(gairb_group *group, v4 color, v3 position, r32 width, r32 height, u16 align)
 {
-	r32 half_width 	= width * .5f;
-	r32 half_height = height * .5f;
-	v4 top_left, bottom_left, bottom_right, top_right;
+	v4 tl = V4(0.f), bl = V4(0.f), br = V4(0.f), tr = V4(0.f);
 	switch (align)
 	{
 		case gairb_AlignToTopLeft:
 		{
-			top_left 		= V4(position.x, position.y, position.z, 1.f);
-			bottom_left		= V4(position.x, position.y + height, position.z, 1.f);
-			bottom_right	= V4(position.x + width, position.y + height, position.z, 1.f);
-			top_right 		= V4(position.x + width, position.y, position.z, 1.f);
+			tl = V4(position.x, position.y, position.z, 1.f);
+			bl = V4(position.x, position.y + height, position.z, 1.f);
+			br = V4(position.x + width, position.y + height, position.z, 1.f);
+			tr = V4(position.x + width, position.y, position.z, 1.f);
 		} break;
 		case gairb_AlignToBottomLeft:
 		{
-			top_left 		= V4(position.x, position.y - height, position.z, 1.f);
-			bottom_left 	= V4(position.x, position.y, position.z, 1.f);
-			bottom_right 	= V4(position.x + width, position.y, position.z, 1.f);
-			top_right 		= V4(position.x + width, position.y - height, position.z, 1.f);
+			tl = V4(position.x, position.y - height, position.z, 1.f);
+			bl = V4(position.x, position.y, position.z, 1.f);
+			br = V4(position.x + width, position.y, position.z, 1.f);
+			tr = V4(position.x + width, position.y - height, position.z, 1.f);
 		} break;
 		case gairb_AlignToCenter:
 		{
-			top_left 		= V4(position.x - half_width, position.y - half_height, position.z, 1.f);
-			bottom_left 	= V4(position.x - half_width, position.y + half_height, position.z, 1.f);
-			bottom_right 	= V4(position.x + half_width, position.y + half_height, position.z, 1.f);
-			top_right 		= V4(position.x + half_width, position.y - half_height, position.z, 1.f);
+			r32 half_width 	= width * .5f;
+			r32 half_height = height * .5f;
+			tl = V4(position.x - half_width, position.y - half_height, position.z, 1.f);
+			bl = V4(position.x - half_width, position.y + half_height, position.z, 1.f);
+			br = V4(position.x + half_width, position.y + half_height, position.z, 1.f);
+			tr = V4(position.x + half_width, position.y - half_height, position.z, 1.f);
 		} break;
 		case gairb_AlignToTopRight:
 		{
-			top_left 		= V4(position.x - width, position.y, position.z, 1.f);
-			bottom_left 	= V4(position.x - width, position.y + height, position.z, 1.f);
-			bottom_right 	= V4(position.x, position.y + height, position.z, 1.f);
-			top_right 		= V4(position.x, position.y, position.z, 1.f);
+			tl = V4(position.x - width, position.y, position.z, 1.f);
+			bl = V4(position.x - width, position.y + height, position.z, 1.f);
+			br = V4(position.x, position.y + height, position.z, 1.f);
+			tr = V4(position.x, position.y, position.z, 1.f);
 		} break;
 		case gairb_AlignToBottomRight:
 		{
-			top_left 		= V4(position.x - width, position.y - height, position.z, 1.f);
-			bottom_left 	= V4(position.x - width, position.y, position.z, 1.f);
-			bottom_right 	= V4(position.x, position.y, position.z, 1.f);
-			top_right 		= V4(position.x, position.y - height, position.z, 1.f);
+			tl = V4(position.x - width, position.y - height, position.z, 1.f);
+			bl = V4(position.x - width, position.y, position.z, 1.f);
+			br = V4(position.x, position.y, position.z, 1.f);
+			tr = V4(position.x, position.y - height, position.z, 1.f);
 		} break;
-
+		default: { return; };
 	}
-	gairb_PushRect(group, color, top_left, V2(0, 0), bottom_left, V2(0, 1), top_right, V2(1, 0), bottom_right, V2(1, 1) );
+	gairb_PushRect(group, color, tl, V2i(0, 0), bl, V2i(0, 1), tr, V2i(1, 0), br, V2i(1, 1) );
+}
+
+/*
+		The cube is pushed to the buffer in triangle strip style.
+
+		c-d-a-b for the first front face
+		d-h-b-f for right side face
+		and so on ...
+
+		   e-------f
+		 / |     / |
+		a--|----b  |
+		|  g----|--h
+		| /     | /
+		c-------d
+*/
+GAIRB_API void
+gairb_PushCube(gairb_group *group, v4 color, v3 position, r32 radius, r32 height)
+{
+	gairb_entry_textured_quads *entry = _gairb_GetQuads(group, 6);
+	GAIRB_ASSERT(entry);
+
+	r32 half_height = height * .5f;
+	r32 half_width	= radius * .5f;
+	v2 uv1 = V2(0, 0); v2 uv2 = V2(0, 1); v2 uv3 = V2(1, 0); v2 uv4 = V2(1, 1);
+	v4 c1  = V4(color.xyz * .25f, color.a);
+	v4 c2  = color;
+
+	v4 a = V4(position.x - half_width, position.y + half_height, position.z + half_width, 1.f);
+	v4 c = V4(position.x - half_width, position.y - half_height, position.z + half_width, 1.f);
+	v4 b = V4(position.x + half_width, position.y + half_height, position.z + half_width, 1.f);
+	v4 d = V4(position.x + half_width, position.y - half_height, position.z + half_width, 1.f);
+	v4 e = V4(position.x - half_width, position.y + half_height, position.z - half_width, 1.f);
+	v4 g = V4(position.x - half_width, position.y - half_height, position.z - half_width, 1.f);
+	v4 f = V4(position.x + half_width, position.y + half_height, position.z - half_width, 1.f);
+	v4 h = V4(position.x + half_width, position.y - half_height, position.z - half_width, 1.f);
+
+	#if GAIRB_CUBE_VISUAL_GRADIENT
+	gairb_PushRect(group, c, uv2, c1, d, uv4, c1, a, uv1, c2, b, uv3, c2);
+	gairb_PushRect(group, d, uv2, c1, h, uv4, c1, b, uv1, c2, f, uv3, c2);
+	gairb_PushRect(group, h, uv2, c1, g, uv4, c1, f, uv1, c2, e, uv3, c2);
+	gairb_PushRect(group, g, uv2, c1, c, uv4, c1, e, uv1, c2, a, uv3, c2);
+	gairb_PushRect(group, a, uv2, c2, b, uv4, c2, e, uv1, c2, f, uv3, c2);
+	gairb_PushRect(group, g, uv2, c1, h, uv4, c1, c, uv1, c1, d, uv3, c1);
+	#else
+	gairb_PushRect(group, c, uv2, c2, d, uv4, c2, a, uv1, c2, b, uv3, c2);
+	gairb_PushRect(group, d, uv2, c2, h, uv4, c2, b, uv1, c2, f, uv3, c2);
+	gairb_PushRect(group, h, uv2, c2, g, uv4, c2, f, uv1, c2, e, uv3, c2);
+	gairb_PushRect(group, g, uv2, c2, c, uv4, c2, e, uv1, c2, a, uv3, c2);
+	gairb_PushRect(group, a, uv2, c2, b, uv4, c2, e, uv1, c2, f, uv3, c2);
+	gairb_PushRect(group, g, uv2, c2, h, uv4, c2, c, uv1, c2, d, uv3, c2);
+	#endif
+
 }
 
 #endif

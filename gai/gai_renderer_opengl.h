@@ -16,7 +16,6 @@ struct gairgl
 {
 	u32 shader;
 	u32 transform;
-	u32 color;
 
 	u32 vao;
 	u32 vbo;
@@ -36,7 +35,7 @@ gairgl_Initialize(gairgl *opengl)
 	char *vertex  = R"GLSL(
 			layout (location = 0) in vec4 in_vertex;
 			layout (location = 1) in vec2 in_uv;
-			uniform vec4 in_color = vec4(1.0, 1.0, 1.0, 1.0);
+			layout (location = 2) in vec4 in_color;
 			uniform mat4 transform = mat4(1);
 			out vec4 out_color;
 			out vec2 out_uv;
@@ -65,7 +64,6 @@ gairgl_Initialize(gairgl *opengl)
 
 	opengl->shader 		= shader;
 	opengl->transform 	= glGetUniformLocation(shader, "transform");
-	opengl->color 		= glGetUniformLocation(shader, "in_color");
 
 	glGenBuffers(1, &opengl->vbo);
 	glBindBuffer(0x8892 /*  GL_ARRAY_BUFFER */, opengl->vbo);
@@ -77,9 +75,26 @@ gairgl_Initialize(gairgl *opengl)
 #define GAIRGL_OFFSETOF(st, m) 		((size_t)&(((st *)0)->m))
 	glEnableVertexAttribArray(0); glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(gairb_textured_vertex), (const GLvoid*) GAIRGL_OFFSETOF(gairb_textured_vertex, p) );
 	glEnableVertexAttribArray(1); glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(gairb_textured_vertex), (const GLvoid*) GAIRGL_OFFSETOF(gairb_textured_vertex, uv) );
+	glEnableVertexAttribArray(2); glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(gairb_textured_vertex), (const GLvoid*) GAIRGL_OFFSETOF(gairb_textured_vertex, color) );
 #undef GAIRGL_OFFSETOF
 	glBindVertexArray(0);
 
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	//glEnable(GL_CULL_FACE);
+	glDisable(GL_CULL_FACE);
+}
+
+GAIRGL_DEF void
+gairgl_Destroy(gairgl *opengl)
+{
+	glDeleteBuffers(1, &opengl->vbo);
+	glDeleteVertexArrays(1, &opengl->vao);
+	glDeleteProgram(opengl->shader);
 }
 
 inline GAIRGL_DEF void
@@ -111,16 +126,13 @@ gairgl_Render(gairgl *opengl, gairb_renderbuffer *commands, v2 draw_region)
 
 					for (u32 vertex_index = entry->vertex_array_offset; vertex_index < (entry->vertex_array_offset + 4 * entry->quad_count); vertex_index += 4)
 					{
-						glUniform4fv(opengl->color, 1, &commands->vertex_array[vertex_index].color.E[0]);
 						glDrawArrays(GL_TRIANGLE_STRIP, vertex_index, 4);
 					}
 				} break;
 				default: { GAIRGL_ASSERT(!"Invalid code path") ;}
 			}
 		}
-
-		glLineWidth(1);
-		glViewport(0, 0, draw_region.x, draw_region.y);
+		glViewport(0, 0, (int)draw_region.x, (int)draw_region.y);
 	}
 }
 

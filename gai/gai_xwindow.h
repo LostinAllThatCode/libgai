@@ -90,7 +90,9 @@ struct gaixw_context
 {
 	struct
 	{
-		float seconds, millis, micros;
+		float seconds;
+		float millis;
+		float micros;
 	} frametime;
 
 	struct
@@ -102,6 +104,9 @@ struct gaixw_context
 	struct
 	{
 		int x, y, dx, dy, wheel, dwheel;
+		int mod_alt, mod_ctrl, mod_shift;
+		unsigned char keys[256], keys_history[256];
+		unsigned char mouse[3], mouse_history[3];
 	} input;
 
 	struct
@@ -144,25 +149,20 @@ struct gaixw_context
 	int is_running;
 	int is_visible;
 };
-
-static unsigned char gai_input_keys[256];
-static unsigned char gai_input_history[256];
-static unsigned char gai_input_mouse[3];
-static unsigned char gai_input_mouse_history[3];
-static int gai_input_alt_down, gai_input_shift_down, gai_input_ctrl_down;
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 GAIXW_API int  			gaiXWindow        					(gaixw_context *window, const char *title = "default window title", int width = -1, int height = -1, int x = -1, int y = -1, const char *classname = "crossplatform-window-framework");
 GAIXW_API void 			gaiXWindowSetTitle					(gaixw_context *window, const char *title);
-GAIXW_API float  		gaiXWindowUpdate					(gaixw_context *window);
+GAIXW_API float		 	gaiXWindowUpdate					(gaixw_context *window);
 GAIXW_API void 			gaiXWindowSwapBuffers				(gaixw_context *window);
 GAIXW_API int  			gaiXWindowSetVSYNC					(gaixw_context *window, unsigned int state);
 GAIXW_API void* 		gaiXWindowGetProc					(gaixw_context *window, const char *name);
 GAIXW_API void  		gaiXWindowToggleFullscreen  		(gaixw_context *window);
 GAIXW_API void			gaiXWindowRegisterDeInitCallback	(gaixw_context *window, gaiXWindowDeInit *callback, void *userdata);
+GAIXW_API int           gaixw_IsVSYNC						(gaixw_context *window);
+GAIXW_API int           gaixw_IsFullscreen					(gaixw_context *window);
 
 #ifdef __cplusplus
 }
@@ -196,6 +196,7 @@ GAIXW_API void			gaiXWindowRegisterDeInitCallback	(gaixw_context *window, gaiXWi
 typedef char GLchar;
 typedef size_t GLsizeiptr;
 typedef size_t GLintptr;
+typedef void (APIENTRY *DEBUGPROC)(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, void *userParam);
 #define gaiXWindowFNWrapper \
 	gaiXWindowFN(, attach_shader_fn,  				void, 	 	AttachShader, GLuint, GLuint) \
 	gaiXWindowFN(, compile_shader_fn, 				void, 	 	CompileShader, GLuint) \
@@ -235,7 +236,7 @@ typedef size_t GLintptr;
 	gaiXWindowFN(, uniform_matrix_4fv_fn,			void,    	UniformMatrix4fv, GLint, GLsizei, GLboolean, const GLfloat *) \
 	gaiXWindowFN(, validate_program_fn, 			void,	 	ValidateProgram ,GLuint) \
 	gaiXWindowFN(, vertex_attrib_pointer_fn,   		void,    	VertexAttribPointer, GLuint, GLint, GLenum, GLboolean, GLsizei, const void *) \
-	gaiXWindowFN(, debug_message_callback_fn, 		void,    	DebugMessageCallback, void (__stdcall*)(GLenum, GLenum, GLuint, GLenum, GLsizei, const GLchar *, const void *), void *) \
+	gaiXWindowFN(, debug_message_callback_fn, 		void,    	DebugMessageCallback, DEBUGPROC, void *) \
 	gaiXWindowFN(, get_string_i_fn,					GLubyte*,	GetStringi, GLenum, GLuint ) \
 	gaiXWindowFN(, bind_buffer_fn,					void,	 	BindBuffer, GLenum, GLuint buffer) \
 	gaiXWindowFN(, delete_buffers_fn,				void, 	 	DeleteBuffers, GLsizei, const GLuint*) \
@@ -248,17 +249,19 @@ typedef size_t GLintptr;
 	gaiXWindowFN(, delete_vertex_arrays_fn,			void, 		DeleteVertexArrays, GLsizei, const GLuint*) \
 	gaiXWindowFN(, gen_vertex_arrays_fn,			void, 		GenVertexArrays, GLsizei, GLuint*) \
 	gaiXWindowFN(, map_buffer_range_fn,				GLvoid*,	MapBufferRange, GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access) \
-	gaiXWindowFN(, buffer_storage_fn,				void,  		BufferStorage, GLenum target, GLsizeiptr size, const void *data, GLbitfield flags)
+	gaiXWindowFN(, buffer_storage_fn,				void,  		BufferStorage, GLenum target, GLsizeiptr size, const void *data, GLbitfield flags) \
+	gaiXWindowFN(, blend_equation_fn,				void, 		Blend_Equation, GLenum) \
+	gaiXWindowFN(, blend_func_seperate_fn,			void,		BlendFuncSeparate, GLenum, GLenum, GLenum, GLenum)
 
 #define gaiXWindowFN(ext, def, a, b, ...) typedef a (gl_##def) (__VA_ARGS__);
 gaiXWindowFNWrapper
 #undef gaiXWindowFN
 
-#define gaiXWindowFN(ext, def, a, b, ...) gl_##def *gl##b;
+#define gaiXWindowFN(ext, def, a, b, ...) gl_##def *gl##b;;
 gaiXWindowFNWrapper
 #undef gaiXWindowFN
 
-#define gaiXWindowFN(ext, def, a, b, ...) GAIXW_ASSERT( (gl##b = (gl_##def *) wglGetProcAddress("gl"#b#ext) ) );
+#define gaiXWindowFN(ext, def, a, b, ...) gl##b = (gl_##def *) wglGetProcAddress("gl"#b#ext); GAIXW_ASSERT( gl##b );
 GAIXW_API void
 gaiWGLInitFunctions()
 {
@@ -359,7 +362,7 @@ gaiGLInitMultisampling(gaixw_context *window)
 	glGetIntegerv(0x9110 /* GL_MAX_INTEGER_SAMPLES */, &samples);
 }
 
-GAIXW_API unsigned char
+GAIXW_API int
 gaiGLGetSwapInterval()
 {
 	if (gaiWGLIsSupported("WGL_EXT_swap_control"))
@@ -386,6 +389,18 @@ gaiGLSetSwapInterval(unsigned int vsync)
 // ##########################################################################################################
 
 #endif
+
+GAIXW_API int
+gaixw_IsVSYNC(gaixw_context *window)
+{
+	return (window->renderer.attributes & gaixwFlagsVSYNC ? 1 : 0);
+}
+
+GAIXW_API int
+gaixw_IsFullscreen(gaixw_context *window)
+{
+	return (window->renderer.attributes & gaixwFlagsFullscreen ? 1 : 0);
+}
 
 GAIXW_API void
 _gaiXWindowDeInit(gaixw_context *window)
@@ -415,48 +430,48 @@ gaiXWindowRegisterDeInitCallback(gaixw_context *window, gaiXWindowDeInit callbac
 	}
 }
 
-GAIXW_API unsigned int
-gaiKeyDown(int key)
+GAIXW_API unsigned char
+gaiKeyDown(gaixw_context *window, int key)
 {
-	return gai_input_keys[key];
+	return window->input.keys[key];
 }
 
-GAIXW_API unsigned int
-gaiKeyPressed(int key)
+GAIXW_API unsigned char
+gaiKeyPressed(gaixw_context *window, int key)
 {
-	unsigned int previousState = gai_input_history[key];
-	gai_input_history[key] = gaiKeyDown(key);
-	return (gai_input_history[key] && !previousState);
+	unsigned int previousState = window->input.keys_history[key];
+	window->input.keys_history[key] = gaiKeyDown(window, key);
+	return (window->input.keys_history[key] && !previousState);
 }
 
-GAIXW_API unsigned int
-gaiKeyReleased(int key)
+GAIXW_API unsigned char
+gaiKeyReleased(gaixw_context *window, int key)
 {
-	unsigned int previousState = gai_input_history[key];
-	gai_input_history[key] = gaiKeyDown(key);
-	return (!gai_input_history[key] && previousState);
+	unsigned int previousState = window->input.keys_history[key];
+	window->input.keys_history[key] = gaiKeyDown(window, key);
+	return (!window->input.keys_history[key] && previousState);
 }
 
-GAIXW_API unsigned int
-gaiMouseDown(int key)
+GAIXW_API unsigned char
+gaiMouseDown(gaixw_context *window, int key)
 {
-	return gai_input_mouse[key];
+	return window->input.mouse[key];
 }
 
-GAIXW_API unsigned int
-gaiMousePressed(int key)
+GAIXW_API unsigned char
+gaiMousePressed(gaixw_context *window, int key)
 {
-	unsigned int previousState = gai_input_mouse_history[key];
-	gai_input_mouse_history[key] = gaiMouseDown(key);
-	return (gai_input_mouse_history[key] && !previousState);
+	unsigned int previousState = window->input.mouse_history[key];
+	window->input.mouse_history[key] = gaiMouseDown(window, key);
+	return (window->input.mouse_history[key] && !previousState);
 }
 
-GAIXW_API unsigned int
-gaiMouseReleased(int key)
+GAIXW_API unsigned char
+gaiMouseReleased(gaixw_context *window, int key)
 {
-	unsigned int previousState = gai_input_mouse_history[key];
-	gai_input_mouse_history[key] = gaiMouseDown(key);
-	return (!gai_input_mouse_history[key] && previousState);
+	unsigned int previousState = window->input.mouse_history[key];
+	window->input.mouse_history[key] = gaiMouseDown(window, key);
+	return (!window->input.mouse_history[key] && previousState);
 }
 
 LRESULT CALLBACK
@@ -469,15 +484,15 @@ gaiXWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		{
 			case WM_SIZE: 			{ window->info.width  = LOWORD(lParam); window->info.height = HIWORD(lParam); return 0; }
 			case WM_MOVE: 			{ window->info.x = (int)(short) LOWORD(lParam); window->info.y = (int)(short) HIWORD(lParam); return 0; }
-			case WM_KEYDOWN: 		{ gai_input_history[wParam] = gai_input_keys[wParam]; gai_input_keys[wParam] = 1; return 0; }
-			case WM_KEYUP:			{ gai_input_history[wParam] = gai_input_keys[wParam]; gai_input_keys[wParam] = 0; return 0; }
+			case WM_KEYDOWN: 		{ window->input.keys_history[wParam] = window->input.keys[wParam]; window->input.keys[wParam] = 1; return 0; }
+			case WM_KEYUP:			{ window->input.keys_history[wParam] = window->input.keys[wParam]; window->input.keys[wParam] = 0; return 0; }
 			case WM_MOUSEMOVE:		{ POINTS p = MAKEPOINTS(lParam); window->input.x  = p.x; window->input.y  = p.y; return 0; }
-			case WM_LBUTTONDOWN:	{ gai_input_mouse_history[0] = gai_input_mouse[0]; gai_input_mouse[0] = 1; return 0; }
-			case WM_LBUTTONUP:		{ gai_input_mouse_history[0] = gai_input_mouse[0]; gai_input_mouse[0] = 0; return 0; }
-			case WM_MBUTTONDOWN:	{ gai_input_mouse_history[1] = gai_input_mouse[1]; gai_input_mouse[1] = 1; return 0; }
-			case WM_MBUTTONUP:		{ gai_input_mouse_history[1] = gai_input_mouse[1]; gai_input_mouse[1] = 0; return 0; }
-			case WM_RBUTTONDOWN:	{ gai_input_mouse_history[2] = gai_input_mouse[2]; gai_input_mouse[2] = 1; return 0; }
-			case WM_RBUTTONUP:		{ gai_input_mouse_history[2] = gai_input_mouse[2]; gai_input_mouse[2] = 0; return 0; }
+			case WM_LBUTTONDOWN:	{ window->input.mouse_history[0] = window->input.mouse[0]; window->input.mouse[0] = 1; return 0; }
+			case WM_LBUTTONUP:		{ window->input.mouse_history[0] = window->input.mouse[0]; window->input.mouse[0] = 0; return 0; }
+			case WM_MBUTTONDOWN:	{ window->input.mouse_history[1] = window->input.mouse[1]; window->input.mouse[1] = 1; return 0; }
+			case WM_MBUTTONUP:		{ window->input.mouse_history[1] = window->input.mouse[1]; window->input.mouse[1] = 0; return 0; }
+			case WM_RBUTTONDOWN:	{ window->input.mouse_history[2] = window->input.mouse[2]; window->input.mouse[2] = 1; return 0; }
+			case WM_RBUTTONUP:		{ window->input.mouse_history[2] = window->input.mouse[2]; window->input.mouse[2] = 0; return 0; }
 			case WM_MOUSEWHEEL:		{ window->input.dwheel = GET_WHEEL_DELTA_WPARAM(wParam); window->input.wheel  += window->input.dwheel; return 0; }
 			case WM_DESTROY:
 			{
@@ -567,14 +582,14 @@ gaiXWindowUpdate(gaixw_context *window)
 {
 	MSG msg;
 	#ifdef GAIXW_OPENGL
-	if (gaiKeyReleased(VK_F1)) gaiXWindowToggleFullscreen(window);
-	if (gaiKeyReleased(VK_F2)) gaiXWindowSetVSYNC(window, !(window->renderer.attributes & gaixwFlagsVSYNC));
+	if (gaiKeyReleased(window, VK_F1)) gaiXWindowToggleFullscreen(window);
+	if (gaiKeyReleased(window, VK_F2)) gaiXWindowSetVSYNC(window, !(window->renderer.attributes & gaixwFlagsVSYNC));
 
 	static LARGE_INTEGER _frequency;
 	static LARGE_INTEGER _ltframetime;
 	static int fps;
 	static int frames;
-	static float frametime;
+	static long double frametime;
 
 	static unsigned int initialized;
 	if (!initialized)
@@ -590,9 +605,9 @@ gaiXWindowUpdate(gaixw_context *window)
 	elapsed.QuadPart *= 1000000;
 	elapsed.QuadPart /= _frequency.QuadPart;
 
-	window->frametime.micros = elapsed.QuadPart;
-	window->frametime.millis = elapsed.QuadPart / 1000.f;
-	window->frametime.seconds = elapsed.QuadPart / 1000000.f;
+	window->frametime.micros  = (float)elapsed.QuadPart;
+	window->frametime.millis  = (float)elapsed.QuadPart / 1000.f;
+	window->frametime.seconds = (float)elapsed.QuadPart / 1000000.f;
 	_ltframetime = now;
 
 	int old_x = window->input.x;
@@ -632,13 +647,13 @@ gaiXWindowUpdate(gaixw_context *window)
 	}
 	window->is_running = false;
 	#endif
-	return window->frametime.seconds;
+	return (float) window->frametime.seconds;
 }
 
 GAIXW_API int
 gaiXWindow(gaixw_context *window, const char *title, int width, int height, int x, int y, const char *classname)
 {
-	if (!window) GAIXW_ASSERT(!"This function does not allocate memory for the window!");
+	GAIXW_ASSERT(window);
 	if (!ConvertThreadToFiber(0) ) return -1;
 
 	gaixw_context init = { {0}, {title, width, height, x, y}, {0}, {0, 0, GetModuleHandle(0)}, { gaixwRendererGDI } };
@@ -767,7 +782,7 @@ gaiXWindow(gaixw_context *window, const char *title, int width, int height, int 
 
 				#ifdef _DEBUG
 				glEnable(0x8242 /* GL_DEBUG_OUTPUT_SYNCHRONOUS */ ); // 0x92E0 /* GL_DEBUG_OUTPUT */
-				glDebugMessageCallback( (void (__stdcall*)(GLenum, GLenum, GLuint, GLenum, GLsizei, const GLchar *, const void *)) gaiGLDebugCallback, 0);
+				glDebugMessageCallback( (DEBUGPROC) gaiGLDebugCallback, 0);
 				#endif
 			}
 			else GAIXW_PRINT("Error: wglCreateContextAttribsARB failed to create modern context.");
