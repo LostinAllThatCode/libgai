@@ -3,7 +3,6 @@
 	#define GAIXW_DEBUG
 #endif
 
-#define GAIXW_ASSERT(exp)
 #define GAIXW_OPENGL
 #define GAIXW_IMPLEMENTATION
 #include "gai_xwindow.h"

@@ -1,6 +1,6 @@
 
-#define GAIXW_ASSERT(exp)
-#define GAIRB_CUBE_VISUAL_GRADIENT 1
+
+#define GAIRB_DEBUG_VISUALGRADIENT_CUBE 1
 #define GAIXW_OPENGL
 #define GAIXW_IMPLEMENTATION
 #include "gai_xwindow.h"
@@ -29,7 +29,7 @@ int a;
 external void
 UpdateAndRender(gaixw_context *window, gairb_renderbuffer *renderbuffer)
 {
-	if (time > 4.f)	a = -1;
+	if (time > 5.f)	a = -1;
 	if (time <= 0.f) a = 1;
 	time += window->frametime.seconds * a;
 	time2 += window->frametime.seconds;
@@ -47,8 +47,8 @@ UpdateAndRender(gaixw_context *window, gairb_renderbuffer *renderbuffer)
 	gairb_PushSetup(&g1, &perspective);
 
 
-	int cubes = 70;
-	float radius = .25f;
+	int cubes = 60;
+	float radius = .3f;
 	float height = .125f;
 
 	float r = cosf(sinf(time2 * 1.f));
@@ -58,17 +58,18 @@ UpdateAndRender(gaixw_context *window, gairb_renderbuffer *renderbuffer)
 	{
 		for (int j = 1; j < cubes; j++)
 		{
-			gairb_PushCube(&g1, V4(r, g, b, 1.0f), V3((float) (cubes / 2 - i) * radius, 2.0f + ptr(time, i, j), (float) (cubes / 2 - j) * radius), radius, height);
+			gairb_PushCube(&g1, V4(r, g, b, 1.f), V3((float) (cubes / 2 - i) * radius, 2.0f + ptr(time, i, j), (float) (cubes / 2 - j) * radius), radius, height);
 		}
 	}
-	gairb_PushCube(&g1, V4(0.f, 0.f, 1.f, 1.f), V3(0.f, 10.f, 0.f), 50.f, 20.f );
+
+	gairb_PushCube(&g1, V4(r, g, b, 1.f), V3(0.f, 10.f, 0.f), 41.f, 20.f );
 
 	gairb_setup ortho = { OrthographicProjection((r32)window->info.width, (r32)window->info.height, 1, -1) };
 	gairb_PushSetup(&g1, &ortho);
 
 	gairb_PushRect(&g1, (gaixw_IsVSYNC(window) ? V4(.0f, 1.f, 0.f, 1.f) : V4(1.f, 0.0f, 0.f, 1.f)), V3(5.f, 10.f, 0.f), 10.f, 10.f, 0);
 	gairb_PushRect(&g1, V4(1.f, 0.f, 0.f, 1.f), V3i(5, 5, 0), 100, 1, gairb_AlignToTopLeft);
-	gairb_PushRect(&g1, V4(0.f, 1.f, 0.f, 1.0f), V3i(5, 5, 0), ((float)renderbuffer->vertex_count / (float)renderbuffer->vertex_max) * 100.f, 2, gairb_AlignToTopLeft);
+	gairb_PushRect(&g1, V4(0.f, 1.f, 0.f, 1.0f), V3i(5, 5, 0), ((float)(renderbuffer->vertex_count+4) / (float)renderbuffer->vertex_max) * 100.f, 2, gairb_AlignToTopLeft);
 
 	gairb_EndGroup(&g1);
 

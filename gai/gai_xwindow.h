@@ -1,10 +1,16 @@
-#ifndef GAI_INCLUDE_XWINDOW_H
 /*
+	Author(s): Andreas Gaida
+	
+	gai_xwindow.h - v0.1 - https://github.com/LostinAllThatCode/libgai/blob/render_tests/gai/gai_xwindow.h
+
 	TODO: Make a documentation as soon as this api is somewhat useable!!!
 
 	Linker dependencies per platform:
-		Windows : user32.lib, gdi32.lib, winmm.lib, opengl32.lib (when using opengl)
 
+		windows : user32.lib, gdi32.lib, winmm.lib, opengl32.lib (optional)
+		** Note:
+		*		If you are using Microsoft Visual Studios compiler you won't
+		*		need to specify libs. All required libs will be include via pragma call)
 
 	Do this:
 		#define GAIXW_IMPLEMENTATION
@@ -13,7 +19,7 @@
 	All function prefixed with a underscore(_) are internally used functions.
 	DO NOT use them if you are not 100% sure what they do.
 
-	Example:
+	Example (easy plain windows frame):
 
 	#define GAIXW_IMPLEMENTATION
 	#include "gai_xwindow.h"
@@ -27,6 +33,7 @@
 		return 0;
 	}
 */
+#ifndef GAI_INCLUDE_XWINDOW_H
 
 #ifdef GAIXW_STATIC
 	#define GAIXW_API static
@@ -55,9 +62,6 @@
 		#define WIN32_LEAN_AND_MEAN
 		#include <windows.h>
 	#endif
-	#pragma comment( lib, "user32.lib" )
-	#pragma comment( lib, "gdi32.lib" )
-	#pragma comment( lib, "winmm.lib" )
 #elif __linux__
 	#include <X11/Xlib.h>
 #elif __APPLE__
@@ -174,29 +178,26 @@ GAIXW_API int           gaixw_IsFullscreen					(gaixw_context *window);
 
 #ifdef GAIXW_OPENGL
 #pragma comment( lib, "opengl32.lib" )
-// ##########################################################################################################
-//                                              BEGIN OF
-//                              OPENGL WINDOWS PLATFORM IMPLEMENTATION CODE
-// ##########################################################################################################
-//
-// 		Windows specific platform layer for managing the opengl driver
-//		- Gives you access to all opengl function specified with prefix [gl]
-//			- Visit http://www.docs.gl to find the documentation for all gl functions.
-//      - Allows you to create a opengl context which fits your interest
-//      	- Following macros can be defined before including this file:
-//				GAIXW_OPENGL_MAJOR_VERSION, GAIXW_OPENGL_MINOR_VERSION
-//          - Note:
-//				If the macro GAIXW_DEBUG is speficied the opengl context becomes a debug context
-//				and all opengl debug messages will be outputted to either the console console.
-//
-// ##########################################################################################################
-
+/*
+	** OPENGL WINDOWS PLATFORM IMPLEMENTATION CODE
+	*
+ 	* 	Windows specific platform layer for managing the opengl driver
+ 	* 		Gives you access to all opengl function specified with prefix [gl]
+ 	* 		Visit http://www.docs.gl to find the documentation for all gl functions
+ 	* 		Allows you to create a opengl context which fits your interest
+ 	* 		Following macros can be defined before including this file:
+ 	* 			GAIXW_OPENGL_MAJOR_VERSION, GAIXW_OPENGL_MINOR_VERSION
+ 	* 			** Note:
+ 	* 			If the macro GAIXW_DEBUG is speficied the opengl context becomes a debug context
+ 	* 			and all opengl debug messages will be outputted to the console.
+ 	*
+*/
 
 #include <gl\gl.h>
 typedef char GLchar;
 typedef size_t GLsizeiptr;
 typedef size_t GLintptr;
-typedef void (APIENTRY *DEBUGPROC)(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, void *userParam);
+typedef void (*DEBUGPROC)(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, void *userParam);
 #define gaiXWindowFNWrapper \
 	gaiXWindowFN(, attach_shader_fn,  				void, 	 	AttachShader, GLuint, GLuint) \
 	gaiXWindowFN(, compile_shader_fn, 				void, 	 	CompileShader, GLuint) \
@@ -250,7 +251,7 @@ typedef void (APIENTRY *DEBUGPROC)(GLenum source, GLenum type, GLuint id, GLenum
 	gaiXWindowFN(, gen_vertex_arrays_fn,			void, 		GenVertexArrays, GLsizei, GLuint*) \
 	gaiXWindowFN(, map_buffer_range_fn,				GLvoid*,	MapBufferRange, GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access) \
 	gaiXWindowFN(, buffer_storage_fn,				void,  		BufferStorage, GLenum target, GLsizeiptr size, const void *data, GLbitfield flags) \
-	gaiXWindowFN(, blend_equation_fn,				void, 		Blend_Equation, GLenum) \
+	gaiXWindowFN(, blend_equation_fn,				void, 		BlendEquation, GLenum) \
 	gaiXWindowFN(, blend_func_seperate_fn,			void,		BlendFuncSeparate, GLenum, GLenum, GLenum, GLenum)
 
 #define gaiXWindowFN(ext, def, a, b, ...) typedef a (gl_##def) (__VA_ARGS__);
@@ -332,7 +333,6 @@ gaiGLDebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsiz
 		default:     { GAIXW_PRINT("Severity: N/A, "); } break;
 	}
 	GAIXW_PRINT("ID: %i\n%s", id, message);
-
 	#endif
 }
 
@@ -370,7 +370,7 @@ gaiGLGetSwapInterval()
 		void *wglGetSwapInterval = wglGetProcAddress("wglGetSwapIntervalEXT");
 		if (wglGetSwapInterval) return ((int(__stdcall *)(void))wglGetSwapInterval)();
 	}
-	return false;
+	return 0;
 }
 
 GAIXW_API void
@@ -383,12 +383,26 @@ gaiGLSetSwapInterval(unsigned int vsync)
 	}
 }
 
-// ##########################################################################################################
-//                                               END OF
-//                              OPENGL WINDOWS PLATFORM IMPLEMETATION CODE
-// ##########################################################################################################
-
+#elif defined GAIXW_DX10
+#error gai_xwindow.h: Error. DirectX 10 is not implemented yet!
+#elif defined GAIXW_DX11
+#error gai_xwindow.h: Error. DirectX 11 is not implemented yet!
+#elif defined GAIXW_DX12
+#error gai_xwindow.h: Error. DirectX 12 is not implemented yet!
+#elif defined GAIXW_VULCAN
+#error gai_xwindow.h: Error. Vulcan is not implemented yet!
 #endif
+
+/*
+	** WINDOWS PLATFORM IMPLEMENTATION CODE
+	*
+ 	* 	Windows specific platform layer for managing the window and its events
+ 	*
+*/
+#pragma comment( lib, "user32.lib" )
+#pragma comment( lib, "gdi32.lib" )
+#pragma comment( lib, "winmm.lib" )
+
 
 GAIXW_API int
 gaixw_IsVSYNC(gaixw_context *window)
@@ -800,12 +814,10 @@ gaiXWindow(gaixw_context *window, const char *title, int width, int height, int 
 	return 1;
 }
 
-
-
 #elif __linux__
-
+#error gai_xwindow.h: Error. No linux implementation yet!
 #else
-
+#error gai_xwindow.h: Error. This platform is not supported!
 #endif
 
 #endif

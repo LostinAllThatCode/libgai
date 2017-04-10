@@ -1,13 +1,34 @@
 /*
-==========================================================================================
-$Name: $
-$Description: $
-$Creator: Andreas Gaida$
-$Copyright: $
-$Example: $
-==========================================================================================
-*/
+	Author(s): Andreas Gaida
 
+	gai_renderbuffer.h - v0.1 - https://github.com/LostinAllThatCode/libgai/blob/render_tests/gai/gai_renderbuffer.h
+
+	TODO: Make a documentation as soon as this api is somewhat useable!!!
+
+	Do this:
+		#define GAIRB_IMPLEMENTATION
+   	before you include this file in *one* C or C++ file to create the implementation.
+
+	All function prefixed with a underscore(_) are internally used functions.
+	DO NOT use them if you are not 100% sure what they do.
+
+	Example:
+
+	#define GAIXW_OPENGL
+	#define GAIXW_IMPLEMENTATION
+	#include "gai_xwindow.h"
+	#define GAIRB_IMPLEMENTATION
+	#include "gai_renderbuffer.h"
+
+	int main(int argc, char **argv)
+	{
+		gaixw_context window;
+		if(!gaiXWindow(&window)) return -1;
+		while( gaiXWindowUpdate(&window) );
+
+		return 0;
+	}
+*/
 #ifndef GAI_INCLUDE_GAI_RENDERBUFFER_H
 
 #ifdef GAIRB_STATIC
@@ -110,33 +131,10 @@ inline v3 &operator+=(v3 &a, v3 b) { a = a + b; return (a); }
 inline v3 operator*(m4x4 a, v3 p) { v3 result = Transform(a, p, 1.0f); return (result); }
 inline v3 GetColumn(m4x4 A, u32 C) { v3 R = {A.E[0][C], A.E[1][C], A.E[2][C]}; return (R); }
 inline v3 GetRow(m4x4 A, u32 R) { v3 Result = {A.E[R][0], A.E[R][1], A.E[R][2]}; return (Result); }
-inline v3
-Cross(v3 a, v3 b)
-{
-	v3 result;
-	result.x = (a.y * b.z) - (a.z * b.y);
-	result.y = (a.z * b.x) - (a.x * b.z);
-	result.z = (a.x * b.y) - (a.y * b.x);
-	return result;
-}
-inline r32
-Dot(v3 A, v3 B)
-{
-	r32 Result = A.x * B.x + A.y * B.y + A.z * B.z;
-	return (Result);
-}
-inline r32
-LengthSq(v3 A)
-{
-	r32 Result = Dot(A, A);
-	return (Result);
-}
-inline v3
-Normalize(v3 a)
-{
-	v3 result = a * (1.0f / LengthSq(a));
-	return (result);
-}
+inline v3 Cross(v3 a, v3 b) { v3 result; result.x = (a.y * b.z) - (a.z * b.y); result.y = (a.z * b.x) - (a.x * b.z); result.z = (a.x * b.y) - (a.y * b.x); return result; }
+inline r32 Dot(v3 A, v3 B) { r32 Result = A.x * B.x + A.y * B.y + A.z * B.z; return (Result); }
+inline r32 LengthSq(v3 A) { r32 Result = Dot(A, A); return (Result); }
+inline v3 Normalize(v3 a) { v3 result = a * (1.0f / LengthSq(a)); return (result); }
 
 union v4 { struct { union { v3 xyz; struct { r32 x, y, z; }; }; r32 w; }; struct { union { v3 rgb; struct { r32 r, g, b; }; }; r32 a; }; struct { v2 xy; r32 _ignored0_; r32 _ignored1_; }; struct { r32 _ignored0_; v2 yz; r32 _ignored1_; }; struct { r32 _ignored0_; r32 _ignored1_; v2 zw; }; r32 E[4]; };
 inline v4 V4(r32 x, r32 y, r32 z, r32 w) { v4 result = { x, y, z, w }; return result; }
@@ -157,16 +155,7 @@ inline m4x4 Columns3x3(v3 X, v3 Y, v3 Z) { m4x4 R = { { {X.x, Y.x, Z.x, 0}, {X.y
 inline m4x4 Rows3x3(v3 X, v3 Y, v3 Z) { m4x4 R = { { {X.x, X.y, X.z, 0}, {Y.x, Y.y, Y.z, 0}, {Z.x, Z.y, Z.z, 0}, { 0, 0, 0, 1} } }; return (R); }
 inline m4x4 Translate(m4x4 A, v3 T) { m4x4 R = A; R.E[0][3] += T.x; R.E[1][3] += T.y; R.E[2][3] += T.z; return R; }
 inline m4x4 CameraOrbit(v3 eye, r32 pitch, r32 yaw) { m4x4 cam = YRotation(yaw) * XRotation(pitch); m4x4 R = Rows3x3(GetColumn(cam, 0), GetColumn(cam, 1), GetColumn(cam, 2)); R = Translate(R, -(R * eye)); return (R); }
-inline m4x4
-CameraLookAt(v3 eye, v3 target, v3 up)
-{
-	v3 f  = Normalize(eye - target);
-	v3 s  = Normalize(Cross(up, f));
-	v3 _u = Cross(f, s);
-	v3 _e = V3(-Dot(s, eye), -Dot(_u, eye), -Dot(f, eye));
-	m4x4 R = Translate(Rows3x3(s, _u, f), _e);
-	return (R);
-}
+inline m4x4 CameraLookAt(v3 eye, v3 target, v3 up) { v3 f  = Normalize(eye - target); v3 s  = Normalize(Cross(up, f)); v3 _u = Cross(f, s); v3 _e = V3(-Dot(s, eye), -Dot(_u, eye), -Dot(f, eye)); 	m4x4 R = Translate(Rows3x3(s, _u, f), _e); return (R); }
 
 #endif
 
@@ -216,7 +205,20 @@ struct gairb_renderbuffer
 
 	v4 clear_color;
 };
-#define gairb_RenderBuffer(clear_color, pushbuffer_max, pushbuffer, vertex_max, vertexbuffer, bitmap_array, default_texture) { pushbuffer, pushbuffer, pushbuffer_max, vertex_max, 0, vertexbuffer, bitmap_array, default_texture, clear_color}
+#define gairb_RenderBuffer(clear_color, pushbuffer_max, pushbuffer, vertex_max, vertexbuffer, bitmap_array, default_texture) \
+{ pushbuffer, pushbuffer, pushbuffer_max, vertex_max, 0, (gairb_textured_vertex*) vertexbuffer, bitmap_array, default_texture, clear_color }
+/*
+	This is just a macro to help initialization of a renderbuffer struct.
+
+	Example code:
+
+		int renderbuffer_size = 1024 * 1024 * 4;  // 4 megabytes
+		int vertex_count_max  = 120000;
+		int vertexbuffer_size = sizeof(gairb_textured_vertex) * vertex_count_max;
+		unsigned char *renderbuffer = (unsigned char *) malloc( renderbuffer_size );
+		unsigned char *vertexbuffer = (unsigned char *) malloc( vertexbuffer_size );
+		gairb_renderbuffer MyRenderBuffer = gairb_RenderBuffer( V4i(0), renderbuffer_size, renderbuffer, vertex_count_max, vertexbuffer, 0, 0);
+*/
 
 struct gairb_group
 {
@@ -373,16 +375,16 @@ gairb_PushRect(gairb_group *group, v4 color, v3 position, r32 width, r32 height,
 }
 
 /*
-		The cube is pushed to the buffer in triangle strip style.
+	** The cube is pushed to the buffer in triangle strip style.
+	* c-d-a-b for the first front face
+	* d-h-b-f for right side face 
+	* and so on ...
+	*
 
-		c-d-a-b for the first front face
-		d-h-b-f for right side face
-		and so on ...
-
-		   e-------f
-		 / |     / |
+		   e-------f			uv textures are specified like this for the each face:
+		 / |     / |			[FRONT FACE] a(0, 0), b(1, 0), c(0, 1), d(1 ,1)
 		a--|----b  |
-		|  g----|--h
+		|  g----|--h 			position used as center of the cube
 		| /     | /
 		c-------d
 */
@@ -407,7 +409,7 @@ gairb_PushCube(gairb_group *group, v4 color, v3 position, r32 radius, r32 height
 	v4 f = V4(position.x + half_width, position.y + half_height, position.z - half_width, 1.f);
 	v4 h = V4(position.x + half_width, position.y - half_height, position.z - half_width, 1.f);
 
-	#if GAIRB_CUBE_VISUAL_GRADIENT
+	#if GAIRB_DEBUG_VISUALGRADIENT_CUBE
 	gairb_PushRect(group, c, uv2, c1, d, uv4, c1, a, uv1, c2, b, uv3, c2);
 	gairb_PushRect(group, d, uv2, c1, h, uv4, c1, b, uv1, c2, f, uv3, c2);
 	gairb_PushRect(group, h, uv2, c1, g, uv4, c1, f, uv1, c2, e, uv3, c2);
