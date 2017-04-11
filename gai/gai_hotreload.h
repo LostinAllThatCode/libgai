@@ -18,7 +18,8 @@ $
 
 #ifndef _GAI_INCLUDE_HOTRELOAD_H
 
-#define GAIHR_TEXTLENGTH_MAX 4096
+#define GAIHR_TEXTLENGTH_MAX 	4096
+#define GAIHR_DEFAULT_INTERVAL 	1000
 
 #ifndef GAIHR_STATIC
 	#define GAIHR_API extern
@@ -60,7 +61,7 @@ struct gaihr_file
 	gaihr_flags   	flags;
 };
 
-GAIHR_API BOOL 	gaihr_AddFile( gaihr_file *hotreloadable, const char *filename, int interval = 0, gaihr_callback *callback = 0, void *userdata = 0, gaihr_flags flags = gaihr_FlagsNone);
+GAIHR_API BOOL 	gaihr_AddFile( gaihr_file *hotreloadable, const char *filename, int interval = -1, gaihr_callback *callback = 0, void *userdata = 0, gaihr_flags flags = gaihr_FlagsNone);
 
 GAIHR_API void	gaihr_WaitForEvent(gaihr_file *hotreloadable);
 GAIHR_API BOOL 	gaihr_BeginTicketMutex(gaihr_file *hotreloadable, int timeout = INFINITE);
@@ -76,9 +77,7 @@ gaihr_WaitForEvent(gaihr_file *hotreloadable)
 {
 	if (WaitForSingleObject(hotreloadable->platform.event, 0) == WAIT_OBJECT_0)
 	{
-		WaitForSingleObject(hotreloadable->platform.mutex, INFINITE);
 		if (hotreloadable->callback) hotreloadable->callback(hotreloadable);
-		ReleaseMutex(hotreloadable->platform.mutex);
 		ResetEvent(hotreloadable->platform.event);
 	}
 }
@@ -106,13 +105,13 @@ gaihr_WorkerThread(void *data)
 		GetFileAttributesExA(hotreloadable->filename, GetFileExInfoStandard, &file_info_now);
 		if ( CompareFileTime(&hotreloadable->platform.last_write_time, &file_info_now.ftLastWriteTime) != 0 )
 		{
-			hotreloadable->platform.last_write_time = file_info_now.ftLastWriteTime;
-			hotreloadable->platform.event           = CreateEvent(0, true, true, 0);
-
-			if (!(hotreloadable->flags & gaihr_FlagsDontHandleEvent))
+			//if (gaihr_BeginTicketMutex(hotreloadable, 0))
 			{
-				gaihr_WaitForEvent(hotreloadable);
+				hotreloadable->platform.last_write_time = file_info_now.ftLastWriteTime;
+				hotreloadable->platform.event           = CreateEvent(0, true, true, 0);
+				if (!(hotreloadable->flags & gaihr_FlagsDontHandleEvent)) gaihr_WaitForEvent(hotreloadable);
 			}
+			//gaihr_EndTicketMutex(hotreloadable);
 		}
 		Sleep(hotreloadable->interval);
 	}
@@ -120,7 +119,7 @@ gaihr_WorkerThread(void *data)
 }
 
 BOOL GAIHR_API
-gaihr_AddFile( gaihr_file *hotreloadable, const char *filename, int interval, gaihr_callback *callback, void *userdata, gaihr_flags flags)
+gaihr_AddFile( gaihr_file * hotreloadable, const char *filename, int interval, gaihr_callback * callback, void *userdata, gaihr_flags flags)
 {
 	BOOL result = false;
 
@@ -128,7 +127,7 @@ gaihr_AddFile( gaihr_file *hotreloadable, const char *filename, int interval, ga
 	hotreloadable->callback = callback;
 	hotreloadable->platform = { CreateMutex(0, 0, 0) };
 	hotreloadable->filename = filename;
-	hotreloadable->interval = interval;
+	hotreloadable->interval = (interval == -1 ? GAIHR_DEFAULT_INTERVAL : interval);
 	hotreloadable->flags    = flags;
 
 	if ( CreateThread(0, 0, gaihr_WorkerThread, hotreloadable, 0, 0) != 0)
