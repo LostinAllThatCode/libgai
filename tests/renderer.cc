@@ -55,8 +55,8 @@ external update_and_render_(UpdateAndRender)
 	gairb_setup perspective = { PerspectiveProjection((float) window->info.width / (float) window->info.height, 60.f, 0.1f, 100.f) * CameraOrbit(cam_along_z, GAIRB_DEG2RAD(-15.f), GAIRB_DEG2RAD(0)) * modelview };
 	gairb_PushSetup(&g1, &perspective);
 
-	int cubes = 60;
-	float radius = .3f;
+	int cubes = 50;
+	float radius = .5f;
 	float height = .125f;
 
 	gairb_PushCube(&g1, &platform->assets[1], V4(1.f, 1.f, 1.f, 1.f), V3(0.f, 10.f, 0.f), 40.f, 20.f);
