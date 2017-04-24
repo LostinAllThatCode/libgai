@@ -1,6 +1,6 @@
 /*
 	Author(s): Andreas Gaida
-	
+
 	gai_xwindow.h - v0.1 - https://github.com/LostinAllThatCode/libgai/blob/render_tests/gai/gai_xwindow.h
 
 	TODO: Make a documentation as soon as this api is somewhat useable!!!
@@ -167,6 +167,10 @@ GAIXW_API void  		gaiXWindowToggleFullscreen  		(gaixw_context *window);
 GAIXW_API void			gaiXWindowRegisterDeInitCallback	(gaixw_context *window, gaiXWindowDeInit *callback, void *userdata);
 GAIXW_API int           gaixw_IsVSYNC						(gaixw_context *window);
 GAIXW_API int           gaixw_IsFullscreen					(gaixw_context *window);
+GAIXW_API void          gaixw_Destroy						(gaixw_context *window);
+
+GAIXW_API unsigned char gaiMouseDown 						(gaixw_context *window, int key);
+GAIXW_API unsigned char gaiMousePressed 					(gaixw_context *window, int key);
 
 #ifdef __cplusplus
 }
@@ -404,6 +408,31 @@ gaiGLSetSwapInterval(unsigned int vsync)
 #pragma comment( lib, "winmm.lib" )
 
 
+GAIXW_API void
+gaixw_Destroy(gaixw_context *window)
+{
+	#ifdef GAIXW_OPENGL
+	if (window->renderer.info.opengl.is_modern)
+	{
+		HGLRC ctx = wglGetCurrentContext();
+		if (ctx)
+		{
+			wglMakeCurrent(0, 0);
+			wglDeleteContext(ctx);
+		}
+	}
+	#endif
+
+	PostQuitMessage(0);
+	MSG msg;
+	while ( PeekMessageA(&msg, 0, 0, 0, PM_REMOVE) )
+	{
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+		if (msg.message == WM_QUIT) break;
+	}
+}
+
 GAIXW_API int
 gaixw_IsVSYNC(gaixw_context *window)
 {
@@ -510,6 +539,7 @@ gaiXWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			case WM_MOUSEWHEEL:		{ window->input.dwheel = GET_WHEEL_DELTA_WPARAM(wParam); window->input.wheel  += window->input.dwheel; return 0; }
 			case WM_DESTROY:
 			{
+				#if 0
 				_gaiXWindowDeInit(window);
 				#ifdef GAIXW_OPENGL
 				if (window->renderer.info.opengl.is_modern)
@@ -523,6 +553,8 @@ gaiXWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				}
 				#endif
 				PostQuitMessage(0);
+				#endif
+				window->is_running = false;
 				return 0;
 			} break;
 		}
@@ -766,7 +798,7 @@ gaiXWindow(gaixw_context *window, const char *title, int width, int height, int 
 				#if GAIXW_OPENGL_MINOR_VERSION
 				0x2092 /* WGL_CONTEXT_MINOR_VERSION_ARB */, GAIXW_OPENGL_MINOR_VERSION,
 				#endif
-				0x9126 /* WGL_CONTEXT_PROFILE_MASK_ARB */, 0x00000001 /* WGL_CONTEXT_CORE_PROFILE_BIT_ARB */,
+				//0x9126 /* WGL_CONTEXT_PROFILE_MASK_ARB */, /0x00000001 /* WGL_CONTEXT_CORE_PROFILE_BIT_ARB */,
 				0x2094 /* WGL_CONTEXT_FLAGS_ARB */, 0
 				#ifdef _DEBUG
 				| 0x00000001

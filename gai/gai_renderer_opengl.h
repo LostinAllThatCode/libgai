@@ -96,6 +96,7 @@ gairgl_Destroy(gairgl *opengl)
 	glDeleteProgram(opengl->shader);
 }
 
+<<<<<<< HEAD
 inline loaded_bitmap *
 GetBitmap(gairgl *opengl, gairb_renderbuffer *commands, int quad_id)
 {
@@ -105,6 +106,25 @@ GetBitmap(gairgl *opengl, gairb_renderbuffer *commands, int quad_id)
 	{
 		glGenTextures(1, &b->id);
 		glBindTexture(GL_TEXTURE_2D, b->id);
+=======
+#define U32FromHandle(handle) ((u32) (size_t) (handle))
+u32
+gairgl_LoadTexture(gairgl *opengl, gairb_renderbuffer *commands, int quad_id)
+{
+	if (!commands->quad_textures) return -1;
+	loaded_bitmap *b = commands->quad_textures[quad_id];
+	if (b->handle) return U32FromHandle(b->handle);
+	else
+	{
+		if (!b->memory)
+		{
+			GAIRGL_ASSERT(!"invalid bitmap");
+			return U32FromHandle(commands->default_texture->handle);
+		}
+		u32 *handle = (u32*) &b->handle;
+		glGenTextures(1, handle);
+		glBindTexture(GL_TEXTURE_2D, *handle);
+>>>>>>> 6148ec74e4480fe5e556c5ace60e949c1ee70546
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -112,7 +132,23 @@ GetBitmap(gairgl *opengl, gairb_renderbuffer *commands, int quad_id)
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, b->width, b->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, b->memory);
 		b->is_loaded = 1;
 	}
+<<<<<<< HEAD
 	return 0;
+=======
+	return -1;
+}
+
+inline GAIRGL_DEF void 
+gairgl_UnloadTexture(void *handle)
+{
+	if(handle) glDeleteTextures(1, (GLuint *) handle);
+}
+
+inline GAIRGL_DEF void
+gairgl_ManageOpenGLTextures()
+{
+	
+>>>>>>> 6148ec74e4480fe5e556c5ace60e949c1ee70546
 }
 
 inline GAIRGL_DEF void
@@ -144,8 +180,13 @@ gairgl_Render(gairgl *opengl, gairb_renderbuffer *commands, v2 draw_region)
 
 					for (u32 vertex_index = entry->vertex_array_offset; vertex_index < (entry->vertex_array_offset + 4 * entry->quad_count); vertex_index += 4)
 					{
+<<<<<<< HEAD
 						loaded_bitmap *bitmap = GetBitmap(opengl, commands, vertex_index >> 2);
 						if (bitmap) glBindTexture(GL_TEXTURE_2D, bitmap->id);
+=======
+						u32 textureid = gairgl_LoadTexture(opengl, commands, vertex_index >> 2);
+						if (textureid != -1) glBindTexture(GL_TEXTURE_2D, textureid);
+>>>>>>> 6148ec74e4480fe5e556c5ace60e949c1ee70546
 						glDrawArrays(GL_TRIANGLE_STRIP, vertex_index, 4);
 					}
 				} break;

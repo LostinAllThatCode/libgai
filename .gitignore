@@ -35,3 +35,7 @@
 *.vs
 TAGS
 *.sublime*
+
+*.i
+*.sdf
+*.sln

@@ -1,3 +1,31 @@
+#if 1
+
+	#define GAIHR_IMPLEMENTATION
+	#include "gai_hotreload.h"
+
+	#include <stdio.h>
+
+	volatile int running = 1; // This will be changed by another thread!
+
+	void reloadFile(gaihr_file *file)
+	{
+		// Do whatever you want to do, when this happens.
+		printf("%s changed!\n", file->filename);
+		running = 0;
+	}
+
+	int main(int argc, char **argv)
+	{
+		gaihr_file MyFile = {};
+		gaihr_AddFile(&MyFile, "testfile.txt", reloadFile, 0, gaihr_FlagsSkipInitialChange);
+		while(running) {Sleep(125);}
+
+		gaihr_RemoveFile(&MyFile);
+		return 0;
+	}
+#else
+
+#define GAIXW_DEBUG
 #define GAIXW_OPENGL
 #define GAIXW_IMPLEMENTATION
 #include "gai_xwindow.h"
@@ -85,3 +113,4 @@ int main(int argc, char **argv)
 
 	return 0;
 }
+#endif
