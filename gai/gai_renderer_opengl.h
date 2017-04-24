@@ -48,14 +48,13 @@ gairgl_Initialize(gairgl *opengl)
 	char *frag = R"GLSL(
 	        in vec4 out_color;
 	        in vec2 out_uv;
-	        uniform sampler2D font;
+	        uniform sampler2D tex;
 	        void main() {
-	        	#if 1
+	        	#if 0
 				gl_FragColor = out_color;
 				#else
-				float tex = texture2D(font, out_uv).r;
-				float a = clamp(tex.r * 2.0, 0.0, 1.0);
-				gl_FragColor = vec4(1.0, 1.0, 1.0, a) * out_color;
+				vec4 tex = texture2D(tex, out_uv);
+				gl_FragColor = tex * out_color;
 				#endif
 	        })GLSL";
 
@@ -68,7 +67,6 @@ gairgl_Initialize(gairgl *opengl)
 	glGenBuffers(1, &opengl->vbo);
 	glBindBuffer(0x8892 /*  GL_ARRAY_BUFFER */, opengl->vbo);
 	glBufferData(0x8892, 0, 0, 0x88E0);
-
 
 	glGenVertexArrays(1, &opengl->vao);
 	glBindVertexArray(opengl->vao);
@@ -95,6 +93,45 @@ gairgl_Destroy(gairgl *opengl)
 	glDeleteBuffers(1, &opengl->vbo);
 	glDeleteVertexArrays(1, &opengl->vao);
 	glDeleteProgram(opengl->shader);
+}
+
+#define U32FromHandle(handle) ((u32) (size_t) (handle))
+u32
+gairgl_LoadTexture(gairgl *opengl, gairb_renderbuffer *commands, int quad_id)
+{
+	if (!commands->quad_textures) return -1;
+	loaded_bitmap *b = commands->quad_textures[quad_id];
+	if (b->handle) return U32FromHandle(b->handle);
+	else
+	{
+		if (!b->memory)
+		{
+			GAIRGL_ASSERT(!"invalid bitmap");
+			return U32FromHandle(commands->default_texture->handle);
+		}
+		u32 *handle = (u32*) &b->handle;
+		glGenTextures(1, handle);
+		glBindTexture(GL_TEXTURE_2D, *handle);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, b->width, b->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, b->memory);
+		b->is_loaded = 1;
+	}
+	return -1;
+}
+
+inline GAIRGL_DEF void 
+gairgl_UnloadTexture(void *handle)
+{
+	if(handle) glDeleteTextures(1, (GLuint *) handle);
+}
+
+inline GAIRGL_DEF void
+gairgl_ManageOpenGLTextures()
+{
+	
 }
 
 inline GAIRGL_DEF void
@@ -126,6 +163,8 @@ gairgl_Render(gairgl *opengl, gairb_renderbuffer *commands, v2 draw_region)
 
 					for (u32 vertex_index = entry->vertex_array_offset; vertex_index < (entry->vertex_array_offset + 4 * entry->quad_count); vertex_index += 4)
 					{
+						u32 textureid = gairgl_LoadTexture(opengl, commands, vertex_index >> 2);
+						if (textureid != -1) glBindTexture(GL_TEXTURE_2D, textureid);
 						glDrawArrays(GL_TRIANGLE_STRIP, vertex_index, 4);
 					}
 				} break;

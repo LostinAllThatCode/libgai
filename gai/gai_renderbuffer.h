@@ -13,21 +13,7 @@
 	DO NOT use them if you are not 100% sure what they do.
 
 	Example:
-
-	#define GAIXW_OPENGL
-	#define GAIXW_IMPLEMENTATION
-	#include "gai_xwindow.h"
-	#define GAIRB_IMPLEMENTATION
-	#include "gai_renderbuffer.h"
-
-	int main(int argc, char **argv)
-	{
-		gaixw_context window;
-		if(!gaiXWindow(&window)) return -1;
-		while( gaiXWindowUpdate(&window) );
-
-		return 0;
-	}
+	// TODO: Make an example!
 */
 #ifndef GAI_INCLUDE_GAI_RENDERBUFFER_H
 
@@ -53,7 +39,7 @@
 #include <stdint.h>
 typedef uint8_t  u8;  typedef uint16_t u16; typedef uint32_t u32; typedef uint64_t u64;
 typedef int8_t   i8;  typedef int16_t  i16; typedef int32_t  i32; typedef int32_t  b32;
-typedef int64_t  i64; typedef float    r32; typedef double   r64;
+typedef int64_t  i64; typedef float    r32; typedef double   r64; typedef size_t szx;
 
 /* quick and fast 3d math implementation with operator overloading */
 
@@ -206,7 +192,7 @@ struct gairb_renderbuffer
 	v4 clear_color;
 };
 #define gairb_RenderBuffer(clear_color, pushbuffer_max, pushbuffer, vertex_max, vertexbuffer, bitmap_array, default_texture) \
-{ pushbuffer, pushbuffer, pushbuffer_max, vertex_max, 0, (gairb_textured_vertex*) vertexbuffer, bitmap_array, default_texture, clear_color }
+	{ pushbuffer, pushbuffer, pushbuffer_max, vertex_max, 0, (gairb_textured_vertex*) vertexbuffer, bitmap_array, default_texture, clear_color }
 /*
 	This is just a macro to help initialization of a renderbuffer struct.
 
@@ -235,12 +221,17 @@ enum { gairb_AlignToTopLeft, gairb_AlignToBottomLeft, gairb_AlignToCenter, gairb
 GAIRB_API gairb_group 		gairb_BeginGroup(v2 screen_dim, gairb_renderbuffer *commands, void *assets);
 GAIRB_API void 				gairb_EndGroup(gairb_group *group);
 GAIRB_API void 				gairb_PushSetup(gairb_group *group, gairb_setup *new_setup);
-GAIRB_API void				gairb_PushRect(gairb_group *group, v4 color, v4 p1, v2 uv1, v4 p2, v2 uv2, v4 p3, v2 uv3, v4 p4, v2 uv4);
+
+GAIRB_API void				gairb_PushRect(gairb_group *group, loaded_bitmap *bitmap, v4 p1, v2 uv1, v4 c1, v4 p2, v2 uv2, v4 c2, v4 p3, v2 uv3, v4 c3, v4 p4, v2 uv4, v4 c4);
+GAIRB_API void 				gairb_PushRect(gairb_group *group, loaded_bitmap *bitmap, v4 color, v4 p1, v2 uv1, v4 p2, v2 uv2, v4 p3, v2 uv3, v4 p4, v2 uv4);
+GAIRB_API void				gairb_PushRect(gairb_group *group, loaded_bitmap *bitmap, v4 color, v3 position, r32 width, r32 height, u16 align = gairb_AlignToTopLeft, u32 flipped = 0);
 GAIRB_API void				gairb_PushRect(gairb_group *group, v4 color, v3 position, r32 width, r32 height, u16 align = gairb_AlignToTopLeft);
-GAIRB_API void				gairb_PushCube(gairb_group *group, v4 color, v3 position, r32 radius, r32  height);
+
+GAIRB_API void				gairb_PushCube(gairb_group *group, loaded_bitmap *bitmap, v4 color, v3 position, r32 radius, r32  height, i32 flip_texture = 0);
+GAIRB_API void				gairb_PushCube(gairb_group *group, v4 color, v3 position, r32 radius, r32 height, i32 flip_texture = 0);
+
 
 #ifdef GAIRB_IMPLEMENTATION
-
 inline void
 gairb_PushSetup(gairb_group *group, gairb_setup *new_setup)
 {
@@ -304,12 +295,18 @@ _gairb_GetQuads(gairb_group *group, u32 quad_count)
 }
 
 inline GAIRB_API void
-gairb_PushRect(gairb_group *group, v4 p1, v2 uv1, v4 c1, v4 p2, v2 uv2, v4 c2, v4 p3, v2 uv3, v4 c3, v4 p4, v2 uv4, v4 c4)
+gairb_PushRect(gairb_group *group, loaded_bitmap *bitmap, v4 p1, v2 uv1, v4 c1, v4 p2, v2 uv2, v4 c2, v4 p3, v2 uv3, v4 c3, v4 p4, v2 uv4, v4 c4)
 {
 	gairb_entry_textured_quads *entry = _gairb_GetQuads(group, 1);
 	GAIRB_ASSERT(entry);
 
+	if (!bitmap) bitmap = group->commands->default_texture;
+	if (group->commands->quad_textures)
+	{
+		group->commands->quad_textures[group->commands->vertex_count >> 2] = bitmap;
+	}
 	++entry->quad_count;
+
 
 	gairb_textured_vertex *v = group->commands->vertex_array + group->commands->vertex_count;
 	group->commands->vertex_count += 4;
@@ -321,13 +318,20 @@ gairb_PushRect(gairb_group *group, v4 p1, v2 uv1, v4 c1, v4 p2, v2 uv2, v4 c2, v
 }
 
 inline GAIRB_API void
-gairb_PushRect(gairb_group *group, v4 color, v4 p1, v2 uv1, v4 p2, v2 uv2, v4 p3, v2 uv3, v4 p4, v2 uv4)
+gairb_PushRect(gairb_group *group, loaded_bitmap *bitmap, v4 color, v4 p1, v2 uv1, v4 p2, v2 uv2, v4 p3, v2 uv3, v4 p4, v2 uv4)
 {
-	gairb_PushRect(group, p1, uv1, color, p2, uv2, color, p3, uv3, color, p4, uv4, color);
+	gairb_PushRect(group, bitmap, p1, uv1, color, p2, uv2, color, p3, uv3, color, p4, uv4, color);
 }
 
 inline GAIRB_API void
-gairb_PushRect(gairb_group *group, v4 color, v3 position, r32 width, r32 height, u16 align)
+gairb_PushRect(gairb_group *group, v4 color, v4 p1, v2 uv1, v4 p2, v2 uv2, v4 p3, v2 uv3, v4 p4, v2 uv4)
+{
+	loaded_bitmap *bitmap = group->commands->default_texture;
+	gairb_PushRect(group, bitmap, p1, uv1, color, p2, uv2, color, p3, uv3, color, p4, uv4, color);
+}
+
+inline GAIRB_API void
+gairb_PushRect(gairb_group *group, loaded_bitmap *bitmap, v4 color, v3 position, r32 width, r32 height, u16 align, u32 flipped)
 {
 	v4 tl = V4(0.f), bl = V4(0.f), br = V4(0.f), tr = V4(0.f);
 	switch (align)
@@ -371,13 +375,21 @@ gairb_PushRect(gairb_group *group, v4 color, v3 position, r32 width, r32 height,
 		} break;
 		default: { return; };
 	}
-	gairb_PushRect(group, color, tl, V2i(0, 0), bl, V2i(0, 1), tr, V2i(1, 0), br, V2i(1, 1) );
+	if(flipped) gairb_PushRect(group, bitmap, color, tl, V2i(0, 1), bl, V2i(0, 0), tr, V2i(1, 1), br, V2i(1, 0) );
+	else gairb_PushRect(group, bitmap, color, bl, V2i(0, 1), br, V2i(1, 1), tl, V2i(0, 0), tr, V2i(1, 0) );
+}
+
+inline GAIRB_API void
+gairb_PushRect(gairb_group *group, v4 color, v3 position, r32 width, r32 height, u16 align)
+{
+	loaded_bitmap *bitmap = group->commands->default_texture;
+	gairb_PushRect(group, bitmap, color, position, width, height, align);
 }
 
 /*
 	** The cube is pushed to the buffer in triangle strip style.
 	* c-d-a-b for the first front face
-	* d-h-b-f for right side face 
+	* d-h-b-f for right side face
 	* and so on ...
 	*
 
@@ -389,14 +401,17 @@ gairb_PushRect(gairb_group *group, v4 color, v3 position, r32 width, r32 height,
 		c-------d
 */
 GAIRB_API void
-gairb_PushCube(gairb_group *group, v4 color, v3 position, r32 radius, r32 height)
+gairb_PushCube(gairb_group *group, loaded_bitmap *bitmap, v4 color, v3 position, r32 radius, r32 height, i32 flip_texture)
 {
 	gairb_entry_textured_quads *entry = _gairb_GetQuads(group, 6);
 	GAIRB_ASSERT(entry);
 
 	r32 half_height = height * .5f;
 	r32 half_width	= radius * .5f;
-	v2 uv1 = V2(0, 0); v2 uv2 = V2(0, 1); v2 uv3 = V2(1, 0); v2 uv4 = V2(1, 1);
+	v2 uv1,uv2,uv3,uv4;
+	if (flip_texture == 1) { uv1 = V2(0, 1); uv2 = V2(0, 0); uv3 = V2(1, 1); uv4 = V2(1, 0); }
+	else { uv1 = V2(0, 0); uv2 = V2(0, 1); uv3 = V2(1, 0); uv4 = V2(1, 1); }
+
 	v4 c1  = V4(color.xyz * .25f, color.a);
 	v4 c2  = color;
 
@@ -410,21 +425,28 @@ gairb_PushCube(gairb_group *group, v4 color, v3 position, r32 radius, r32 height
 	v4 h = V4(position.x + half_width, position.y - half_height, position.z - half_width, 1.f);
 
 	#if GAIRB_DEBUG_VISUALGRADIENT_CUBE
-	gairb_PushRect(group, c, uv2, c1, d, uv4, c1, a, uv1, c2, b, uv3, c2);
-	gairb_PushRect(group, d, uv2, c1, h, uv4, c1, b, uv1, c2, f, uv3, c2);
-	gairb_PushRect(group, h, uv2, c1, g, uv4, c1, f, uv1, c2, e, uv3, c2);
-	gairb_PushRect(group, g, uv2, c1, c, uv4, c1, e, uv1, c2, a, uv3, c2);
-	gairb_PushRect(group, a, uv2, c2, b, uv4, c2, e, uv1, c2, f, uv3, c2);
-	gairb_PushRect(group, g, uv2, c1, h, uv4, c1, c, uv1, c1, d, uv3, c1);
+	gairb_PushRect(group, bitmap, c, uv2, c1, d, uv4, c1, a, uv1, c2, b, uv3, c2);
+	gairb_PushRect(group, bitmap, d, uv2, c1, h, uv4, c1, b, uv1, c2, f, uv3, c2);
+	gairb_PushRect(group, bitmap, h, uv2, c1, g, uv4, c1, f, uv1, c2, e, uv3, c2);
+	gairb_PushRect(group, bitmap, g, uv2, c1, c, uv4, c1, e, uv1, c2, a, uv3, c2);
+	gairb_PushRect(group, bitmap, a, uv2, c2, b, uv4, c2, e, uv1, c2, f, uv3, c2);
+	gairb_PushRect(group, bitmap, g, uv2, c1, h, uv4, c1, c, uv1, c1, d, uv3, c1);
 	#else
-	gairb_PushRect(group, c, uv2, c2, d, uv4, c2, a, uv1, c2, b, uv3, c2);
-	gairb_PushRect(group, d, uv2, c2, h, uv4, c2, b, uv1, c2, f, uv3, c2);
-	gairb_PushRect(group, h, uv2, c2, g, uv4, c2, f, uv1, c2, e, uv3, c2);
-	gairb_PushRect(group, g, uv2, c2, c, uv4, c2, e, uv1, c2, a, uv3, c2);
-	gairb_PushRect(group, a, uv2, c2, b, uv4, c2, e, uv1, c2, f, uv3, c2);
-	gairb_PushRect(group, g, uv2, c2, h, uv4, c2, c, uv1, c2, d, uv3, c2);
+	gairb_PushRect(group, bitmap, c, uv2, c2, d, uv4, c2, a, uv1, c2, b, uv3, c2);
+	gairb_PushRect(group, bitmap, d, uv2, c2, h, uv4, c2, b, uv1, c2, f, uv3, c2);
+	gairb_PushRect(group, bitmap, h, uv2, c2, g, uv4, c2, f, uv1, c2, e, uv3, c2);
+	gairb_PushRect(group, bitmap, g, uv2, c2, c, uv4, c2, e, uv1, c2, a, uv3, c2);
+	gairb_PushRect(group, bitmap, a, uv2, c2, b, uv4, c2, e, uv1, c2, f, uv3, c2);
+	gairb_PushRect(group, bitmap, g, uv2, c2, h, uv4, c2, c, uv1, c2, d, uv3, c2);
 	#endif
 
+}
+
+GAIRB_API void
+gairb_PushCube(gairb_group *group, v4 color, v3 position, r32 radius, r32 height, i32 flip_texture)
+{
+	loaded_bitmap *bitmap = group->commands->default_texture;
+	gairb_PushCube(group, bitmap, color, position, radius, height, flip_texture);
 }
 
 #endif

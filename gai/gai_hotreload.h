@@ -1,24 +1,70 @@
 /*
-==========================================================================================
-$Name: gai_hotreload.h$
-$Description:
-Simple quick and easy hot reloading implementation.
+	Author(s): Andreas Gaida
 
-Supported features:
-	hotreloadable reloading | Quickly reload dll(s) thread-safe on runtime
-$
-$Creator: Andreas Gaida$
-$Copyright: $
-$Example:
-	Link to a github example:
-								http://www.not-quite-ready-yet.com
-$
-==========================================================================================
+	gai_hotreload.h - v0.1 - https://github.com/LostinAllThatCode/libgai/blob/render_tests/gai/gai_hotreload.h
+
+	NOTE: Only WINDOWS is supported for now.
+
+	This api allows you to track any file changes happen to a file ( not really content wise changes, more filetime changes on save & copy triggers ).
+	The tracking will take place on a seperate thread which will be started the first time you add a file via gaihr_AddFile(...) call.
+	You can specify diffrent flags on how the event and callback function will be handled.
+
+		gaihr_FlagsNone      			= 0x0,
+		gaihr_FlagsDontHandleEvent  	= 0x1, // Indicates whether the thread will not call the callback function on event. !You have to do it on the parents thread yourself.
+		gaihr_FlagsDontResetEvent  		= 0x2, // Indicates whether the marked event will not be resetted after calling the callback function. You have to do it yourself.
+		gaihr_FlagsSkipInitialChange 	= 0x4, // Indicates whether the initial file change will not result in an event.
+
+	You can use this api to hotreloading of dlls or textures or just plain textfiles.
+
+	Linker dependencies per platform:
+
+		windows : user32.lib
+		** Note:
+		*		If you are using Microsoft Visual Studios compiler you won't need to specify libs.
+		*		All required libs will be include via pragma instruction.
+
+	Do this:
+		#define GAIHR_IMPLEMENTATION
+   	before you include this file in *one* C or C++ file to create the implementation.
+
+	All function prefixed with a underscore(_) are internally used functions.
+	DO NOT use them if you are not 100% sure what they do.
+
+	Example Code:
+
+	// NOTE: A file with the name "testfile.txt" has to be in the directory of the executable.
+	//       After running the executable you have to change the files content and save it.
+	//		 Or just replace it with another file with the same name.
+
+	#define GAIHR_IMPLEMENTATION
+	#include "gai_hotreload.h"
+
+	#include <stdio.h>
+
+	volatile int running = 1; // This will be changed by another thread!
+
+	void reloadFile(gaihr_file *file)
+	{
+		// Do whatever you want to do, when this happens.
+		printf("%s changed!\n", file->filename);
+		running = 0;
+	}
+
+	int main(int argc, char **argv)
+	{
+		gaihr_file MyFile = {};
+		gaihr_AddFile(&MyFile, "testfile.txt", reloadFile, 0, gaihr_FlagsSkipInitialChange);
+		while(running) {Sleep(125);}
+		return 0;
+	}
 */
 
 #ifndef _GAI_INCLUDE_HOTRELOAD_H
 
+#define GAIHR_WAIT_INFINITE  -1
+#define GAIHR_THREAD_TIMEOUT 1000
 #define GAIHR_TEXTLENGTH_MAX 4096
+#define GAIHR_FILE_LIMIT	 64
 
 #ifndef GAIHR_STATIC
 	#define GAIHR_API extern
@@ -39,13 +85,17 @@ struct gaihr_platform
 	FILETIME last_write_time;
 };
 #else
-struct gaihr_platform { void *null_ptr };
+
+#error gai_hotreload.h: Error. This platform is not supported!
+
 #endif
 
 enum gaihr_flags
 {
-	gaihr_FlagsNone      		= 0x0,
-	gaihr_FlagsDontHandleEvent  = 0x1,
+	gaihr_FlagsNone      			= 0x0,
+	gaihr_FlagsDontHandleEvent  	= 0x1, // Indicates whether the thread will not call the callback function on event. You have to do it yourself.
+	gaihr_FlagsDontResetEvent  		= 0x2, // Indicates whether the marked event will not be resetted after calling the callback function. You have to do it yourself.
+	gaihr_FlagsSkipInitialChange 	= 0x4, // Indicates whether the initial file change will not result in an event.
 };
 
 struct gaihr_file;
@@ -56,92 +106,162 @@ struct gaihr_file
 	gaihr_callback	*callback;
 	gaihr_platform	platform;
 	const char    	*filename;
-	int     	  	interval;
 	gaihr_flags   	flags;
 };
 
-GAIHR_API BOOL 	gaihr_AddFile( gaihr_file *hotreloadable, const char *filename, int interval = 0, gaihr_callback *callback = 0, void *userdata = 0, gaihr_flags flags = gaihr_FlagsNone);
+/*
+	TODO: 	Make a list for all files added. And then loop over the list via next pointer.
+			Do not make this a static thing?!
+*/
+static gaihr_file *_gaihr_files[GAIHR_FILE_LIMIT];
 
-GAIHR_API void	gaihr_WaitForEvent(gaihr_file *hotreloadable);
-GAIHR_API BOOL 	gaihr_BeginTicketMutex(gaihr_file *hotreloadable, int timeout = INFINITE);
-GAIHR_API void 	gaihr_EndTicketMutex(gaihr_file *hotreloadable);
+GAIHR_API int 	gaihr_AddFile 			(gaihr_file *file, const char *filename, gaihr_callback *callback = 0, void *userdata = 0, gaihr_flags flags = gaihr_FlagsNone);
+
+GAIHR_API void  gaihr_CreateEvent 		(gaihr_file *file);
+GAIHR_API void  gaihr_ResetEvent 		(gaihr_file *file);
+GAIHR_API void	gaihr_WaitForEvent 		(gaihr_file *file);
+GAIHR_API BOOL 	gaihr_BeginTicketMutex  (gaihr_file *file, int timeout = GAIHR_WAIT_INFINITE);
+GAIHR_API void 	gaihr_EndTicketMutex	(gaihr_file *file);
 
 #ifdef GAIHR_IMPLEMENTATION
 
 #if _WIN32
 
-
-inline GAIHR_API void
-gaihr_WaitForEvent(gaihr_file *hotreloadable)
-{
-	if (WaitForSingleObject(hotreloadable->platform.event, 0) == WAIT_OBJECT_0)
-	{
-		WaitForSingleObject(hotreloadable->platform.mutex, INFINITE);
-		if (hotreloadable->callback) hotreloadable->callback(hotreloadable);
-		ReleaseMutex(hotreloadable->platform.mutex);
-		ResetEvent(hotreloadable->platform.event);
-	}
-}
-
 inline GAIHR_API BOOL
-gaihr_BeginTicketMutex(gaihr_file *hotreloadable, int timeout)
+gaihr_BeginTicketMutex(gaihr_file *file, int timeout)
 {
-	BOOL result = (WaitForSingleObject(hotreloadable->platform.mutex, timeout) == WAIT_OBJECT_0);
+	BOOL result = (WaitForSingleObject(file->platform.mutex, timeout) == WAIT_OBJECT_0);
 	return result;
 }
 
 inline GAIHR_API void
-gaihr_EndTicketMutex(gaihr_file *hotreloadable)
+gaihr_EndTicketMutex(gaihr_file *file)
 {
-	ReleaseMutex(hotreloadable->platform.mutex);
+	ReleaseMutex(file->platform.mutex);
+}
+
+inline GAIHR_API void
+gaihr_CreateEvent(gaihr_file *file)
+{
+	if ( file->platform.event != 0) CloseHandle(file->platform.event);
+	file->platform.event = CreateEvent(0, 1, 1, 0);
+}
+
+inline GAIHR_API void
+gaihr_ResetEvent(gaihr_file *file)
+{
+	ResetEvent(file->platform.event);
+}
+
+inline GAIHR_API void
+gaihr_WaitForEvent(gaihr_file *file)
+{
+	if (WaitForSingleObject(file->platform.event, 0) == WAIT_OBJECT_0)
+	{
+		gaihr_BeginTicketMutex(file);
+		if (file->callback) file->callback(file);
+		if (!(file->flags & gaihr_FlagsDontResetEvent)) gaihr_ResetEvent(file);
+		gaihr_EndTicketMutex(file);
+	}
+}
+
+inline GAIHR_API int
+_gaihr_CheckFileChanged(gaihr_file *file)
+{
+	WIN32_FILE_ATTRIBUTE_DATA file_info_now = {};
+	GetFileAttributesExA(file->filename, GetFileExInfoStandard, &file_info_now);
+	if ( CompareFileTime(&file->platform.last_write_time, &file_info_now.ftLastWriteTime) != 0 )
+	{
+		if ( (file->flags & gaihr_FlagsSkipInitialChange) && file->platform.last_write_time.dwHighDateTime != 0 )
+		{
+			return 0;
+		}
+		else
+		{
+			file->platform.last_write_time = file_info_now.ftLastWriteTime;
+			return 1;
+		}
+	}
+	return 0;
 }
 
 DWORD WINAPI
 gaihr_WorkerThread(void *data)
 {
-	gaihr_file *hotreloadable = (gaihr_file *) data;
-	while (hotreloadable)
+	for (;;)
 	{
-		WIN32_FILE_ATTRIBUTE_DATA file_info_now;
-		GetFileAttributesExA(hotreloadable->filename, GetFileExInfoStandard, &file_info_now);
-		if ( CompareFileTime(&hotreloadable->platform.last_write_time, &file_info_now.ftLastWriteTime) != 0 )
+		gaihr_file **files = _gaihr_files;
+		for (int i = 0; i < (sizeof(_gaihr_files) / sizeof(_gaihr_files[0])); i++)
 		{
-			hotreloadable->platform.last_write_time = file_info_now.ftLastWriteTime;
-			hotreloadable->platform.event           = CreateEvent(0, true, true, 0);
-
-			if (!(hotreloadable->flags & gaihr_FlagsDontHandleEvent))
+			gaihr_file *file = files[i];
+			if (file)
 			{
-				gaihr_WaitForEvent(hotreloadable);
+				if ( _gaihr_CheckFileChanged(file) )
+				{
+					gaihr_CreateEvent(file);
+					if (!(file->flags & gaihr_FlagsDontHandleEvent))
+					{
+						gaihr_WaitForEvent(file);
+					}
+				}
 			}
 		}
-		Sleep(hotreloadable->interval);
+		Sleep(GAIHR_THREAD_TIMEOUT);
 	}
 	return 1;
 }
 
-BOOL GAIHR_API
-gaihr_AddFile( gaihr_file *hotreloadable, const char *filename, int interval, gaihr_callback *callback, void *userdata, gaihr_flags flags)
+GAIHR_API int
+gaihr_AddFile(gaihr_file *file, const char *filename, gaihr_callback *callback, void *userdata, gaihr_flags flags)
 {
-	BOOL result = false;
-
-	hotreloadable->userdata = userdata;
-	hotreloadable->callback = callback;
-	hotreloadable->platform = { CreateMutex(0, 0, 0) };
-	hotreloadable->filename = filename;
-	hotreloadable->interval = interval;
-	hotreloadable->flags    = flags;
-
-	if ( CreateThread(0, 0, gaihr_WorkerThread, hotreloadable, 0, 0) != 0)
+	static int file_count;
+	if (!file || file_count >= GAIHR_FILE_LIMIT)
 	{
-		result = true;
+		//GAIHR_ASSERT()
+		return 0;
 	}
 
-	return result;
+	file->filename                 = filename;
+	file->callback                 = callback;
+	file->userdata                 = userdata;
+	file->flags                    = flags;
+	file->platform.mutex           = CreateMutex(0, 0, 0);
+	file->platform.event           = 0;
+	file->platform.last_write_time = {0};
+
+	if (file_count == 0)
+	{
+		CreateThread(0, 0, gaihr_WorkerThread, 0, 0, 0);
+	}
+	_gaihr_files[file_count] = file;
+	file_count++;
+	return 1;
+}
+
+GAIHR_API int
+gaihr_RemoveFile(gaihr_file *file)
+{
+	for (;;)
+	{
+		gaihr_file **files = _gaihr_files;
+		for (int i = 0; i < (sizeof(_gaihr_files) / sizeof(_gaihr_files[0])); i++)
+		{
+			gaihr_file *target_file = files[i];
+			if (target_file == file)
+			{
+				CloseHandle(file->platform.event);
+				CloseHandle(file->platform.mutex);
+				files[i] = 0;
+				return 1;
+			}
+		}
+	}
+	return 0;
 }
 
 #else
 
-#pragma message("libgai [warning]: \"Hot Reloading\" is not implemented for this platform")
+#error gai_hotreload.h: Error. This platform is not supported!
 
 #endif
 
