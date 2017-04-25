@@ -1,12 +1,12 @@
 /**
  * @file gai_hotreload.h
  * 
- * @brief This api allows you to track any file changes happen to a file ( not really content wise changes, more filetime changes on save & copy triggers ).
+ * @brief This api allows you to track any file changes happen to a file ( not really content wise changes, more filetime changes on save & copy triggers )
  * 
  * NOTE: ONLY WINDOWS IS SUPPORTED FOR NOW
  * 
  * This api allows you to track any file changes happen to a file ( not really content wise changes, more filetime changes on save & copy triggers ).
- * The tracking will take place on a seperate thread which will be started the first time you add a file via gaihr_AddFile(...) call.
+ * The tracking will take place on a seperate thread which will be started the first time you add a file via gaihr_Track(...) call.
  * You can specify diffrent flags on how the event and callback function will be handled. See the @@gaihr_flags definition.
  * 
  * 
@@ -49,14 +49,14 @@
  * int main(int argc, char **argv)
  * {
  *    gaihr_file MyFile = {};
- *    gaihr_AddFile(&MyFile, "testfile.txt", reloadFile, 0, gaihr_FlagsSkipInitialChange);
+ *    gaihr_Track(&MyFile, "testfile.txt", reloadFile, 0, gaihr_FlagsSkipInitialChange);
  *    while(running) {Sleep(125);}
  *    return 0;
  * }
  * @endcode
  * @author Andreas Gaida
  * @date 1 Sep 2011
- * @see https://github.com/LostinAllThatCode/libgai/blob/render_tests/gai/gai_hotreload.h
+ * @see https://github.com/LostinAllThatCode/libgai
  */
 
 #ifndef _GAI_INCLUDE_HOTRELOAD_H
@@ -70,6 +70,8 @@
 #else
 	#define GAIHR_API static
 #endif
+
+struct gaihr_file;
 
 #if _WIN32
 
@@ -106,7 +108,6 @@ enum gaihr_flags
 	gaihr_FlagsSkipInitialChange 	= 0x4, /**< Indicates whether the initial file change will not result in an event. */
 };
 
-struct gaihr_file;
 /**
  * Callback function typedef which will be call when an event happens.
  */
@@ -115,15 +116,15 @@ typedef void gaihr_callback(gaihr_file *hotreloadable);
 /**
  * @brief      Hotreloadable file structure
  * 
- * Asd
+ * asdasdasdada asdas
  */
 struct gaihr_file
 {
-	void          	*userdata;	/**< This pointer is passed by the user via gaihr_AddFile function. */
-	gaihr_callback	*callback;	/**< Callback to the function when an event happens. */
+	void          	*userdata;	/**< This pointer is passed by the user via gaihr_Track function. */
+	gaihr_callback	*callback;	/**< Callback to the function when an event happens. {@link gaihr_Track} */
 	gaihr_platform	platform;  	/**< Platform specfic structure for semaphore or mutex handles. */
 	const char    	*filename;  /**< File to check for changes */
-	gaihr_flags   	flags;		/**< Callback to the function when an event happens. {@link gaihr_AddFile} */
+	gaihr_flags   	flags;		/**< Flags to specify event handling and callback behaviour. */
 };
 
 #if 0
@@ -134,73 +135,60 @@ struct gaihr_file_list
 	gaihr_file_list *next;
 } __filelist;
 #endif
-/*
-	TODO: 	Make a list for all files added. And then loop over the list via next pointer.
-			Do not make this a static thing?!
-*/
-static gaihr_file *_gaihr_files[GAIHR_FILE_LIMIT];
+
+static gaihr_file *_gaihr_files[GAIHR_FILE_LIMIT]; // TODO: Remove this and replace it with a linked list
 
 /**
- * @brief      Adds a file to a worker thread, which internally checks if the given file was modified. If so it will fire an event
+ * @brief      Adds a file to a worker thread, which internally tracks if the given file was modified. If so it will fire an event
  *             which will result in a function call to the callback function or handled differently depending on the specified flags.
  *
  * @param      file      Handle to a gaihr_file instance.
  * @param      filename  Filename of the file to track.
  * @param      callback  (optional) Callback function pointer when event happens.
  * @param      userdata  (optional) Pointer to user specific data.
- * @param      flags     (optional) Flags to handle file changes or callbacks.
- *
+ * @param      flags     (optional) Flags to handle file changes and callbacks.
  * @return     1 on success, 0 on failure.
  */
-GAIHR_API unsigned int 	gaihr_AddFile 			(gaihr_file *file, const char *filename, gaihr_callback *callback = 0, void *userdata = 0, gaihr_flags flags = gaihr_FlagsNone);
+GAIHR_API unsigned int 	gaihr_Track 			(gaihr_file *file, const char *filename, gaihr_callback *callback = 0, void *userdata = 0, gaihr_flags flags = gaihr_FlagsNone);
 
 /**
  * @brief      Removes a file from the worker thread.
- *
  * @param      file  Handle to a gaihr_file instance.
- *
  * @return     1 on success, 0 on failure.
  */
-GAIHR_API unsigned int 	gaihr_RemoveFile 		(gaihr_file *file);
-
-/**
- * @brief      Creates an event to signal a file change to the user. TODO: Make this private!!
- *
- * @param      file  Handle to a gaihr_file instance.
- */
-GAIHR_API void  		gaihr_CreateEvent 		(gaihr_file *file);
-
-/**
- * @brief      Resets the previously created event. TODO: Make this private!!
- *
- * @param      file  Handle to a gaihr_file instance.
- */
-GAIHR_API void  		gaihr_ResetEvent 		(gaihr_file *file);
+GAIHR_API unsigned int 	gaihr_Untrack 		(gaihr_file *file);
 
 /**
  * @brief      Grabs a mutex for the specified gaihr_file handle and waits for an event. If a callback function is specifed and an event happend the callback function will be called.
- *
  * @param      file  Handle to a gaihr_file instance.
  */
 GAIHR_API void			gaihr_WaitForEvent 		(gaihr_file *file);
 
-
 /**
  * @brief      Opens a mutex to access the data safely in a multi-threaded way.
- *
  * @param      file     Handle to a gaihr_file instance.
  * @param      timeout  Time to grab the mutex. (Can take longer if the mutex is used by another thread and was not released yet!)
- *
- * @return     1 if the mutex was succesfully opened, 0 on failure.
+ * @return     1 if the mutex was succesfully opened, 0 on failure (mutex is probably used by another thread).
  */
 GAIHR_API unsigned int 	gaihr_BeginTicketMutex  (gaihr_file *file, int timeout = GAIHR_WAIT_INFINITE);
 
 /**
- * @brief      Releases previously opened mutex to allow other thread to use this mutex.
- *
+ * @brief      Releases the previously opened mutex to allow other thread to use this mutex.
  * @param      file  Handle to a gaihr_file instance.
  */
 GAIHR_API void 	gaihr_EndTicketMutex	(gaihr_file *file);
+
+/**
+ * @brief      Signals a file change to the user.
+ * @param      file  Handle to a gaihr_file instance.
+ */
+GAIHR_API void  		_gaihr_CreateEvent 		(gaihr_file *file);
+
+/**
+ * @brief      Resets the previously set signal.
+ * @param      file  Handle to a gaihr_file instance.
+ */
+GAIHR_API void  		_gaihr_ResetEvent 		(gaihr_file *file);
 
 #ifdef GAIHR_IMPLEMENTATION
 
@@ -220,14 +208,14 @@ gaihr_EndTicketMutex(gaihr_file *file)
 }
 
 inline GAIHR_API void
-gaihr_CreateEvent(gaihr_file *file)
+_gaihr_CreateEvent(gaihr_file *file)
 {
 	if ( file->platform.event != 0) CloseHandle(file->platform.event);
 	file->platform.event = CreateEvent(0, 1, 1, 0);
 }
 
 inline GAIHR_API void
-gaihr_ResetEvent(gaihr_file *file)
+_gaihr_ResetEvent(gaihr_file *file)
 {
 	ResetEvent(file->platform.event);
 }
@@ -239,7 +227,7 @@ gaihr_WaitForEvent(gaihr_file *file)
 	{
 		gaihr_BeginTicketMutex(file);
 		if (file->callback) file->callback(file);
-		if (!(file->flags & gaihr_FlagsDontResetEvent)) gaihr_ResetEvent(file);
+		if (!(file->flags & gaihr_FlagsDontResetEvent)) _gaihr_ResetEvent(file);
 		gaihr_EndTicketMutex(file);
 	}
 }
@@ -277,7 +265,7 @@ _gaihr_WorkerThread(void *data)
 			{
 				if ( _gaihr_CheckFileChanged(file) )
 				{
-					gaihr_CreateEvent(file);
+					_gaihr_CreateEvent(file);
 					if (!(file->flags & gaihr_FlagsDontHandleEvent))
 					{
 						gaihr_WaitForEvent(file);
@@ -290,8 +278,8 @@ _gaihr_WorkerThread(void *data)
 	return 1;
 }
 
-GAIHR_API int
-gaihr_AddFile(gaihr_file *file, const char *filename, gaihr_callback *callback, void *userdata, gaihr_flags flags)
+GAIHR_API unsigned int
+gaihr_Track(gaihr_file *file, const char *filename, gaihr_callback *callback, void *userdata, gaihr_flags flags)
 {
 	static int file_count;
 	if (!file || file_count >= GAIHR_FILE_LIMIT)
@@ -337,8 +325,8 @@ gaihr_AddFile(gaihr_file *file, const char *filename, gaihr_callback *callback, 
 	return 1;
 }
 
-GAIHR_API int
-gaihr_RemoveFile(gaihr_file *file)
+GAIHR_API unsigned int
+gaihr_Untrack(gaihr_file *file)
 {
 	for (;;)
 	{

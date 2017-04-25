@@ -60,7 +60,7 @@ external update_and_render_(UpdateAndRender)
 	float height = .125f;
 	v2 dim = GetTextureDim(&platform->assets[1]);
 
-#if 0
+#if 1
 	gairb_PushCube(&g1, &platform->assets[1], V4(1.f, 1.f, 1.f, 1.f), V3(0.f, 10.f, 0.f), 40.f, 20.f);
 	for (int i = 1; i < cubes; i++)
 	{

@@ -1,0 +1,51 @@
+\hypertarget{structgaihr__platform}{}\section{gaihr\+\_\+platform Struct Reference}
+\label{structgaihr__platform}\index{gaihr\+\_\+platform@{gaihr\+\_\+platform}}
+
+
+Platform specific hotreload layer with mutex and event handles. Should not be used outside of this file!  
+
+
+
+
+{\ttfamily \#include $<$gai\+\_\+hotreload.\+h$>$}
+
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+H\+A\+N\+D\+LE \hyperlink{structgaihr__platform_a4502c637972f49cbb803c93975fe45f4}{mutex}
+\item 
+H\+A\+N\+D\+LE \hyperlink{structgaihr__platform_a702622bb26128f36b2c27c8ffdb1b7a0}{event}
+\item 
+F\+I\+L\+E\+T\+I\+ME \hyperlink{structgaihr__platform_a6be2e4d6d98523e09c04a19b20d04cd1}{last\+\_\+write\+\_\+time}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Platform specific hotreload layer with mutex and event handles. Should not be used outside of this file! 
+
+This struct will vary on different platforms. T\+O\+DO\+: Add support for multiple platforms! 
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{structgaihr__platform_a702622bb26128f36b2c27c8ffdb1b7a0}\label{structgaihr__platform_a702622bb26128f36b2c27c8ffdb1b7a0}} 
+\index{gaihr\+\_\+platform@{gaihr\+\_\+platform}!event@{event}}
+\index{event@{event}!gaihr\+\_\+platform@{gaihr\+\_\+platform}}
+\subsubsection{\texorpdfstring{event}{event}}
+{\footnotesize\ttfamily H\+A\+N\+D\+LE gaihr\+\_\+platform\+::event}
+
+Handle to a windows event \mbox{\Hypertarget{structgaihr__platform_a6be2e4d6d98523e09c04a19b20d04cd1}\label{structgaihr__platform_a6be2e4d6d98523e09c04a19b20d04cd1}} 
+\index{gaihr\+\_\+platform@{gaihr\+\_\+platform}!last\+\_\+write\+\_\+time@{last\+\_\+write\+\_\+time}}
+\index{last\+\_\+write\+\_\+time@{last\+\_\+write\+\_\+time}!gaihr\+\_\+platform@{gaihr\+\_\+platform}}
+\subsubsection{\texorpdfstring{last\+\_\+write\+\_\+time}{last\_write\_time}}
+{\footnotesize\ttfamily F\+I\+L\+E\+T\+I\+ME gaihr\+\_\+platform\+::last\+\_\+write\+\_\+time}
+
+Timestamp of last change \mbox{\Hypertarget{structgaihr__platform_a4502c637972f49cbb803c93975fe45f4}\label{structgaihr__platform_a4502c637972f49cbb803c93975fe45f4}} 
+\index{gaihr\+\_\+platform@{gaihr\+\_\+platform}!mutex@{mutex}}
+\index{mutex@{mutex}!gaihr\+\_\+platform@{gaihr\+\_\+platform}}
+\subsubsection{\texorpdfstring{mutex}{mutex}}
+{\footnotesize\ttfamily H\+A\+N\+D\+LE gaihr\+\_\+platform\+::mutex}
+
+Handle to a windows mutex 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{gai__hotreload_8h}{gai\+\_\+hotreload.\+h}\end{DoxyCompactItemize}

@@ -89,8 +89,7 @@ int main(int argc, char **argv)
 	gairgl_Initialize(&opengl);
 
 	gaihr_file reloadable_file = {};
-	gaihr_AddFile(&reloadable_file, "renderer.dll", reloadDLL, 0, gaihr_FlagsDontHandleEvent);
-
+	gaihr_Track(&reloadable_file, "renderer.dll", reloadDLL, 0, gaihr_FlagsDontHandleEvent);
 
 	u32 pbuffersize = 1024 * 1024 * 2;
 	u8 *pbuffer = (u8*) VirtualAlloc(0, pbuffersize, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
@@ -104,7 +103,7 @@ int main(int argc, char **argv)
 	assets[0] = CreateWhiteBitmap(128, 128);
 
 	gaihr_file texture;
-	gaihr_AddFile(&texture, "test.jpg", hotreloadtexture, &assets[1]);
+	gaihr_Track(&texture, "test.jpg", hotreloadtexture, &assets[1]);
 
 	platform.assets = assets;
 
@@ -115,14 +114,10 @@ int main(int argc, char **argv)
 
 		gairb_renderbuffer render_commands = gairb_RenderBuffer(V4(.0f, .0f, .0f, 1.0f), pbuffersize, pbuffer, vertex_count_max, vbuffer, quad_textures, &assets[0]);
 
-		if(gaiKeyPressed(&window, 'K')) gaihr_RemoveFile(&texture);
-
-		if (gaihr_BeginTicketMutex(&reloadable_file, 0))
-		{
-			gaihr_WaitForEvent(&reloadable_file);
-			if (UpdateAndRender) UpdateAndRender(&window, &render_commands, &platform);
-			gaihr_EndTicketMutex(&reloadable_file);
-		}
+		if(gaiKeyPressed(&window, 'K')) gaihr_Untrack(&texture);
+		
+		gaihr_WaitForEvent(&reloadable_file);
+		if (UpdateAndRender) UpdateAndRender(&window, &render_commands, &platform);
 
 		gairgl_Render(&opengl, &render_commands, V2i(window.info.width, window.info.height));
 		gaiXWindowSwapBuffers(&window);
