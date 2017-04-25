@@ -1,51 +1,47 @@
 /**
  * @file gai_hotreload.h
- * 
+ *
  * @brief This api allows you to track any file changes happen to a file ( not really content wise changes, more filetime changes on save & copy triggers )
- * 
- * NOTE: ONLY WINDOWS IS SUPPORTED FOR NOW
- * 
- * This api allows you to track any file changes happen to a file ( not really content wise changes, more filetime changes on save & copy triggers ).
+ *
+ * @warning ONLY WINDOWS IS SUPPORTED\n Dependancy: user32.lib
+ *
+ * @section gaihr_intro Introduction
  * The tracking will take place on a seperate thread which will be started the first time you add a file via gaihr_Track(...) call.
- * You can specify diffrent flags on how the event and callback function will be handled. See the @@gaihr_flags definition.
- * 
- * 
- * You can use this api to hotreloading of dlls or textures or just plain textfiles.
- * 
- * Windows linker dependancies: user32.lib 
- * 
+ * You can specify different flags on how the event and callback function will be handled. See the {@link gaihr_flags} definition.
+ *
+ * You can use this api to do hotreloading of dll's or texture's or just plain textfile's.
+ *
  * Do this:
- * 
+ *
  *     #define GAIHR_IMPLEMENTATION
- * 
+ *
  * before you include this file in *one* C++ file to create the implementation.
- * 
- * **IMPORTANT**\n
- * _All function prefixed with a underscore(_) are internally used functions._
- * _DO NOT use them if you are not 100% sure what they do._
- * 
- * ____ 
- * Example Code Snippet:
- * 
- * A file with the name "testfile.txt" has to be in the directory of the executable. 
+ *
+ * @section gaihr_important Important
+ * __All function prefixed with a underscore(_) are internally used functions.__
+ * __DO NOT use them if you are not 100% sure what they do.__
+ *
+ * @section gaihr_code_example Example Code:
+ *
+ * A file with the name "testfile.txt" has to be in the directory of the executable.
  * After running the executable you have to change the files content and save it.
  * Or just replace it with another file with the same name.
- * 
- * @code{.cpp} 
+ *
+ * @code{.cpp}
  * #define GAIHR_IMPLEMENTATION
  * #include "gai_hotreload.h"
- * 
+ *
  * #include <stdio.h>
- * 
+ *
  * volatile int running = 1; // This will be changed by another thread!
- * 
+ *
  * void reloadFile(gaihr_file *file)
  * {
  *    // Do whatever you want to do, when this happens.
  *    printf("%s changed!\n", file->filename);
  *    running = 0;
  * }
- * 
+ *
  * int main(int argc, char **argv)
  * {
  *    gaihr_file MyFile = {};
@@ -55,7 +51,7 @@
  * }
  * @endcode
  * @author Andreas Gaida
- * @date 1 Sep 2011
+ * @date 25.04.2017
  * @see https://github.com/LostinAllThatCode/libgai
  */
 
@@ -66,36 +62,12 @@
 #define GAIHR_FILE_LIMIT	 64		/**< Max files which will be processed by the worker thread. Note: Will be replaced by a linked list! */
 
 #ifndef GAIHR_STATIC
-	#define GAIHR_API extern 		/**< Define GAIHR_STATIC is you want to prefix all functions with the extern identifier. Otherwise the static identifier will be used by default. */
+	#define GAIHR_API extern 		/**< Define **GAIHR_STATIC** if you want to make functions **static** instead of **extern**. */
 #else
 	#define GAIHR_API static
 #endif
 
 struct gaihr_file;
-
-#if _WIN32
-
-#define WIN32_LEAN_AND_MEAN			/** windows platform WIN32_LEAN_AND_MEAN include macro definition **/
-#include <windows.h>
-#pragma comment( lib, "user32.lib" )
-
-
-/**
- * @brief      Platform specific hotreload layer with mutex and event handles. Should not be used outside of this file!
- * 
- * This struct will vary on different platforms. TODO: Add support for multiple platforms!
- */
-struct gaihr_platform
-{
-	HANDLE   mutex; /**< Handle to a windows mutex */
-	HANDLE   event; /**< Handle to a windows event */
-	FILETIME last_write_time; /**< Timestamp of last change */
-};
-#else
-
-#error gai_hotreload.h: Error. This platform is not supported!
-
-#endif
 
 /**
  * @brief This flags specify how the event and callback function will be handled.
@@ -108,16 +80,32 @@ enum gaihr_flags
 	gaihr_FlagsSkipInitialChange 	= 0x4, /**< Indicates whether the initial file change will not result in an event. */
 };
 
-/**
- * Callback function typedef which will be call when an event happens.
- */
-typedef void gaihr_callback(gaihr_file *hotreloadable);
+struct gaihr_filetime
+{
+	unsigned int lowpart;
+	unsigned int highpart;
+};
 
 /**
- * @brief      Hotreloadable file structure
- * 
- * asdasdasdada asdas
+ * @brief      Platform specific struct.
+ *
+ * @todo Add support for multiple platforms! Currently only windows is supported
  */
+struct gaihr_platform
+{
+	void *mutex;
+	void *event;
+	gaihr_filetime last_write_time;
+};
+
+/**
+ * @brief Callback function typedef which will be call when an event happens
+ * 
+ * {@link gaihr_code_example} 
+ */
+typedef void gaihr_callback(gaihr_file *file);
+#define GAIHR_CALLBACK(name) void name(gaihr_file *file)
+
 struct gaihr_file
 {
 	void          	*userdata;	/**< This pointer is passed by the user via gaihr_Track function. */
@@ -194,6 +182,10 @@ GAIHR_API void  		_gaihr_ResetEvent 		(gaihr_file *file);
 
 #if _WIN32
 
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#pragma comment( lib, "user32.lib" )
+
 inline GAIHR_API unsigned int
 gaihr_BeginTicketMutex(gaihr_file *file, int timeout)
 {
@@ -210,7 +202,7 @@ gaihr_EndTicketMutex(gaihr_file *file)
 inline GAIHR_API void
 _gaihr_CreateEvent(gaihr_file *file)
 {
-	if ( file->platform.event != 0) CloseHandle(file->platform.event);
+	if (file->platform.event) CloseHandle(file->platform.event);
 	file->platform.event = CreateEvent(0, 1, 1, 0);
 }
 
@@ -232,20 +224,30 @@ gaihr_WaitForEvent(gaihr_file *file)
 	}
 }
 
+#define _GAIHR_SIGN(x) ((x) > 0) - ((x) < 0)
+inline GAIHR_API int
+_gaihr_CompareFileTime(gaihr_filetime *a, gaihr_filetime *b)
+{
+	int result = _GAIHR_SIGN(b->highpart - a->highpart);
+	return (result == 0 ? (_GAIHR_SIGN(b->lowpart - a->lowpart)) : result);
+}
+#undef _GAIHR_SIGN
+
 inline GAIHR_API int
 _gaihr_CheckFileChanged(gaihr_file *file)
 {
 	WIN32_FILE_ATTRIBUTE_DATA file_info_now = {};
 	GetFileAttributesExA(file->filename, GetFileExInfoStandard, &file_info_now);
-	if ( CompareFileTime(&file->platform.last_write_time, &file_info_now.ftLastWriteTime) != 0 )
+	if ( _gaihr_CompareFileTime(&file->platform.last_write_time, (gaihr_filetime*) &file_info_now.ftLastWriteTime) != 0 )
 	{
-		if ( (file->flags & gaihr_FlagsSkipInitialChange) && file->platform.last_write_time.dwHighDateTime != 0 )
+		if ( (file->flags & gaihr_FlagsSkipInitialChange) && file->platform.last_write_time.lowpart != 0 )
 		{
 			return 0;
 		}
 		else
 		{
-			file->platform.last_write_time = file_info_now.ftLastWriteTime;
+			file->platform.last_write_time.lowpart = file_info_now.ftLastWriteTime.dwLowDateTime;
+			file->platform.last_write_time.highpart = file_info_now.ftLastWriteTime.dwHighDateTime;
 			return 1;
 		}
 	}
@@ -294,7 +296,7 @@ gaihr_Track(gaihr_file *file, const char *filename, gaihr_callback *callback, vo
 	file->flags                    = flags;
 	file->platform.mutex           = CreateMutex(0, 0, 0);
 	file->platform.event           = 0;
-	file->platform.last_write_time = {0};
+	file->platform.last_write_time = {0, 0};
 
 	if (file_count == 0)
 	{
@@ -354,5 +356,5 @@ gaihr_Untrack(gaihr_file *file)
 
 #endif
 
-#define _GAI_INCLUDE_HOTRELOAD_H 
+#define _GAI_INCLUDE_HOTRELOAD_H
 #endif

@@ -1,21 +1,4 @@
 var searchData=
 [
-  ['gai_5fhotreload_2eh',['gai_hotreload.h',['../gai__hotreload_8h.html',1,'']]],
-  ['gaihr_5fapi',['GAIHR_API',['../gai__hotreload_8h.html#a32983003a4e816a8350f01cb22d1b01b',1,'gai_hotreload.h']]],
-  ['gaihr_5fbeginticketmutex',['gaihr_BeginTicketMutex',['../gai__hotreload_8h.html#ad94dfb45e7cd9129c43fe17b47c85947',1,'gai_hotreload.h']]],
-  ['gaihr_5fcallback',['gaihr_callback',['../gai__hotreload_8h.html#a57193639c716f099e0300ccec1e13131',1,'gai_hotreload.h']]],
-  ['gaihr_5fendticketmutex',['gaihr_EndTicketMutex',['../gai__hotreload_8h.html#a6e1b46e3dba1600f8d0daaf4acb67e71',1,'gai_hotreload.h']]],
-  ['gaihr_5ffile',['gaihr_file',['../structgaihr__file.html',1,'']]],
-  ['gaihr_5ffile_5flimit',['GAIHR_FILE_LIMIT',['../gai__hotreload_8h.html#ac26b515249679c1f9036430164867ba0',1,'gai_hotreload.h']]],
-  ['gaihr_5fflags',['gaihr_flags',['../gai__hotreload_8h.html#aaebb069b6896f065efd75640e0e4150b',1,'gai_hotreload.h']]],
-  ['gaihr_5fflagsdonthandleevent',['gaihr_FlagsDontHandleEvent',['../gai__hotreload_8h.html#aaebb069b6896f065efd75640e0e4150ba158375938f45efe930ee7416d19e5a6c',1,'gai_hotreload.h']]],
-  ['gaihr_5fflagsdontresetevent',['gaihr_FlagsDontResetEvent',['../gai__hotreload_8h.html#aaebb069b6896f065efd75640e0e4150babfc4c1c7557333f4e2cddf40cacefc7a',1,'gai_hotreload.h']]],
-  ['gaihr_5fflagsnone',['gaihr_FlagsNone',['../gai__hotreload_8h.html#aaebb069b6896f065efd75640e0e4150ba6c207a28fdce6637b4aa1e70e64c3e94',1,'gai_hotreload.h']]],
-  ['gaihr_5fflagsskipinitialchange',['gaihr_FlagsSkipInitialChange',['../gai__hotreload_8h.html#aaebb069b6896f065efd75640e0e4150baee50ce1492a508e5605592106fa00bd5',1,'gai_hotreload.h']]],
-  ['gaihr_5fplatform',['gaihr_platform',['../structgaihr__platform.html',1,'']]],
-  ['gaihr_5fthread_5ftimeout',['GAIHR_THREAD_TIMEOUT',['../gai__hotreload_8h.html#a7385b7149ef022fa38140e2b2a540502',1,'gai_hotreload.h']]],
-  ['gaihr_5ftrack',['gaihr_Track',['../gai__hotreload_8h.html#ad83d8f6170f0404fb72803d012ac9f6a',1,'gai_hotreload.h']]],
-  ['gaihr_5funtrack',['gaihr_Untrack',['../gai__hotreload_8h.html#a288369c901929574624b267de90007cd',1,'gai_hotreload.h']]],
-  ['gaihr_5fwait_5finfinite',['GAIHR_WAIT_INFINITE',['../gai__hotreload_8h.html#a36b03891b740d035afdd1f32e15c91ad',1,'gai_hotreload.h']]],
-  ['gaihr_5fwaitforevent',['gaihr_WaitForEvent',['../gai__hotreload_8h.html#a79d4ca28cdaae457474d55a0a21dd326',1,'gai_hotreload.h']]]
+  ['libgai_20documentation',['libgai documentation',['../index.html',1,'']]]
 ];

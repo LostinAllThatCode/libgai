@@ -45,12 +45,12 @@ void hotreloadtexture(gaihr_file *file)
 
 HMODULE reloadable_dll;
 update_and_render_fn *UpdateAndRender;
-void reloadDLL(gaihr_file *dll)
+GAIHR_CALLBACK(reloadDLL)
 {
 	char NewFilename[4096] = {};
-	snprintf(NewFilename, 4096, "~%s", dll->filename);
+	snprintf(NewFilename, 4096, "~%s", file->filename);
 	if (reloadable_dll) FreeLibrary(reloadable_dll);
-	CopyFileA(dll->filename, NewFilename, false);
+	CopyFileA(file->filename, NewFilename, false);
 	reloadable_dll = LoadLibrary(NewFilename);
 	assert(reloadable_dll);
 	if (reloadable_dll)
@@ -115,7 +115,7 @@ int main(int argc, char **argv)
 		gairb_renderbuffer render_commands = gairb_RenderBuffer(V4(.0f, .0f, .0f, 1.0f), pbuffersize, pbuffer, vertex_count_max, vbuffer, quad_textures, &assets[0]);
 
 		if(gaiKeyPressed(&window, 'K')) gaihr_Untrack(&texture);
-		
+
 		gaihr_WaitForEvent(&reloadable_file);
 		if (UpdateAndRender) UpdateAndRender(&window, &render_commands, &platform);
 

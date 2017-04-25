@@ -1,2 +1,3 @@
 # libgai
-General C/C++ Helper Library
+
+<a href="https://lostinallthatcode.github.io/libgai">Link to documentation (work in progress)</a>

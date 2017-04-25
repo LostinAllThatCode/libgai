@@ -71,17 +71,17 @@ $(function() {
 
 <p>This api allows you to track any file changes happen to a file ( not really content wise changes, more filetime changes on save &amp; copy triggers )  
 <a href="#details">More...</a></p>
-<div class="textblock"><code>#include &lt;windows.h&gt;</code><br />
-</div>
+
 <p><a href="gai__hotreload_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structgaihr__filetime.html">gaihr_filetime</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structgaihr__platform.html">gaihr_platform</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Platform specific hotreload layer with mutex and event handles. Should not be used outside of this file!  <a href="structgaihr__platform.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Platform specific struct.  <a href="structgaihr__platform.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structgaihr__file.html">gaihr_file</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hotreloadable file structure.  <a href="structgaihr__file.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
@@ -94,11 +94,15 @@ Macros</h2></td></tr>
 <tr class="separator:ac26b515249679c1f9036430164867ba0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a32983003a4e816a8350f01cb22d1b01b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gai__hotreload_8h.html#a32983003a4e816a8350f01cb22d1b01b">GAIHR_API</a>&#160;&#160;&#160;extern</td></tr>
 <tr class="separator:a32983003a4e816a8350f01cb22d1b01b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6f8c5bfe220445bbbb8e1c9ef176838a"><td class="memItemLeft" align="right" valign="top"><a id="a6f8c5bfe220445bbbb8e1c9ef176838a"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>GAIHR_CALLBACK</b>(name)&#160;&#160;&#160;void name(<a class="el" href="structgaihr__file.html">gaihr_file</a> *file)</td></tr>
+<tr class="separator:a6f8c5bfe220445bbbb8e1c9ef176838a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:a57193639c716f099e0300ccec1e13131"><td class="memItemLeft" align="right" valign="top">typedef void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gai__hotreload_8h.html#a57193639c716f099e0300ccec1e13131">gaihr_callback</a>(<a class="el" href="structgaihr__file.html">gaihr_file</a> *hotreloadable)</td></tr>
-<tr class="separator:a57193639c716f099e0300ccec1e13131"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8026f464cf8636b763b6f03798d40800"><td class="memItemLeft" align="right" valign="top">typedef void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gai__hotreload_8h.html#a8026f464cf8636b763b6f03798d40800">gaihr_callback</a>(<a class="el" href="structgaihr__file.html">gaihr_file</a> *file)</td></tr>
+<tr class="memdesc:a8026f464cf8636b763b6f03798d40800"><td class="mdescLeft">&#160;</td><td class="mdescRight">Callback function typedef which will be call when an event happens.  <a href="#a8026f464cf8636b763b6f03798d40800">More...</a><br /></td></tr>
+<tr class="separator:a8026f464cf8636b763b6f03798d40800"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -112,14 +116,14 @@ Enumerations</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ad83d8f6170f0404fb72803d012ac9f6a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="gai__hotreload_8h.html#a32983003a4e816a8350f01cb22d1b01b">GAIHR_API</a> unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gai__hotreload_8h.html#ad83d8f6170f0404fb72803d012ac9f6a">gaihr_Track</a> (<a class="el" href="structgaihr__file.html">gaihr_file</a> *file, const char *filename, <a class="el" href="gai__hotreload_8h.html#a57193639c716f099e0300ccec1e13131">gaihr_callback</a> *callback=0, void *userdata=0, <a class="el" href="gai__hotreload_8h.html#aaebb069b6896f065efd75640e0e4150b">gaihr_flags</a> flags=<a class="el" href="gai__hotreload_8h.html#aaebb069b6896f065efd75640e0e4150ba6c207a28fdce6637b4aa1e70e64c3e94">gaihr_FlagsNone</a>)</td></tr>
+<tr class="memitem:ad83d8f6170f0404fb72803d012ac9f6a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="gai__hotreload_8h.html#a32983003a4e816a8350f01cb22d1b01b">GAIHR_API</a> unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gai__hotreload_8h.html#ad83d8f6170f0404fb72803d012ac9f6a">gaihr_Track</a> (<a class="el" href="structgaihr__file.html">gaihr_file</a> *file, const char *filename, <a class="el" href="gai__hotreload_8h.html#a8026f464cf8636b763b6f03798d40800">gaihr_callback</a> *callback=0, void *userdata=0, <a class="el" href="gai__hotreload_8h.html#aaebb069b6896f065efd75640e0e4150b">gaihr_flags</a> flags=<a class="el" href="gai__hotreload_8h.html#aaebb069b6896f065efd75640e0e4150ba6c207a28fdce6637b4aa1e70e64c3e94">gaihr_FlagsNone</a>)</td></tr>
 <tr class="memdesc:ad83d8f6170f0404fb72803d012ac9f6a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a file to a worker thread, which internally tracks if the given file was modified. If so it will fire an event which will result in a function call to the callback function or handled differently depending on the specified flags.  <a href="#ad83d8f6170f0404fb72803d012ac9f6a">More...</a><br /></td></tr>
 <tr class="separator:ad83d8f6170f0404fb72803d012ac9f6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a288369c901929574624b267de90007cd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="gai__hotreload_8h.html#a32983003a4e816a8350f01cb22d1b01b">GAIHR_API</a> unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gai__hotreload_8h.html#a288369c901929574624b267de90007cd">gaihr_Untrack</a> (<a class="el" href="structgaihr__file.html">gaihr_file</a> *file)</td></tr>
 <tr class="memdesc:a288369c901929574624b267de90007cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes a file from the worker thread.  <a href="#a288369c901929574624b267de90007cd">More...</a><br /></td></tr>
 <tr class="separator:a288369c901929574624b267de90007cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a79d4ca28cdaae457474d55a0a21dd326"><td class="memItemLeft" align="right" valign="top"><a class="el" href="gai__hotreload_8h.html#a32983003a4e816a8350f01cb22d1b01b">GAIHR_API</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gai__hotreload_8h.html#a79d4ca28cdaae457474d55a0a21dd326">gaihr_WaitForEvent</a> (<a class="el" href="structgaihr__file.html">gaihr_file</a> *file)</td></tr>
-<tr class="memdesc:a79d4ca28cdaae457474d55a0a21dd326"><td class="mdescLeft">&#160;</td><td class="mdescRight">Grabs a mutex for the specified <a class="el" href="structgaihr__file.html" title="Hotreloadable file structure. ">gaihr_file</a> handle and waits for an event. If a callback function is specifed and an event happend the callback function will be called.  <a href="#a79d4ca28cdaae457474d55a0a21dd326">More...</a><br /></td></tr>
+<tr class="memdesc:a79d4ca28cdaae457474d55a0a21dd326"><td class="mdescLeft">&#160;</td><td class="mdescRight">Grabs a mutex for the specified <a class="el" href="structgaihr__file.html">gaihr_file</a> handle and waits for an event. If a callback function is specifed and an event happend the callback function will be called.  <a href="#a79d4ca28cdaae457474d55a0a21dd326">More...</a><br /></td></tr>
 <tr class="separator:a79d4ca28cdaae457474d55a0a21dd326"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad94dfb45e7cd9129c43fe17b47c85947"><td class="memItemLeft" align="right" valign="top"><a class="el" href="gai__hotreload_8h.html#a32983003a4e816a8350f01cb22d1b01b">GAIHR_API</a> unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gai__hotreload_8h.html#ad94dfb45e7cd9129c43fe17b47c85947">gaihr_BeginTicketMutex</a> (<a class="el" href="structgaihr__file.html">gaihr_file</a> *file, int timeout=<a class="el" href="gai__hotreload_8h.html#a36b03891b740d035afdd1f32e15c91ad">GAIHR_WAIT_INFINITE</a>)</td></tr>
 <tr class="memdesc:ad94dfb45e7cd9129c43fe17b47c85947"><td class="mdescLeft">&#160;</td><td class="mdescRight">Opens a mutex to access the data safely in a multi-threaded way.  <a href="#ad94dfb45e7cd9129c43fe17b47c85947">More...</a><br /></td></tr>
@@ -136,19 +140,22 @@ Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>This api allows you to track any file changes happen to a file ( not really content wise changes, more filetime changes on save &amp; copy triggers ) </p>
-<p>NOTE: ONLY WINDOWS IS SUPPORTED FOR NOW</p>
-<p>This api allows you to track any file changes happen to a file ( not really content wise changes, more filetime changes on save &amp; copy triggers ). The tracking will take place on a seperate thread which will be started the first time you add a file via gaihr_Track(...) call. You can specify diffrent flags on how the event and callback function will be handled. See the @gaihr_flags definition.</p>
-<p>You can use this api to hotreloading of dlls or textures or just plain textfiles.</p>
-<p>Windows linker dependancies: user32.lib</p>
+<dl class="section warning"><dt>Warning</dt><dd>ONLY WINDOWS IS SUPPORTED<br />
+ Dependancy: user32.lib</dd></dl>
+<h1><a class="anchor" id="gaihr_intro"></a>
+Introduction</h1>
+<p>The tracking will take place on a seperate thread which will be started the first time you add a file via gaihr_Track(...) call. You can specify different flags on how the event and callback function will be handled. See the <a class="el" href="gai__hotreload_8h.html#aaebb069b6896f065efd75640e0e4150b">gaihr_flags</a> definition.</p>
+<p>You can use this api to do hotreloading of dll's or texture's or just plain textfile's.</p>
 <p>Do this: </p><pre class="fragment">#define GAIHR_IMPLEMENTATION
 </pre><p>before you include this file in <em>one</em> C++ file to create the implementation.</p>
-<p><b>IMPORTANT</b><br />
-<em>All function prefixed with a underscore(_) are internally used functions.</em> <em>DO NOT use them if you are not 100% sure what they do.</em></p>
-<hr/>
-<p> Example Code Snippet:</p>
+<h1><a class="anchor" id="gaihr_important"></a>
+Important</h1>
+<p><b>All function prefixed with a underscore(_) are internally used functions.</b> <b>DO NOT use them if you are not 100% sure what they do.</b></p>
+<h1><a class="anchor" id="gaihr_code_example"></a>
+Example Code:</h1>
 <p>A file with the name "testfile.txt" has to be in the directory of the executable. After running the executable you have to change the files content and save it. Or just replace it with another file with the same name.</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#define GAIHR_IMPLEMENTATION</span></div><div class="line"><span class="preprocessor">#include &quot;<a class="code" href="gai__hotreload_8h.html">gai_hotreload.h</a>&quot;</span></div><div class="line"></div><div class="line"><span class="preprocessor">#include &lt;stdio.h&gt;</span></div><div class="line"></div><div class="line"><span class="keyword">volatile</span> <span class="keywordtype">int</span> running = 1; <span class="comment">// This will be changed by another thread!</span></div><div class="line"></div><div class="line"><span class="keywordtype">void</span> reloadFile(<a class="code" href="structgaihr__file.html">gaihr_file</a> *file)</div><div class="line">{</div><div class="line">   <span class="comment">// Do whatever you want to do, when this happens.</span></div><div class="line">   printf(<span class="stringliteral">&quot;%s changed!\n&quot;</span>, file-&gt;<a class="code" href="structgaihr__file.html#a26ea2bbf62231c3cae2317ca217f8166">filename</a>);</div><div class="line">   running = 0;</div><div class="line">}</div><div class="line"></div><div class="line"><span class="keywordtype">int</span> main(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span> **argv)</div><div class="line">{</div><div class="line">   <a class="code" href="structgaihr__file.html">gaihr_file</a> MyFile = {};</div><div class="line">   <a class="code" href="gai__hotreload_8h.html#ad83d8f6170f0404fb72803d012ac9f6a">gaihr_Track</a>(&amp;MyFile, <span class="stringliteral">&quot;testfile.txt&quot;</span>, reloadFile, 0, <a class="code" href="gai__hotreload_8h.html#aaebb069b6896f065efd75640e0e4150baee50ce1492a508e5605592106fa00bd5">gaihr_FlagsSkipInitialChange</a>);</div><div class="line">   <span class="keywordflow">while</span>(running) {Sleep(125);}</div><div class="line">   <span class="keywordflow">return</span> 0;</div><div class="line">}</div></div><!-- fragment --> <dl class="section author"><dt>Author</dt><dd>Andreas Gaida </dd></dl>
-<dl class="section date"><dt>Date</dt><dd>1 Sep 2011 </dd></dl>
+<dl class="section date"><dt>Date</dt><dd>25.04.2017 </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a href="https://github.com/LostinAllThatCode/libgai">https://github.com/LostinAllThatCode/libgai</a> </dd></dl>
 </div><h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="a32983003a4e816a8350f01cb22d1b01b"></a>
@@ -162,7 +169,7 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Define GAIHR_STATIC is you want to prefix all functions with the extern identifier. Otherwise the static identifier will be used by default. </p>
+<p>Define <b>GAIHR_STATIC</b> if you want to make functions <b>static</b> instead of <b>extern</b>. </p>
 
 </div>
 </div>
@@ -212,18 +219,20 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Typedef Documentation</h2>
-<a id="a57193639c716f099e0300ccec1e13131"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a57193639c716f099e0300ccec1e13131">&#9670;&nbsp;</a></span>gaihr_callback</h2>
+<a id="a8026f464cf8636b763b6f03798d40800"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8026f464cf8636b763b6f03798d40800">&#9670;&nbsp;</a></span>gaihr_callback</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">typedef void gaihr_callback(<a class="el" href="structgaihr__file.html">gaihr_file</a> *hotreloadable)</td>
+          <td class="memname">typedef void gaihr_callback(<a class="el" href="structgaihr__file.html">gaihr_file</a> *file)</td>
         </tr>
       </table>
 </div><div class="memdoc">
+
 <p>Callback function typedef which will be call when an event happens. </p>
+<p><a class="el" href="gai__hotreload_8h.html#gaihr_code_example">gaihr_code_example</a> </p>
 
 </div>
 </div>
@@ -274,7 +283,7 @@ Functions</h2></td></tr>
 <p>Signals a file change to the user. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">file</td><td>Handle to a <a class="el" href="structgaihr__file.html" title="Hotreloadable file structure. ">gaihr_file</a> instance. </td></tr>
+    <tr><td class="paramname">file</td><td>Handle to a <a class="el" href="structgaihr__file.html">gaihr_file</a> instance. </td></tr>
   </table>
   </dd>
 </dl>
@@ -300,7 +309,7 @@ Functions</h2></td></tr>
 <p>Resets the previously set signal. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">file</td><td>Handle to a <a class="el" href="structgaihr__file.html" title="Hotreloadable file structure. ">gaihr_file</a> instance. </td></tr>
+    <tr><td class="paramname">file</td><td>Handle to a <a class="el" href="structgaihr__file.html">gaihr_file</a> instance. </td></tr>
   </table>
   </dd>
 </dl>
@@ -336,7 +345,7 @@ Functions</h2></td></tr>
 <p>Opens a mutex to access the data safely in a multi-threaded way. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">file</td><td>Handle to a <a class="el" href="structgaihr__file.html" title="Hotreloadable file structure. ">gaihr_file</a> instance. </td></tr>
+    <tr><td class="paramname">file</td><td>Handle to a <a class="el" href="structgaihr__file.html">gaihr_file</a> instance. </td></tr>
     <tr><td class="paramname">timeout</td><td>Time to grab the mutex. (Can take longer if the mutex is used by another thread and was not released yet!) </td></tr>
   </table>
   </dd>
@@ -364,7 +373,7 @@ Functions</h2></td></tr>
 <p>Releases the previously opened mutex to allow other thread to use this mutex. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">file</td><td>Handle to a <a class="el" href="structgaihr__file.html" title="Hotreloadable file structure. ">gaihr_file</a> instance. </td></tr>
+    <tr><td class="paramname">file</td><td>Handle to a <a class="el" href="structgaihr__file.html">gaihr_file</a> instance. </td></tr>
   </table>
   </dd>
 </dl>
@@ -392,7 +401,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="gai__hotreload_8h.html#a57193639c716f099e0300ccec1e13131">gaihr_callback</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="gai__hotreload_8h.html#a8026f464cf8636b763b6f03798d40800">gaihr_callback</a> *&#160;</td>
           <td class="paramname"><em>callback</em> = <code>0</code>, </td>
         </tr>
         <tr>
@@ -418,7 +427,7 @@ Functions</h2></td></tr>
 <p>Adds a file to a worker thread, which internally tracks if the given file was modified. If so it will fire an event which will result in a function call to the callback function or handled differently depending on the specified flags. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">file</td><td>Handle to a <a class="el" href="structgaihr__file.html" title="Hotreloadable file structure. ">gaihr_file</a> instance. </td></tr>
+    <tr><td class="paramname">file</td><td>Handle to a <a class="el" href="structgaihr__file.html">gaihr_file</a> instance. </td></tr>
     <tr><td class="paramname">filename</td><td>Filename of the file to track. </td></tr>
     <tr><td class="paramname">callback</td><td>(optional) Callback function pointer when event happens. </td></tr>
     <tr><td class="paramname">userdata</td><td>(optional) Pointer to user specific data. </td></tr>
@@ -449,7 +458,7 @@ Functions</h2></td></tr>
 <p>Removes a file from the worker thread. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">file</td><td>Handle to a <a class="el" href="structgaihr__file.html" title="Hotreloadable file structure. ">gaihr_file</a> instance. </td></tr>
+    <tr><td class="paramname">file</td><td>Handle to a <a class="el" href="structgaihr__file.html">gaihr_file</a> instance. </td></tr>
   </table>
   </dd>
 </dl>
@@ -473,10 +482,10 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Grabs a mutex for the specified <a class="el" href="structgaihr__file.html" title="Hotreloadable file structure. ">gaihr_file</a> handle and waits for an event. If a callback function is specifed and an event happend the callback function will be called. </p>
+<p>Grabs a mutex for the specified <a class="el" href="structgaihr__file.html">gaihr_file</a> handle and waits for an event. If a callback function is specifed and an event happend the callback function will be called. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">file</td><td>Handle to a <a class="el" href="structgaihr__file.html" title="Hotreloadable file structure. ">gaihr_file</a> instance. </td></tr>
+    <tr><td class="paramname">file</td><td>Handle to a <a class="el" href="structgaihr__file.html">gaihr_file</a> instance. </td></tr>
   </table>
   </dd>
 </dl>
@@ -486,7 +495,7 @@ Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Apr 25 2017 15:19:04 for libgai by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Apr 25 2017 16:59:22 for libgai by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.13
 </small></address>

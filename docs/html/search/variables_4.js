@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['mutex',['mutex',['../structgaihr__platform.html#a4502c637972f49cbb803c93975fe45f4',1,'gaihr_platform']]]
+  ['mutex',['mutex',['../structgaihr__platform__win32.html#a6119861cabb0b6251f23e90033780a82',1,'gaihr_platform_win32']]]
 ];
