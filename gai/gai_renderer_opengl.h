@@ -66,7 +66,7 @@ gairgl_Initialize(gairgl *opengl)
 
 	glGenBuffers(1, &opengl->vbo);
 	glBindBuffer(0x8892 /*  GL_ARRAY_BUFFER */, opengl->vbo);
-	glBufferData(0x8892, 0, 0, 0x88E0);
+	glBufferData(0x8892, 0, 0,  0x88E8);//0x88E0);
 
 	glGenVertexArrays(1, &opengl->vao);
 	glBindVertexArray(opengl->vao);
@@ -82,6 +82,8 @@ gairgl_Initialize(gairgl *opengl)
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//glBlendFunc(GL_ZERO, GL_SRC_COLOR);
+	//glBlendFunc(GL_ONE, GL_ONE);
 
 	//glEnable(GL_CULL_FACE);
 	glDisable(GL_CULL_FACE);
@@ -122,16 +124,16 @@ gairgl_LoadTexture(gairgl *opengl, gairb_renderbuffer *commands, int quad_id)
 	return -1;
 }
 
-inline GAIRGL_DEF void 
+inline GAIRGL_DEF void
 gairgl_UnloadTexture(void *handle)
 {
-	if(handle) glDeleteTextures(1, (GLuint *) handle);
+	if (handle) glDeleteTextures(1, (GLuint *) handle);
 }
 
 inline GAIRGL_DEF void
 gairgl_ManageOpenGLTextures()
 {
-	
+
 }
 
 inline GAIRGL_DEF void
@@ -141,6 +143,13 @@ gairgl_Render(gairgl *opengl, gairb_renderbuffer *commands, v2 draw_region)
 	{
 		glClearColor( commands->clear_color.x, commands->clear_color.y, commands->clear_color.z, commands->clear_color.w);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		glUseProgram(opengl->shader);
+
+		glBindBuffer(0x8892, opengl->vbo);
+		//glBufferSubData(0x8892, 0, commands->vertex_count * sizeof(gairb_textured_vertex), commands->vertex_array);
+		glBufferData(0x8892,  commands->vertex_count * sizeof(gairb_textured_vertex), commands->vertex_array, 0x88E8);//0x88E0);
+		glBindVertexArray(opengl->vao);
 
 		for (u8 *header_at = commands->pushbuffer_base; header_at < commands->pushbuffer_at; )//header_at += sizeof(gairb_entry_header))
 		{
@@ -153,13 +162,7 @@ gairgl_Render(gairgl *opengl, gairb_renderbuffer *commands, v2 draw_region)
 
 					gairb_entry_textured_quads *entry = (gairb_entry_textured_quads *) header;
 
-					glUseProgram(opengl->shader);
 					glUniformMatrix4fv(opengl->transform, 1, GL_TRUE, entry->setup.transform.E[0]);
-
-					glBindBuffer(0x8892, opengl->vbo);
-					glBufferData(0x8892, commands->vertex_count * sizeof(gairb_textured_vertex), commands->vertex_array, 0x88E0);
-
-					glBindVertexArray(opengl->vao);
 
 					for (u32 vertex_index = entry->vertex_array_offset; vertex_index < (entry->vertex_array_offset + 4 * entry->quad_count); vertex_index += 4)
 					{
@@ -171,6 +174,7 @@ gairgl_Render(gairgl *opengl, gairb_renderbuffer *commands, v2 draw_region)
 				default: { GAIRGL_ASSERT(!"Invalid code path") ;}
 			}
 		}
+
 		glViewport(0, 0, (int)draw_region.x, (int)draw_region.y);
 	}
 }

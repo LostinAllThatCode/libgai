@@ -47,8 +47,8 @@ HMODULE reloadable_dll;
 update_and_render_fn *UpdateAndRender;
 void reloadDLL(gaihr_file *dll)
 {
-	char NewFilename[GAIHR_TEXTLENGTH_MAX] = {};
-	snprintf(NewFilename, GAIHR_TEXTLENGTH_MAX, "~%s", dll->filename);
+	char NewFilename[4096] = {};
+	snprintf(NewFilename, 4096, "~%s", dll->filename);
 	if (reloadable_dll) FreeLibrary(reloadable_dll);
 	CopyFileA(dll->filename, NewFilename, false);
 	reloadable_dll = LoadLibrary(NewFilename);
@@ -106,8 +106,6 @@ int main(int argc, char **argv)
 	gaihr_file texture;
 	gaihr_AddFile(&texture, "test.jpg", hotreloadtexture, &assets[1]);
 
-	printf("%zu\n", sizeof(_gaihr_files));
-
 	platform.assets = assets;
 
 	for (;;)
@@ -115,7 +113,7 @@ int main(int argc, char **argv)
 		gaiXWindowUpdate(&window);
 		if (!window.is_running) break;
 
-		gairb_renderbuffer render_commands = gairb_RenderBuffer(V4(0.0f, 0.0f, 0.0f, 1.0f), pbuffersize, pbuffer, vertex_count_max, vbuffer, quad_textures, &assets[0]);
+		gairb_renderbuffer render_commands = gairb_RenderBuffer(V4(.0f, .0f, .0f, 1.0f), pbuffersize, pbuffer, vertex_count_max, vbuffer, quad_textures, &assets[0]);
 
 		if(gaiKeyPressed(&window, 'K')) gaihr_RemoveFile(&texture);
 

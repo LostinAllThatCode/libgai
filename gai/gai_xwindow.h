@@ -33,6 +33,21 @@
 		return 0;
 	}
 */
+
+/**
+ * @file gai_xwindow.h
+ * @author Andreas Gaida
+ * @date 01012011
+ * @brief File containing example of doxygen usage for quick reference.
+ *
+ * Here typically goes a more extensive explanation of what the header
+ * defines. Doxygens tags are words preceeded by either a backslash @\
+ * or by an at symbol @@.
+ * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
+ * @see http://www.stack.nl/~dimitri/doxygen/commands.html
+ */
+
+
 #ifndef GAI_INCLUDE_XWINDOW_H
 
 #ifdef GAIXW_STATIC
@@ -90,6 +105,9 @@ struct gaixw_deinit_callback
 	void			 *userdata;
 };
 
+/**
+ * @brief      window struct which varies on each platform. see platform member in struct.
+ */
 struct gaixw_context
 {
 	struct
@@ -101,7 +119,7 @@ struct gaixw_context
 
 	struct
 	{
-		const char *title;
+		const char *title; /** window title pointer */
 		int width, height, x, y, fps;
 	} info;
 
@@ -157,7 +175,9 @@ struct gaixw_context
 extern "C" {
 #endif
 
-GAIXW_API int  			gaiXWindow        					(gaixw_context *window, const char *title = "default window title", int width = -1, int height = -1, int x = -1, int y = -1, const char *classname = "crossplatform-window-framework");
+GAIXW_API int  			gaiXWindow        					(gaixw_context *window, const char *title = "default window title", int width = -1, int height = -1, int x = -1, int y = -1, const char *classname = "crossplatform-window-framework", unsigned int visible = 1);
+GAIXW_API int 			gaiXWindowShow						(gaixw_context *window);
+GAIXW_API int 			gaiXWindowHide						(gaixw_context *window);
 GAIXW_API void 			gaiXWindowSetTitle					(gaixw_context *window, const char *title);
 GAIXW_API float		 	gaiXWindowUpdate					(gaixw_context *window);
 GAIXW_API void 			gaiXWindowSwapBuffers				(gaixw_context *window);
@@ -697,7 +717,23 @@ gaiXWindowUpdate(gaixw_context *window)
 }
 
 GAIXW_API int
-gaiXWindow(gaixw_context *window, const char *title, int width, int height, int x, int y, const char *classname)
+gaiXWindowShow(gaixw_context *window)
+{
+	int result = (ShowWindow(window->platform.hwnd, SW_SHOW) == 0);
+	if(result) 	window->is_visible = 1;
+	return result;
+}
+
+GAIXW_API int
+gaiXWindowHide(gaixw_context *window)
+{
+	int result = (ShowWindow(window->platform.hwnd, SW_HIDE) == 0);
+	if(result) 	window->is_visible = 0;
+	return result;
+}
+
+GAIXW_API int
+gaiXWindow(gaixw_context *window, const char *title, int width, int height, int x, int y, const char *classname, unsigned int visible)
 {
 	GAIXW_ASSERT(window);
 	if (!ConvertThreadToFiber(0) ) return -1;
@@ -842,7 +878,7 @@ gaiXWindow(gaixw_context *window, const char *title, int width, int height, int 
 	#endif
 
 	window->is_running = true;
-	window->is_visible = (ShowWindow(hwnd, SW_SHOW) == 0);
+	if(visible) gaiXWindowShow(window); else gaiXWindowHide(window);
 	return 1;
 }
 

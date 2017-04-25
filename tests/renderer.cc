@@ -55,10 +55,12 @@ external update_and_render_(UpdateAndRender)
 	gairb_setup perspective = { PerspectiveProjection((float) window->info.width / (float) window->info.height, 60.f, 0.1f, 100.f) * CameraOrbit(cam_along_z, GAIRB_DEG2RAD(-15.f), GAIRB_DEG2RAD(0)) * modelview };
 	gairb_PushSetup(&g1, &perspective);
 
-	int cubes = 50;
+	int cubes = 60;
 	float radius = .5f;
 	float height = .125f;
+	v2 dim = GetTextureDim(&platform->assets[1]);
 
+#if 0
 	gairb_PushCube(&g1, &platform->assets[1], V4(1.f, 1.f, 1.f, 1.f), V3(0.f, 10.f, 0.f), 40.f, 20.f);
 	for (int i = 1; i < cubes; i++)
 	{
@@ -68,9 +70,9 @@ external update_and_render_(UpdateAndRender)
 		}
 	}
 
-	v2 dim = GetTextureDim(&platform->assets[1]);
+	
 	gairb_PushRect(&g1, &platform->assets[1], V4(1.f, 1.f, 1.f, 1.f), V3(0, 10.f, -19.f), dim.x*.01f, dim.y *.01f, gairb_AlignToCenter, 1);
-
+#endif
 	gairb_setup ortho = { OrthographicProjection((r32)window->info.width, (r32)window->info.height, 1, -1) };
 	gairb_PushSetup(&g1, &ortho);
 
@@ -78,7 +80,11 @@ external update_and_render_(UpdateAndRender)
 	gairb_PushRect(&g1, V4(1.f, 0.f, 0.f, 1.f), V3i(5, 5, 0), 100, 1, gairb_AlignToTopLeft);
 	gairb_PushRect(&g1, V4(0.f, 1.f, 0.f, 1.0f), V3i(5, 5, 0), ((float)(renderbuffer->vertex_count + 4) / (float)renderbuffer->vertex_max) * 100.f, 2, gairb_AlignToTopLeft);
 
-	gairb_PushRect(&g1, &platform->assets[1], V4(1.f), V3(5.f, 50.f, 0.f), dim.x*.125f, dim.y *.125f, gairb_AlignToTopLeft);
+
+	gairb_setup test = { OrthographicProjection((r32)window->info.width, (r32)window->info.height, 1, -1) * Translate(ZRotation(GAIRB_DEG2RAD(rotY)) , V3(350.f, 150.f, 0.f)) };
+	gairb_PushSetup(&g1, &test);
+
+	gairb_PushRect(&g1, &platform->assets[1], V4(1.f, 1.f, 1.f, 0.6f), V3(0.f, 0.f, 0.f), dim.x*.125f, dim.y *.125f, gairb_AlignToCenter);
 
 	gairb_EndGroup(&g1);
 }

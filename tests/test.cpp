@@ -1,4 +1,4 @@
-#if 1
+#if 0
 
 	#define GAIHR_IMPLEMENTATION
 	#include "gai_hotreload.h"
@@ -82,7 +82,8 @@ int main(int argc, char **argv)
 	if (!renderbuffer || !vertexbuffer) return 1;
 
 	gaixw_context window;
-	if (!gaiXWindow(&window)) return -1;
+	if (!gaiXWindow(&window, "lol", -1, -1, -1, -1, "asdas", 0 )) return -1;
+	gaiXWindowShow(&window);
 	gaiXWindowSetVSYNC(&window, 1);
 	r32 time=0.f;
 	for (;;)
