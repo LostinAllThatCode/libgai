@@ -1,0 +1,12 @@
+<map id="gaixw_context" name="gaixw_context">
+<area shape="rect" id="node2" href="$gai__xwindow_8h.html#structgaixw__info" title="gaixw_info" alt="" coords="73,173,147,197"/>
+<area shape="rect" id="node3" href="$gai__xwindow_8h.html#uniongaixw__platform" title="gaixw_platform" alt="" coords="171,173,267,197"/>
+<area shape="rect" id="node4" href="$gai__xwindow_8h.html#structgaixw__platform__linux" title="gaixw_platform_linux" alt="" coords="5,89,129,113"/>
+<area shape="rect" id="node5" href="$gai__xwindow_8h.html#structgaixw__platform__win32" title="gaixw_platform_win32" alt="" coords="154,89,285,113"/>
+<area shape="rect" id="node6" href="$gai__xwindow_8h.html#structgaixw__renderer" title="gaixw_renderer" alt="" coords="291,173,390,197"/>
+<area shape="rect" id="node7" href="$gai__xwindow_8h.html#uniongaixw__interface" title="gaixw_interface" alt="" coords="309,89,407,113"/>
+<area shape="rect" id="node8" href="$gai__xwindow_8h.html#structgaixw__opengl" title="gaixw_opengl" alt="" coords="258,5,346,29"/>
+<area shape="rect" id="node9" href="$gai__xwindow_8h.html#structgaixw__directx" title="gaixw_directx" alt="" coords="371,5,460,29"/>
+<area shape="rect" id="node10" href="$gai__xwindow_8h.html#structgaixw__frametime" title="gaixw_frametime" alt="" coords="414,173,518,197"/>
+<area shape="rect" id="node11" href="$gai__xwindow_8h.html#structgaixw__input" title="gaixw_input" alt="" coords="542,173,622,197"/>
+</map>

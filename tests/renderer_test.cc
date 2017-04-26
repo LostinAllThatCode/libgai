@@ -8,6 +8,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+
 #define GAIXW_OPENGL
 #define GAIXW_IMPLEMENTATION
 #include "gai_xwindow.h"
@@ -15,7 +16,6 @@
 #define GAIRB_IMPLEMENTATION
 #include "gai_renderbuffer.h"
 
-#define GAIRGL_ASSERT
 #define GAIRGL_IMPLEMENTATION
 #include "gai_renderer_opengl.h"
 
@@ -82,8 +82,8 @@ int main(int argc, char **argv)
 	platform.load_bitmap_fn = win32_LoadBitmapFromFile;
 
 	gaixw_context window;
-	if (!gaiXWindow(&window, "yolo")) return -1;
-	gaiXWindowSetVSYNC(&window, 1);
+	if (!gaixw_Init(&window, "yolo")) return -1;
+	gaixw_SetVerticalSync(&window, 1);
 
 	gairgl opengl = {};
 	gairgl_Initialize(&opengl);
@@ -109,22 +109,22 @@ int main(int argc, char **argv)
 
 	for (;;)
 	{
-		gaiXWindowUpdate(&window);
+		gaixw_Update(&window);
 		if (!window.is_running) break;
 
 		gairb_renderbuffer render_commands = gairb_RenderBuffer(V4(.0f, .0f, .0f, 1.0f), pbuffersize, pbuffer, vertex_count_max, vbuffer, quad_textures, &assets[0]);
 
-		if(gaiKeyPressed(&window, 'K')) gaihr_Untrack(&texture);
+		if(gaixw_KeyPressed(&window, 'K')) gaihr_Untrack(&texture);
 
 		gaihr_WaitForEvent(&reloadable_file);
 		if (UpdateAndRender) UpdateAndRender(&window, &render_commands, &platform);
 
 		gairgl_Render(&opengl, &render_commands, V2i(window.info.width, window.info.height));
-		gaiXWindowSwapBuffers(&window);
+		gaixw_SwapBuffers(&window);
 	}
 
 	gairgl_Destroy(&opengl);
-	gaixw_Destroy(&window);
+	gaixw_Deinit(&window);
 
 	if (reloadable_dll) FreeLibrary(reloadable_dll);
 

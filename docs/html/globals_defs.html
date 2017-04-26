@@ -9,6 +9,13 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript">
+  $(document).ready(initResizable);
+</script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -43,6 +50,20 @@ $(function() {
 </script>
 <div id="main-nav"></div>
 </div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){initNavTree('globals_defs.html','');});
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -62,6 +83,12 @@ $(function() {
 <li>GAIHR_API
 : <a class="el" href="gai__hotreload_8h.html#a32983003a4e816a8350f01cb22d1b01b">gai_hotreload.h</a>
 </li>
+<li>GAIHR_ASSERT
+: <a class="el" href="gai__hotreload_8h.html#a11e965cbb3e2af8ed1888b0c6b2777da">gai_hotreload.h</a>
+</li>
+<li>GAIHR_CALLBACK
+: <a class="el" href="gai__hotreload_8h.html#a6f8c5bfe220445bbbb8e1c9ef176838a">gai_hotreload.h</a>
+</li>
 <li>GAIHR_FILE_LIMIT
 : <a class="el" href="gai__hotreload_8h.html#ac26b515249679c1f9036430164867ba0">gai_hotreload.h</a>
 </li>
@@ -71,13 +98,28 @@ $(function() {
 <li>GAIHR_WAIT_INFINITE
 : <a class="el" href="gai__hotreload_8h.html#a36b03891b740d035afdd1f32e15c91ad">gai_hotreload.h</a>
 </li>
+<li>GAIXW_API
+: <a class="el" href="gai__xwindow_8h.html#ab41ae714bb16012af56329f9032e6d16">gai_xwindow.h</a>
+</li>
+<li>GAIXW_ASSERT
+: <a class="el" href="gai__xwindow_8h.html#ab2663b30ef0369cf059d79977b93807f">gai_xwindow.h</a>
+</li>
+<li>GAIXW_CLASSNAME
+: <a class="el" href="gai__xwindow_8h.html#aaa1d25d5e0f693faca8ccb08cc744fb6">gai_xwindow.h</a>
+</li>
+<li>GAIXW_PRINT
+: <a class="el" href="gai__xwindow_8h.html#ad52cbaf070ae26059c515d4613a401f4">gai_xwindow.h</a>
+</li>
 </ul>
 </div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated on Tue Apr 25 2017 16:59:22 for libgai by &#160;<a href="http://www.doxygen.org/index.html">
-<img class="footer" src="doxygen.png" alt="doxygen"/>
-</a> 1.8.13
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="footer">Generated on Wed Apr 26 2017 23:36:07 for libgai by
+    <a href="http://www.doxygen.org/index.html">
+    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
+  </ul>
+</div>
 </body>
 </html>

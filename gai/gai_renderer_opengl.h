@@ -108,7 +108,7 @@ gairgl_LoadTexture(gairgl *opengl, gairb_renderbuffer *commands, int quad_id)
 	{
 		if (!b->memory)
 		{
-			GAIRGL_ASSERT(!"invalid bitmap");
+			GAIRGL_ASSERT(commands->default_texture->handle);
 			return U32FromHandle(commands->default_texture->handle);
 		}
 		u32 *handle = (u32*) &b->handle;

@@ -1,0 +1,1456 @@
+\hypertarget{gai__xwindow_8h}{}\section{gai\+\_\+xwindow.\+h File Reference}
+\label{gai__xwindow_8h}\index{gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}}
+
+
+Requests a window for all currently supported platforms.  
+
+
+{\ttfamily \#include $<$assert.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include $<$windows.\+h$>$}\newline
+{\ttfamily \#include $<$X11/\+Xlib.\+h$>$}\newline
+Include dependency graph for gai\+\_\+xwindow.\+h\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=334pt]{gai__xwindow_8h__incl}
+\end{center}
+\end{figure}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{gai__xwindow_8h_structgaixw__frametime}{gaixw\+\_\+frametime}
+\item 
+struct \hyperlink{gai__xwindow_8h_structgaixw__info}{gaixw\+\_\+info}
+\item 
+struct \hyperlink{gai__xwindow_8h_structgaixw__input}{gaixw\+\_\+input}
+\item 
+struct \hyperlink{gai__xwindow_8h_structgaixw__opengl}{gaixw\+\_\+opengl}
+\item 
+struct \hyperlink{gai__xwindow_8h_structgaixw__directx}{gaixw\+\_\+directx}
+\item 
+union \hyperlink{gai__xwindow_8h_uniongaixw__interface}{gaixw\+\_\+interface}
+\item 
+struct \hyperlink{gai__xwindow_8h_structgaixw__platform__win32}{gaixw\+\_\+platform\+\_\+win32}
+\item 
+struct \hyperlink{gai__xwindow_8h_structgaixw__platform__linux}{gaixw\+\_\+platform\+\_\+linux}
+\item 
+union \hyperlink{gai__xwindow_8h_uniongaixw__platform}{gaixw\+\_\+platform}
+\item 
+struct \hyperlink{gai__xwindow_8h_structgaixw__renderer}{gaixw\+\_\+renderer}
+\item 
+struct \hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}\label{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}} 
+\#define \hyperlink{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}{G\+A\+I\+X\+W\+\_\+\+A\+PI}~extern
+\begin{DoxyCompactList}\small\item\em Define {\bfseries G\+A\+I\+X\+W\+\_\+\+S\+T\+A\+T\+IC} if you want to make functions {\bfseries static} instead of {\bfseries extern} \end{DoxyCompactList}\item 
+\#define \hyperlink{gai__xwindow_8h_ab2663b30ef0369cf059d79977b93807f}{G\+A\+I\+X\+W\+\_\+\+A\+S\+S\+E\+RT}(cond)~assert(cond)
+\begin{DoxyCompactList}\small\item\em Define {\bfseries G\+A\+I\+X\+W\+\_\+\+A\+S\+S\+E\+RT} before including this file to {\bfseries disable} assertions. \end{DoxyCompactList}\item 
+\#define \hyperlink{gai__xwindow_8h_ad52cbaf070ae26059c515d4613a401f4}{G\+A\+I\+X\+W\+\_\+\+P\+R\+I\+NT}(fmt, ...)
+\begin{DoxyCompactList}\small\item\em Define this macro before including this file if you want to redirect the output. \end{DoxyCompactList}\item 
+\#define \hyperlink{gai__xwindow_8h_aaa1d25d5e0f693faca8ccb08cc744fb6}{G\+A\+I\+X\+W\+\_\+\+C\+L\+A\+S\+S\+N\+A\+ME}~\char`\"{}libgai\+\_\+xwindow\+\_\+framework\char`\"{}
+\end{DoxyCompactItemize}
+\subsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \hyperlink{gai__xwindow_8h_a4eae6e51f0425197a4c1010fcc7c8c9d}{gaixw\+\_\+renderer\+\_\+enum} \{ \newline
+\hyperlink{gai__xwindow_8h_a4eae6e51f0425197a4c1010fcc7c8c9da25a9a692888d86fd6bf5f24e0c31a8e8}{gaixw\+Renderer\+Unknown}, 
+\hyperlink{gai__xwindow_8h_a4eae6e51f0425197a4c1010fcc7c8c9da2ecf0eac74bd3c8d842991bd7c0e15a0}{gaixw\+Renderer\+X11}, 
+\hyperlink{gai__xwindow_8h_a4eae6e51f0425197a4c1010fcc7c8c9dab382f06ccd349a4749bfcea4fd5f3080}{gaixw\+Renderer\+G\+DI}, 
+\hyperlink{gai__xwindow_8h_a4eae6e51f0425197a4c1010fcc7c8c9da1217be504c773ce47ba76be4ddf9489d}{gaixw\+Renderer\+D\+X10}, 
+\newline
+\hyperlink{gai__xwindow_8h_a4eae6e51f0425197a4c1010fcc7c8c9dab19a6d88f34235d7333fbc209d1f178a}{gaixw\+Renderer\+D\+X11}, 
+\hyperlink{gai__xwindow_8h_a4eae6e51f0425197a4c1010fcc7c8c9da8cd168a752459bca73bdea7b77eb421e}{gaixw\+Renderer\+D\+X12}, 
+\hyperlink{gai__xwindow_8h_a4eae6e51f0425197a4c1010fcc7c8c9daf43570fcfedb502e88eb5c69f0eeecc1}{gaixw\+Renderer\+Open\+GL}, 
+\hyperlink{gai__xwindow_8h_a4eae6e51f0425197a4c1010fcc7c8c9da4cd9efc9b0b4bcc5674423557a0214ab}{gaixw\+Renderer\+Vulcan}, 
+\newline
+{\bfseries gaixw\+Renderer\+Max}
+ \}\begin{DoxyCompactList}\small\item\em Renderer backend types. \end{DoxyCompactList}
+\item 
+enum \hyperlink{gai__xwindow_8h_a52d65318fd4fb0d358385d67f156d00c}{gaixw\+\_\+renderer\+\_\+flags} \{ \newline
+{\bfseries gaixw\+Flags\+None} = 0x00, 
+\hyperlink{gai__xwindow_8h_a52d65318fd4fb0d358385d67f156d00ca024bb28b1d09e6dabb43cca1db088cd1}{gaixw\+Flags\+Minimized} = 0x01, 
+\hyperlink{gai__xwindow_8h_a52d65318fd4fb0d358385d67f156d00ca4c1b948394dbf097f6007e01ded11242}{gaixw\+Flags\+Maximized} = 0x02, 
+\hyperlink{gai__xwindow_8h_a52d65318fd4fb0d358385d67f156d00ca1b5d286481622b104b8dd24bf3114cd2}{gaixw\+Flags\+Fullscreen} = 0x10, 
+\newline
+\hyperlink{gai__xwindow_8h_a52d65318fd4fb0d358385d67f156d00ca39f9d8a5253caf225480a80d1b52e4c2}{gaixw\+Flags\+V\+S\+Y\+NC} = 0x20
+ \}\begin{DoxyCompactList}\small\item\em Renderer flags. \end{DoxyCompactList}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}{G\+A\+I\+X\+W\+\_\+\+A\+PI} int \hyperlink{gai__xwindow_8h_adec8bb998b6861c4d239b25634c8eb55}{gaixw\+\_\+\+Init} (\hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} $\ast$window, const char $\ast$title=\char`\"{}default window title\char`\"{}, int width=-\/1, int height=-\/1, int x=-\/1, int y=-\/1, const char $\ast$classname=\hyperlink{gai__xwindow_8h_aaa1d25d5e0f693faca8ccb08cc744fb6}{G\+A\+I\+X\+W\+\_\+\+C\+L\+A\+S\+S\+N\+A\+ME}, unsigned int visible=1)
+\begin{DoxyCompactList}\small\item\em Initializes a window for the current platform. \end{DoxyCompactList}\item 
+\hyperlink{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}{G\+A\+I\+X\+W\+\_\+\+A\+PI} void \hyperlink{gai__xwindow_8h_a986353262ac6038b69005bec8111ac56}{gaixw\+\_\+\+Deinit} (\hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} $\ast$window)
+\begin{DoxyCompactList}\small\item\em Deinitializes the window. \end{DoxyCompactList}\item 
+\hyperlink{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}{G\+A\+I\+X\+W\+\_\+\+A\+PI} int \hyperlink{gai__xwindow_8h_aee43c7fda31af1c6808f212e406cebb6}{gaixw\+\_\+\+Show} (\hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} $\ast$window)
+\begin{DoxyCompactList}\small\item\em Makes the window visible to the user. \end{DoxyCompactList}\item 
+\hyperlink{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}{G\+A\+I\+X\+W\+\_\+\+A\+PI} int \hyperlink{gai__xwindow_8h_a47de27dee38c387b49ac60e21b6b27af}{gaixw\+\_\+\+Hide} (\hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} $\ast$window)
+\begin{DoxyCompactList}\small\item\em Hides the window from the user. \end{DoxyCompactList}\item 
+\hyperlink{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}{G\+A\+I\+X\+W\+\_\+\+A\+PI} void \hyperlink{gai__xwindow_8h_ae9f128ce1a9862a2f1619160ca080c66}{gaixw\+\_\+\+Set\+Title} (\hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} $\ast$window, const char $\ast$title)
+\begin{DoxyCompactList}\small\item\em Sets the window\textquotesingle{}s title. \end{DoxyCompactList}\item 
+\hyperlink{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}{G\+A\+I\+X\+W\+\_\+\+A\+PI} float \hyperlink{gai__xwindow_8h_a2f1b687718407be2be1eaf2646405c2c}{gaixw\+\_\+\+Update} (\hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} $\ast$window)
+\begin{DoxyCompactList}\small\item\em Updates all internal variables and states. \end{DoxyCompactList}\item 
+\hyperlink{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}{G\+A\+I\+X\+W\+\_\+\+A\+PI} void \hyperlink{gai__xwindow_8h_ac612fdfe7c233bf8ecaf7112318d5e1f}{gaixw\+\_\+\+Swap\+Buffers} (\hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} $\ast$window)
+\begin{DoxyCompactList}\small\item\em Swaps the window\textquotesingle{}s backbuffers. \end{DoxyCompactList}\item 
+\hyperlink{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}{G\+A\+I\+X\+W\+\_\+\+A\+PI} unsigned int \hyperlink{gai__xwindow_8h_a11552275ad444bc3be3b6a5a5b214c7d}{gaixw\+\_\+\+Get\+Attribute} (\hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} $\ast$window, \hyperlink{gai__xwindow_8h_a52d65318fd4fb0d358385d67f156d00c}{gaixw\+\_\+renderer\+\_\+flags} attrib)
+\begin{DoxyCompactList}\small\item\em Current attribute state of the window. \end{DoxyCompactList}\item 
+\hyperlink{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}{G\+A\+I\+X\+W\+\_\+\+A\+PI} int \hyperlink{gai__xwindow_8h_a51eafe897c3737f146cda3c50884b9dd}{gaixw\+\_\+\+Set\+Vertical\+Sync} (\hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} $\ast$window, unsigned int state)
+\begin{DoxyCompactList}\small\item\em Sets vertical sync state. \end{DoxyCompactList}\item 
+\hyperlink{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}{G\+A\+I\+X\+W\+\_\+\+A\+PI} int \hyperlink{gai__xwindow_8h_a8bae66c5869f3d948b9f4f520fcba566}{gaixw\+\_\+\+Is\+Vertical\+Sync\+Enabled} (\hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} $\ast$window)
+\begin{DoxyCompactList}\small\item\em Gets the vertical sync state. \end{DoxyCompactList}\item 
+\hyperlink{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}{G\+A\+I\+X\+W\+\_\+\+A\+PI} void \hyperlink{gai__xwindow_8h_ab75a5f7466b10622fab1a1cdb443b447}{gaixw\+\_\+\+Toggle\+Fullscreen} (\hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} $\ast$window)
+\begin{DoxyCompactList}\small\item\em Toggles between fullscreen mode and normal mode. \end{DoxyCompactList}\item 
+\hyperlink{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}{G\+A\+I\+X\+W\+\_\+\+A\+PI} int \hyperlink{gai__xwindow_8h_ada33bbd9a3e4d2101a910a08ab4c3128}{gaixw\+\_\+\+Is\+Fullscreen} (\hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} $\ast$window)
+\begin{DoxyCompactList}\small\item\em Current state of fullscreen. \end{DoxyCompactList}\item 
+\hyperlink{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}{G\+A\+I\+X\+W\+\_\+\+A\+PI} unsigned char \hyperlink{gai__xwindow_8h_ad65b54072e30a2c5b74602dc5d515b9f}{gaixw\+\_\+\+Mouse\+Down} (\hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} $\ast$window, int key)
+\begin{DoxyCompactList}\small\item\em Current state of the specified mouse button. \end{DoxyCompactList}\item 
+\hyperlink{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}{G\+A\+I\+X\+W\+\_\+\+A\+PI} unsigned char \hyperlink{gai__xwindow_8h_ae9a5c5ef3664982fae3279306c3f8601}{gaixw\+\_\+\+Mouse\+Pressed} (\hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} $\ast$window, int key)
+\begin{DoxyCompactList}\small\item\em Current pressed state of the specified mouse button. \end{DoxyCompactList}\item 
+\hyperlink{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}{G\+A\+I\+X\+W\+\_\+\+A\+PI} unsigned char \hyperlink{gai__xwindow_8h_a4cea32d6e78f33e17c9fb4d236951f4a}{gaixw\+\_\+\+Mouse\+Released} (\hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} $\ast$window, int key)
+\begin{DoxyCompactList}\small\item\em Current released state of the specified mouse button. \end{DoxyCompactList}\item 
+\hyperlink{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}{G\+A\+I\+X\+W\+\_\+\+A\+PI} unsigned char \hyperlink{gai__xwindow_8h_ae980b54b9a83cb2babcfd1492600fc95}{gaixw\+\_\+\+Key\+Down} (\hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} $\ast$window, int key)
+\begin{DoxyCompactList}\small\item\em Current state of the specified keyboard key. \end{DoxyCompactList}\item 
+\hyperlink{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}{G\+A\+I\+X\+W\+\_\+\+A\+PI} unsigned char \hyperlink{gai__xwindow_8h_a2166c011f837a9aa530d22ba2f1c5f93}{gaixw\+\_\+\+Key\+Pressed} (\hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} $\ast$window, int key)
+\begin{DoxyCompactList}\small\item\em Current pressed state of the specified keyboard key. \end{DoxyCompactList}\item 
+\hyperlink{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}{G\+A\+I\+X\+W\+\_\+\+A\+PI} unsigned char \hyperlink{gai__xwindow_8h_ab9d00faab4d5c7f758aa998b82ffe3fd}{gaixw\+\_\+\+Key\+Released} (\hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} $\ast$window, int key)
+\begin{DoxyCompactList}\small\item\em Current released state of the specified keyboard key. \end{DoxyCompactList}\item 
+\hyperlink{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}{G\+A\+I\+X\+W\+\_\+\+A\+PI} void $\ast$ \hyperlink{gai__xwindow_8h_afb8573bf3e47bef617b0c575cabd56b1}{gaixw\+\_\+\+Get\+Proc} (\hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} $\ast$window, const char $\ast$name)
+\begin{DoxyCompactList}\small\item\em Gets the procedure\textquotesingle{}s memory address for the specified function name. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Requests a window for all currently supported platforms. 
+
+\begin{DoxyAttention}{Attention}
+{\bfseries O\+N\+LY W\+I\+N\+D\+O\+WS S\+U\+P\+P\+O\+RT F\+OR N\+OW} ~\newline
+\tabulinesep=1mm
+\begin{longtabu} spread 0pt [c]{*{3}{|X[-1]}|}
+\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Renderer }&\textbf{ Linker Dependencies (win32) }&\textbf{ Linker Dependencies (linux)  }\\\cline{1-3}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Renderer }&\textbf{ Linker Dependencies (win32) }&\textbf{ Linker Dependencies (linux)  }\\\cline{1-3}
+\endhead
+Default &user32.\+lib &Not implemented yet! \\\cline{1-3}
+Open\+GL &user32.\+lib winmm.\+lib gdi32.\+lib opengl32.\+lib &Not implemented yet! \\\cline{1-3}
+\end{longtabu}
+
+\end{DoxyAttention}
+\begin{DoxyNote}{Note}
+When using the msvc compiler, \#pragma comment( lib, \char`\"{}xxx\char`\"{} ) commands will automatically link to these libs.~\newline
+Otherwise you have to tell the linker which libs it has to link to.
+\end{DoxyNote}
+\hypertarget{gai__xwindow_8h_gaixw_intro}{}\subsection{Introduction}\label{gai__xwindow_8h_gaixw_intro}
+To use this api you need to specifiy some macro which define the window initialization process.
+
+Do this\+: 
+\begin{DoxyCode}
+\textcolor{preprocessor}{#define GAIXW\_IMPLEMENTATION}
+\end{DoxyCode}
+ before you include this file in {\itshape one} C or C++ file to create the implementation.\hypertarget{gai__xwindow_8h_gaixw_gdi_win32_example}{}\subsubsection{G\+D\+I Example\+:}\label{gai__xwindow_8h_gaixw_gdi_win32_example}
+
+\begin{DoxyCodeInclude}
+\textcolor{preprocessor}{#define GAIXW\_IMPLEMENTATION}
+\textcolor{preprocessor}{#include <\hyperlink{gai__xwindow_8h}{gai\_xwindow.h}>}
+\textcolor{preprocessor}{#include <stdio.h>}
+
+LRESULT CALLBACK
+MyWindowMessageHandler(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+\{
+    \hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\_context} *window = (\hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\_context} *) GetWindowLongPtr(hWnd, 
+      GWLP\_USERDATA);
+    \textcolor{keywordflow}{if} (window)
+    \{
+        \textcolor{keywordflow}{switch} (uMsg)
+        \{
+            \textcolor{keywordflow}{case} WM\_PAINT:
+            \{
+                RECT r = \{ 0, 0, 120, 50 \};
+                DrawText(window->\hyperlink{gai__xwindow_8h_aa297ac21e147f4cde74e021b62b3e673}{platform}.win32.hdc, \textcolor{stringliteral}{"Hallo"}, 5, &r, DT\_INTERNAL | DT\_NOCLIP);
+            \} \textcolor{keywordflow}{break};
+        \}
+    \}
+    \textcolor{keywordflow}{return} gaixw\_WindowProc(hWnd, uMsg, wParam, lParam);
+\}
+
+\textcolor{keywordtype}{int} main(\textcolor{keywordtype}{int} argc, \textcolor{keywordtype}{char}** argv)
+\{
+    \textcolor{keywordtype}{int} retval = 0;
+    \hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\_context} window = \{\};
+    retval = \hyperlink{gai__xwindow_8h_adec8bb998b6861c4d239b25634c8eb55}{gaixw\_Init}(&window, \textcolor{stringliteral}{"gdi example"}, 640, 480);
+    \textcolor{keywordflow}{if}(retval != 1) \textcolor{keywordflow}{return} retval;
+    printf(\textcolor{stringliteral}{"Renderer: %u\(\backslash\)n"}, window.\hyperlink{gai__xwindow_8h_a5984d461e227d9028db4d9327bc9c2c4}{renderer}.\hyperlink{gai__xwindow_8h_a287bd5241e45837849116cf46c5591ba}{type});
+    SetWindowLongPtr(window.\hyperlink{gai__xwindow_8h_aa297ac21e147f4cde74e021b62b3e673}{platform}.win32.hwnd, GWLP\_WNDPROC, (LONG\_PTR) MyWindowMessageHandler);
+    \hyperlink{gai__xwindow_8h_a2f1b687718407be2be1eaf2646405c2c}{gaixw\_Update}(&window);
+    \hyperlink{gai__xwindow_8h_a986353262ac6038b69005bec8111ac56}{gaixw\_Deinit}(&window);
+    \textcolor{keywordflow}{return} 0;
+\}
+\end{DoxyCodeInclude}
+ \hypertarget{gai__xwindow_8h_gaixw_opengl_win32_example}{}\subsubsection{Open\+G\+L Example\+:}\label{gai__xwindow_8h_gaixw_opengl_win32_example}
+
+\begin{DoxyCodeInclude}
+\textcolor{preprocessor}{#define GAIXW\_OPENGL}
+\textcolor{preprocessor}{#define GAIXW\_IMPLEMENTATION}
+\textcolor{preprocessor}{#include <\hyperlink{gai__xwindow_8h}{gai\_xwindow.h}>}
+\textcolor{preprocessor}{#include <stdio.h>}
+
+\textcolor{keywordtype}{int} main(\textcolor{keywordtype}{int} argc, \textcolor{keywordtype}{char}** argv)
+\{
+    \textcolor{keywordtype}{int} retval = 0;
+    \hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\_context} window = \{\};
+    retval = \hyperlink{gai__xwindow_8h_adec8bb998b6861c4d239b25634c8eb55}{gaixw\_Init}(&window, \textcolor{stringliteral}{"opengl example"}, 640, 480);
+    \textcolor{keywordflow}{if} (retval != 1) \textcolor{keywordflow}{return} retval;
+
+    printf(\textcolor{stringliteral}{"Vendor: %s, Version: %s, Renderer: %s, Shading Language Version: %s, OpenGL Context: %p\(\backslash\)n"},
+           window.\hyperlink{gai__xwindow_8h_a5984d461e227d9028db4d9327bc9c2c4}{renderer}.\hyperlink{gai__xwindow_8h_a1244801c1690f8e38a1af7a5a599609f}{interface}.\hyperlink{gai__xwindow_8h_a0d31586255263aeceaecba8960a37c3b}{opengl}.vendor, window.
+      \hyperlink{gai__xwindow_8h_a5984d461e227d9028db4d9327bc9c2c4}{renderer}.\hyperlink{gai__xwindow_8h_a1244801c1690f8e38a1af7a5a599609f}{interface}.\hyperlink{gai__xwindow_8h_a0d31586255263aeceaecba8960a37c3b}{opengl}.version, window.\hyperlink{gai__xwindow_8h_a5984d461e227d9028db4d9327bc9c2c4}{renderer}.
+      \hyperlink{gai__xwindow_8h_a1244801c1690f8e38a1af7a5a599609f}{interface}.\hyperlink{gai__xwindow_8h_a0d31586255263aeceaecba8960a37c3b}{opengl}.renderer,
+           window.\hyperlink{gai__xwindow_8h_a5984d461e227d9028db4d9327bc9c2c4}{renderer}.\hyperlink{gai__xwindow_8h_a1244801c1690f8e38a1af7a5a599609f}{interface}.\hyperlink{gai__xwindow_8h_a0d31586255263aeceaecba8960a37c3b}{opengl}.shading\_language\_version, window.
+      \hyperlink{gai__xwindow_8h_a5984d461e227d9028db4d9327bc9c2c4}{renderer}.\hyperlink{gai__xwindow_8h_a1244801c1690f8e38a1af7a5a599609f}{interface}.\hyperlink{gai__xwindow_8h_a0d31586255263aeceaecba8960a37c3b}{opengl}.context);
+
+    \hyperlink{gai__xwindow_8h_a51eafe897c3737f146cda3c50884b9dd}{gaixw\_SetVerticalSync}(&window, 1);
+    glClearColor(0.f, 0.f, 0.f, 1.f);
+    \textcolor{keywordflow}{for} (;;)
+    \{
+        \hyperlink{gai__xwindow_8h_a2f1b687718407be2be1eaf2646405c2c}{gaixw\_Update}(&window);
+        \textcolor{keywordflow}{if} (!window.\hyperlink{gai__xwindow_8h_a7165f8e7f0c548dd3a11c8648fb8071a}{is\_running}) \textcolor{keywordflow}{break};
+        glClear(GL\_COLOR\_BUFFER\_BIT);
+        glBegin(GL\_QUADS);
+        \{
+            glColor4f(1.f, 0.f, 0.0f, 1.f);
+            glVertex2f(-.5f, -.5f);
+            glColor4f(0.f, 1.f, 0.0f, 1.f);
+            glVertex2f(-.5f, .5f);
+            glColor4f(1.f, 1.f, 1.0f, 1.f);
+            glVertex2f(.5f, .5f);
+            glColor4f(0.f, 0.f, 1.f, 1.f);
+            glVertex2f(.5f, -.5f);
+        \}
+        glEnd();
+        glViewport(0, 0, window.\hyperlink{gai__xwindow_8h_a488c7d5344206e2f55cd62ffc258e77b}{info}.\hyperlink{gai__xwindow_8h_acf87d56219f894f3bf3d3968c7a54447}{width}, window.\hyperlink{gai__xwindow_8h_a488c7d5344206e2f55cd62ffc258e77b}{info}.\hyperlink{gai__xwindow_8h_a0e0d7732967837269e7898794beba31b}{height});
+        \hyperlink{gai__xwindow_8h_ac612fdfe7c233bf8ecaf7112318d5e1f}{gaixw\_SwapBuffers}(&window);
+    \}
+    \hyperlink{gai__xwindow_8h_a986353262ac6038b69005bec8111ac56}{gaixw\_Deinit}(&window);
+    \textcolor{keywordflow}{return} 0;
+\}
+\end{DoxyCodeInclude}
+ If you want to get a modern opengl context you have to specify these macros as well 
+\begin{DoxyCode}
+\textcolor{preprocessor}{#define GAIXW\_OPENGL}
+\textcolor{preprocessor}{#define GAIXW\_OPENGL\_MAJOR 3}
+\textcolor{preprocessor}{#define GAIXW\_OPENGL\_MINOR 2}
+\textcolor{preprocessor}{#define GAIXW\_IMPLEMENTATION}
+\textcolor{preprocessor}{#include <gai\_xwindow.h>}
+\end{DoxyCode}
+ \begin{DoxyAuthor}{Author}
+Andreas Gaida 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+25.\+04.\+2017 
+\end{DoxyDate}
+\begin{DoxySeeAlso}{See also}
+\href{https://github.com/LostinAllThatCode/libgai}{\tt https\+://github.\+com/\+Lostin\+All\+That\+Code/libgai} 
+\end{DoxySeeAlso}
+
+
+\subsection{Class Documentation}
+\index{gaixw\+\_\+frametime@{gaixw\+\_\+frametime}}\label{structgaixw__frametime}
+\Hypertarget{gai__xwindow_8h_structgaixw__frametime}
+\subsubsection{struct gaixw\+\_\+frametime}
+\begin{DoxyFields}{Class Members}
+\mbox{\Hypertarget{gai__xwindow_8h_a0dc61b98eecd389b2fb221f53bf298e4}\label{gai__xwindow_8h_a0dc61b98eecd389b2fb221f53bf298e4}} 
+float&
+micros&
+Time since last frame in microseconds. \\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_a47e51361ad32ffc6547c218bf48d84a8}\label{gai__xwindow_8h_a47e51361ad32ffc6547c218bf48d84a8}} 
+float&
+millis&
+Time since last frame in milliseconds. \\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_a5f17165993624a474ce93aa99c1d1bd1}\label{gai__xwindow_8h_a5f17165993624a474ce93aa99c1d1bd1}} 
+float&
+seconds&
+Time since last frame in seconds. \\
+\hline
+
+\end{DoxyFields}
+\index{gaixw\+\_\+info@{gaixw\+\_\+info}}\label{structgaixw__info}
+\Hypertarget{gai__xwindow_8h_structgaixw__info}
+\subsubsection{struct gaixw\+\_\+info}
+\begin{DoxyFields}{Class Members}
+\mbox{\Hypertarget{gai__xwindow_8h_a204691cb9003fd5b23a30af304442f69}\label{gai__xwindow_8h_a204691cb9003fd5b23a30af304442f69}} 
+int&
+fps&
+Current frames per seconds. \begin{DoxyNote}{Note}
+Does not work for the default window 
+\end{DoxyNote}
+\\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_a0e0d7732967837269e7898794beba31b}\label{gai__xwindow_8h_a0e0d7732967837269e7898794beba31b}} 
+int&
+height&
+Current height of the window \\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_a7e93633a635a19ca5b6e4d8f8ad7ee52}\label{gai__xwindow_8h_a7e93633a635a19ca5b6e4d8f8ad7ee52}} 
+const char $\ast$&
+title&
+A pointer to the window title string \\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_acf87d56219f894f3bf3d3968c7a54447}\label{gai__xwindow_8h_acf87d56219f894f3bf3d3968c7a54447}} 
+int&
+width&
+Current width of the window \\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_a20916dae943403d645d5033188d9fc18}\label{gai__xwindow_8h_a20916dae943403d645d5033188d9fc18}} 
+int&
+x&
+Current x postion of the window \\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_a5242bfd8074f6100cd80a585c3e29fb0}\label{gai__xwindow_8h_a5242bfd8074f6100cd80a585c3e29fb0}} 
+int&
+y&
+Current y postion of the window \\
+\hline
+
+\end{DoxyFields}
+\index{gaixw\+\_\+input@{gaixw\+\_\+input}}\label{structgaixw__input}
+\Hypertarget{gai__xwindow_8h_structgaixw__input}
+\subsubsection{struct gaixw\+\_\+input}
+\begin{DoxyFields}{Class Members}
+\mbox{\Hypertarget{gai__xwindow_8h_a3e39744e481ed17148ff4d5004aa1f36}\label{gai__xwindow_8h_a3e39744e481ed17148ff4d5004aa1f36}} 
+int&
+dwheel&
+Current {\bfseries delta} {\bfseries wheel} position of the mouse pointer (since last frame) \\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_a676ed5ef08464952452a00774ac306fc}\label{gai__xwindow_8h_a676ed5ef08464952452a00774ac306fc}} 
+int&
+dx&
+Current {\bfseries delta} {\bfseries x} position of the mouse pointer (since last frame) \\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_a6635cb3b3ef5f868a620069f20e368b6}\label{gai__xwindow_8h_a6635cb3b3ef5f868a620069f20e368b6}} 
+int&
+dy&
+Current {\bfseries delta} {\bfseries y} position of the mouse pointer (since last frame) \\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_ab0a6fb70cf772d62d05bce47884256cb}\label{gai__xwindow_8h_ab0a6fb70cf772d62d05bce47884256cb}} 
+unsigned char&
+keys\mbox{[}256\mbox{]}&
+Current state of all keys \\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_aeefc7998758b3f5783de412a70e9e0ca}\label{gai__xwindow_8h_aeefc7998758b3f5783de412a70e9e0ca}} 
+unsigned char&
+keys\_history\mbox{[}256\mbox{]}&
+Last state of all keys \\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_a14006c83a4700a575b76d90e2693d259}\label{gai__xwindow_8h_a14006c83a4700a575b76d90e2693d259}} 
+int&
+mod\_alt&
+Current state of the {\bfseries A\+LT} modifier key \\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_a3c44cc64408bb151f4046466c058481d}\label{gai__xwindow_8h_a3c44cc64408bb151f4046466c058481d}} 
+int&
+mod\_ctrl&
+Current state of the {\bfseries C\+T\+RL} modifier key \\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_a072cf4077b4a97d359c603410ef97ec8}\label{gai__xwindow_8h_a072cf4077b4a97d359c603410ef97ec8}} 
+int&
+mod\_shift&
+Current state of the {\bfseries S\+H\+I\+FT} modifier key \\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_a73c877dd3212ebf00859ecbf940fef3c}\label{gai__xwindow_8h_a73c877dd3212ebf00859ecbf940fef3c}} 
+unsigned char&
+mouse\mbox{[}3\mbox{]}&
+Current state of all mouse keys \\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_a9df96117629476b37b2666b4b60650f8}\label{gai__xwindow_8h_a9df96117629476b37b2666b4b60650f8}} 
+unsigned char&
+mouse\_history\mbox{[}3\mbox{]}&
+Last state of all mouse keys \\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_ae6229830f34a6c71c9c5ffad8a199f77}\label{gai__xwindow_8h_ae6229830f34a6c71c9c5ffad8a199f77}} 
+int&
+wheel&
+Current {\bfseries wheel} position of the mouse pointer \\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_adf849b2f92f76151cfad6633fde93279}\label{gai__xwindow_8h_adf849b2f92f76151cfad6633fde93279}} 
+int&
+x&
+Current {\bfseries x} position of the mouse pointer \\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_a8b654effdd08d54fc8664aa2b89294ff}\label{gai__xwindow_8h_a8b654effdd08d54fc8664aa2b89294ff}} 
+int&
+y&
+Current {\bfseries y} position of the mouse pointer \\
+\hline
+
+\end{DoxyFields}
+\index{gaixw\+\_\+opengl@{gaixw\+\_\+opengl}}\label{structgaixw__opengl}
+\Hypertarget{gai__xwindow_8h_structgaixw__opengl}
+\subsubsection{struct gaixw\+\_\+opengl}
+\begin{DoxyFields}{Class Members}
+\mbox{\Hypertarget{gai__xwindow_8h_a9f19f8fe971b3d90e2e944dce056c945}\label{gai__xwindow_8h_a9f19f8fe971b3d90e2e944dce056c945}} 
+void $\ast$&
+context&
+\\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_ae22c470ac9de16c3b1408d4c131de571}\label{gai__xwindow_8h_ae22c470ac9de16c3b1408d4c131de571}} 
+char $\ast$&
+renderer&
+\\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_af8fb4fb0d5fe94ccf12e9c67363f31ab}\label{gai__xwindow_8h_af8fb4fb0d5fe94ccf12e9c67363f31ab}} 
+char $\ast$&
+shading\_language\_version&
+\\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_a1337e4962249f2c78574f61542eaf579}\label{gai__xwindow_8h_a1337e4962249f2c78574f61542eaf579}} 
+char $\ast$&
+vendor&
+\\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_a67e079ce2bfee07840ac0098c9e38fc3}\label{gai__xwindow_8h_a67e079ce2bfee07840ac0098c9e38fc3}} 
+char $\ast$&
+version&
+\\
+\hline
+
+\end{DoxyFields}
+\index{gaixw\+\_\+directx@{gaixw\+\_\+directx}}\label{structgaixw__directx}
+\Hypertarget{gai__xwindow_8h_structgaixw__directx}
+\subsubsection{struct gaixw\+\_\+directx}
+\begin{DoxyFields}{Class Members}
+\mbox{\Hypertarget{gai__xwindow_8h_a8f37b81fd881d02153c248ba51f5af22}\label{gai__xwindow_8h_a8f37b81fd881d02153c248ba51f5af22}} 
+void $\ast$&
+context&
+\\
+\hline
+
+\end{DoxyFields}
+\index{gaixw\+\_\+interface@{gaixw\+\_\+interface}}\label{uniongaixw__interface}
+\Hypertarget{gai__xwindow_8h_uniongaixw__interface}
+\subsubsection{union gaixw\+\_\+interface}
+
+
+Collaboration diagram for gaixw\+\_\+interface\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=232pt]{uniongaixw__interface__coll__graph}
+\end{center}
+\end{figure}
+\begin{DoxyFields}{Class Members}
+\mbox{\Hypertarget{gai__xwindow_8h_a639ebccdba9bbeae0d50385f08af00fa}\label{gai__xwindow_8h_a639ebccdba9bbeae0d50385f08af00fa}} 
+\hyperlink{gai__xwindow_8h_structgaixw__directx}{gaixw\_directx}&
+directx&
+\\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_a0d31586255263aeceaecba8960a37c3b}\label{gai__xwindow_8h_a0d31586255263aeceaecba8960a37c3b}} 
+\hyperlink{gai__xwindow_8h_structgaixw__opengl}{gaixw\_opengl}&
+opengl&
+Open\+GL renderer informations like vendor, version, renderer, shading language version \\
+\hline
+
+\end{DoxyFields}
+\index{gaixw\+\_\+platform\+\_\+win32@{gaixw\+\_\+platform\+\_\+win32}}\label{structgaixw__platform__win32}
+\Hypertarget{gai__xwindow_8h_structgaixw__platform__win32}
+\subsubsection{struct gaixw\+\_\+platform\+\_\+win32}
+\begin{DoxyFields}{Class Members}
+\mbox{\Hypertarget{gai__xwindow_8h_aa9da15d620888c2aa953804a90460666}\label{gai__xwindow_8h_aa9da15d620888c2aa953804a90460666}} 
+HDC&
+hdc&
+\\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_a7865b60b19703f32b629ea9c72284526}\label{gai__xwindow_8h_a7865b60b19703f32b629ea9c72284526}} 
+HWND&
+hwnd&
+\\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_a5af56cd499bebac30d7755a639670641}\label{gai__xwindow_8h_a5af56cd499bebac30d7755a639670641}} 
+HINSTANCE&
+instance&
+\\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_aa76dcd2345644ce0ea58b99954657736}\label{gai__xwindow_8h_aa76dcd2345644ce0ea58b99954657736}} 
+WINDOWPLACEMENT&
+position&
+\\
+\hline
+
+\end{DoxyFields}
+\index{gaixw\+\_\+platform\+\_\+linux@{gaixw\+\_\+platform\+\_\+linux}}\label{structgaixw__platform__linux}
+\Hypertarget{gai__xwindow_8h_structgaixw__platform__linux}
+\subsubsection{struct gaixw\+\_\+platform\+\_\+linux}
+\begin{DoxyFields}{Class Members}
+\mbox{\Hypertarget{gai__xwindow_8h_a6c2e4c461120cc843bf28c258b02c3d7}\label{gai__xwindow_8h_a6c2e4c461120cc843bf28c258b02c3d7}} 
+void $\ast$&
+display&
+\\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_a761c1cd2540e7a06bc59ca8eeb373495}\label{gai__xwindow_8h_a761c1cd2540e7a06bc59ca8eeb373495}} 
+void $\ast$&
+visual&
+\\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_af09643fe9af611052aef9d98865473ca}\label{gai__xwindow_8h_af09643fe9af611052aef9d98865473ca}} 
+void $\ast$&
+window&
+\\
+\hline
+
+\end{DoxyFields}
+\index{gaixw\+\_\+platform@{gaixw\+\_\+platform}}\label{uniongaixw__platform}
+\Hypertarget{gai__xwindow_8h_uniongaixw__platform}
+\subsubsection{union gaixw\+\_\+platform}
+
+
+Collaboration diagram for gaixw\+\_\+platform\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=290pt]{uniongaixw__platform__coll__graph}
+\end{center}
+\end{figure}
+\begin{DoxyFields}{Class Members}
+\mbox{\Hypertarget{gai__xwindow_8h_acd9f564fcf4c9f85b88b2a67d8e4dede}\label{gai__xwindow_8h_acd9f564fcf4c9f85b88b2a67d8e4dede}} 
+\hyperlink{gai__xwindow_8h_structgaixw__platform__linux}{gaixw\_platform\_linux}&
+linux&
+\\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_a65165dcf0ebd1548a76eb8794d12d443}\label{gai__xwindow_8h_a65165dcf0ebd1548a76eb8794d12d443}} 
+\hyperlink{gai__xwindow_8h_structgaixw__platform__win32}{gaixw\_platform\_win32}&
+win32&
+\\
+\hline
+
+\end{DoxyFields}
+\index{gaixw\+\_\+renderer@{gaixw\+\_\+renderer}}\label{structgaixw__renderer}
+\Hypertarget{gai__xwindow_8h_structgaixw__renderer}
+\subsubsection{struct gaixw\+\_\+renderer}
+
+
+Collaboration diagram for gaixw\+\_\+renderer\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=232pt]{structgaixw__renderer__coll__graph}
+\end{center}
+\end{figure}
+\begin{DoxyFields}{Class Members}
+\mbox{\Hypertarget{gai__xwindow_8h_a201bea7ae25902eaa736de8f10556e57}\label{gai__xwindow_8h_a201bea7ae25902eaa736de8f10556e57}} 
+int&
+attributes&
+Current state of the window. See \hyperlink{gai__xwindow_8h_a52d65318fd4fb0d358385d67f156d00c}{gaixw\+\_\+renderer\+\_\+flags} \\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_a1244801c1690f8e38a1af7a5a599609f}\label{gai__xwindow_8h_a1244801c1690f8e38a1af7a5a599609f}} 
+\hyperlink{gai__xwindow_8h_uniongaixw__interface}{gaixw\_interface}&
+interface&
+Renderer interface union for all supported renderer backends. See \hyperlink{gai__xwindow_8h_a4eae6e51f0425197a4c1010fcc7c8c9d}{gaixw\+\_\+renderer\+\_\+enum} \\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_a287bd5241e45837849116cf46c5591ba}\label{gai__xwindow_8h_a287bd5241e45837849116cf46c5591ba}} 
+\hyperlink{gai__xwindow_8h_a4eae6e51f0425197a4c1010fcc7c8c9d}{gaixw\_renderer\_enum}&
+type&
+Type of the renderer. See \hyperlink{gai__xwindow_8h_a4eae6e51f0425197a4c1010fcc7c8c9d}{gaixw\+\_\+renderer\+\_\+enum} \\
+\hline
+
+\end{DoxyFields}
+\index{gaixw\+\_\+context@{gaixw\+\_\+context}}\label{structgaixw__context}
+\Hypertarget{gai__xwindow_8h_structgaixw__context}
+\subsubsection{struct gaixw\+\_\+context}
+\begin{Desc}
+\item[Examples\+: ]\par
+\hyperlink{xwindow_0Cgdi_win32_0Cmain_8cpp-example}{xwindow\textbackslash{}gdi\+\_\+win32\textbackslash{}main.\+cpp}, and \hyperlink{xwindow_0Copengl_win32_0Cmain_8cpp-example}{xwindow\textbackslash{}opengl\+\_\+win32\textbackslash{}main.\+cpp}.\end{Desc}
+
+
+Collaboration diagram for gaixw\+\_\+context\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{structgaixw__context__coll__graph}
+\end{center}
+\end{figure}
+\begin{DoxyFields}{Class Members}
+\mbox{\Hypertarget{gai__xwindow_8h_a25b8e2dded81e4335dafb70764305219}\label{gai__xwindow_8h_a25b8e2dded81e4335dafb70764305219}} 
+\hyperlink{gai__xwindow_8h_structgaixw__frametime}{gaixw\_frametime}&
+dt&
+Time since last frame in seconds, milliseconds and microseconds \\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_a488c7d5344206e2f55cd62ffc258e77b}\label{gai__xwindow_8h_a488c7d5344206e2f55cd62ffc258e77b}} 
+\hyperlink{gai__xwindow_8h_structgaixw__info}{gaixw\_info}&
+info&
+Window information like title, width, height, x, y ... \\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_a4a9d2e14ebb24977fb5df84d361c851f}\label{gai__xwindow_8h_a4a9d2e14ebb24977fb5df84d361c851f}} 
+\hyperlink{gai__xwindow_8h_structgaixw__input}{gaixw\_input}&
+input&
+Input states for mouse and keyboard \\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_a7165f8e7f0c548dd3a11c8648fb8071a}\label{gai__xwindow_8h_a7165f8e7f0c548dd3a11c8648fb8071a}} 
+int&
+is\_running&
+Running state of the window. If the window gets closed this value will be 0. \\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_acb9eb436a1a802598abfbf6934c4d8d2}\label{gai__xwindow_8h_acb9eb436a1a802598abfbf6934c4d8d2}} 
+int&
+is\_visible&
+\\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_aa297ac21e147f4cde74e021b62b3e673}\label{gai__xwindow_8h_aa297ac21e147f4cde74e021b62b3e673}} 
+\hyperlink{gai__xwindow_8h_uniongaixw__platform}{gaixw\_platform}&
+platform&
+Platform layer union for all supported platforms \\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_a5984d461e227d9028db4d9327bc9c2c4}\label{gai__xwindow_8h_a5984d461e227d9028db4d9327bc9c2c4}} 
+\hyperlink{gai__xwindow_8h_structgaixw__renderer}{gaixw\_renderer}&
+renderer&
+Renderer struct with the current render interface \\
+\hline
+
+\end{DoxyFields}
+
+
+\subsection{Macro Definition Documentation}
+\mbox{\Hypertarget{gai__xwindow_8h_ab2663b30ef0369cf059d79977b93807f}\label{gai__xwindow_8h_ab2663b30ef0369cf059d79977b93807f}} 
+\index{gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}!G\+A\+I\+X\+W\+\_\+\+A\+S\+S\+E\+RT@{G\+A\+I\+X\+W\+\_\+\+A\+S\+S\+E\+RT}}
+\index{G\+A\+I\+X\+W\+\_\+\+A\+S\+S\+E\+RT@{G\+A\+I\+X\+W\+\_\+\+A\+S\+S\+E\+RT}!gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}}
+\subsubsection{\texorpdfstring{G\+A\+I\+X\+W\+\_\+\+A\+S\+S\+E\+RT}{GAIXW\_ASSERT}}
+{\footnotesize\ttfamily \#define G\+A\+I\+X\+W\+\_\+\+A\+S\+S\+E\+RT(\begin{DoxyParamCaption}\item[{}]{cond }\end{DoxyParamCaption})~assert(cond)}
+
+
+
+Define {\bfseries G\+A\+I\+X\+W\+\_\+\+A\+S\+S\+E\+RT} before including this file to {\bfseries disable} assertions. 
+
+\begin{DoxyNote}{Note}
+Uses assert() from the c-\/standard library by default $<$assert.\+h$>$ 
+\end{DoxyNote}
+
+\begin{DoxyParams}{Parameters}
+{\em cond} & Assertion condition \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{gai__xwindow_8h_aaa1d25d5e0f693faca8ccb08cc744fb6}\label{gai__xwindow_8h_aaa1d25d5e0f693faca8ccb08cc744fb6}} 
+\index{gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}!G\+A\+I\+X\+W\+\_\+\+C\+L\+A\+S\+S\+N\+A\+ME@{G\+A\+I\+X\+W\+\_\+\+C\+L\+A\+S\+S\+N\+A\+ME}}
+\index{G\+A\+I\+X\+W\+\_\+\+C\+L\+A\+S\+S\+N\+A\+ME@{G\+A\+I\+X\+W\+\_\+\+C\+L\+A\+S\+S\+N\+A\+ME}!gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}}
+\subsubsection{\texorpdfstring{G\+A\+I\+X\+W\+\_\+\+C\+L\+A\+S\+S\+N\+A\+ME}{GAIXW\_CLASSNAME}}
+{\footnotesize\ttfamily \#define G\+A\+I\+X\+W\+\_\+\+C\+L\+A\+S\+S\+N\+A\+ME~\char`\"{}libgai\+\_\+xwindow\+\_\+framework\char`\"{}}
+
+Default classname \mbox{\Hypertarget{gai__xwindow_8h_ad52cbaf070ae26059c515d4613a401f4}\label{gai__xwindow_8h_ad52cbaf070ae26059c515d4613a401f4}} 
+\index{gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}!G\+A\+I\+X\+W\+\_\+\+P\+R\+I\+NT@{G\+A\+I\+X\+W\+\_\+\+P\+R\+I\+NT}}
+\index{G\+A\+I\+X\+W\+\_\+\+P\+R\+I\+NT@{G\+A\+I\+X\+W\+\_\+\+P\+R\+I\+NT}!gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}}
+\subsubsection{\texorpdfstring{G\+A\+I\+X\+W\+\_\+\+P\+R\+I\+NT}{GAIXW\_PRINT}}
+{\footnotesize\ttfamily \#define G\+A\+I\+X\+W\+\_\+\+P\+R\+I\+NT(\begin{DoxyParamCaption}\item[{}]{fmt,  }\item[{}]{... }\end{DoxyParamCaption})}
+
+
+
+Define this macro before including this file if you want to redirect the output. 
+
+Default output is set to console. (printf)
+
+{\bfseries Example} (redirect output to Output\+Debug\+StringA on windows) 
+\begin{DoxyCode}
+\textcolor{keyword}{static} \textcolor{keywordtype}{char} GlobalDebugBuffer[4096];
+\textcolor{preprocessor}{#define GAIXW\_PRINT(fmt, ...) snprintf(GlobalDebugBuffer, 4095, fmt, \_\_VA\_ARGS\_\_);
+       OutputDebugStringA(GlobalDebugBuffer)}
+\textcolor{preprocessor}{#define GAIXW\_IMPLEMENTATION}
+\textcolor{preprocessor}{#include <gai\_xwindow.h>}
+\end{DoxyCode}
+ 
+\begin{DoxyParams}{Parameters}
+{\em fmt} & The format \\
+\hline
+{\em ...} & Dynamic parameters (\+\_\+\+\_\+\+V\+A\+\_\+\+A\+R\+G\+S\+\_\+\+\_\+) \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Enumeration Type Documentation}
+\mbox{\Hypertarget{gai__xwindow_8h_a4eae6e51f0425197a4c1010fcc7c8c9d}\label{gai__xwindow_8h_a4eae6e51f0425197a4c1010fcc7c8c9d}} 
+\index{gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}!gaixw\+\_\+renderer\+\_\+enum@{gaixw\+\_\+renderer\+\_\+enum}}
+\index{gaixw\+\_\+renderer\+\_\+enum@{gaixw\+\_\+renderer\+\_\+enum}!gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}}
+\subsubsection{\texorpdfstring{gaixw\+\_\+renderer\+\_\+enum}{gaixw\_renderer\_enum}}
+{\footnotesize\ttfamily enum \hyperlink{gai__xwindow_8h_a4eae6e51f0425197a4c1010fcc7c8c9d}{gaixw\+\_\+renderer\+\_\+enum}}
+
+
+
+Renderer backend types. 
+
+To specifiy which backend you want to use, you have to request them like shown below.
+
+Also see the checkout the example code section. \begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{gaixw\+Renderer\+Unknown@{gaixw\+Renderer\+Unknown}!gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}}\index{gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}!gaixw\+Renderer\+Unknown@{gaixw\+Renderer\+Unknown}}}\mbox{\Hypertarget{gai__xwindow_8h_a4eae6e51f0425197a4c1010fcc7c8c9da25a9a692888d86fd6bf5f24e0c31a8e8}\label{gai__xwindow_8h_a4eae6e51f0425197a4c1010fcc7c8c9da25a9a692888d86fd6bf5f24e0c31a8e8}} 
+gaixw\+Renderer\+Unknown&Unknown renderer type \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{gaixw\+Renderer\+X11@{gaixw\+Renderer\+X11}!gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}}\index{gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}!gaixw\+Renderer\+X11@{gaixw\+Renderer\+X11}}}\mbox{\Hypertarget{gai__xwindow_8h_a4eae6e51f0425197a4c1010fcc7c8c9da2ecf0eac74bd3c8d842991bd7c0e15a0}\label{gai__xwindow_8h_a4eae6e51f0425197a4c1010fcc7c8c9da2ecf0eac74bd3c8d842991bd7c0e15a0}} 
+gaixw\+Renderer\+X11&Request a X11 renderer backend \begin{DoxyNote}{Note}
+Default on linux platform 
+\end{DoxyNote}
+\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{gaixw\+Renderer\+G\+DI@{gaixw\+Renderer\+G\+DI}!gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}}\index{gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}!gaixw\+Renderer\+G\+DI@{gaixw\+Renderer\+G\+DI}}}\mbox{\Hypertarget{gai__xwindow_8h_a4eae6e51f0425197a4c1010fcc7c8c9dab382f06ccd349a4749bfcea4fd5f3080}\label{gai__xwindow_8h_a4eae6e51f0425197a4c1010fcc7c8c9dab382f06ccd349a4749bfcea4fd5f3080}} 
+gaixw\+Renderer\+G\+DI&Request a G\+DI renderer backend \begin{DoxyNote}{Note}
+Default on windows platform 
+\end{DoxyNote}
+\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{gaixw\+Renderer\+D\+X10@{gaixw\+Renderer\+D\+X10}!gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}}\index{gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}!gaixw\+Renderer\+D\+X10@{gaixw\+Renderer\+D\+X10}}}\mbox{\Hypertarget{gai__xwindow_8h_a4eae6e51f0425197a4c1010fcc7c8c9da1217be504c773ce47ba76be4ddf9489d}\label{gai__xwindow_8h_a4eae6e51f0425197a4c1010fcc7c8c9da1217be504c773ce47ba76be4ddf9489d}} 
+gaixw\+Renderer\+D\+X10&Request a {\bfseries DirectX} 10 renderer backend \begin{DoxyAttention}{Attention}
+$\ast$$\ast$ N\+OT I\+M\+P\+L\+E\+M\+E\+N\+T\+ED Y\+ET $\ast$$\ast$ 
+\end{DoxyAttention}
+\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{gaixw\+Renderer\+D\+X11@{gaixw\+Renderer\+D\+X11}!gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}}\index{gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}!gaixw\+Renderer\+D\+X11@{gaixw\+Renderer\+D\+X11}}}\mbox{\Hypertarget{gai__xwindow_8h_a4eae6e51f0425197a4c1010fcc7c8c9dab19a6d88f34235d7333fbc209d1f178a}\label{gai__xwindow_8h_a4eae6e51f0425197a4c1010fcc7c8c9dab19a6d88f34235d7333fbc209d1f178a}} 
+gaixw\+Renderer\+D\+X11&Request a {\bfseries DirectX} 11 renderer backend \begin{DoxyAttention}{Attention}
+$\ast$$\ast$ N\+OT I\+M\+P\+L\+E\+M\+E\+N\+T\+ED Y\+ET $\ast$$\ast$ 
+\end{DoxyAttention}
+\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{gaixw\+Renderer\+D\+X12@{gaixw\+Renderer\+D\+X12}!gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}}\index{gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}!gaixw\+Renderer\+D\+X12@{gaixw\+Renderer\+D\+X12}}}\mbox{\Hypertarget{gai__xwindow_8h_a4eae6e51f0425197a4c1010fcc7c8c9da8cd168a752459bca73bdea7b77eb421e}\label{gai__xwindow_8h_a4eae6e51f0425197a4c1010fcc7c8c9da8cd168a752459bca73bdea7b77eb421e}} 
+gaixw\+Renderer\+D\+X12&Request a {\bfseries DirectX} 12 renderer backend \begin{DoxyAttention}{Attention}
+$\ast$$\ast$ N\+OT I\+M\+P\+L\+E\+M\+E\+N\+T\+ED Y\+ET $\ast$$\ast$ 
+\end{DoxyAttention}
+\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{gaixw\+Renderer\+Open\+GL@{gaixw\+Renderer\+Open\+GL}!gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}}\index{gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}!gaixw\+Renderer\+Open\+GL@{gaixw\+Renderer\+Open\+GL}}}\mbox{\Hypertarget{gai__xwindow_8h_a4eae6e51f0425197a4c1010fcc7c8c9daf43570fcfedb502e88eb5c69f0eeecc1}\label{gai__xwindow_8h_a4eae6e51f0425197a4c1010fcc7c8c9daf43570fcfedb502e88eb5c69f0eeecc1}} 
+gaixw\+Renderer\+Open\+GL&Request an {\bfseries Open\+GL} renderer backend
+
+
+\begin{DoxyCode}
+\textcolor{preprocessor}{#define GAIXW\_OPENGL}
+\textcolor{preprocessor}{#define GAIXW\_OPENGL\_MAJOR 4            // Optional macro! Not needed if you dont want to specify this.}
+\textcolor{preprocessor}{#define GAIXW\_OPENGL\_MINOR 3            // Optional macro! Not needed if you dont want to specify this.}
+\textcolor{preprocessor}{#define GAIXW\_IMPLEMENTATION}
+\textcolor{preprocessor}{#include <gai\_xwindow.h>}
+\end{DoxyCode}
+
+
+\begin{DoxyNote}{Note}
+You can also request a modern opengl context (3.\+x or higher) 
+\end{DoxyNote}
+\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{gaixw\+Renderer\+Vulcan@{gaixw\+Renderer\+Vulcan}!gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}}\index{gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}!gaixw\+Renderer\+Vulcan@{gaixw\+Renderer\+Vulcan}}}\mbox{\Hypertarget{gai__xwindow_8h_a4eae6e51f0425197a4c1010fcc7c8c9da4cd9efc9b0b4bcc5674423557a0214ab}\label{gai__xwindow_8h_a4eae6e51f0425197a4c1010fcc7c8c9da4cd9efc9b0b4bcc5674423557a0214ab}} 
+gaixw\+Renderer\+Vulcan&Request a {\bfseries vulcan} renderer backend \begin{DoxyAttention}{Attention}
+$\ast$$\ast$ N\+OT I\+M\+P\+L\+E\+M\+E\+N\+T\+ED Y\+ET $\ast$$\ast$ 
+\end{DoxyAttention}
+\\
+\hline
+
+\end{DoxyEnumFields}
+\mbox{\Hypertarget{gai__xwindow_8h_a52d65318fd4fb0d358385d67f156d00c}\label{gai__xwindow_8h_a52d65318fd4fb0d358385d67f156d00c}} 
+\index{gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}!gaixw\+\_\+renderer\+\_\+flags@{gaixw\+\_\+renderer\+\_\+flags}}
+\index{gaixw\+\_\+renderer\+\_\+flags@{gaixw\+\_\+renderer\+\_\+flags}!gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}}
+\subsubsection{\texorpdfstring{gaixw\+\_\+renderer\+\_\+flags}{gaixw\_renderer\_flags}}
+{\footnotesize\ttfamily enum \hyperlink{gai__xwindow_8h_a52d65318fd4fb0d358385d67f156d00c}{gaixw\+\_\+renderer\+\_\+flags}}
+
+
+
+Renderer flags. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{gaixw\+Flags\+Minimized@{gaixw\+Flags\+Minimized}!gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}}\index{gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}!gaixw\+Flags\+Minimized@{gaixw\+Flags\+Minimized}}}\mbox{\Hypertarget{gai__xwindow_8h_a52d65318fd4fb0d358385d67f156d00ca024bb28b1d09e6dabb43cca1db088cd1}\label{gai__xwindow_8h_a52d65318fd4fb0d358385d67f156d00ca024bb28b1d09e6dabb43cca1db088cd1}} 
+gaixw\+Flags\+Minimized&Window is minimized \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{gaixw\+Flags\+Maximized@{gaixw\+Flags\+Maximized}!gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}}\index{gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}!gaixw\+Flags\+Maximized@{gaixw\+Flags\+Maximized}}}\mbox{\Hypertarget{gai__xwindow_8h_a52d65318fd4fb0d358385d67f156d00ca4c1b948394dbf097f6007e01ded11242}\label{gai__xwindow_8h_a52d65318fd4fb0d358385d67f156d00ca4c1b948394dbf097f6007e01ded11242}} 
+gaixw\+Flags\+Maximized&Window is maximized \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{gaixw\+Flags\+Fullscreen@{gaixw\+Flags\+Fullscreen}!gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}}\index{gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}!gaixw\+Flags\+Fullscreen@{gaixw\+Flags\+Fullscreen}}}\mbox{\Hypertarget{gai__xwindow_8h_a52d65318fd4fb0d358385d67f156d00ca1b5d286481622b104b8dd24bf3114cd2}\label{gai__xwindow_8h_a52d65318fd4fb0d358385d67f156d00ca1b5d286481622b104b8dd24bf3114cd2}} 
+gaixw\+Flags\+Fullscreen&Window is in fullscreen mode \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{gaixw\+Flags\+V\+S\+Y\+NC@{gaixw\+Flags\+V\+S\+Y\+NC}!gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}}\index{gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}!gaixw\+Flags\+V\+S\+Y\+NC@{gaixw\+Flags\+V\+S\+Y\+NC}}}\mbox{\Hypertarget{gai__xwindow_8h_a52d65318fd4fb0d358385d67f156d00ca39f9d8a5253caf225480a80d1b52e4c2}\label{gai__xwindow_8h_a52d65318fd4fb0d358385d67f156d00ca39f9d8a5253caf225480a80d1b52e4c2}} 
+gaixw\+Flags\+V\+S\+Y\+NC&Window has vertical sync enabled \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{gai__xwindow_8h_a986353262ac6038b69005bec8111ac56}\label{gai__xwindow_8h_a986353262ac6038b69005bec8111ac56}} 
+\index{gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}!gaixw\+\_\+\+Deinit@{gaixw\+\_\+\+Deinit}}
+\index{gaixw\+\_\+\+Deinit@{gaixw\+\_\+\+Deinit}!gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}}
+\subsubsection{\texorpdfstring{gaixw\+\_\+\+Deinit()}{gaixw\_Deinit()}}
+{\footnotesize\ttfamily \hyperlink{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}{G\+A\+I\+X\+W\+\_\+\+A\+PI} void gaixw\+\_\+\+Deinit (\begin{DoxyParamCaption}\item[{\hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} $\ast$}]{window }\end{DoxyParamCaption})}
+
+
+
+Deinitializes the window. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em window} & A pointer to a \hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} structure \\
+\hline
+\end{DoxyParams}
+\begin{Desc}
+\item[Examples\+: ]\par
+\hyperlink{xwindow_0Cgdi_win32_0Cmain_8cpp-example}{xwindow\textbackslash{}gdi\+\_\+win32\textbackslash{}main.\+cpp}, and \hyperlink{xwindow_0Copengl_win32_0Cmain_8cpp-example}{xwindow\textbackslash{}opengl\+\_\+win32\textbackslash{}main.\+cpp}.\end{Desc}
+\mbox{\Hypertarget{gai__xwindow_8h_a11552275ad444bc3be3b6a5a5b214c7d}\label{gai__xwindow_8h_a11552275ad444bc3be3b6a5a5b214c7d}} 
+\index{gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}!gaixw\+\_\+\+Get\+Attribute@{gaixw\+\_\+\+Get\+Attribute}}
+\index{gaixw\+\_\+\+Get\+Attribute@{gaixw\+\_\+\+Get\+Attribute}!gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}}
+\subsubsection{\texorpdfstring{gaixw\+\_\+\+Get\+Attribute()}{gaixw\_GetAttribute()}}
+{\footnotesize\ttfamily \hyperlink{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}{G\+A\+I\+X\+W\+\_\+\+A\+PI} unsigned int gaixw\+\_\+\+Get\+Attribute (\begin{DoxyParamCaption}\item[{\hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} $\ast$}]{window,  }\item[{\hyperlink{gai__xwindow_8h_a52d65318fd4fb0d358385d67f156d00c}{gaixw\+\_\+renderer\+\_\+flags}}]{attrib }\end{DoxyParamCaption})}
+
+
+
+Current attribute state of the window. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em window} & A pointer to a \hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} structure \\
+\hline
+{\em attrib} & Attribute flags as specified in \hyperlink{gai__xwindow_8h_a52d65318fd4fb0d358385d67f156d00c}{gaixw\+\_\+renderer\+\_\+flags}~\newline
+\hyperlink{gai__xwindow_8h_a52d65318fd4fb0d358385d67f156d00ca024bb28b1d09e6dabb43cca1db088cd1}{gaixw\+Flags\+Minimized}~\newline
+\hyperlink{gai__xwindow_8h_a52d65318fd4fb0d358385d67f156d00ca4c1b948394dbf097f6007e01ded11242}{gaixw\+Flags\+Maximized}~\newline
+\hyperlink{gai__xwindow_8h_a52d65318fd4fb0d358385d67f156d00ca1b5d286481622b104b8dd24bf3114cd2}{gaixw\+Flags\+Fullscreen}~\newline
+\hyperlink{gai__xwindow_8h_a52d65318fd4fb0d358385d67f156d00ca39f9d8a5253caf225480a80d1b52e4c2}{gaixw\+Flags\+V\+S\+Y\+NC}~\newline
+ \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\tabulinesep=1mm
+\begin{longtabu} spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Return Code }&\textbf{ Description  }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Return Code }&\textbf{ Description  }\\\cline{1-2}
+\endhead
+1 &Set \\\cline{1-2}
+0 &Not set \\\cline{1-2}
+\end{longtabu}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{gai__xwindow_8h_afb8573bf3e47bef617b0c575cabd56b1}\label{gai__xwindow_8h_afb8573bf3e47bef617b0c575cabd56b1}} 
+\index{gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}!gaixw\+\_\+\+Get\+Proc@{gaixw\+\_\+\+Get\+Proc}}
+\index{gaixw\+\_\+\+Get\+Proc@{gaixw\+\_\+\+Get\+Proc}!gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}}
+\subsubsection{\texorpdfstring{gaixw\+\_\+\+Get\+Proc()}{gaixw\_GetProc()}}
+{\footnotesize\ttfamily \hyperlink{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}{G\+A\+I\+X\+W\+\_\+\+A\+PI} void$\ast$ gaixw\+\_\+\+Get\+Proc (\begin{DoxyParamCaption}\item[{\hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} $\ast$}]{window,  }\item[{const char $\ast$}]{name }\end{DoxyParamCaption})}
+
+
+
+Gets the procedure\textquotesingle{}s memory address for the specified function name. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em window} & A pointer to a \hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} structure \\
+\hline
+{\em name} & Name of the function\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\tabulinesep=1mm
+\begin{longtabu} spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Return Code }&\textbf{ Description  }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Return Code }&\textbf{ Description  }\\\cline{1-2}
+\endhead
+0 &Null ( function with that name not found ) \\\cline{1-2}
+Pointer &A pointer to functions address \\\cline{1-2}
+\end{longtabu}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{gai__xwindow_8h_a47de27dee38c387b49ac60e21b6b27af}\label{gai__xwindow_8h_a47de27dee38c387b49ac60e21b6b27af}} 
+\index{gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}!gaixw\+\_\+\+Hide@{gaixw\+\_\+\+Hide}}
+\index{gaixw\+\_\+\+Hide@{gaixw\+\_\+\+Hide}!gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}}
+\subsubsection{\texorpdfstring{gaixw\+\_\+\+Hide()}{gaixw\_Hide()}}
+{\footnotesize\ttfamily \hyperlink{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}{G\+A\+I\+X\+W\+\_\+\+A\+PI} int gaixw\+\_\+\+Hide (\begin{DoxyParamCaption}\item[{\hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} $\ast$}]{window }\end{DoxyParamCaption})}
+
+
+
+Hides the window from the user. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em window} & A pointer to a \hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} structure\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\tabulinesep=1mm
+\begin{longtabu} spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Return Code }&\textbf{ Description  }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Return Code }&\textbf{ Description  }\\\cline{1-2}
+\endhead
+1 &Success \\\cline{1-2}
+0 &Failure \\\cline{1-2}
+\end{longtabu}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{gai__xwindow_8h_adec8bb998b6861c4d239b25634c8eb55}\label{gai__xwindow_8h_adec8bb998b6861c4d239b25634c8eb55}} 
+\index{gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}!gaixw\+\_\+\+Init@{gaixw\+\_\+\+Init}}
+\index{gaixw\+\_\+\+Init@{gaixw\+\_\+\+Init}!gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}}
+\subsubsection{\texorpdfstring{gaixw\+\_\+\+Init()}{gaixw\_Init()}}
+{\footnotesize\ttfamily \hyperlink{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}{G\+A\+I\+X\+W\+\_\+\+A\+PI} int gaixw\+\_\+\+Init (\begin{DoxyParamCaption}\item[{\hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} $\ast$}]{window,  }\item[{const char $\ast$}]{title = {\ttfamily \char`\"{}default~window~title\char`\"{}},  }\item[{int}]{width = {\ttfamily -\/1},  }\item[{int}]{height = {\ttfamily -\/1},  }\item[{int}]{x = {\ttfamily -\/1},  }\item[{int}]{y = {\ttfamily -\/1},  }\item[{const char $\ast$}]{classname = {\ttfamily \hyperlink{gai__xwindow_8h_aaa1d25d5e0f693faca8ccb08cc744fb6}{G\+A\+I\+X\+W\+\_\+\+C\+L\+A\+S\+S\+N\+A\+ME}},  }\item[{unsigned int}]{visible = {\ttfamily 1} }\end{DoxyParamCaption})}
+
+
+
+Initializes a window for the current platform. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em window} & A pointer to a \hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} structure \\
+\hline
+{\em title} & (optional) Title \\
+\hline
+{\em width} & (optional) Width \\
+\hline
+{\em height} & (optional) Height \\
+\hline
+{\em x} & (optional) X position \\
+\hline
+{\em y} & (optional) Y position \\
+\hline
+{\em classname} & (optional) Unique classname for this window instance \\
+\hline
+{\em visible} & (optional) Specifies if the window is visible after creation or not\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\tabulinesep=1mm
+\begin{longtabu} spread 0pt [c]{*{3}{|X[-1]}|}
+\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Returns }&\textbf{ Windows }&\textbf{ Linux  }\\\cline{1-3}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Returns }&\textbf{ Windows }&\textbf{ Linux  }\\\cline{1-3}
+\endhead
+1 &Success &Success \\\cline{1-3}
+0 &Convert\+Thread\+To\+Fiber failed &Not implemented yet! \\\cline{1-3}
+-\/1 &Register\+Class\+ExA failed &Not implemented yet! \\\cline{1-3}
+-\/2 &Create\+WindowA failed &Not implemented yet! \\\cline{1-3}
+-\/3 &(Open\+GL) Choose\+Pixel\+Format failed &Not implemented yet! \\\cline{1-3}
+-\/4 &(Open\+GL) Set\+Pixel\+Format failed &Not implemented yet! \\\cline{1-3}
+-\/5 &(Open\+GL) wgl\+Create\+Context failed &Not implemented yet! \\\cline{1-3}
+-\/6 &(Open\+GL) wgl\+Make\+Current failed &Not implemented yet! \\\cline{1-3}
+\end{longtabu}
+
+\end{DoxyReturn}
+{\bfseries Snippet (default gdi)\+:} 
+\begin{DoxyCodeInclude}
+    \textcolor{keywordtype}{int} retval = 0;
+    \hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\_context} window = \{\};
+    retval = \hyperlink{gai__xwindow_8h_adec8bb998b6861c4d239b25634c8eb55}{gaixw\_Init}(&window, \textcolor{stringliteral}{"gdi example"}, 640, 480);
+    \textcolor{keywordflow}{if}(retval != 1) \textcolor{keywordflow}{return} retval;
+\end{DoxyCodeInclude}
+\begin{Desc}
+\item[Examples\+: ]\par
+\hyperlink{xwindow_0Cgdi_win32_0Cmain_8cpp-example}{xwindow\textbackslash{}gdi\+\_\+win32\textbackslash{}main.\+cpp}, and \hyperlink{xwindow_0Copengl_win32_0Cmain_8cpp-example}{xwindow\textbackslash{}opengl\+\_\+win32\textbackslash{}main.\+cpp}.\end{Desc}
+\mbox{\Hypertarget{gai__xwindow_8h_ada33bbd9a3e4d2101a910a08ab4c3128}\label{gai__xwindow_8h_ada33bbd9a3e4d2101a910a08ab4c3128}} 
+\index{gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}!gaixw\+\_\+\+Is\+Fullscreen@{gaixw\+\_\+\+Is\+Fullscreen}}
+\index{gaixw\+\_\+\+Is\+Fullscreen@{gaixw\+\_\+\+Is\+Fullscreen}!gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}}
+\subsubsection{\texorpdfstring{gaixw\+\_\+\+Is\+Fullscreen()}{gaixw\_IsFullscreen()}}
+{\footnotesize\ttfamily \hyperlink{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}{G\+A\+I\+X\+W\+\_\+\+A\+PI} int gaixw\+\_\+\+Is\+Fullscreen (\begin{DoxyParamCaption}\item[{\hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} $\ast$}]{window }\end{DoxyParamCaption})}
+
+
+
+Current state of fullscreen. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em window} & A pointer to a \hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} structure\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\tabulinesep=1mm
+\begin{longtabu} spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Return Code }&\textbf{ Description  }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Return Code }&\textbf{ Description  }\\\cline{1-2}
+\endhead
+1 &Fullscreen enabled \\\cline{1-2}
+0 &Fullscreen disabled \\\cline{1-2}
+\end{longtabu}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{gai__xwindow_8h_a8bae66c5869f3d948b9f4f520fcba566}\label{gai__xwindow_8h_a8bae66c5869f3d948b9f4f520fcba566}} 
+\index{gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}!gaixw\+\_\+\+Is\+Vertical\+Sync\+Enabled@{gaixw\+\_\+\+Is\+Vertical\+Sync\+Enabled}}
+\index{gaixw\+\_\+\+Is\+Vertical\+Sync\+Enabled@{gaixw\+\_\+\+Is\+Vertical\+Sync\+Enabled}!gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}}
+\subsubsection{\texorpdfstring{gaixw\+\_\+\+Is\+Vertical\+Sync\+Enabled()}{gaixw\_IsVerticalSyncEnabled()}}
+{\footnotesize\ttfamily \hyperlink{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}{G\+A\+I\+X\+W\+\_\+\+A\+PI} int gaixw\+\_\+\+Is\+Vertical\+Sync\+Enabled (\begin{DoxyParamCaption}\item[{\hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} $\ast$}]{window }\end{DoxyParamCaption})}
+
+
+
+Gets the vertical sync state. 
+
+\begin{DoxyNote}{Note}
+This is a call to the graphics driver. Since the drivers implementations are different, this can have different results on different graphic cards.
+\end{DoxyNote}
+
+\begin{DoxyParams}{Parameters}
+{\em window} & A pointer to a \hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} structure\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\tabulinesep=1mm
+\begin{longtabu} spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Return Code }&\textbf{ Description  }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Return Code }&\textbf{ Description  }\\\cline{1-2}
+\endhead
+1 &V\+S\+Y\+NC enabled \\\cline{1-2}
+0 &V\+S\+Y\+NC disabled \\\cline{1-2}
+\end{longtabu}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{gai__xwindow_8h_ae980b54b9a83cb2babcfd1492600fc95}\label{gai__xwindow_8h_ae980b54b9a83cb2babcfd1492600fc95}} 
+\index{gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}!gaixw\+\_\+\+Key\+Down@{gaixw\+\_\+\+Key\+Down}}
+\index{gaixw\+\_\+\+Key\+Down@{gaixw\+\_\+\+Key\+Down}!gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}}
+\subsubsection{\texorpdfstring{gaixw\+\_\+\+Key\+Down()}{gaixw\_KeyDown()}}
+{\footnotesize\ttfamily \hyperlink{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}{G\+A\+I\+X\+W\+\_\+\+A\+PI} unsigned char gaixw\+\_\+\+Key\+Down (\begin{DoxyParamCaption}\item[{\hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} $\ast$}]{window,  }\item[{int}]{key }\end{DoxyParamCaption})}
+
+
+
+Current state of the specified keyboard key. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em window} & A pointer to a \hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} structure \\
+\hline
+{\em key} & Keycode between 0-\/255\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\tabulinesep=1mm
+\begin{longtabu} spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Return Code }&\textbf{ Description  }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Return Code }&\textbf{ Description  }\\\cline{1-2}
+\endhead
+1 &Pressed \\\cline{1-2}
+0 &Not pressed \\\cline{1-2}
+\end{longtabu}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{gai__xwindow_8h_a2166c011f837a9aa530d22ba2f1c5f93}\label{gai__xwindow_8h_a2166c011f837a9aa530d22ba2f1c5f93}} 
+\index{gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}!gaixw\+\_\+\+Key\+Pressed@{gaixw\+\_\+\+Key\+Pressed}}
+\index{gaixw\+\_\+\+Key\+Pressed@{gaixw\+\_\+\+Key\+Pressed}!gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}}
+\subsubsection{\texorpdfstring{gaixw\+\_\+\+Key\+Pressed()}{gaixw\_KeyPressed()}}
+{\footnotesize\ttfamily \hyperlink{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}{G\+A\+I\+X\+W\+\_\+\+A\+PI} unsigned char gaixw\+\_\+\+Key\+Pressed (\begin{DoxyParamCaption}\item[{\hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} $\ast$}]{window,  }\item[{int}]{key }\end{DoxyParamCaption})}
+
+
+
+Current pressed state of the specified keyboard key. 
+
+\begin{DoxyNote}{Note}
+This only returns 1 if the key was {\bfseries released} before and is now {\bfseries pressed} (Only occurs once)
+\end{DoxyNote}
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em window} & A pointer to a \hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} structure \\
+\hline
+\mbox{\tt in}  & {\em key} & Keycode between 0-\/255\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\tabulinesep=1mm
+\begin{longtabu} spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Return Code }&\textbf{ Description  }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Return Code }&\textbf{ Description  }\\\cline{1-2}
+\endhead
+1 &Was pressed \\\cline{1-2}
+0 &Not pressed \\\cline{1-2}
+\end{longtabu}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{gai__xwindow_8h_ab9d00faab4d5c7f758aa998b82ffe3fd}\label{gai__xwindow_8h_ab9d00faab4d5c7f758aa998b82ffe3fd}} 
+\index{gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}!gaixw\+\_\+\+Key\+Released@{gaixw\+\_\+\+Key\+Released}}
+\index{gaixw\+\_\+\+Key\+Released@{gaixw\+\_\+\+Key\+Released}!gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}}
+\subsubsection{\texorpdfstring{gaixw\+\_\+\+Key\+Released()}{gaixw\_KeyReleased()}}
+{\footnotesize\ttfamily \hyperlink{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}{G\+A\+I\+X\+W\+\_\+\+A\+PI} unsigned char gaixw\+\_\+\+Key\+Released (\begin{DoxyParamCaption}\item[{\hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} $\ast$}]{window,  }\item[{int}]{key }\end{DoxyParamCaption})}
+
+
+
+Current released state of the specified keyboard key. 
+
+\begin{DoxyNote}{Note}
+This only returns 1 if the key was {\bfseries pressed} before and is now {\bfseries released} (Only occurs once)
+\end{DoxyNote}
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em window} & A pointer to a \hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} structure \\
+\hline
+\mbox{\tt in}  & {\em key} & Keycode between 0-\/255\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\tabulinesep=1mm
+\begin{longtabu} spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Return Code }&\textbf{ Description  }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Return Code }&\textbf{ Description  }\\\cline{1-2}
+\endhead
+1 &Was released \\\cline{1-2}
+0 &Not released \\\cline{1-2}
+\end{longtabu}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{gai__xwindow_8h_ad65b54072e30a2c5b74602dc5d515b9f}\label{gai__xwindow_8h_ad65b54072e30a2c5b74602dc5d515b9f}} 
+\index{gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}!gaixw\+\_\+\+Mouse\+Down@{gaixw\+\_\+\+Mouse\+Down}}
+\index{gaixw\+\_\+\+Mouse\+Down@{gaixw\+\_\+\+Mouse\+Down}!gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}}
+\subsubsection{\texorpdfstring{gaixw\+\_\+\+Mouse\+Down()}{gaixw\_MouseDown()}}
+{\footnotesize\ttfamily \hyperlink{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}{G\+A\+I\+X\+W\+\_\+\+A\+PI} unsigned char gaixw\+\_\+\+Mouse\+Down (\begin{DoxyParamCaption}\item[{\hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} $\ast$}]{window,  }\item[{int}]{key }\end{DoxyParamCaption})}
+
+
+
+Current state of the specified mouse button. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em window} & A pointer to a \hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} structure \\
+\hline
+{\em key} & \begin{tabularx}{\linewidth}{|*{2}{>{\raggedright\arraybackslash}X|}}\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Key }&\textbf{ Description  }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Key }&\textbf{ Description  }\\\cline{1-2}
+\endhead
+0 &Left \\\cline{1-2}
+1 &Middle \\\cline{1-2}
+2 &Right \\\cline{1-2}
+\end{tabularx}
+\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\tabulinesep=1mm
+\begin{longtabu} spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Return Code }&\textbf{ Description  }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Return Code }&\textbf{ Description  }\\\cline{1-2}
+\endhead
+1 &Pressed \\\cline{1-2}
+0 &Not pressed \\\cline{1-2}
+\end{longtabu}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{gai__xwindow_8h_ae9a5c5ef3664982fae3279306c3f8601}\label{gai__xwindow_8h_ae9a5c5ef3664982fae3279306c3f8601}} 
+\index{gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}!gaixw\+\_\+\+Mouse\+Pressed@{gaixw\+\_\+\+Mouse\+Pressed}}
+\index{gaixw\+\_\+\+Mouse\+Pressed@{gaixw\+\_\+\+Mouse\+Pressed}!gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}}
+\subsubsection{\texorpdfstring{gaixw\+\_\+\+Mouse\+Pressed()}{gaixw\_MousePressed()}}
+{\footnotesize\ttfamily \hyperlink{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}{G\+A\+I\+X\+W\+\_\+\+A\+PI} unsigned char gaixw\+\_\+\+Mouse\+Pressed (\begin{DoxyParamCaption}\item[{\hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} $\ast$}]{window,  }\item[{int}]{key }\end{DoxyParamCaption})}
+
+
+
+Current pressed state of the specified mouse button. 
+
+\begin{DoxyNote}{Note}
+This only returns 1 if the key was {\bfseries released} before and is now {\bfseries pressed} (Only occurs once)
+\end{DoxyNote}
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em window} & A pointer to a \hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} structure \\
+\hline
+\mbox{\tt in}  & {\em key} & \begin{tabularx}{\linewidth}{|*{2}{>{\raggedright\arraybackslash}X|}}\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Key }&\textbf{ Description  }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Key }&\textbf{ Description  }\\\cline{1-2}
+\endhead
+0 &Left \\\cline{1-2}
+1 &Middle \\\cline{1-2}
+2 &Right \\\cline{1-2}
+\end{tabularx}
+\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\tabulinesep=1mm
+\begin{longtabu} spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Return Code }&\textbf{ Description  }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Return Code }&\textbf{ Description  }\\\cline{1-2}
+\endhead
+1 &Was pressed \\\cline{1-2}
+0 &Not pressed \\\cline{1-2}
+\end{longtabu}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{gai__xwindow_8h_a4cea32d6e78f33e17c9fb4d236951f4a}\label{gai__xwindow_8h_a4cea32d6e78f33e17c9fb4d236951f4a}} 
+\index{gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}!gaixw\+\_\+\+Mouse\+Released@{gaixw\+\_\+\+Mouse\+Released}}
+\index{gaixw\+\_\+\+Mouse\+Released@{gaixw\+\_\+\+Mouse\+Released}!gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}}
+\subsubsection{\texorpdfstring{gaixw\+\_\+\+Mouse\+Released()}{gaixw\_MouseReleased()}}
+{\footnotesize\ttfamily \hyperlink{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}{G\+A\+I\+X\+W\+\_\+\+A\+PI} unsigned char gaixw\+\_\+\+Mouse\+Released (\begin{DoxyParamCaption}\item[{\hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} $\ast$}]{window,  }\item[{int}]{key }\end{DoxyParamCaption})}
+
+
+
+Current released state of the specified mouse button. 
+
+\begin{DoxyNote}{Note}
+This only returns 1 if the key was {\bfseries pressed} before and is now {\bfseries released} (Only occurs once)
+\end{DoxyNote}
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em window} & A pointer to a \hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} structure \\
+\hline
+\mbox{\tt in}  & {\em key} & \begin{tabularx}{\linewidth}{|*{2}{>{\raggedright\arraybackslash}X|}}\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Key }&\textbf{ Description  }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Key }&\textbf{ Description  }\\\cline{1-2}
+\endhead
+0 &Left \\\cline{1-2}
+1 &Middle \\\cline{1-2}
+2 &Right \\\cline{1-2}
+\end{tabularx}
+\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\tabulinesep=1mm
+\begin{longtabu} spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Return Code }&\textbf{ Description  }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Return Code }&\textbf{ Description  }\\\cline{1-2}
+\endhead
+1 &Was released \\\cline{1-2}
+0 &Not released \\\cline{1-2}
+\end{longtabu}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{gai__xwindow_8h_ae9f128ce1a9862a2f1619160ca080c66}\label{gai__xwindow_8h_ae9f128ce1a9862a2f1619160ca080c66}} 
+\index{gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}!gaixw\+\_\+\+Set\+Title@{gaixw\+\_\+\+Set\+Title}}
+\index{gaixw\+\_\+\+Set\+Title@{gaixw\+\_\+\+Set\+Title}!gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}}
+\subsubsection{\texorpdfstring{gaixw\+\_\+\+Set\+Title()}{gaixw\_SetTitle()}}
+{\footnotesize\ttfamily \hyperlink{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}{G\+A\+I\+X\+W\+\_\+\+A\+PI} void gaixw\+\_\+\+Set\+Title (\begin{DoxyParamCaption}\item[{\hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} $\ast$}]{window,  }\item[{const char $\ast$}]{title }\end{DoxyParamCaption})}
+
+
+
+Sets the window\textquotesingle{}s title. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em window} & A pointer to a \hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} structure \\
+\hline
+{\em title} & New title of the window \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{gai__xwindow_8h_a51eafe897c3737f146cda3c50884b9dd}\label{gai__xwindow_8h_a51eafe897c3737f146cda3c50884b9dd}} 
+\index{gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}!gaixw\+\_\+\+Set\+Vertical\+Sync@{gaixw\+\_\+\+Set\+Vertical\+Sync}}
+\index{gaixw\+\_\+\+Set\+Vertical\+Sync@{gaixw\+\_\+\+Set\+Vertical\+Sync}!gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}}
+\subsubsection{\texorpdfstring{gaixw\+\_\+\+Set\+Vertical\+Sync()}{gaixw\_SetVerticalSync()}}
+{\footnotesize\ttfamily \hyperlink{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}{G\+A\+I\+X\+W\+\_\+\+A\+PI} int gaixw\+\_\+\+Set\+Vertical\+Sync (\begin{DoxyParamCaption}\item[{\hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} $\ast$}]{window,  }\item[{unsigned int}]{state }\end{DoxyParamCaption})}
+
+
+
+Sets vertical sync state. 
+
+\begin{DoxyNote}{Note}
+This is a call to the graphics driver. Since the drivers implementations are different, this can have different results on different graphic cards.
+\end{DoxyNote}
+
+\begin{DoxyParams}{Parameters}
+{\em window} & A pointer to a \hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} structure \\
+\hline
+{\em state} & 1 to enable, 0 to disable\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\tabulinesep=1mm
+\begin{longtabu} spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Return Code }&\textbf{ Description  }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Return Code }&\textbf{ Description  }\\\cline{1-2}
+\endhead
+1 &Success \\\cline{1-2}
+0 &Failure \\\cline{1-2}
+\end{longtabu}
+
+\end{DoxyReturn}
+\begin{Desc}
+\item[Examples\+: ]\par
+\hyperlink{xwindow_0Copengl_win32_0Cmain_8cpp-example}{xwindow\textbackslash{}opengl\+\_\+win32\textbackslash{}main.\+cpp}.\end{Desc}
+\mbox{\Hypertarget{gai__xwindow_8h_aee43c7fda31af1c6808f212e406cebb6}\label{gai__xwindow_8h_aee43c7fda31af1c6808f212e406cebb6}} 
+\index{gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}!gaixw\+\_\+\+Show@{gaixw\+\_\+\+Show}}
+\index{gaixw\+\_\+\+Show@{gaixw\+\_\+\+Show}!gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}}
+\subsubsection{\texorpdfstring{gaixw\+\_\+\+Show()}{gaixw\_Show()}}
+{\footnotesize\ttfamily \hyperlink{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}{G\+A\+I\+X\+W\+\_\+\+A\+PI} int gaixw\+\_\+\+Show (\begin{DoxyParamCaption}\item[{\hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} $\ast$}]{window }\end{DoxyParamCaption})}
+
+
+
+Makes the window visible to the user. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em window} & A pointer to a \hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} structure\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\tabulinesep=1mm
+\begin{longtabu} spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Return Code }&\textbf{ Description  }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Return Code }&\textbf{ Description  }\\\cline{1-2}
+\endhead
+1 &Success \\\cline{1-2}
+0 &Failure \\\cline{1-2}
+\end{longtabu}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{gai__xwindow_8h_ac612fdfe7c233bf8ecaf7112318d5e1f}\label{gai__xwindow_8h_ac612fdfe7c233bf8ecaf7112318d5e1f}} 
+\index{gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}!gaixw\+\_\+\+Swap\+Buffers@{gaixw\+\_\+\+Swap\+Buffers}}
+\index{gaixw\+\_\+\+Swap\+Buffers@{gaixw\+\_\+\+Swap\+Buffers}!gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}}
+\subsubsection{\texorpdfstring{gaixw\+\_\+\+Swap\+Buffers()}{gaixw\_SwapBuffers()}}
+{\footnotesize\ttfamily \hyperlink{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}{G\+A\+I\+X\+W\+\_\+\+A\+PI} void gaixw\+\_\+\+Swap\+Buffers (\begin{DoxyParamCaption}\item[{\hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} $\ast$}]{window }\end{DoxyParamCaption})}
+
+
+
+Swaps the window\textquotesingle{}s backbuffers. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em window} & A pointer to a \hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} structure \\
+\hline
+\end{DoxyParams}
+\begin{Desc}
+\item[Examples\+: ]\par
+\hyperlink{xwindow_0Copengl_win32_0Cmain_8cpp-example}{xwindow\textbackslash{}opengl\+\_\+win32\textbackslash{}main.\+cpp}.\end{Desc}
+\mbox{\Hypertarget{gai__xwindow_8h_ab75a5f7466b10622fab1a1cdb443b447}\label{gai__xwindow_8h_ab75a5f7466b10622fab1a1cdb443b447}} 
+\index{gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}!gaixw\+\_\+\+Toggle\+Fullscreen@{gaixw\+\_\+\+Toggle\+Fullscreen}}
+\index{gaixw\+\_\+\+Toggle\+Fullscreen@{gaixw\+\_\+\+Toggle\+Fullscreen}!gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}}
+\subsubsection{\texorpdfstring{gaixw\+\_\+\+Toggle\+Fullscreen()}{gaixw\_ToggleFullscreen()}}
+{\footnotesize\ttfamily \hyperlink{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}{G\+A\+I\+X\+W\+\_\+\+A\+PI} void gaixw\+\_\+\+Toggle\+Fullscreen (\begin{DoxyParamCaption}\item[{\hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} $\ast$}]{window }\end{DoxyParamCaption})}
+
+
+
+Toggles between fullscreen mode and normal mode. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em window} & A pointer to a \hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} structure \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{gai__xwindow_8h_a2f1b687718407be2be1eaf2646405c2c}\label{gai__xwindow_8h_a2f1b687718407be2be1eaf2646405c2c}} 
+\index{gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}!gaixw\+\_\+\+Update@{gaixw\+\_\+\+Update}}
+\index{gaixw\+\_\+\+Update@{gaixw\+\_\+\+Update}!gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}}
+\subsubsection{\texorpdfstring{gaixw\+\_\+\+Update()}{gaixw\_Update()}}
+{\footnotesize\ttfamily \hyperlink{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}{G\+A\+I\+X\+W\+\_\+\+A\+PI} float gaixw\+\_\+\+Update (\begin{DoxyParamCaption}\item[{\hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} $\ast$}]{window }\end{DoxyParamCaption})}
+
+
+
+Updates all internal variables and states. 
+
+\begin{DoxyNote}{Note}
+This has to be called every frame.
+\end{DoxyNote}
+
+\begin{DoxyParams}{Parameters}
+{\em window} & A pointer to a \hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} structure\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Time passed since last frame in seconds 
+\end{DoxyReturn}
+\begin{Desc}
+\item[Examples\+: ]\par
+\hyperlink{xwindow_0Cgdi_win32_0Cmain_8cpp-example}{xwindow\textbackslash{}gdi\+\_\+win32\textbackslash{}main.\+cpp}, and \hyperlink{xwindow_0Copengl_win32_0Cmain_8cpp-example}{xwindow\textbackslash{}opengl\+\_\+win32\textbackslash{}main.\+cpp}.\end{Desc}

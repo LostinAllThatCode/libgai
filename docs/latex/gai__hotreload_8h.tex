@@ -2,17 +2,28 @@
 \label{gai__hotreload_8h}\index{gai\+\_\+hotreload.\+h@{gai\+\_\+hotreload.\+h}}
 
 
-This api allows you to track any file changes happen to a file ( not really content wise changes, more filetime changes on save \& copy triggers )  
+Tracks when a file change happened to a file ( For windows it only check for filetime write changes. So it will trigger an event when you save the file or replace it with another )  
 
 
+{\ttfamily \#include $<$windows.\+h$>$}\newline
+{\ttfamily \#include $<$assert.\+h$>$}\newline
+Include dependency graph for gai\+\_\+hotreload.\+h\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=200pt]{gai__hotreload_8h__incl}
+\end{center}
+\end{figure}
 \subsection*{Classes}
 \begin{DoxyCompactItemize}
 \item 
-struct \hyperlink{structgaihr__filetime}{gaihr\+\_\+filetime}
+struct \hyperlink{gai__hotreload_8h_structgaihr__filetime}{gaihr\+\_\+filetime}
 \item 
-struct \hyperlink{structgaihr__platform}{gaihr\+\_\+platform}
-\begin{DoxyCompactList}\small\item\em Platform specific struct. \end{DoxyCompactList}\item 
-struct \hyperlink{structgaihr__file}{gaihr\+\_\+file}
+struct \hyperlink{gai__hotreload_8h_structgaihr__platform__win32}{gaihr\+\_\+platform\+\_\+win32}
+\item 
+union \hyperlink{gai__hotreload_8h_uniongaihr__platform}{gaihr\+\_\+platform}
+\item 
+struct \hyperlink{gai__hotreload_8h_structgaihr__file}{gaihr\+\_\+file}
 \end{DoxyCompactItemize}
 \subsection*{Macros}
 \begin{DoxyCompactItemize}
@@ -23,16 +34,19 @@ struct \hyperlink{structgaihr__file}{gaihr\+\_\+file}
 \item 
 \#define \hyperlink{gai__hotreload_8h_ac26b515249679c1f9036430164867ba0}{G\+A\+I\+H\+R\+\_\+\+F\+I\+L\+E\+\_\+\+L\+I\+M\+IT}~64
 \item 
+\mbox{\Hypertarget{gai__hotreload_8h_a32983003a4e816a8350f01cb22d1b01b}\label{gai__hotreload_8h_a32983003a4e816a8350f01cb22d1b01b}} 
 \#define \hyperlink{gai__hotreload_8h_a32983003a4e816a8350f01cb22d1b01b}{G\+A\+I\+H\+R\+\_\+\+A\+PI}~extern
-\item 
-\mbox{\Hypertarget{gai__hotreload_8h_a6f8c5bfe220445bbbb8e1c9ef176838a}\label{gai__hotreload_8h_a6f8c5bfe220445bbbb8e1c9ef176838a}} 
-\#define {\bfseries G\+A\+I\+H\+R\+\_\+\+C\+A\+L\+L\+B\+A\+CK}(name)~void name(\hyperlink{structgaihr__file}{gaihr\+\_\+file} $\ast$file)
-\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Define {\bfseries G\+A\+I\+H\+R\+\_\+\+S\+T\+A\+T\+IC} if you want to make functions {\bfseries static} instead of {\bfseries extern} \end{DoxyCompactList}\item 
+\#define \hyperlink{gai__hotreload_8h_a11e965cbb3e2af8ed1888b0c6b2777da}{G\+A\+I\+H\+R\+\_\+\+A\+S\+S\+E\+RT}(cond)~assert(cond)
+\begin{DoxyCompactList}\small\item\em Define {\bfseries G\+A\+I\+H\+R\+\_\+\+A\+S\+S\+E\+RT} before including this file to {\bfseries disable} assertions. \end{DoxyCompactList}\item 
+\#define \hyperlink{gai__hotreload_8h_a6f8c5bfe220445bbbb8e1c9ef176838a}{G\+A\+I\+H\+R\+\_\+\+C\+A\+L\+L\+B\+A\+CK}(name)~void name(\hyperlink{gai__hotreload_8h_structgaihr__file}{gaihr\+\_\+file} $\ast$file)
+\begin{DoxyCompactList}\small\item\em Callback function macro which will generate a function as specified by \hyperlink{gai__hotreload_8h_a8026f464cf8636b763b6f03798d40800}{gaihr\+\_\+callback}. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \subsection*{Typedefs}
 \begin{DoxyCompactItemize}
 \item 
-typedef void \hyperlink{gai__hotreload_8h_a8026f464cf8636b763b6f03798d40800}{gaihr\+\_\+callback}(\hyperlink{structgaihr__file}{gaihr\+\_\+file} $\ast$file)
-\begin{DoxyCompactList}\small\item\em Callback function typedef which will be call when an event happens. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\mbox{\Hypertarget{gai__hotreload_8h_a8026f464cf8636b763b6f03798d40800}\label{gai__hotreload_8h_a8026f464cf8636b763b6f03798d40800}} 
+typedef void \hyperlink{gai__hotreload_8h_a8026f464cf8636b763b6f03798d40800}{gaihr\+\_\+callback}(\hyperlink{gai__hotreload_8h_structgaihr__file}{gaihr\+\_\+file} $\ast$file)
+\begin{DoxyCompactList}\small\item\em Callback function which will be called when an event was fired See \hyperlink{gai__hotreload_8h_a6f8c5bfe220445bbbb8e1c9ef176838a}{G\+A\+I\+H\+R\+\_\+\+C\+A\+L\+L\+B\+A\+CK}. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \subsection*{Enumerations}
 \begin{DoxyCompactItemize}
 \item 
@@ -45,29 +59,35 @@ enum \hyperlink{gai__hotreload_8h_aaebb069b6896f065efd75640e0e4150b}{gaihr\+\_\+
 \subsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-\hyperlink{gai__hotreload_8h_a32983003a4e816a8350f01cb22d1b01b}{G\+A\+I\+H\+R\+\_\+\+A\+PI} unsigned int \hyperlink{gai__hotreload_8h_ad83d8f6170f0404fb72803d012ac9f6a}{gaihr\+\_\+\+Track} (\hyperlink{structgaihr__file}{gaihr\+\_\+file} $\ast$file, const char $\ast$filename, \hyperlink{gai__hotreload_8h_a8026f464cf8636b763b6f03798d40800}{gaihr\+\_\+callback} $\ast$callback=0, void $\ast$userdata=0, \hyperlink{gai__hotreload_8h_aaebb069b6896f065efd75640e0e4150b}{gaihr\+\_\+flags} flags=\hyperlink{gai__hotreload_8h_aaebb069b6896f065efd75640e0e4150ba6c207a28fdce6637b4aa1e70e64c3e94}{gaihr\+\_\+\+Flags\+None})
+\hyperlink{gai__hotreload_8h_a32983003a4e816a8350f01cb22d1b01b}{G\+A\+I\+H\+R\+\_\+\+A\+PI} unsigned int \hyperlink{gai__hotreload_8h_ad83d8f6170f0404fb72803d012ac9f6a}{gaihr\+\_\+\+Track} (\hyperlink{gai__hotreload_8h_structgaihr__file}{gaihr\+\_\+file} $\ast$file, const char $\ast$filename, \hyperlink{gai__hotreload_8h_a8026f464cf8636b763b6f03798d40800}{gaihr\+\_\+callback} $\ast$callback=0, void $\ast$userdata=0, \hyperlink{gai__hotreload_8h_aaebb069b6896f065efd75640e0e4150b}{gaihr\+\_\+flags} flags=\hyperlink{gai__hotreload_8h_aaebb069b6896f065efd75640e0e4150ba6c207a28fdce6637b4aa1e70e64c3e94}{gaihr\+\_\+\+Flags\+None})
 \begin{DoxyCompactList}\small\item\em Adds a file to a worker thread, which internally tracks if the given file was modified. If so it will fire an event which will result in a function call to the callback function or handled differently depending on the specified flags. \end{DoxyCompactList}\item 
-\hyperlink{gai__hotreload_8h_a32983003a4e816a8350f01cb22d1b01b}{G\+A\+I\+H\+R\+\_\+\+A\+PI} unsigned int \hyperlink{gai__hotreload_8h_a288369c901929574624b267de90007cd}{gaihr\+\_\+\+Untrack} (\hyperlink{structgaihr__file}{gaihr\+\_\+file} $\ast$file)
+\hyperlink{gai__hotreload_8h_a32983003a4e816a8350f01cb22d1b01b}{G\+A\+I\+H\+R\+\_\+\+A\+PI} unsigned int \hyperlink{gai__hotreload_8h_a288369c901929574624b267de90007cd}{gaihr\+\_\+\+Untrack} (\hyperlink{gai__hotreload_8h_structgaihr__file}{gaihr\+\_\+file} $\ast$file)
 \begin{DoxyCompactList}\small\item\em Removes a file from the worker thread. \end{DoxyCompactList}\item 
-\hyperlink{gai__hotreload_8h_a32983003a4e816a8350f01cb22d1b01b}{G\+A\+I\+H\+R\+\_\+\+A\+PI} void \hyperlink{gai__hotreload_8h_a79d4ca28cdaae457474d55a0a21dd326}{gaihr\+\_\+\+Wait\+For\+Event} (\hyperlink{structgaihr__file}{gaihr\+\_\+file} $\ast$file)
-\begin{DoxyCompactList}\small\item\em Grabs a mutex for the specified \hyperlink{structgaihr__file}{gaihr\+\_\+file} handle and waits for an event. If a callback function is specifed and an event happend the callback function will be called. \end{DoxyCompactList}\item 
-\hyperlink{gai__hotreload_8h_a32983003a4e816a8350f01cb22d1b01b}{G\+A\+I\+H\+R\+\_\+\+A\+PI} unsigned int \hyperlink{gai__hotreload_8h_ad94dfb45e7cd9129c43fe17b47c85947}{gaihr\+\_\+\+Begin\+Ticket\+Mutex} (\hyperlink{structgaihr__file}{gaihr\+\_\+file} $\ast$file, int timeout=\hyperlink{gai__hotreload_8h_a36b03891b740d035afdd1f32e15c91ad}{G\+A\+I\+H\+R\+\_\+\+W\+A\+I\+T\+\_\+\+I\+N\+F\+I\+N\+I\+TE})
+\hyperlink{gai__hotreload_8h_a32983003a4e816a8350f01cb22d1b01b}{G\+A\+I\+H\+R\+\_\+\+A\+PI} void \hyperlink{gai__hotreload_8h_a79d4ca28cdaae457474d55a0a21dd326}{gaihr\+\_\+\+Wait\+For\+Event} (\hyperlink{gai__hotreload_8h_structgaihr__file}{gaihr\+\_\+file} $\ast$file)
+\begin{DoxyCompactList}\small\item\em Grabs a mutex for the specified \hyperlink{gai__hotreload_8h_structgaihr__file}{gaihr\+\_\+file} handle and waits for an event. If a callback function is specifed and an event happend the callback function will be called. \end{DoxyCompactList}\item 
+\hyperlink{gai__hotreload_8h_a32983003a4e816a8350f01cb22d1b01b}{G\+A\+I\+H\+R\+\_\+\+A\+PI} unsigned int \hyperlink{gai__hotreload_8h_a52aa011dc92eb63b9d5fc7993042eb3f}{\+\_\+gaihr\+\_\+\+Begin\+Ticket\+Mutex} (\hyperlink{gai__hotreload_8h_structgaihr__file}{gaihr\+\_\+file} $\ast$file, int timeout=\hyperlink{gai__hotreload_8h_a36b03891b740d035afdd1f32e15c91ad}{G\+A\+I\+H\+R\+\_\+\+W\+A\+I\+T\+\_\+\+I\+N\+F\+I\+N\+I\+TE})
 \begin{DoxyCompactList}\small\item\em Opens a mutex to access the data safely in a multi-\/threaded way. \end{DoxyCompactList}\item 
-\hyperlink{gai__hotreload_8h_a32983003a4e816a8350f01cb22d1b01b}{G\+A\+I\+H\+R\+\_\+\+A\+PI} void \hyperlink{gai__hotreload_8h_a6e1b46e3dba1600f8d0daaf4acb67e71}{gaihr\+\_\+\+End\+Ticket\+Mutex} (\hyperlink{structgaihr__file}{gaihr\+\_\+file} $\ast$file)
+\hyperlink{gai__hotreload_8h_a32983003a4e816a8350f01cb22d1b01b}{G\+A\+I\+H\+R\+\_\+\+A\+PI} void \hyperlink{gai__hotreload_8h_ae6e501372d35a3645332dadb8f612e3c}{\+\_\+gaihr\+\_\+\+End\+Ticket\+Mutex} (\hyperlink{gai__hotreload_8h_structgaihr__file}{gaihr\+\_\+file} $\ast$file)
 \begin{DoxyCompactList}\small\item\em Releases the previously opened mutex to allow other thread to use this mutex. \end{DoxyCompactList}\item 
-\hyperlink{gai__hotreload_8h_a32983003a4e816a8350f01cb22d1b01b}{G\+A\+I\+H\+R\+\_\+\+A\+PI} void \hyperlink{gai__hotreload_8h_a9fc2d2fd85a6800bb4bcf09435af4d70}{\+\_\+gaihr\+\_\+\+Create\+Event} (\hyperlink{structgaihr__file}{gaihr\+\_\+file} $\ast$file)
+\hyperlink{gai__hotreload_8h_a32983003a4e816a8350f01cb22d1b01b}{G\+A\+I\+H\+R\+\_\+\+A\+PI} void \hyperlink{gai__hotreload_8h_a465162f1865f5f804311c153c0995543}{\+\_\+gaihr\+\_\+\+Set\+Event} (\hyperlink{gai__hotreload_8h_structgaihr__file}{gaihr\+\_\+file} $\ast$file)
 \begin{DoxyCompactList}\small\item\em Signals a file change to the user. \end{DoxyCompactList}\item 
-\hyperlink{gai__hotreload_8h_a32983003a4e816a8350f01cb22d1b01b}{G\+A\+I\+H\+R\+\_\+\+A\+PI} void \hyperlink{gai__hotreload_8h_aba347f4afef1dd5f850142adf487fa26}{\+\_\+gaihr\+\_\+\+Reset\+Event} (\hyperlink{structgaihr__file}{gaihr\+\_\+file} $\ast$file)
+\hyperlink{gai__hotreload_8h_a32983003a4e816a8350f01cb22d1b01b}{G\+A\+I\+H\+R\+\_\+\+A\+PI} void \hyperlink{gai__hotreload_8h_aba347f4afef1dd5f850142adf487fa26}{\+\_\+gaihr\+\_\+\+Reset\+Event} (\hyperlink{gai__hotreload_8h_structgaihr__file}{gaihr\+\_\+file} $\ast$file)
 \begin{DoxyCompactList}\small\item\em Resets the previously set signal. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{gai__hotreload_8h_affcc82be3377e9546e28872eda3caa5f}\label{gai__hotreload_8h_affcc82be3377e9546e28872eda3caa5f}} 
+static \hyperlink{gai__hotreload_8h_structgaihr__file}{gaihr\+\_\+file} $\ast$ {\bfseries \+\_\+gaihr\+\_\+files} \mbox{[}\hyperlink{gai__hotreload_8h_ac26b515249679c1f9036430164867ba0}{G\+A\+I\+H\+R\+\_\+\+F\+I\+L\+E\+\_\+\+L\+I\+M\+IT}\mbox{]}
+\end{DoxyCompactItemize}
 
 
 \subsection{Detailed Description}
-This api allows you to track any file changes happen to a file ( not really content wise changes, more filetime changes on save \& copy triggers ) 
+Tracks when a file change happened to a file ( For windows it only check for filetime write changes. So it will trigger an event when you save the file or replace it with another ) 
 
-\begin{DoxyWarning}{Warning}
-O\+N\+LY W\+I\+N\+D\+O\+WS IS S\+U\+P\+P\+O\+R\+T\+ED~\newline
- Dependancy\+: user32.\+lib
-\end{DoxyWarning}
+\begin{DoxyAttention}{Attention}
+{\bfseries O\+N\+LY W\+I\+N\+D\+O\+WS IS S\+U\+P\+P\+O\+R\+T\+ED} ~\newline
+ {\bfseries Linker dependencies\+: user32.\+lib}
+\end{DoxyAttention}
 \hypertarget{gai__hotreload_8h_gaihr_intro}{}\subsection{Introduction}\label{gai__hotreload_8h_gaihr_intro}
 The tracking will take place on a seperate thread which will be started the first time you add a file via gaihr\+\_\+\+Track(...) call. You can specify different flags on how the event and callback function will be handled. See the \hyperlink{gai__hotreload_8h_aaebb069b6896f065efd75640e0e4150b}{gaihr\+\_\+flags} definition.
 
@@ -77,36 +97,71 @@ Do this\+: \begin{DoxyVerb}#define GAIHR_IMPLEMENTATION
 \end{DoxyVerb}
 
 
-before you include this file in {\itshape one} C++ file to create the implementation.\hypertarget{gai__hotreload_8h_gaihr_important}{}\subsection{Important}\label{gai__hotreload_8h_gaihr_important}
-{\bfseries All function prefixed with a underscore(\+\_\+) are internally used functions.} {\bfseries DO N\+OT use them if you are not 100\% sure what they do.}\hypertarget{gai__hotreload_8h_gaihr_code_example}{}\subsection{Example Code\+:}\label{gai__hotreload_8h_gaihr_code_example}
-A file with the name \char`\"{}testfile.\+txt\char`\"{} has to be in the directory of the executable. After running the executable you have to change the files content and save it. Or just replace it with another file with the same name.
+before you include this file in {\itshape one} C++ file to create the implementation.
+
+\begin{DoxyNote}{Note}
+{\bfseries All function prefixed with a underscore(\+\_\+) are internally used functions.} {\bfseries DO N\+OT use them if you are not 100\% sure what they do.}
+\end{DoxyNote}
+\hypertarget{gai__hotreload_8h_gaihr_code_example}{}\subsubsection{Example Code}\label{gai__hotreload_8h_gaihr_code_example}
+A file with the name \char`\"{}testfile.\+txt\char`\"{} has to be in the directory of the executable. After running the executable you have to change the file\textquotesingle{}s content and save it or replace it with another file (same filename).
 
 
-\begin{DoxyCode}
+\begin{DoxyCodeInclude}
 \textcolor{preprocessor}{#define GAIHR\_IMPLEMENTATION}
 \textcolor{preprocessor}{#include "\hyperlink{gai__hotreload_8h}{gai\_hotreload.h}"}
-
 \textcolor{preprocessor}{#include <stdio.h>}
+\textcolor{preprocessor}{#include <stdlib.h>}
 
 \textcolor{keyword}{volatile} \textcolor{keywordtype}{int} running = 1; \textcolor{comment}{// This will be changed by another thread!}
 
-\textcolor{keywordtype}{void} reloadFile(\hyperlink{structgaihr__file}{gaihr\_file} *file)
+\hyperlink{gai__hotreload_8h_a6f8c5bfe220445bbbb8e1c9ef176838a}{GAIHR\_CALLBACK}(printFileContentAndStop)
 \{
-   \textcolor{comment}{// Do whatever you want to do, when this happens.}
-   printf(\textcolor{stringliteral}{"%s changed!\(\backslash\)n"}, file->\hyperlink{structgaihr__file_a26ea2bbf62231c3cae2317ca217f8166}{filename});
-   running = 0;
+    \textcolor{keywordtype}{long} filesize = 0;
+    \textcolor{keywordtype}{char} *filecontent = 0;
+    \textcolor{keywordtype}{size\_t} result;
+    running = 0;
+
+    FILE *fp = fopen(file->filename, \textcolor{stringliteral}{"rb"});
+    \textcolor{keywordflow}{if} (fp)
+    \{
+        fseek(fp , 0 , SEEK\_END);
+        filesize = ftell(fp);
+        rewind(fp);
+        filecontent = (\textcolor{keywordtype}{char}*) malloc(filesize+1);
+        \textcolor{keywordflow}{if} (!filecontent)
+        \{
+            fclose(fp);
+            printf(\textcolor{stringliteral}{"malloc error\(\backslash\)n"});
+            \textcolor{keywordflow}{return};
+        \}
+
+        result = fread(filecontent, 1, filesize, fp);
+        \textcolor{keywordflow}{if} (result != filesize)
+        \{
+            fclose(fp);
+            printf(\textcolor{stringliteral}{"file read failed\(\backslash\)n"});
+            \textcolor{keywordflow}{return};
+        \}
+        filecontent[filesize] = 0;
+        printf(\textcolor{stringliteral}{"%s changed!\(\backslash\)nnew file content:\(\backslash\)n%s\(\backslash\)n"}, file->filename, filecontent);
+        free(filecontent);
+        fclose(fp);
+    \}
 \}
 
 \textcolor{keywordtype}{int} main(\textcolor{keywordtype}{int} argc, \textcolor{keywordtype}{char} **argv)
 \{
-   \hyperlink{structgaihr__file}{gaihr\_file} MyFile = \{\};
-   \hyperlink{gai__hotreload_8h_ad83d8f6170f0404fb72803d012ac9f6a}{gaihr\_Track}(&MyFile, \textcolor{stringliteral}{"testfile.txt"}, reloadFile, 0, 
+    \hyperlink{gai__hotreload_8h_structgaihr__file}{gaihr\_file} MyFile = \{\};
+    \hyperlink{gai__hotreload_8h_ad83d8f6170f0404fb72803d012ac9f6a}{gaihr\_Track}(&MyFile, \textcolor{stringliteral}{"testfile.txt"}, printFileContentAndStop, 0, 
       \hyperlink{gai__hotreload_8h_aaebb069b6896f065efd75640e0e4150baee50ce1492a508e5605592106fa00bd5}{gaihr\_FlagsSkipInitialChange});
-   \textcolor{keywordflow}{while}(running) \{Sleep(125);\}
-   \textcolor{keywordflow}{return} 0;
+    printf(\textcolor{stringliteral}{"Please change the file content or replace the file now...\(\backslash\)n"});
+    \textcolor{keywordflow}{while} (running) \{Sleep(125);\}
+    \textcolor{keywordflow}{return} 0;
 \}
-\end{DoxyCode}
- \begin{DoxyAuthor}{Author}
+\end{DoxyCodeInclude}
+
+
+\begin{DoxyAuthor}{Author}
 Andreas Gaida 
 \end{DoxyAuthor}
 \begin{DoxyDate}{Date}
@@ -117,14 +172,171 @@ Andreas Gaida
 \end{DoxySeeAlso}
 
 
-\subsection{Macro Definition Documentation}
-\mbox{\Hypertarget{gai__hotreload_8h_a32983003a4e816a8350f01cb22d1b01b}\label{gai__hotreload_8h_a32983003a4e816a8350f01cb22d1b01b}} 
-\index{gai\+\_\+hotreload.\+h@{gai\+\_\+hotreload.\+h}!G\+A\+I\+H\+R\+\_\+\+A\+PI@{G\+A\+I\+H\+R\+\_\+\+A\+PI}}
-\index{G\+A\+I\+H\+R\+\_\+\+A\+PI@{G\+A\+I\+H\+R\+\_\+\+A\+PI}!gai\+\_\+hotreload.\+h@{gai\+\_\+hotreload.\+h}}
-\subsubsection{\texorpdfstring{G\+A\+I\+H\+R\+\_\+\+A\+PI}{GAIHR\_API}}
-{\footnotesize\ttfamily \#define G\+A\+I\+H\+R\+\_\+\+A\+PI~extern}
+\subsection{Class Documentation}
+\index{gaihr\+\_\+filetime@{gaihr\+\_\+filetime}}\label{structgaihr__filetime}
+\Hypertarget{gai__hotreload_8h_structgaihr__filetime}
+\subsubsection{struct gaihr\+\_\+filetime}
+\begin{DoxyFields}{Class Members}
+\mbox{\Hypertarget{gai__hotreload_8h_aa35cb3a699771f27e62ecff738665169}\label{gai__hotreload_8h_aa35cb3a699771f27e62ecff738665169}} 
+unsigned int&
+highpart&
+\\
+\hline
 
-Define {\bfseries G\+A\+I\+H\+R\+\_\+\+S\+T\+A\+T\+IC} if you want to make functions {\bfseries static} instead of {\bfseries extern}. \mbox{\Hypertarget{gai__hotreload_8h_ac26b515249679c1f9036430164867ba0}\label{gai__hotreload_8h_ac26b515249679c1f9036430164867ba0}} 
+\mbox{\Hypertarget{gai__hotreload_8h_ac97443b53714d1ed266459ef0158c278}\label{gai__hotreload_8h_ac97443b53714d1ed266459ef0158c278}} 
+unsigned int&
+lowpart&
+\\
+\hline
+
+\end{DoxyFields}
+\index{gaihr\+\_\+platform\+\_\+win32@{gaihr\+\_\+platform\+\_\+win32}}\label{structgaihr__platform__win32}
+\Hypertarget{gai__hotreload_8h_structgaihr__platform__win32}
+\subsubsection{struct gaihr\+\_\+platform\+\_\+win32}
+\begin{DoxyFields}{Class Members}
+\mbox{\Hypertarget{gai__hotreload_8h_a146c8d18d7cc6be7113e1afcb92e6a8f}\label{gai__hotreload_8h_a146c8d18d7cc6be7113e1afcb92e6a8f}} 
+HANDLE&
+event&
+\\
+\hline
+
+\mbox{\Hypertarget{gai__hotreload_8h_a6119861cabb0b6251f23e90033780a82}\label{gai__hotreload_8h_a6119861cabb0b6251f23e90033780a82}} 
+HANDLE&
+mutex&
+\\
+\hline
+
+\end{DoxyFields}
+\index{gaihr\+\_\+platform@{gaihr\+\_\+platform}}\label{uniongaihr__platform}
+\Hypertarget{gai__hotreload_8h_uniongaihr__platform}
+\subsubsection{union gaihr\+\_\+platform}
+
+
+Collaboration diagram for gaihr\+\_\+platform\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=175pt]{uniongaihr__platform__coll__graph}
+\end{center}
+\end{figure}
+\begin{DoxyFields}{Class Members}
+\mbox{\Hypertarget{gai__hotreload_8h_afe6263d41992ba905300fa023baf1125}\label{gai__hotreload_8h_afe6263d41992ba905300fa023baf1125}} 
+\hyperlink{gai__hotreload_8h_structgaihr__platform__win32}{gaihr\_platform\_win32}&
+win32&
+\\
+\hline
+
+\end{DoxyFields}
+\index{gaihr\+\_\+file@{gaihr\+\_\+file}}\label{structgaihr__file}
+\Hypertarget{gai__hotreload_8h_structgaihr__file}
+\subsubsection{struct gaihr\+\_\+file}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000001}{Todo}]Think about a way of easily support other platforms. \end{DoxyRefDesc}
+\begin{Desc}
+\item[Examples\+: ]\par
+\hyperlink{hotreload_0Cwin32_0Cmain_8cpp-example}{hotreload\textbackslash{}win32\textbackslash{}main.\+cpp}.\end{Desc}
+
+
+Collaboration diagram for gaihr\+\_\+file\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=245pt]{structgaihr__file__coll__graph}
+\end{center}
+\end{figure}
+\begin{DoxyFields}{Class Members}
+\mbox{\Hypertarget{gai__hotreload_8h_a9ac45c0142ff1eaf591b870e163d7f31}\label{gai__hotreload_8h_a9ac45c0142ff1eaf591b870e163d7f31}} 
+\hyperlink{gai__hotreload_8h_a8026f464cf8636b763b6f03798d40800}{gaihr\_callback} $\ast$&
+callback&
+Callback to the function when an event happens. See \hyperlink{gai__hotreload_8h_a6f8c5bfe220445bbbb8e1c9ef176838a}{G\+A\+I\+H\+R\+\_\+\+C\+A\+L\+L\+B\+A\+CK} \\
+\hline
+
+\mbox{\Hypertarget{gai__hotreload_8h_a26ea2bbf62231c3cae2317ca217f8166}\label{gai__hotreload_8h_a26ea2bbf62231c3cae2317ca217f8166}} 
+const char $\ast$&
+filename&
+File to check for changes. \\
+\hline
+
+\mbox{\Hypertarget{gai__hotreload_8h_ab6eef82d50a8a51d161de3ab7ad98ee9}\label{gai__hotreload_8h_ab6eef82d50a8a51d161de3ab7ad98ee9}} 
+\hyperlink{gai__hotreload_8h_aaebb069b6896f065efd75640e0e4150b}{gaihr\_flags}&
+flags&
+Flags to specify event handling and callback behaviour. \\
+\hline
+
+\mbox{\Hypertarget{gai__hotreload_8h_a38b2bc43116a1fd59715ca1714d80462}\label{gai__hotreload_8h_a38b2bc43116a1fd59715ca1714d80462}} 
+\hyperlink{gai__hotreload_8h_structgaihr__filetime}{gaihr\_filetime}&
+last\_write\_time&
+Filetime structure. \\
+\hline
+
+\mbox{\Hypertarget{gai__hotreload_8h_a138044c270d5f0e83917ae2841efe8b7}\label{gai__hotreload_8h_a138044c270d5f0e83917ae2841efe8b7}} 
+\hyperlink{gai__hotreload_8h_uniongaihr__platform}{gaihr\_platform}&
+platform&
+Platform specfic structure for semaphore or mutex handles. \\
+\hline
+
+\mbox{\Hypertarget{gai__hotreload_8h_a06bf963cb9c08e69fcc6c4bb3140a2b8}\label{gai__hotreload_8h_a06bf963cb9c08e69fcc6c4bb3140a2b8}} 
+void $\ast$&
+userdata&
+User passed data. \\
+\hline
+
+\end{DoxyFields}
+
+
+\subsection{Macro Definition Documentation}
+\mbox{\Hypertarget{gai__hotreload_8h_a11e965cbb3e2af8ed1888b0c6b2777da}\label{gai__hotreload_8h_a11e965cbb3e2af8ed1888b0c6b2777da}} 
+\index{gai\+\_\+hotreload.\+h@{gai\+\_\+hotreload.\+h}!G\+A\+I\+H\+R\+\_\+\+A\+S\+S\+E\+RT@{G\+A\+I\+H\+R\+\_\+\+A\+S\+S\+E\+RT}}
+\index{G\+A\+I\+H\+R\+\_\+\+A\+S\+S\+E\+RT@{G\+A\+I\+H\+R\+\_\+\+A\+S\+S\+E\+RT}!gai\+\_\+hotreload.\+h@{gai\+\_\+hotreload.\+h}}
+\subsubsection{\texorpdfstring{G\+A\+I\+H\+R\+\_\+\+A\+S\+S\+E\+RT}{GAIHR\_ASSERT}}
+{\footnotesize\ttfamily \#define G\+A\+I\+H\+R\+\_\+\+A\+S\+S\+E\+RT(\begin{DoxyParamCaption}\item[{}]{cond }\end{DoxyParamCaption})~assert(cond)}
+
+
+
+Define {\bfseries G\+A\+I\+H\+R\+\_\+\+A\+S\+S\+E\+RT} before including this file to {\bfseries disable} assertions. 
+
+\begin{DoxyNote}{Note}
+Uses assert() from the c-\/standard library by default $<$assert.\+h$>$ 
+\end{DoxyNote}
+
+\begin{DoxyParams}{Parameters}
+{\em cond} & Assertion condition \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{gai__hotreload_8h_a6f8c5bfe220445bbbb8e1c9ef176838a}\label{gai__hotreload_8h_a6f8c5bfe220445bbbb8e1c9ef176838a}} 
+\index{gai\+\_\+hotreload.\+h@{gai\+\_\+hotreload.\+h}!G\+A\+I\+H\+R\+\_\+\+C\+A\+L\+L\+B\+A\+CK@{G\+A\+I\+H\+R\+\_\+\+C\+A\+L\+L\+B\+A\+CK}}
+\index{G\+A\+I\+H\+R\+\_\+\+C\+A\+L\+L\+B\+A\+CK@{G\+A\+I\+H\+R\+\_\+\+C\+A\+L\+L\+B\+A\+CK}!gai\+\_\+hotreload.\+h@{gai\+\_\+hotreload.\+h}}
+\subsubsection{\texorpdfstring{G\+A\+I\+H\+R\+\_\+\+C\+A\+L\+L\+B\+A\+CK}{GAIHR\_CALLBACK}}
+{\footnotesize\ttfamily \#define G\+A\+I\+H\+R\+\_\+\+C\+A\+L\+L\+B\+A\+CK(\begin{DoxyParamCaption}\item[{}]{name }\end{DoxyParamCaption})~void name(\hyperlink{gai__hotreload_8h_structgaihr__file}{gaihr\+\_\+file} $\ast$file)}
+
+
+
+Callback function macro which will generate a function as specified by \hyperlink{gai__hotreload_8h_a8026f464cf8636b763b6f03798d40800}{gaihr\+\_\+callback}. 
+
+{\bfseries Usage} {\bfseries example\+:} 
+\begin{DoxyCode}
+\hyperlink{gai__hotreload_8h_a6f8c5bfe220445bbbb8e1c9ef176838a}{GAIHR\_CALLBACK}(myCallbackFunction)
+\{
+        \textcolor{comment}{// Do whatever you want here}
+        printf(\textcolor{stringliteral}{"%s\(\backslash\)n"}, file->filename);
+\}
+\end{DoxyCode}
+
+
+The above example will actually generate a function which looks like this\+: 
+\begin{DoxyCode}
+\textcolor{keywordtype}{void} myCallbackFunction(\hyperlink{gai__hotreload_8h_structgaihr__file}{gaihr\_file} *file)
+\{
+        \textcolor{comment}{// Do whatever you want here}
+        printf(\textcolor{stringliteral}{"%s\(\backslash\)n"}, file->\hyperlink{gai__hotreload_8h_a26ea2bbf62231c3cae2317ca217f8166}{filename});
+\}
+\end{DoxyCode}
+
+
+See the \hyperlink{gai__hotreload_8h_gaihr_code_example}{Example Code} section for a simple demonstration. \begin{Desc}
+\item[Examples\+: ]\par
+\hyperlink{hotreload_0Cwin32_0Cmain_8cpp-example}{hotreload\textbackslash{}win32\textbackslash{}main.\+cpp}.\end{Desc}
+\mbox{\Hypertarget{gai__hotreload_8h_ac26b515249679c1f9036430164867ba0}\label{gai__hotreload_8h_ac26b515249679c1f9036430164867ba0}} 
 \index{gai\+\_\+hotreload.\+h@{gai\+\_\+hotreload.\+h}!G\+A\+I\+H\+R\+\_\+\+F\+I\+L\+E\+\_\+\+L\+I\+M\+IT@{G\+A\+I\+H\+R\+\_\+\+F\+I\+L\+E\+\_\+\+L\+I\+M\+IT}}
 \index{G\+A\+I\+H\+R\+\_\+\+F\+I\+L\+E\+\_\+\+L\+I\+M\+IT@{G\+A\+I\+H\+R\+\_\+\+F\+I\+L\+E\+\_\+\+L\+I\+M\+IT}!gai\+\_\+hotreload.\+h@{gai\+\_\+hotreload.\+h}}
 \subsubsection{\texorpdfstring{G\+A\+I\+H\+R\+\_\+\+F\+I\+L\+E\+\_\+\+L\+I\+M\+IT}{GAIHR\_FILE\_LIMIT}}
@@ -143,19 +355,6 @@ Thread sleeping time until it checks for updated files again \mbox{\Hypertarget{
 {\footnotesize\ttfamily \#define G\+A\+I\+H\+R\+\_\+\+W\+A\+I\+T\+\_\+\+I\+N\+F\+I\+N\+I\+TE~-\/1}
 
 Note\+: Currently the windows specified value for I\+N\+F\+I\+N\+I\+TE. Will possibly be changed! 
-
-\subsection{Typedef Documentation}
-\mbox{\Hypertarget{gai__hotreload_8h_a8026f464cf8636b763b6f03798d40800}\label{gai__hotreload_8h_a8026f464cf8636b763b6f03798d40800}} 
-\index{gai\+\_\+hotreload.\+h@{gai\+\_\+hotreload.\+h}!gaihr\+\_\+callback@{gaihr\+\_\+callback}}
-\index{gaihr\+\_\+callback@{gaihr\+\_\+callback}!gai\+\_\+hotreload.\+h@{gai\+\_\+hotreload.\+h}}
-\subsubsection{\texorpdfstring{gaihr\+\_\+callback}{gaihr\_callback}}
-{\footnotesize\ttfamily typedef void gaihr\+\_\+callback(\hyperlink{structgaihr__file}{gaihr\+\_\+file} $\ast$file)}
-
-
-
-Callback function typedef which will be call when an event happens. 
-
-\hyperlink{gai__hotreload_8h_gaihr_code_example}{gaihr\+\_\+code\+\_\+example} 
 
 \subsection{Enumeration Type Documentation}
 \mbox{\Hypertarget{gai__hotreload_8h_aaebb069b6896f065efd75640e0e4150b}\label{gai__hotreload_8h_aaebb069b6896f065efd75640e0e4150b}} 
@@ -189,41 +388,11 @@ gaihr\+\_\+\+Flags\+Skip\+Initial\+Change&Indicates whether the initial file cha
 
 
 \subsection{Function Documentation}
-\mbox{\Hypertarget{gai__hotreload_8h_a9fc2d2fd85a6800bb4bcf09435af4d70}\label{gai__hotreload_8h_a9fc2d2fd85a6800bb4bcf09435af4d70}} 
-\index{gai\+\_\+hotreload.\+h@{gai\+\_\+hotreload.\+h}!\+\_\+gaihr\+\_\+\+Create\+Event@{\+\_\+gaihr\+\_\+\+Create\+Event}}
-\index{\+\_\+gaihr\+\_\+\+Create\+Event@{\+\_\+gaihr\+\_\+\+Create\+Event}!gai\+\_\+hotreload.\+h@{gai\+\_\+hotreload.\+h}}
-\subsubsection{\texorpdfstring{\+\_\+gaihr\+\_\+\+Create\+Event()}{\_gaihr\_CreateEvent()}}
-{\footnotesize\ttfamily \hyperlink{gai__hotreload_8h_a32983003a4e816a8350f01cb22d1b01b}{G\+A\+I\+H\+R\+\_\+\+A\+PI} void \+\_\+gaihr\+\_\+\+Create\+Event (\begin{DoxyParamCaption}\item[{\hyperlink{structgaihr__file}{gaihr\+\_\+file} $\ast$}]{file }\end{DoxyParamCaption})}
-
-
-
-Signals a file change to the user. 
-
-
-\begin{DoxyParams}{Parameters}
-{\em file} & Handle to a \hyperlink{structgaihr__file}{gaihr\+\_\+file} instance. \\
-\hline
-\end{DoxyParams}
-\mbox{\Hypertarget{gai__hotreload_8h_aba347f4afef1dd5f850142adf487fa26}\label{gai__hotreload_8h_aba347f4afef1dd5f850142adf487fa26}} 
-\index{gai\+\_\+hotreload.\+h@{gai\+\_\+hotreload.\+h}!\+\_\+gaihr\+\_\+\+Reset\+Event@{\+\_\+gaihr\+\_\+\+Reset\+Event}}
-\index{\+\_\+gaihr\+\_\+\+Reset\+Event@{\+\_\+gaihr\+\_\+\+Reset\+Event}!gai\+\_\+hotreload.\+h@{gai\+\_\+hotreload.\+h}}
-\subsubsection{\texorpdfstring{\+\_\+gaihr\+\_\+\+Reset\+Event()}{\_gaihr\_ResetEvent()}}
-{\footnotesize\ttfamily \hyperlink{gai__hotreload_8h_a32983003a4e816a8350f01cb22d1b01b}{G\+A\+I\+H\+R\+\_\+\+A\+PI} void \+\_\+gaihr\+\_\+\+Reset\+Event (\begin{DoxyParamCaption}\item[{\hyperlink{structgaihr__file}{gaihr\+\_\+file} $\ast$}]{file }\end{DoxyParamCaption})}
-
-
-
-Resets the previously set signal. 
-
-
-\begin{DoxyParams}{Parameters}
-{\em file} & Handle to a \hyperlink{structgaihr__file}{gaihr\+\_\+file} instance. \\
-\hline
-\end{DoxyParams}
-\mbox{\Hypertarget{gai__hotreload_8h_ad94dfb45e7cd9129c43fe17b47c85947}\label{gai__hotreload_8h_ad94dfb45e7cd9129c43fe17b47c85947}} 
-\index{gai\+\_\+hotreload.\+h@{gai\+\_\+hotreload.\+h}!gaihr\+\_\+\+Begin\+Ticket\+Mutex@{gaihr\+\_\+\+Begin\+Ticket\+Mutex}}
-\index{gaihr\+\_\+\+Begin\+Ticket\+Mutex@{gaihr\+\_\+\+Begin\+Ticket\+Mutex}!gai\+\_\+hotreload.\+h@{gai\+\_\+hotreload.\+h}}
-\subsubsection{\texorpdfstring{gaihr\+\_\+\+Begin\+Ticket\+Mutex()}{gaihr\_BeginTicketMutex()}}
-{\footnotesize\ttfamily \hyperlink{gai__hotreload_8h_a32983003a4e816a8350f01cb22d1b01b}{G\+A\+I\+H\+R\+\_\+\+A\+PI} unsigned int gaihr\+\_\+\+Begin\+Ticket\+Mutex (\begin{DoxyParamCaption}\item[{\hyperlink{structgaihr__file}{gaihr\+\_\+file} $\ast$}]{file,  }\item[{int}]{timeout = {\ttfamily \hyperlink{gai__hotreload_8h_a36b03891b740d035afdd1f32e15c91ad}{G\+A\+I\+H\+R\+\_\+\+W\+A\+I\+T\+\_\+\+I\+N\+F\+I\+N\+I\+TE}} }\end{DoxyParamCaption})}
+\mbox{\Hypertarget{gai__hotreload_8h_a52aa011dc92eb63b9d5fc7993042eb3f}\label{gai__hotreload_8h_a52aa011dc92eb63b9d5fc7993042eb3f}} 
+\index{gai\+\_\+hotreload.\+h@{gai\+\_\+hotreload.\+h}!\+\_\+gaihr\+\_\+\+Begin\+Ticket\+Mutex@{\+\_\+gaihr\+\_\+\+Begin\+Ticket\+Mutex}}
+\index{\+\_\+gaihr\+\_\+\+Begin\+Ticket\+Mutex@{\+\_\+gaihr\+\_\+\+Begin\+Ticket\+Mutex}!gai\+\_\+hotreload.\+h@{gai\+\_\+hotreload.\+h}}
+\subsubsection{\texorpdfstring{\+\_\+gaihr\+\_\+\+Begin\+Ticket\+Mutex()}{\_gaihr\_BeginTicketMutex()}}
+{\footnotesize\ttfamily \hyperlink{gai__hotreload_8h_a32983003a4e816a8350f01cb22d1b01b}{G\+A\+I\+H\+R\+\_\+\+A\+PI} unsigned int \+\_\+gaihr\+\_\+\+Begin\+Ticket\+Mutex (\begin{DoxyParamCaption}\item[{\hyperlink{gai__hotreload_8h_structgaihr__file}{gaihr\+\_\+file} $\ast$}]{file,  }\item[{int}]{timeout = {\ttfamily \hyperlink{gai__hotreload_8h_a36b03891b740d035afdd1f32e15c91ad}{G\+A\+I\+H\+R\+\_\+\+W\+A\+I\+T\+\_\+\+I\+N\+F\+I\+N\+I\+TE}} }\end{DoxyParamCaption})}
 
 
 
@@ -231,19 +400,32 @@ Opens a mutex to access the data safely in a multi-\/threaded way.
 
 
 \begin{DoxyParams}{Parameters}
-{\em file} & Handle to a \hyperlink{structgaihr__file}{gaihr\+\_\+file} instance. \\
+{\em file} & Handle to a \hyperlink{gai__hotreload_8h_structgaihr__file}{gaihr\+\_\+file} instance. \\
 \hline
 {\em timeout} & Time to grab the mutex. (Can take longer if the mutex is used by another thread and was not released yet!) \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-1 if the mutex was succesfully opened, 0 on failure (mutex is probably used by another thread). 
+\tabulinesep=1mm
+\begin{longtabu} spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Return Code }&\textbf{ Description  }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Return Code }&\textbf{ Description  }\\\cline{1-2}
+\endhead
+1 &Mutex was succesfully opened \\\cline{1-2}
+0 &Failure (mutex is probably used by another thread) \\\cline{1-2}
+\end{longtabu}
+
 \end{DoxyReturn}
-\mbox{\Hypertarget{gai__hotreload_8h_a6e1b46e3dba1600f8d0daaf4acb67e71}\label{gai__hotreload_8h_a6e1b46e3dba1600f8d0daaf4acb67e71}} 
-\index{gai\+\_\+hotreload.\+h@{gai\+\_\+hotreload.\+h}!gaihr\+\_\+\+End\+Ticket\+Mutex@{gaihr\+\_\+\+End\+Ticket\+Mutex}}
-\index{gaihr\+\_\+\+End\+Ticket\+Mutex@{gaihr\+\_\+\+End\+Ticket\+Mutex}!gai\+\_\+hotreload.\+h@{gai\+\_\+hotreload.\+h}}
-\subsubsection{\texorpdfstring{gaihr\+\_\+\+End\+Ticket\+Mutex()}{gaihr\_EndTicketMutex()}}
-{\footnotesize\ttfamily \hyperlink{gai__hotreload_8h_a32983003a4e816a8350f01cb22d1b01b}{G\+A\+I\+H\+R\+\_\+\+A\+PI} void gaihr\+\_\+\+End\+Ticket\+Mutex (\begin{DoxyParamCaption}\item[{\hyperlink{structgaihr__file}{gaihr\+\_\+file} $\ast$}]{file }\end{DoxyParamCaption})}
+\mbox{\Hypertarget{gai__hotreload_8h_ae6e501372d35a3645332dadb8f612e3c}\label{gai__hotreload_8h_ae6e501372d35a3645332dadb8f612e3c}} 
+\index{gai\+\_\+hotreload.\+h@{gai\+\_\+hotreload.\+h}!\+\_\+gaihr\+\_\+\+End\+Ticket\+Mutex@{\+\_\+gaihr\+\_\+\+End\+Ticket\+Mutex}}
+\index{\+\_\+gaihr\+\_\+\+End\+Ticket\+Mutex@{\+\_\+gaihr\+\_\+\+End\+Ticket\+Mutex}!gai\+\_\+hotreload.\+h@{gai\+\_\+hotreload.\+h}}
+\subsubsection{\texorpdfstring{\+\_\+gaihr\+\_\+\+End\+Ticket\+Mutex()}{\_gaihr\_EndTicketMutex()}}
+{\footnotesize\ttfamily \hyperlink{gai__hotreload_8h_a32983003a4e816a8350f01cb22d1b01b}{G\+A\+I\+H\+R\+\_\+\+A\+PI} void \+\_\+gaihr\+\_\+\+End\+Ticket\+Mutex (\begin{DoxyParamCaption}\item[{\hyperlink{gai__hotreload_8h_structgaihr__file}{gaihr\+\_\+file} $\ast$}]{file }\end{DoxyParamCaption})}
 
 
 
@@ -251,14 +433,44 @@ Releases the previously opened mutex to allow other thread to use this mutex.
 
 
 \begin{DoxyParams}{Parameters}
-{\em file} & Handle to a \hyperlink{structgaihr__file}{gaihr\+\_\+file} instance. \\
+{\em file} & Handle to a \hyperlink{gai__hotreload_8h_structgaihr__file}{gaihr\+\_\+file} instance. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{gai__hotreload_8h_aba347f4afef1dd5f850142adf487fa26}\label{gai__hotreload_8h_aba347f4afef1dd5f850142adf487fa26}} 
+\index{gai\+\_\+hotreload.\+h@{gai\+\_\+hotreload.\+h}!\+\_\+gaihr\+\_\+\+Reset\+Event@{\+\_\+gaihr\+\_\+\+Reset\+Event}}
+\index{\+\_\+gaihr\+\_\+\+Reset\+Event@{\+\_\+gaihr\+\_\+\+Reset\+Event}!gai\+\_\+hotreload.\+h@{gai\+\_\+hotreload.\+h}}
+\subsubsection{\texorpdfstring{\+\_\+gaihr\+\_\+\+Reset\+Event()}{\_gaihr\_ResetEvent()}}
+{\footnotesize\ttfamily \hyperlink{gai__hotreload_8h_a32983003a4e816a8350f01cb22d1b01b}{G\+A\+I\+H\+R\+\_\+\+A\+PI} void \+\_\+gaihr\+\_\+\+Reset\+Event (\begin{DoxyParamCaption}\item[{\hyperlink{gai__hotreload_8h_structgaihr__file}{gaihr\+\_\+file} $\ast$}]{file }\end{DoxyParamCaption})}
+
+
+
+Resets the previously set signal. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em file} & Handle to a \hyperlink{gai__hotreload_8h_structgaihr__file}{gaihr\+\_\+file} instance. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{gai__hotreload_8h_a465162f1865f5f804311c153c0995543}\label{gai__hotreload_8h_a465162f1865f5f804311c153c0995543}} 
+\index{gai\+\_\+hotreload.\+h@{gai\+\_\+hotreload.\+h}!\+\_\+gaihr\+\_\+\+Set\+Event@{\+\_\+gaihr\+\_\+\+Set\+Event}}
+\index{\+\_\+gaihr\+\_\+\+Set\+Event@{\+\_\+gaihr\+\_\+\+Set\+Event}!gai\+\_\+hotreload.\+h@{gai\+\_\+hotreload.\+h}}
+\subsubsection{\texorpdfstring{\+\_\+gaihr\+\_\+\+Set\+Event()}{\_gaihr\_SetEvent()}}
+{\footnotesize\ttfamily \hyperlink{gai__hotreload_8h_a32983003a4e816a8350f01cb22d1b01b}{G\+A\+I\+H\+R\+\_\+\+A\+PI} void \+\_\+gaihr\+\_\+\+Set\+Event (\begin{DoxyParamCaption}\item[{\hyperlink{gai__hotreload_8h_structgaihr__file}{gaihr\+\_\+file} $\ast$}]{file }\end{DoxyParamCaption})}
+
+
+
+Signals a file change to the user. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em file} & Handle to a \hyperlink{gai__hotreload_8h_structgaihr__file}{gaihr\+\_\+file} instance. \\
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{gai__hotreload_8h_ad83d8f6170f0404fb72803d012ac9f6a}\label{gai__hotreload_8h_ad83d8f6170f0404fb72803d012ac9f6a}} 
 \index{gai\+\_\+hotreload.\+h@{gai\+\_\+hotreload.\+h}!gaihr\+\_\+\+Track@{gaihr\+\_\+\+Track}}
 \index{gaihr\+\_\+\+Track@{gaihr\+\_\+\+Track}!gai\+\_\+hotreload.\+h@{gai\+\_\+hotreload.\+h}}
 \subsubsection{\texorpdfstring{gaihr\+\_\+\+Track()}{gaihr\_Track()}}
-{\footnotesize\ttfamily \hyperlink{gai__hotreload_8h_a32983003a4e816a8350f01cb22d1b01b}{G\+A\+I\+H\+R\+\_\+\+A\+PI} unsigned int gaihr\+\_\+\+Track (\begin{DoxyParamCaption}\item[{\hyperlink{structgaihr__file}{gaihr\+\_\+file} $\ast$}]{file,  }\item[{const char $\ast$}]{filename,  }\item[{\hyperlink{gai__hotreload_8h_a8026f464cf8636b763b6f03798d40800}{gaihr\+\_\+callback} $\ast$}]{callback = {\ttfamily 0},  }\item[{void $\ast$}]{userdata = {\ttfamily 0},  }\item[{\hyperlink{gai__hotreload_8h_aaebb069b6896f065efd75640e0e4150b}{gaihr\+\_\+flags}}]{flags = {\ttfamily \hyperlink{gai__hotreload_8h_aaebb069b6896f065efd75640e0e4150ba6c207a28fdce6637b4aa1e70e64c3e94}{gaihr\+\_\+\+Flags\+None}} }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \hyperlink{gai__hotreload_8h_a32983003a4e816a8350f01cb22d1b01b}{G\+A\+I\+H\+R\+\_\+\+A\+PI} unsigned int gaihr\+\_\+\+Track (\begin{DoxyParamCaption}\item[{\hyperlink{gai__hotreload_8h_structgaihr__file}{gaihr\+\_\+file} $\ast$}]{file,  }\item[{const char $\ast$}]{filename,  }\item[{\hyperlink{gai__hotreload_8h_a8026f464cf8636b763b6f03798d40800}{gaihr\+\_\+callback} $\ast$}]{callback = {\ttfamily 0},  }\item[{void $\ast$}]{userdata = {\ttfamily 0},  }\item[{\hyperlink{gai__hotreload_8h_aaebb069b6896f065efd75640e0e4150b}{gaihr\+\_\+flags}}]{flags = {\ttfamily \hyperlink{gai__hotreload_8h_aaebb069b6896f065efd75640e0e4150ba6c207a28fdce6637b4aa1e70e64c3e94}{gaihr\+\_\+\+Flags\+None}} }\end{DoxyParamCaption})}
 
 
 
@@ -266,25 +478,41 @@ Adds a file to a worker thread, which internally tracks if the given file was mo
 
 
 \begin{DoxyParams}{Parameters}
-{\em file} & Handle to a \hyperlink{structgaihr__file}{gaihr\+\_\+file} instance. \\
+{\em file} & A pointer to a \hyperlink{gai__hotreload_8h_structgaihr__file}{gaihr\+\_\+file} structure. \\
 \hline
-{\em filename} & Filename of the file to track. \\
+{\em filename} & Filename of the file to track (relative or full). \\
 \hline
-{\em callback} & (optional) Callback function pointer when event happens. \\
+{\em callback} & (optional) A pointer to he callback function. See \hyperlink{gai__hotreload_8h_a6f8c5bfe220445bbbb8e1c9ef176838a}{G\+A\+I\+H\+R\+\_\+\+C\+A\+L\+L\+B\+A\+CK} \\
 \hline
-{\em userdata} & (optional) Pointer to user specific data. \\
+{\em userdata} & (optional) A pointer to userdefined memory. \\
 \hline
-{\em flags} & (optional) Flags to handle file changes and callbacks. \\
+{\em flags} & (optional) Flags to handle events and callbacks. See \hyperlink{gai__hotreload_8h_aaebb069b6896f065efd75640e0e4150b}{gaihr\+\_\+flags} \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-1 on success, 0 on failure. 
+\tabulinesep=1mm
+\begin{longtabu} spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Return Code }&\textbf{ Description  }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Return Code }&\textbf{ Description  }\\\cline{1-2}
+\endhead
+1 &Success \\\cline{1-2}
+0 &Failure \\\cline{1-2}
+\end{longtabu}
+
 \end{DoxyReturn}
+\begin{Desc}
+\item[Examples\+: ]\par
+\hyperlink{hotreload_0Cwin32_0Cmain_8cpp-example}{hotreload\textbackslash{}win32\textbackslash{}main.\+cpp}.\end{Desc}
 \mbox{\Hypertarget{gai__hotreload_8h_a288369c901929574624b267de90007cd}\label{gai__hotreload_8h_a288369c901929574624b267de90007cd}} 
 \index{gai\+\_\+hotreload.\+h@{gai\+\_\+hotreload.\+h}!gaihr\+\_\+\+Untrack@{gaihr\+\_\+\+Untrack}}
 \index{gaihr\+\_\+\+Untrack@{gaihr\+\_\+\+Untrack}!gai\+\_\+hotreload.\+h@{gai\+\_\+hotreload.\+h}}
 \subsubsection{\texorpdfstring{gaihr\+\_\+\+Untrack()}{gaihr\_Untrack()}}
-{\footnotesize\ttfamily \hyperlink{gai__hotreload_8h_a32983003a4e816a8350f01cb22d1b01b}{G\+A\+I\+H\+R\+\_\+\+A\+PI} unsigned int gaihr\+\_\+\+Untrack (\begin{DoxyParamCaption}\item[{\hyperlink{structgaihr__file}{gaihr\+\_\+file} $\ast$}]{file }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \hyperlink{gai__hotreload_8h_a32983003a4e816a8350f01cb22d1b01b}{G\+A\+I\+H\+R\+\_\+\+A\+PI} unsigned int gaihr\+\_\+\+Untrack (\begin{DoxyParamCaption}\item[{\hyperlink{gai__hotreload_8h_structgaihr__file}{gaihr\+\_\+file} $\ast$}]{file }\end{DoxyParamCaption})}
 
 
 
@@ -292,24 +520,37 @@ Removes a file from the worker thread.
 
 
 \begin{DoxyParams}{Parameters}
-{\em file} & Handle to a \hyperlink{structgaihr__file}{gaihr\+\_\+file} instance. \\
+{\em file} & Handle to a \hyperlink{gai__hotreload_8h_structgaihr__file}{gaihr\+\_\+file} instance. \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-1 on success, 0 on failure. 
+\tabulinesep=1mm
+\begin{longtabu} spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Return Code }&\textbf{ Description  }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Return Code }&\textbf{ Description  }\\\cline{1-2}
+\endhead
+1 &Success \\\cline{1-2}
+0 &Failure \\\cline{1-2}
+\end{longtabu}
+
 \end{DoxyReturn}
 \mbox{\Hypertarget{gai__hotreload_8h_a79d4ca28cdaae457474d55a0a21dd326}\label{gai__hotreload_8h_a79d4ca28cdaae457474d55a0a21dd326}} 
 \index{gai\+\_\+hotreload.\+h@{gai\+\_\+hotreload.\+h}!gaihr\+\_\+\+Wait\+For\+Event@{gaihr\+\_\+\+Wait\+For\+Event}}
 \index{gaihr\+\_\+\+Wait\+For\+Event@{gaihr\+\_\+\+Wait\+For\+Event}!gai\+\_\+hotreload.\+h@{gai\+\_\+hotreload.\+h}}
 \subsubsection{\texorpdfstring{gaihr\+\_\+\+Wait\+For\+Event()}{gaihr\_WaitForEvent()}}
-{\footnotesize\ttfamily \hyperlink{gai__hotreload_8h_a32983003a4e816a8350f01cb22d1b01b}{G\+A\+I\+H\+R\+\_\+\+A\+PI} void gaihr\+\_\+\+Wait\+For\+Event (\begin{DoxyParamCaption}\item[{\hyperlink{structgaihr__file}{gaihr\+\_\+file} $\ast$}]{file }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \hyperlink{gai__hotreload_8h_a32983003a4e816a8350f01cb22d1b01b}{G\+A\+I\+H\+R\+\_\+\+A\+PI} void gaihr\+\_\+\+Wait\+For\+Event (\begin{DoxyParamCaption}\item[{\hyperlink{gai__hotreload_8h_structgaihr__file}{gaihr\+\_\+file} $\ast$}]{file }\end{DoxyParamCaption})}
 
 
 
-Grabs a mutex for the specified \hyperlink{structgaihr__file}{gaihr\+\_\+file} handle and waits for an event. If a callback function is specifed and an event happend the callback function will be called. 
+Grabs a mutex for the specified \hyperlink{gai__hotreload_8h_structgaihr__file}{gaihr\+\_\+file} handle and waits for an event. If a callback function is specifed and an event happend the callback function will be called. 
 
 
 \begin{DoxyParams}{Parameters}
-{\em file} & Handle to a \hyperlink{structgaihr__file}{gaihr\+\_\+file} instance. \\
+{\em file} & Handle to a \hyperlink{gai__hotreload_8h_structgaihr__file}{gaihr\+\_\+file} instance. \\
 \hline
 \end{DoxyParams}

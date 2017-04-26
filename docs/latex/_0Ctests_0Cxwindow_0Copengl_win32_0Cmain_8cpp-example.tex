@@ -1,0 +1,40 @@
+\hypertarget{_0Ctests_0Cxwindow_0Copengl_win32_0Cmain_8cpp-example}{}\section{\textbackslash{}tests\textbackslash{}xwindow\textbackslash{}opengl\+\_\+win32\textbackslash{}main.\+cpp}
+{\bfseries Example\+: win32 \hyperlink{gai__xwindow_8h}{gai\+\_\+xwindow.\+h} (opengl)}
+
+
+\begin{DoxyCodeInclude}
+\textcolor{preprocessor}{#define GAIXW\_IMPLEMENTATION}
+\textcolor{preprocessor}{#define GAIXW\_OPENGL}
+\textcolor{preprocessor}{#include <\hyperlink{gai__xwindow_8h}{gai\_xwindow.h}>}
+
+\textcolor{keywordtype}{int} main(\textcolor{keywordtype}{int} argc, \textcolor{keywordtype}{char}** argv)
+\{
+    \hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\_context} window = \{\};
+    \textcolor{keywordflow}{if} (!\hyperlink{gai__xwindow_8h_adec8bb998b6861c4d239b25634c8eb55}{gaixw\_Init}(&window, \textcolor{stringliteral}{"opengl example"}, 640, 480)) \textcolor{keywordflow}{return} -1;
+    \hyperlink{gai__xwindow_8h_a51eafe897c3737f146cda3c50884b9dd}{gaixw\_SetVerticalSync}(&window, 1);
+    glClearColor(0.f, 0.f, 0.f, 1.f);
+    \textcolor{keywordflow}{for} (;;)
+    \{
+        \hyperlink{gai__xwindow_8h_a2f1b687718407be2be1eaf2646405c2c}{gaixw\_Update}(&window);
+        \textcolor{keywordflow}{if} (!window.\hyperlink{gai__xwindow_8h_a7165f8e7f0c548dd3a11c8648fb8071a}{is\_running}) \textcolor{keywordflow}{break};
+        glClear(GL\_COLOR\_BUFFER\_BIT);
+        glBegin(GL\_QUADS);
+        \{
+            glColor4f(1.f, 0.f, 0.0f, 1.f);
+            glVertex2f(-.5f, -.5f);
+            glColor4f(0.f, 1.f, 0.0f, 1.f);
+            glVertex2f(-.5f, .5f);
+            glColor4f(1.f, 1.f, 1.0f, 1.f);
+            glVertex2f(.5f, .5f);
+            glColor4f(0.f, 0.f, 1.f, 1.f);
+            glVertex2f(.5f, -.5f);
+        \}
+        glEnd();
+        glViewport(0, 0, window.\hyperlink{gai__xwindow_8h_ad08fec1e1f27bbf1b230ca3b2af55fbf}{info}.width, window.\hyperlink{gai__xwindow_8h_ad08fec1e1f27bbf1b230ca3b2af55fbf}{info}.height);
+        \hyperlink{gai__xwindow_8h_ac612fdfe7c233bf8ecaf7112318d5e1f}{gaixw\_SwapBuffers}(&window);
+    \}
+    \hyperlink{gai__xwindow_8h_a986353262ac6038b69005bec8111ac56}{gaixw\_Deinit}(&window);
+    \textcolor{keywordflow}{return} 0;
+\}
+\end{DoxyCodeInclude}
+ 

@@ -1,0 +1,39 @@
+\hypertarget{_0Ctests_0Cxwindow_0Cdefault_win32_0Cmain_8cpp-example}{}\section{\textbackslash{}tests\textbackslash{}xwindow\textbackslash{}default\+\_\+win32\textbackslash{}main.\+cpp}
+{\bfseries Example\+: win32 \hyperlink{gai__xwindow_8h}{gai\+\_\+xwindow.\+h} (gdi)}
+
+
+\begin{DoxyCodeInclude}
+\textcolor{preprocessor}{#define GAIXW\_IMPLEMENTATION}
+\textcolor{preprocessor}{#include <\hyperlink{gai__xwindow_8h}{gai\_xwindow.h}>}
+\textcolor{preprocessor}{#include <stdio.h>}
+
+LRESULT CALLBACK
+MyWindowMessageHandler(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+\{
+    \hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\_context} *window = (\hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\_context} *) GetWindowLongPtr(hWnd, 
+      GWLP\_USERDATA);
+    \textcolor{keywordflow}{if} (window)
+    \{
+        \textcolor{keywordflow}{switch} (uMsg)
+        \{
+            \textcolor{keywordflow}{case} WM\_PAINT:
+            \{
+                RECT r = \{ 0, 0, 120, 50 \};
+                DrawText(window->\hyperlink{gai__xwindow_8h_a9d391696a94058b975ca9ed4510db1af}{platform}.win32.hdc, \textcolor{stringliteral}{"Hallo"}, 5, &r, DT\_INTERNAL | DT\_NOCLIP);
+            \} \textcolor{keywordflow}{break};
+        \}
+    \}
+    \textcolor{keywordflow}{return} gaixw\_WindowProc(hWnd, uMsg, wParam, lParam);
+\}
+
+\textcolor{keywordtype}{int} main(\textcolor{keywordtype}{int} argc, \textcolor{keywordtype}{char}** argv)
+\{
+    \hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\_context} window = \{\};
+    \textcolor{keywordflow}{if} (!\hyperlink{gai__xwindow_8h_adec8bb998b6861c4d239b25634c8eb55}{gaixw\_Init}(&window, \textcolor{stringliteral}{"default example"}, 640, 480)) \textcolor{keywordflow}{return} -1;
+    SetWindowLongPtr(window.\hyperlink{gai__xwindow_8h_a9d391696a94058b975ca9ed4510db1af}{platform}.win32.hwnd, GWLP\_WNDPROC, (LONG\_PTR) MyWindowMessageHandler);
+    \hyperlink{gai__xwindow_8h_a2f1b687718407be2be1eaf2646405c2c}{gaixw\_Update}(&window);
+    \hyperlink{gai__xwindow_8h_a986353262ac6038b69005bec8111ac56}{gaixw\_Deinit}(&window);
+    \textcolor{keywordflow}{return} 0;
+\}
+\end{DoxyCodeInclude}
+ 

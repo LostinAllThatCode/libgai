@@ -1,0 +1,150 @@
+\hypertarget{_0Ctests_0Crenderer_test_8cc-example}{}\section{\textbackslash{}tests\textbackslash{}renderer\+\_\+test.\+cc}
+asd sewqe
+
+
+\begin{DoxyCodeInclude}
+
+\textcolor{preprocessor}{#if \_DEBUG}
+\textcolor{preprocessor}{    #define GAIXW\_DEBUG}
+\textcolor{preprocessor}{#endif}
+
+\textcolor{preprocessor}{#include "renderer\_shared.h"}
+
+\textcolor{preprocessor}{#define STB\_IMAGE\_IMPLEMENTATION}
+\textcolor{preprocessor}{#include "stb\_image.h"}
+
+
+\textcolor{preprocessor}{#define GAIXW\_OPENGL}
+\textcolor{preprocessor}{#define GAIXW\_IMPLEMENTATION}
+\textcolor{preprocessor}{#include "\hyperlink{gai__xwindow_8h}{gai\_xwindow.h}"}
+
+\textcolor{preprocessor}{#define GAIRB\_IMPLEMENTATION}
+\textcolor{preprocessor}{#include "gai\_renderbuffer.h"}
+
+\textcolor{preprocessor}{#define GAIRGL\_IMPLEMENTATION}
+\textcolor{preprocessor}{#include "gai\_renderer\_opengl.h"}
+
+\textcolor{preprocessor}{#define GAIHR\_IMPLEMENTATION}
+\textcolor{preprocessor}{#include "\hyperlink{gai__hotreload_8h}{gai\_hotreload.h}"}
+
+\textcolor{preprocessor}{#include <stdio.h>}
+
+PLATFORM\_API\_LOAD\_BITMAP(win32\_LoadBitmapFromFile)
+\{
+    \textcolor{keywordflow}{if}(!bitmap) assert(!\textcolor{stringliteral}{"error"});
+    \textcolor{keywordtype}{int} bpp;
+    stbi\_set\_flip\_vertically\_on\_load(0);
+    bitmap->memory      = stbi\_load(filename, &bitmap->width, &bitmap->height, &bpp, 4);
+    bitmap->is\_loaded   = 0;
+    bitmap->handle      = 0;
+\}
+
+\textcolor{keywordtype}{void} hotreloadtexture(\hyperlink{gai__hotreload_8h_structgaihr__file}{gaihr\_file} *file)
+\{
+    loaded\_bitmap *bitmap = (loaded\_bitmap*) file->\hyperlink{gai__hotreload_8h_a06bf963cb9c08e69fcc6c4bb3140a2b8}{userdata};
+    \textcolor{keywordflow}{if}(bitmap) \{
+        \textcolor{keywordflow}{if}(bitmap->memory) stbi\_image\_free(bitmap->memory);
+        win32\_LoadBitmapFromFile(bitmap, (\textcolor{keywordtype}{char} *)file->\hyperlink{gai__hotreload_8h_a26ea2bbf62231c3cae2317ca217f8166}{filename});
+    \}
+\}
+
+HMODULE reloadable\_dll;
+update\_and\_render\_fn *UpdateAndRender;
+\hyperlink{gai__hotreload_8h_a6f8c5bfe220445bbbb8e1c9ef176838a}{GAIHR\_CALLBACK}(reloadDLL)
+\{
+    \textcolor{keywordtype}{char} NewFilename[4096] = \{\};
+    snprintf(NewFilename, 4096, \textcolor{stringliteral}{"~%s"}, file->\hyperlink{gai__hotreload_8h_a26ea2bbf62231c3cae2317ca217f8166}{filename});
+    \textcolor{keywordflow}{if} (reloadable\_dll) FreeLibrary(reloadable\_dll);
+    CopyFileA(file->\hyperlink{gai__hotreload_8h_a26ea2bbf62231c3cae2317ca217f8166}{filename}, NewFilename, \textcolor{keyword}{false});
+    reloadable\_dll = LoadLibrary(NewFilename);
+    assert(reloadable\_dll);
+    \textcolor{keywordflow}{if} (reloadable\_dll)
+    \{
+        UpdateAndRender = (update\_and\_render\_fn *) GetProcAddress(reloadable\_dll, \textcolor{stringliteral}{"UpdateAndRender"});
+    \}
+    \textcolor{keywordflow}{else}
+    \{
+        UpdateAndRender = 0;
+    \}
+\}
+
+\textcolor{keyword}{inline} loaded\_bitmap
+CreateWhiteBitmap(\textcolor{keywordtype}{int} width, \textcolor{keywordtype}{int} height)
+\{
+    loaded\_bitmap result = \{0, 0, width, height, 0\};
+    \textcolor{keywordtype}{int} texture\_size = width * height * 4;
+    result.memory = (u8*) VirtualAlloc(0, texture\_size, MEM\_COMMIT | MEM\_RESERVE, PAGE\_READWRITE);
+    \textcolor{keywordflow}{if} (result.memory)
+    \{
+        memset(result.memory, 255, texture\_size);
+    \}
+    \textcolor{keywordflow}{return} result;
+\}
+
+\textcolor{keywordtype}{int} main(\textcolor{keywordtype}{int} argc, \textcolor{keywordtype}{char} **argv)
+\{
+    platform\_api platform = \{\};
+    platform.load\_bitmap\_fn = win32\_LoadBitmapFromFile;
+
+    \hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\_context} window;
+    \textcolor{keywordflow}{if} (!\hyperlink{gai__xwindow_8h_adec8bb998b6861c4d239b25634c8eb55}{gaixw\_Init}(&window, \textcolor{stringliteral}{"yolo"})) \textcolor{keywordflow}{return} -1;
+    \hyperlink{gai__xwindow_8h_a51eafe897c3737f146cda3c50884b9dd}{gaixw\_SetVerticalSync}(&window, 1);
+
+    gairgl opengl = \{\};
+    gairgl\_Initialize(&opengl);
+
+    \hyperlink{gai__hotreload_8h_structgaihr__file}{gaihr\_file} reloadable\_file = \{\};
+    \hyperlink{gai__hotreload_8h_ad83d8f6170f0404fb72803d012ac9f6a}{gaihr\_Track}(&reloadable\_file, \textcolor{stringliteral}{"renderer.dll"}, reloadDLL, 0, 
+      \hyperlink{gai__hotreload_8h_aaebb069b6896f065efd75640e0e4150ba158375938f45efe930ee7416d19e5a6c}{gaihr\_FlagsDontHandleEvent});
+
+    u32 pbuffersize = 1024 * 1024 * 2;
+    u8 *pbuffer = (u8*) VirtualAlloc(0, pbuffersize, MEM\_COMMIT | MEM\_RESERVE, PAGE\_READWRITE);
+    u32 vertex\_count\_max = (1 << 16) * 2;
+    gairb\_textured\_vertex *vbuffer = (gairb\_textured\_vertex*) VirtualAlloc(0, \textcolor{keyword}{sizeof}(gairb\_textured\_vertex)
+       * vertex\_count\_max, MEM\_COMMIT | MEM\_RESERVE, PAGE\_READWRITE);
+
+    u32 quad\_texture\_count = vertex\_count\_max >> 2;;
+    loaded\_bitmap **quad\_textures = (loaded\_bitmap **) VirtualAlloc(0, \textcolor{keyword}{sizeof}(loaded\_bitmap*) * 
+      quad\_texture\_count, MEM\_COMMIT | MEM\_RESERVE, PAGE\_READWRITE);
+
+    loaded\_bitmap assets[64] = \{\};
+    assets[0] = CreateWhiteBitmap(128, 128);
+
+    \hyperlink{gai__hotreload_8h_structgaihr__file}{gaihr\_file} texture;
+    \hyperlink{gai__hotreload_8h_ad83d8f6170f0404fb72803d012ac9f6a}{gaihr\_Track}(&texture, \textcolor{stringliteral}{"test.jpg"}, hotreloadtexture, &assets[1]);
+
+    platform.assets = assets;
+
+    \textcolor{keywordflow}{for} (;;)
+    \{
+        \hyperlink{gai__xwindow_8h_a2f1b687718407be2be1eaf2646405c2c}{gaixw\_Update}(&window);
+        \textcolor{keywordflow}{if} (!window.\hyperlink{gai__xwindow_8h_a7165f8e7f0c548dd3a11c8648fb8071a}{is\_running}) \textcolor{keywordflow}{break};
+
+        gairb\_renderbuffer render\_commands = gairb\_RenderBuffer(V4(.0f, .0f, .0f, 1.0f), pbuffersize, 
+      pbuffer, vertex\_count\_max, vbuffer, quad\_textures, &assets[0]);
+
+        \textcolor{keywordflow}{if}(\hyperlink{gai__xwindow_8h_a2166c011f837a9aa530d22ba2f1c5f93}{gaixw\_KeyPressed}(&window, \textcolor{charliteral}{'K'})) \hyperlink{gai__hotreload_8h_a288369c901929574624b267de90007cd}{gaihr\_Untrack}(&texture);
+
+        \hyperlink{gai__hotreload_8h_a79d4ca28cdaae457474d55a0a21dd326}{gaihr\_WaitForEvent}(&reloadable\_file);
+        \textcolor{keywordflow}{if} (UpdateAndRender) UpdateAndRender(&window, &render\_commands, &platform);
+
+        gairgl\_Render(&opengl, &render\_commands, V2i(window.\hyperlink{gai__xwindow_8h_ad08fec1e1f27bbf1b230ca3b2af55fbf}{info}.width, window.
+      \hyperlink{gai__xwindow_8h_ad08fec1e1f27bbf1b230ca3b2af55fbf}{info}.height));
+        \hyperlink{gai__xwindow_8h_ac612fdfe7c233bf8ecaf7112318d5e1f}{gaixw\_SwapBuffers}(&window);
+    \}
+
+    gairgl\_Destroy(&opengl);
+    \hyperlink{gai__xwindow_8h_a986353262ac6038b69005bec8111ac56}{gaixw\_Deinit}(&window);
+
+    \textcolor{keywordflow}{if} (reloadable\_dll) FreeLibrary(reloadable\_dll);
+
+    VirtualFree(pbuffer, 0, MEM\_RELEASE);
+    VirtualFree(vbuffer, 0, MEM\_RELEASE);
+    VirtualFree(assets[0].memory, 0, MEM\_RELEASE);
+    stbi\_image\_free(assets[1].memory);
+
+
+    \textcolor{keywordflow}{return} 0;
+\}
+\end{DoxyCodeInclude}
+ 

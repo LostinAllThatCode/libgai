@@ -9,6 +9,13 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript">
+  $(document).ready(initResizable);
+</script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -42,6 +49,21 @@ $(function() {
 });
 </script>
 <div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){initNavTree('structgaihr__file.html','');});
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -56,7 +78,6 @@ $(function() {
 </iframe>
 </div>
 
-</div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#pub-attribs">Public Attributes</a> &#124;
@@ -65,21 +86,38 @@ $(function() {
 <div class="title">gaihr_file Struct Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="gai__hotreload_8h_source.html">gai_hotreload.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a06bf963cb9c08e69fcc6c4bb3140a2b8"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structgaihr__file.html#a06bf963cb9c08e69fcc6c4bb3140a2b8">userdata</a></td></tr>
 <tr class="separator:a06bf963cb9c08e69fcc6c4bb3140a2b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9ac45c0142ff1eaf591b870e163d7f31"><td class="memItemLeft" align="right" valign="top"><a class="el" href="gai__hotreload_8h.html#a8026f464cf8636b763b6f03798d40800">gaihr_callback</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structgaihr__file.html#a9ac45c0142ff1eaf591b870e163d7f31">callback</a></td></tr>
+<tr class="memitem:a9ac45c0142ff1eaf591b870e163d7f31"><td class="memItemLeft" align="right" valign="top">gaihr_callback *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structgaihr__file.html#a9ac45c0142ff1eaf591b870e163d7f31">callback</a></td></tr>
 <tr class="separator:a9ac45c0142ff1eaf591b870e163d7f31"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a138044c270d5f0e83917ae2841efe8b7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structgaihr__platform.html">gaihr_platform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structgaihr__file.html#a138044c270d5f0e83917ae2841efe8b7">platform</a></td></tr>
-<tr class="separator:a138044c270d5f0e83917ae2841efe8b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4fa6fa162b2b39b5c54c260271ad6169"><td class="memItemLeft" >union {</td></tr>
+<tr class="memitem:a47f5c92e431941d1123bffe57ab5e9ea"><td class="memItemLeft" ><a id="a47f5c92e431941d1123bffe57ab5e9ea"></a>
+&#160;&#160;&#160;struct {</td></tr>
+<tr class="memitem:abd67073f9e6f24b8e2b2f04830dcf26a"><td class="memItemLeft" align="right" valign="top"><a id="abd67073f9e6f24b8e2b2f04830dcf26a"></a>
+HANDLE&#160;</td><td class="memItemRight" valign="bottom"><b>mutex</b></td></tr>
+<tr class="separator:abd67073f9e6f24b8e2b2f04830dcf26a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2b78d69604475cbeaa4fe29423b29523"><td class="memItemLeft" align="right" valign="top"><a id="a2b78d69604475cbeaa4fe29423b29523"></a>
+HANDLE&#160;</td><td class="memItemRight" valign="bottom"><b>event</b></td></tr>
+<tr class="separator:a2b78d69604475cbeaa4fe29423b29523"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a47f5c92e431941d1123bffe57ab5e9ea"><td class="memItemLeft" valign="top">&#160;&#160;&#160;}&#160;</td><td class="memItemRight" valign="bottom"><b>win32</b></td></tr>
+<tr class="separator:a47f5c92e431941d1123bffe57ab5e9ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4fa6fa162b2b39b5c54c260271ad6169"><td class="memItemLeft" valign="top">}&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structgaihr__file.html#a4fa6fa162b2b39b5c54c260271ad6169">platform</a></td></tr>
+<tr class="separator:a4fa6fa162b2b39b5c54c260271ad6169"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a38b2bc43116a1fd59715ca1714d80462"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structgaihr__filetime.html">gaihr_filetime</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structgaihr__file.html#a38b2bc43116a1fd59715ca1714d80462">last_write_time</a></td></tr>
+<tr class="separator:a38b2bc43116a1fd59715ca1714d80462"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a26ea2bbf62231c3cae2317ca217f8166"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structgaihr__file.html#a26ea2bbf62231c3cae2317ca217f8166">filename</a></td></tr>
 <tr class="separator:a26ea2bbf62231c3cae2317ca217f8166"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab6eef82d50a8a51d161de3ab7ad98ee9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="gai__hotreload_8h.html#aaebb069b6896f065efd75640e0e4150b">gaihr_flags</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structgaihr__file.html#ab6eef82d50a8a51d161de3ab7ad98ee9">flags</a></td></tr>
+<tr class="memitem:ab6eef82d50a8a51d161de3ab7ad98ee9"><td class="memItemLeft" align="right" valign="top">gaihr_flags&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structgaihr__file.html#ab6eef82d50a8a51d161de3ab7ad98ee9">flags</a></td></tr>
 <tr class="separator:ab6eef82d50a8a51d161de3ab7ad98ee9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Data Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><dl class="todo"><dt><b><a class="el" href="todo.html#_todo000001">Todo:</a></b></dt><dd>Think about a way of easily support other platforms. </dd></dl>
+</div><h2 class="groupheader">Member Data Documentation</h2>
 <a id="a9ac45c0142ff1eaf591b870e163d7f31"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9ac45c0142ff1eaf591b870e163d7f31">&#9670;&nbsp;</a></span>callback</h2>
 
@@ -87,11 +125,11 @@ Public Attributes</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="gai__hotreload_8h.html#a8026f464cf8636b763b6f03798d40800">gaihr_callback</a>* gaihr_file::callback</td>
+          <td class="memname">gaihr_callback* gaihr_file::callback</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Callback to the function when an event happens. <a class="el" href="gai__hotreload_8h.html#ad83d8f6170f0404fb72803d012ac9f6a">gaihr_Track</a> </p>
+<p>Callback to the function when an event happens. See gaihr_callback() </p>
 
 </div>
 </div>
@@ -106,7 +144,7 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>File to check for changes </p>
+<p>File to check for changes. </p>
 
 </div>
 </div>
@@ -117,7 +155,7 @@ Public Attributes</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="gai__hotreload_8h.html#aaebb069b6896f065efd75640e0e4150b">gaihr_flags</a> gaihr_file::flags</td>
+          <td class="memname">gaihr_flags gaihr_file::flags</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -125,14 +163,29 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a138044c270d5f0e83917ae2841efe8b7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a138044c270d5f0e83917ae2841efe8b7">&#9670;&nbsp;</a></span>platform</h2>
+<a id="a38b2bc43116a1fd59715ca1714d80462"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a38b2bc43116a1fd59715ca1714d80462">&#9670;&nbsp;</a></span>last_write_time</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structgaihr__platform.html">gaihr_platform</a> gaihr_file::platform</td>
+          <td class="memname"><a class="el" href="structgaihr__filetime.html">gaihr_filetime</a> gaihr_file::last_write_time</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Filetime structure. </p>
+
+</div>
+</div>
+<a id="a4fa6fa162b2b39b5c54c260271ad6169"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4fa6fa162b2b39b5c54c260271ad6169">&#9670;&nbsp;</a></span>platform</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">union { ... }   gaihr_file::platform</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -151,7 +204,7 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>This pointer is passed by the user via gaihr_Track function. </p>
+<p>User passed data. </p>
 
 </div>
 </div>
@@ -159,11 +212,15 @@ Public Attributes</h2></td></tr>
 <li><a class="el" href="gai__hotreload_8h_source.html">gai_hotreload.h</a></li>
 </ul>
 </div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated on Tue Apr 25 2017 16:59:22 for libgai by &#160;<a href="http://www.doxygen.org/index.html">
-<img class="footer" src="doxygen.png" alt="doxygen"/>
-</a> 1.8.13
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="structgaihr__file.html">gaihr_file</a></li>
+    <li class="footer">Generated on Wed Apr 26 2017 14:01:02 for libgai by
+    <a href="http://www.doxygen.org/index.html">
+    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
+  </ul>
+</div>
 </body>
 </html>

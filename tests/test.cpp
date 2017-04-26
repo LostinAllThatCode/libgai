@@ -1,30 +1,3 @@
-#if 0
-
-	#define GAIHR_IMPLEMENTATION
-	#include "gai_hotreload.h"
-
-	#include <stdio.h>
-
-	volatile int running = 1; // This will be changed by another thread!
-
-	void reloadFile(gaihr_file *file)
-	{
-		// Do whatever you want to do, when this happens.
-		printf("%s changed!\n", file->filename);
-		running = 0;
-	}
-
-	int main(int argc, char **argv)
-	{
-		gaihr_file MyFile = {};
-		gaihr_AddFile(&MyFile, "testfile.txt", reloadFile, 0, gaihr_FlagsSkipInitialChange);
-		while(running) {Sleep(125);}
-
-		gaihr_RemoveFile(&MyFile);
-		return 0;
-	}
-#else
-
 #define GAIXW_DEBUG
 #define GAIXW_OPENGL
 #define GAIXW_IMPLEMENTATION
@@ -82,16 +55,15 @@ int main(int argc, char **argv)
 	if (!renderbuffer || !vertexbuffer) return 1;
 
 	gaixw_context window;
-	if (!gaiXWindow(&window, "lol", -1, -1, -1, -1, "asdas", 0 )) return -1;
-	gaiXWindowShow(&window);
-	gaiXWindowSetVSYNC(&window, 1);
-	r32 time=0.f;
+	if (!gaixw_Init(&window, "lol", -1, -1, -1, -1, "asdas")) return -1;
+	gaixw_SetVerticalSync(&window, 1);
+	r32 time = 0.f;
 	for (;;)
 	{
-		gaiXWindowUpdate(&window);
+		gaixw_Update(&window);
 		if (!window.is_running) break;
 
-		time+=window.frametime.seconds * 15.f;
+		time += window.dt.seconds * 15.f;
 		gairb_renderbuffer MyRenderBuffer = gairb_RenderBuffer( V4(0.f), renderbuffer_size, renderbuffer, vertex_count_max, vertexbuffer, 0, 0);
 
 		gairb_group MyRenderGroup = gairb_BeginGroup(V2i(window.info.width, window.info.height), &MyRenderBuffer, 0);
@@ -100,13 +72,13 @@ int main(int argc, char **argv)
 
 		for ( int i = 0; i < 300; i++)
 		{
-			gairb_PushRect(&MyRenderGroup, V4(1.0f, 0.0f, 1.f, 1.0f), V3(10.f + (i*3.f), 10.f + sinf(time+i), 0.f), 1.f, 1.f, gairb_AlignToTopLeft);
+			gairb_PushRect(&MyRenderGroup, V4(1.0f, 0.0f, 1.f, 1.0f), V3(10.f + (i * 3.f), 10.f + sinf(time + i), 0.f), 1.f, 1.f, gairb_AlignToTopLeft);
 		}
 
 		gairb_EndGroup(&MyRenderGroup);
 
 		render(&MyRenderBuffer, V2i(window.info.width, window.info.height));
-		gaiXWindowSwapBuffers(&window);
+		gaixw_SwapBuffers(&window);
 	}
 
 	free(renderbuffer);
@@ -114,4 +86,3 @@ int main(int argc, char **argv)
 
 	return 0;
 }
-#endif

@@ -1,18 +1,40 @@
 \hypertarget{structgaihr__file}{}\section{gaihr\+\_\+file Struct Reference}
 \label{structgaihr__file}\index{gaihr\+\_\+file@{gaihr\+\_\+file}}
+
+
+{\ttfamily \#include $<$gai\+\_\+hotreload.\+h$>$}
+
 \subsection*{Public Attributes}
 \begin{DoxyCompactItemize}
 \item 
 void $\ast$ \hyperlink{structgaihr__file_a06bf963cb9c08e69fcc6c4bb3140a2b8}{userdata}
 \item 
-\hyperlink{gai__hotreload_8h_a8026f464cf8636b763b6f03798d40800}{gaihr\+\_\+callback} $\ast$ \hyperlink{structgaihr__file_a9ac45c0142ff1eaf591b870e163d7f31}{callback}
+gaihr\+\_\+callback $\ast$ \hyperlink{structgaihr__file_a9ac45c0142ff1eaf591b870e163d7f31}{callback}
 \item 
-\hyperlink{structgaihr__platform}{gaihr\+\_\+platform} \hyperlink{structgaihr__file_a138044c270d5f0e83917ae2841efe8b7}{platform}
+\begin{tabbing}
+xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=\kill
+union \{\\
+\mbox{\Hypertarget{structgaihr__file_a47f5c92e431941d1123bffe57ab5e9ea}\label{structgaihr__file_a47f5c92e431941d1123bffe57ab5e9ea}} 
+\>struct \{\\
+\mbox{\Hypertarget{structgaihr__file_1_1_0D0_1_1_0D1_abd67073f9e6f24b8e2b2f04830dcf26a}\label{structgaihr__file_1_1_0D0_1_1_0D1_abd67073f9e6f24b8e2b2f04830dcf26a}} 
+HANDLE {\bfseries mutex}\\
+\mbox{\Hypertarget{structgaihr__file_1_1_0D0_1_1_0D1_a2b78d69604475cbeaa4fe29423b29523}\label{structgaihr__file_1_1_0D0_1_1_0D1_a2b78d69604475cbeaa4fe29423b29523}} 
+HANDLE {\bfseries event}\\
+\>\} {\bfseries win32}\\
+\} \hyperlink{structgaihr__file_a4fa6fa162b2b39b5c54c260271ad6169}{platform}\\
+
+\end{tabbing}\item 
+\hyperlink{structgaihr__filetime}{gaihr\+\_\+filetime} \hyperlink{structgaihr__file_a38b2bc43116a1fd59715ca1714d80462}{last\+\_\+write\+\_\+time}
 \item 
 const char $\ast$ \hyperlink{structgaihr__file_a26ea2bbf62231c3cae2317ca217f8166}{filename}
 \item 
-\hyperlink{gai__hotreload_8h_aaebb069b6896f065efd75640e0e4150b}{gaihr\+\_\+flags} \hyperlink{structgaihr__file_ab6eef82d50a8a51d161de3ab7ad98ee9}{flags}
+gaihr\+\_\+flags \hyperlink{structgaihr__file_ab6eef82d50a8a51d161de3ab7ad98ee9}{flags}
 \end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000001}{Todo}]Think about a way of easily support other platforms. \end{DoxyRefDesc}
 
 
 \subsection{Member Data Documentation}
@@ -20,25 +42,31 @@ const char $\ast$ \hyperlink{structgaihr__file_a26ea2bbf62231c3cae2317ca217f8166
 \index{gaihr\+\_\+file@{gaihr\+\_\+file}!callback@{callback}}
 \index{callback@{callback}!gaihr\+\_\+file@{gaihr\+\_\+file}}
 \subsubsection{\texorpdfstring{callback}{callback}}
-{\footnotesize\ttfamily \hyperlink{gai__hotreload_8h_a8026f464cf8636b763b6f03798d40800}{gaihr\+\_\+callback}$\ast$ gaihr\+\_\+file\+::callback}
+{\footnotesize\ttfamily gaihr\+\_\+callback$\ast$ gaihr\+\_\+file\+::callback}
 
-Callback to the function when an event happens. \hyperlink{gai__hotreload_8h_ad83d8f6170f0404fb72803d012ac9f6a}{gaihr\+\_\+\+Track} \mbox{\Hypertarget{structgaihr__file_a26ea2bbf62231c3cae2317ca217f8166}\label{structgaihr__file_a26ea2bbf62231c3cae2317ca217f8166}} 
+Callback to the function when an event happens. See gaihr\+\_\+callback() \mbox{\Hypertarget{structgaihr__file_a26ea2bbf62231c3cae2317ca217f8166}\label{structgaihr__file_a26ea2bbf62231c3cae2317ca217f8166}} 
 \index{gaihr\+\_\+file@{gaihr\+\_\+file}!filename@{filename}}
 \index{filename@{filename}!gaihr\+\_\+file@{gaihr\+\_\+file}}
 \subsubsection{\texorpdfstring{filename}{filename}}
 {\footnotesize\ttfamily const char$\ast$ gaihr\+\_\+file\+::filename}
 
-File to check for changes \mbox{\Hypertarget{structgaihr__file_ab6eef82d50a8a51d161de3ab7ad98ee9}\label{structgaihr__file_ab6eef82d50a8a51d161de3ab7ad98ee9}} 
+File to check for changes. \mbox{\Hypertarget{structgaihr__file_ab6eef82d50a8a51d161de3ab7ad98ee9}\label{structgaihr__file_ab6eef82d50a8a51d161de3ab7ad98ee9}} 
 \index{gaihr\+\_\+file@{gaihr\+\_\+file}!flags@{flags}}
 \index{flags@{flags}!gaihr\+\_\+file@{gaihr\+\_\+file}}
 \subsubsection{\texorpdfstring{flags}{flags}}
-{\footnotesize\ttfamily \hyperlink{gai__hotreload_8h_aaebb069b6896f065efd75640e0e4150b}{gaihr\+\_\+flags} gaihr\+\_\+file\+::flags}
+{\footnotesize\ttfamily gaihr\+\_\+flags gaihr\+\_\+file\+::flags}
 
-Flags to specify event handling and callback behaviour. \mbox{\Hypertarget{structgaihr__file_a138044c270d5f0e83917ae2841efe8b7}\label{structgaihr__file_a138044c270d5f0e83917ae2841efe8b7}} 
+Flags to specify event handling and callback behaviour. \mbox{\Hypertarget{structgaihr__file_a38b2bc43116a1fd59715ca1714d80462}\label{structgaihr__file_a38b2bc43116a1fd59715ca1714d80462}} 
+\index{gaihr\+\_\+file@{gaihr\+\_\+file}!last\+\_\+write\+\_\+time@{last\+\_\+write\+\_\+time}}
+\index{last\+\_\+write\+\_\+time@{last\+\_\+write\+\_\+time}!gaihr\+\_\+file@{gaihr\+\_\+file}}
+\subsubsection{\texorpdfstring{last\+\_\+write\+\_\+time}{last\_write\_time}}
+{\footnotesize\ttfamily \hyperlink{structgaihr__filetime}{gaihr\+\_\+filetime} gaihr\+\_\+file\+::last\+\_\+write\+\_\+time}
+
+Filetime structure. \mbox{\Hypertarget{structgaihr__file_a4fa6fa162b2b39b5c54c260271ad6169}\label{structgaihr__file_a4fa6fa162b2b39b5c54c260271ad6169}} 
 \index{gaihr\+\_\+file@{gaihr\+\_\+file}!platform@{platform}}
 \index{platform@{platform}!gaihr\+\_\+file@{gaihr\+\_\+file}}
 \subsubsection{\texorpdfstring{platform}{platform}}
-{\footnotesize\ttfamily \hyperlink{structgaihr__platform}{gaihr\+\_\+platform} gaihr\+\_\+file\+::platform}
+{\footnotesize\ttfamily union \{ ... \}   gaihr\+\_\+file\+::platform}
 
 Platform specfic structure for semaphore or mutex handles. \mbox{\Hypertarget{structgaihr__file_a06bf963cb9c08e69fcc6c4bb3140a2b8}\label{structgaihr__file_a06bf963cb9c08e69fcc6c4bb3140a2b8}} 
 \index{gaihr\+\_\+file@{gaihr\+\_\+file}!userdata@{userdata}}
@@ -46,8 +74,8 @@ Platform specfic structure for semaphore or mutex handles. \mbox{\Hypertarget{st
 \subsubsection{\texorpdfstring{userdata}{userdata}}
 {\footnotesize\ttfamily void$\ast$ gaihr\+\_\+file\+::userdata}
 
-This pointer is passed by the user via gaihr\+\_\+\+Track function. 
+User passed data. 
 
 The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
 \item 
-\hyperlink{gai__hotreload_8h}{gai\+\_\+hotreload.\+h}\end{DoxyCompactItemize}
+gai\+\_\+hotreload.\+h\end{DoxyCompactItemize}

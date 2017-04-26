@@ -34,18 +34,18 @@ external update_and_render_(UpdateAndRender)
 {
 	if (time > 5.f)	a = -1;
 	if (time <= 0.f) a = 1;
-	time += window->frametime.seconds * a;
-	time2 += window->frametime.seconds;
+	time += window->dt.seconds * a;
+	time2 += window->dt.seconds;
 	gairb_group g1 = gairb_BeginGroup(V2i(window->info.width, window->info.height), renderbuffer, 0);
 
-	if (gaiMousePressed(window, 2))
+	if (gaixw_MousePressed(window, 2))
 	{
 		if (ptr == func1) ptr = func2;
 		else if (ptr == func2) ptr = func3;
 		else if (ptr == func3) ptr = func1;
 	}
 
-	if (gaiMouseDown(window, 0))
+	if (gaixw_MouseDown(window, 0))
 	{
 		rotY += (int)(window->input.dx % 360);
 		rotX += (int)(window->input.dy % 20);
@@ -68,15 +68,14 @@ external update_and_render_(UpdateAndRender)
 		{
 			gairb_PushCube(&g1, V4(1.f, 1.f, 1.f, .1f), V3((float) (cubes / 2 - i) * radius, 2.0f + ptr(time, i, j), (float) (cubes / 2 - j) * radius), radius, height);
 		}
-	}
-
-	
+	}	
 	gairb_PushRect(&g1, &platform->assets[1], V4(1.f, 1.f, 1.f, 1.f), V3(0, 10.f, -19.f), dim.x*.01f, dim.y *.01f, gairb_AlignToCenter, 1);
 #endif
+
 	gairb_setup ortho = { OrthographicProjection((r32)window->info.width, (r32)window->info.height, 1, -1) };
 	gairb_PushSetup(&g1, &ortho);
 
-	gairb_PushRect(&g1, (gaixw_IsVSYNC(window) ? V4(.0f, 1.f, 0.f, 1.f) : V4(1.f, 0.0f, 0.f, 1.f)), V3(5.f, 10.f, 0.f), 10.f, 10.f, 0);
+	gairb_PushRect(&g1, (gaixw_GetAttribute(window, gaixwFlagsVSYNC) ? V4(.0f, 1.f, 0.f, 1.f) : V4(1.f, 0.0f, 0.f, 1.f)), V3(5.f, 10.f, 0.f), 10.f, 10.f, 0);
 	gairb_PushRect(&g1, V4(1.f, 0.f, 0.f, 1.f), V3i(5, 5, 0), 100, 1, gairb_AlignToTopLeft);
 	gairb_PushRect(&g1, V4(0.f, 1.f, 0.f, 1.0f), V3i(5, 5, 0), ((float)(renderbuffer->vertex_count + 4) / (float)renderbuffer->vertex_max) * 100.f, 2, gairb_AlignToTopLeft);
 
