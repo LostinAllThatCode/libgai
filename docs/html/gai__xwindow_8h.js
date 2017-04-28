@@ -28,38 +28,78 @@ var gai__xwindow_8h =
       [ "x", "gai__xwindow_8h.html#adf849b2f92f76151cfad6633fde93279", null ],
       [ "y", "gai__xwindow_8h.html#a8b654effdd08d54fc8664aa2b89294ff", null ]
     ] ],
-    [ "gaixw_opengl", "gai__xwindow_8h.html#structgaixw__opengl", [
-      [ "context", "gai__xwindow_8h.html#a9f19f8fe971b3d90e2e944dce056c945", null ],
-      [ "renderer", "gai__xwindow_8h.html#ae22c470ac9de16c3b1408d4c131de571", null ],
-      [ "shading_language_version", "gai__xwindow_8h.html#af8fb4fb0d5fe94ccf12e9c67363f31ab", null ],
-      [ "vendor", "gai__xwindow_8h.html#a1337e4962249f2c78574f61542eaf579", null ],
-      [ "version", "gai__xwindow_8h.html#a67e079ce2bfee07840ac0098c9e38fc3", null ]
+    [ "gaixw_graphics", "gai__xwindow_8h.html#uniongaixw__graphics", [
+      [ "DIRECTX", "gai__xwindow_8h.html#structgaixw__graphics_1_1_d_i_r_e_c_t_x", [
+        [ "version", "gai__xwindow_8h.html#a9fcfcc0fe186aac66da0fb43ca3bc81d", null ]
+      ] ],
+      [ "GDI", "gai__xwindow_8h.html#structgaixw__graphics_1_1_g_d_i", [
+        [ "__ignored", "gai__xwindow_8h.html#a9fcae2c56869cdc7660e865661fe3890", null ]
+      ] ],
+      [ "OPENGL", "gai__xwindow_8h.html#structgaixw__graphics_1_1_o_p_e_n_g_l", [
+        [ "renderer", "gai__xwindow_8h.html#a18b52caa6925c214c13c321c474e99d1", null ],
+        [ "shading_language_version", "gai__xwindow_8h.html#a32949e4e4b86395b914ae53b9bab1afb", null ],
+        [ "vendor", "gai__xwindow_8h.html#a9b03f901f025802398d954a944690043", null ],
+        [ "version", "gai__xwindow_8h.html#ac755a957244ab9efecb6b1fe8b22e509", null ]
+      ] ],
+      [ "VULCAN", "gai__xwindow_8h.html#structgaixw__graphics_1_1_v_u_l_c_a_n", [
+        [ "__ignored", "gai__xwindow_8h.html#adc5e0978b05f16ef33923e2ef55b323c", null ]
+      ] ],
+      [ "X11", "gai__xwindow_8h.html#structgaixw__graphics_1_1_x11", [
+        [ "__ignored", "gai__xwindow_8h.html#a4bc86db2f157e3404a4d6aa5649f7c51", null ]
+      ] ],
+      [ "directx", "gai__xwindow_8h.html#a3a29fe0b53bf0370cf057a839a49425d", null ],
+      [ "gdi", "gai__xwindow_8h.html#aa4b0048d8aafa07ebb992a9c9b789912", null ],
+      [ "opengl", "gai__xwindow_8h.html#a7e427fc59e9f524b1f8f87532e46992e", null ],
+      [ "vulcan", "gai__xwindow_8h.html#a65481440edbbdce7b4629a87112376ce", null ],
+      [ "x11", "gai__xwindow_8h.html#a9d77abbcc452793e329ee648c1367c24", null ]
     ] ],
-    [ "gaixw_directx", "gai__xwindow_8h.html#structgaixw__directx", [
-      [ "context", "gai__xwindow_8h.html#a8f37b81fd881d02153c248ba51f5af22", null ]
+    [ "OPENGL", "gai__xwindow_8h.html#structgaixw__graphics_1_1_o_p_e_n_g_l", [
+      [ "renderer", "gai__xwindow_8h.html#a18b52caa6925c214c13c321c474e99d1", null ],
+      [ "shading_language_version", "gai__xwindow_8h.html#a32949e4e4b86395b914ae53b9bab1afb", null ],
+      [ "vendor", "gai__xwindow_8h.html#a9b03f901f025802398d954a944690043", null ],
+      [ "version", "gai__xwindow_8h.html#ac755a957244ab9efecb6b1fe8b22e509", null ]
     ] ],
-    [ "gaixw_interface", "gai__xwindow_8h.html#uniongaixw__interface", [
-      [ "directx", "gai__xwindow_8h.html#a639ebccdba9bbeae0d50385f08af00fa", null ],
-      [ "opengl", "gai__xwindow_8h.html#a0d31586255263aeceaecba8960a37c3b", null ]
+    [ "DIRECTX", "gai__xwindow_8h.html#structgaixw__graphics_1_1_d_i_r_e_c_t_x", [
+      [ "version", "gai__xwindow_8h.html#a9fcfcc0fe186aac66da0fb43ca3bc81d", null ]
     ] ],
-    [ "gaixw_platform_win32", "gai__xwindow_8h.html#structgaixw__platform__win32", [
-      [ "hdc", "gai__xwindow_8h.html#aa9da15d620888c2aa953804a90460666", null ],
-      [ "hwnd", "gai__xwindow_8h.html#a7865b60b19703f32b629ea9c72284526", null ],
-      [ "instance", "gai__xwindow_8h.html#a5af56cd499bebac30d7755a639670641", null ],
-      [ "position", "gai__xwindow_8h.html#aa76dcd2345644ce0ea58b99954657736", null ]
+    [ "X11", "gai__xwindow_8h.html#structgaixw__graphics_1_1_x11", [
+      [ "__ignored", "gai__xwindow_8h.html#a4bc86db2f157e3404a4d6aa5649f7c51", null ]
     ] ],
-    [ "gaixw_platform_linux", "gai__xwindow_8h.html#structgaixw__platform__linux", [
-      [ "display", "gai__xwindow_8h.html#a6c2e4c461120cc843bf28c258b02c3d7", null ],
-      [ "visual", "gai__xwindow_8h.html#a761c1cd2540e7a06bc59ca8eeb373495", null ],
-      [ "window", "gai__xwindow_8h.html#af09643fe9af611052aef9d98865473ca", null ]
+    [ "GDI", "gai__xwindow_8h.html#structgaixw__graphics_1_1_g_d_i", [
+      [ "__ignored", "gai__xwindow_8h.html#a9fcae2c56869cdc7660e865661fe3890", null ]
+    ] ],
+    [ "VULCAN", "gai__xwindow_8h.html#structgaixw__graphics_1_1_v_u_l_c_a_n", [
+      [ "__ignored", "gai__xwindow_8h.html#adc5e0978b05f16ef33923e2ef55b323c", null ]
     ] ],
     [ "gaixw_platform", "gai__xwindow_8h.html#uniongaixw__platform", [
-      [ "linux", "gai__xwindow_8h.html#acd9f564fcf4c9f85b88b2a67d8e4dede", null ],
-      [ "win32", "gai__xwindow_8h.html#a65165dcf0ebd1548a76eb8794d12d443", null ]
+      [ "LINUX", "gai__xwindow_8h.html#structgaixw__platform_1_1_l_i_n_u_x", [
+        [ "display", "gai__xwindow_8h.html#a77b180a054dbb37600a2900bfd966a74", null ],
+        [ "visual", "gai__xwindow_8h.html#ad65943f512f916a117371b38289e1792", null ],
+        [ "window", "gai__xwindow_8h.html#abbf5ab09ddf03c12f7c6232849d9599e", null ]
+      ] ],
+      [ "WINDOWS", "gai__xwindow_8h.html#structgaixw__platform_1_1_w_i_n_d_o_w_s", [
+        [ "hdc", "gai__xwindow_8h.html#a97f0ce74778809679f008d579c5bb0ce", null ],
+        [ "hwnd", "gai__xwindow_8h.html#ae140b6b26127c3f9dab085854229ea43", null ],
+        [ "instance", "gai__xwindow_8h.html#aa67a9cf5ac00f38a42ab21be99024b2c", null ],
+        [ "position", "gai__xwindow_8h.html#a38273138bcef4654441804c28e5d1576", null ]
+      ] ],
+      [ "linux", "gai__xwindow_8h.html#aeaf4e334f8114cb2ea5bb7bb4db932c7", null ],
+      [ "win32", "gai__xwindow_8h.html#a414771117594e590710593e85c5feeab", null ]
+    ] ],
+    [ "WINDOWS", "gai__xwindow_8h.html#structgaixw__platform_1_1_w_i_n_d_o_w_s", [
+      [ "hdc", "gai__xwindow_8h.html#a97f0ce74778809679f008d579c5bb0ce", null ],
+      [ "hwnd", "gai__xwindow_8h.html#ae140b6b26127c3f9dab085854229ea43", null ],
+      [ "instance", "gai__xwindow_8h.html#aa67a9cf5ac00f38a42ab21be99024b2c", null ],
+      [ "position", "gai__xwindow_8h.html#a38273138bcef4654441804c28e5d1576", null ]
+    ] ],
+    [ "LINUX", "gai__xwindow_8h.html#structgaixw__platform_1_1_l_i_n_u_x", [
+      [ "display", "gai__xwindow_8h.html#a77b180a054dbb37600a2900bfd966a74", null ],
+      [ "visual", "gai__xwindow_8h.html#ad65943f512f916a117371b38289e1792", null ],
+      [ "window", "gai__xwindow_8h.html#abbf5ab09ddf03c12f7c6232849d9599e", null ]
     ] ],
     [ "gaixw_renderer", "gai__xwindow_8h.html#structgaixw__renderer", [
       [ "attributes", "gai__xwindow_8h.html#a201bea7ae25902eaa736de8f10556e57", null ],
-      [ "interface", "gai__xwindow_8h.html#a1244801c1690f8e38a1af7a5a599609f", null ],
+      [ "graphics", "gai__xwindow_8h.html#a9fc6dc47652f101ae6dd13b6348474f8", null ],
       [ "type", "gai__xwindow_8h.html#a287bd5241e45837849116cf46c5591ba", null ]
     ] ],
     [ "gaixw_context", "gai__xwindow_8h.html#structgaixw__context", [

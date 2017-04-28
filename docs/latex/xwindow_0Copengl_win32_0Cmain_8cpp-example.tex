@@ -16,11 +16,10 @@
     \textcolor{keywordflow}{if} (retval != 1) \textcolor{keywordflow}{return} retval;
 
     printf(\textcolor{stringliteral}{"Vendor: %s, Version: %s, Renderer: %s, Shading Language Version: %s, OpenGL Context: %p\(\backslash\)n"},
-           window.\hyperlink{gai__xwindow_8h_a5984d461e227d9028db4d9327bc9c2c4}{renderer}.\hyperlink{gai__xwindow_8h_a1244801c1690f8e38a1af7a5a599609f}{interface}.\hyperlink{gai__xwindow_8h_a0d31586255263aeceaecba8960a37c3b}{opengl}.vendor, window.
-      \hyperlink{gai__xwindow_8h_a5984d461e227d9028db4d9327bc9c2c4}{renderer}.\hyperlink{gai__xwindow_8h_a1244801c1690f8e38a1af7a5a599609f}{interface}.\hyperlink{gai__xwindow_8h_a0d31586255263aeceaecba8960a37c3b}{opengl}.version, window.\hyperlink{gai__xwindow_8h_a5984d461e227d9028db4d9327bc9c2c4}{renderer}.
-      \hyperlink{gai__xwindow_8h_a1244801c1690f8e38a1af7a5a599609f}{interface}.\hyperlink{gai__xwindow_8h_a0d31586255263aeceaecba8960a37c3b}{opengl}.renderer,
-           window.\hyperlink{gai__xwindow_8h_a5984d461e227d9028db4d9327bc9c2c4}{renderer}.\hyperlink{gai__xwindow_8h_a1244801c1690f8e38a1af7a5a599609f}{interface}.\hyperlink{gai__xwindow_8h_a0d31586255263aeceaecba8960a37c3b}{opengl}.shading\_language\_version, window.
-      \hyperlink{gai__xwindow_8h_a5984d461e227d9028db4d9327bc9c2c4}{renderer}.\hyperlink{gai__xwindow_8h_a1244801c1690f8e38a1af7a5a599609f}{interface}.\hyperlink{gai__xwindow_8h_a0d31586255263aeceaecba8960a37c3b}{opengl}.context);
+           window.\hyperlink{gai__xwindow_8h_a5984d461e227d9028db4d9327bc9c2c4}{renderer}.interface.opengl.vendor, window.\hyperlink{gai__xwindow_8h_a5984d461e227d9028db4d9327bc9c2c4}{renderer}.interface.opengl.
+      version, window.\hyperlink{gai__xwindow_8h_a5984d461e227d9028db4d9327bc9c2c4}{renderer}.interface.opengl.renderer,
+           window.\hyperlink{gai__xwindow_8h_a5984d461e227d9028db4d9327bc9c2c4}{renderer}.interface.opengl.shading\_language\_version, window.
+      \hyperlink{gai__xwindow_8h_a5984d461e227d9028db4d9327bc9c2c4}{renderer}.interface.opengl.context);
 
     \hyperlink{gai__xwindow_8h_a51eafe897c3737f146cda3c50884b9dd}{gaixw\_SetVerticalSync}(&window, 1);
     glClearColor(0.f, 0.f, 0.f, 1.f);

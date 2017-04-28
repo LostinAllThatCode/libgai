@@ -17,13 +17,17 @@ Include dependency graph for gai\+\_\+hotreload.\+h\+:\nopagebreak
 \subsection*{Classes}
 \begin{DoxyCompactItemize}
 \item 
-struct \hyperlink{gai__hotreload_8h_structgaihr__filetime}{gaihr\+\_\+filetime}
-\item 
-struct \hyperlink{gai__hotreload_8h_structgaihr__platform__win32}{gaihr\+\_\+platform\+\_\+win32}
+union \hyperlink{gai__hotreload_8h_uniongaihr__filetime}{gaihr\+\_\+filetime}
 \item 
 union \hyperlink{gai__hotreload_8h_uniongaihr__platform}{gaihr\+\_\+platform}
 \item 
+struct \hyperlink{gai__hotreload_8h_structgaihr__platform_1_1gaihr__platform__win32}{gaihr\+\_\+platform\+::gaihr\+\_\+platform\+\_\+win32}
+\item 
+struct \hyperlink{gai__hotreload_8h_structgaihr__platform_1_1gaihr__platform__linux}{gaihr\+\_\+platform\+::gaihr\+\_\+platform\+\_\+linux}
+\item 
 struct \hyperlink{gai__hotreload_8h_structgaihr__file}{gaihr\+\_\+file}
+\item 
+struct \hyperlink{gai__hotreload_8h_structgaihr__filetime_8parts}{gaihr\+\_\+filetime.\+parts}
 \end{DoxyCompactItemize}
 \subsection*{Macros}
 \begin{DoxyCompactItemize}
@@ -72,7 +76,11 @@ enum \hyperlink{gai__hotreload_8h_aaebb069b6896f065efd75640e0e4150b}{gaihr\+\_\+
 \hyperlink{gai__hotreload_8h_a32983003a4e816a8350f01cb22d1b01b}{G\+A\+I\+H\+R\+\_\+\+A\+PI} void \hyperlink{gai__hotreload_8h_a465162f1865f5f804311c153c0995543}{\+\_\+gaihr\+\_\+\+Set\+Event} (\hyperlink{gai__hotreload_8h_structgaihr__file}{gaihr\+\_\+file} $\ast$file)
 \begin{DoxyCompactList}\small\item\em Signals a file change to the user. \end{DoxyCompactList}\item 
 \hyperlink{gai__hotreload_8h_a32983003a4e816a8350f01cb22d1b01b}{G\+A\+I\+H\+R\+\_\+\+A\+PI} void \hyperlink{gai__hotreload_8h_aba347f4afef1dd5f850142adf487fa26}{\+\_\+gaihr\+\_\+\+Reset\+Event} (\hyperlink{gai__hotreload_8h_structgaihr__file}{gaihr\+\_\+file} $\ast$file)
-\begin{DoxyCompactList}\small\item\em Resets the previously set signal. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Resets the previously set signal. \end{DoxyCompactList}\item 
+\hyperlink{gai__hotreload_8h_a32983003a4e816a8350f01cb22d1b01b}{G\+A\+I\+H\+R\+\_\+\+A\+PI} int \hyperlink{gai__hotreload_8h_acee43647e5f69a31c40726d43bfe19e3}{\+\_\+gaihr\+\_\+\+Compare\+File\+Time} (\hyperlink{gai__hotreload_8h_uniongaihr__filetime}{gaihr\+\_\+filetime} $\ast$a, \hyperlink{gai__hotreload_8h_uniongaihr__filetime}{gaihr\+\_\+filetime} $\ast$b)
+\begin{DoxyCompactList}\small\item\em Compare two gaihr\+\_\+filetimes to each other. \end{DoxyCompactList}\item 
+\hyperlink{gai__hotreload_8h_a32983003a4e816a8350f01cb22d1b01b}{G\+A\+I\+H\+R\+\_\+\+A\+PI} void \hyperlink{gai__hotreload_8h_a7017705231a1470b0a03c14a9c28aa11}{\+\_\+gaihr\+\_\+\+Do\+Work} (\hyperlink{gai__hotreload_8h_structgaihr__file}{gaihr\+\_\+file} $\ast$$\ast$files)
+\begin{DoxyCompactList}\small\item\em Loops through all files to track. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \subsection*{Variables}
 \begin{DoxyCompactItemize}
 \item 
@@ -173,36 +181,19 @@ Andreas Gaida
 
 
 \subsection{Class Documentation}
-\index{gaihr\+\_\+filetime@{gaihr\+\_\+filetime}}\label{structgaihr__filetime}
-\Hypertarget{gai__hotreload_8h_structgaihr__filetime}
-\subsubsection{struct gaihr\+\_\+filetime}
+\index{gaihr\+\_\+filetime@{gaihr\+\_\+filetime}}\label{uniongaihr__filetime}
+\Hypertarget{gai__hotreload_8h_uniongaihr__filetime}
+\subsubsection{union gaihr\+\_\+filetime}
 \begin{DoxyFields}{Class Members}
-\mbox{\Hypertarget{gai__hotreload_8h_aa35cb3a699771f27e62ecff738665169}\label{gai__hotreload_8h_aa35cb3a699771f27e62ecff738665169}} 
-unsigned int&
-highpart&
-\\
+\mbox{\Hypertarget{gai__hotreload_8h_a61446b486ff5dbcd62b9b83418d853ac}\label{gai__hotreload_8h_a61446b486ff5dbcd62b9b83418d853ac}} 
+struct \hyperlink{gai__hotreload_8h_structgaihr__filetime_8parts}{gaihr\_filetime}&
+parts&
+This is here to easily cast windows F\+I\+L\+E\+T\+I\+ME structure to this one. \\
 \hline
 
-\mbox{\Hypertarget{gai__hotreload_8h_ac97443b53714d1ed266459ef0158c278}\label{gai__hotreload_8h_ac97443b53714d1ed266459ef0158c278}} 
-unsigned int&
-lowpart&
-\\
-\hline
-
-\end{DoxyFields}
-\index{gaihr\+\_\+platform\+\_\+win32@{gaihr\+\_\+platform\+\_\+win32}}\label{structgaihr__platform__win32}
-\Hypertarget{gai__hotreload_8h_structgaihr__platform__win32}
-\subsubsection{struct gaihr\+\_\+platform\+\_\+win32}
-\begin{DoxyFields}{Class Members}
-\mbox{\Hypertarget{gai__hotreload_8h_a146c8d18d7cc6be7113e1afcb92e6a8f}\label{gai__hotreload_8h_a146c8d18d7cc6be7113e1afcb92e6a8f}} 
-HANDLE&
-event&
-\\
-\hline
-
-\mbox{\Hypertarget{gai__hotreload_8h_a6119861cabb0b6251f23e90033780a82}\label{gai__hotreload_8h_a6119861cabb0b6251f23e90033780a82}} 
-HANDLE&
-mutex&
+\mbox{\Hypertarget{gai__hotreload_8h_a17c62c2a56dc2b6f8ad20c3359562b2e}\label{gai__hotreload_8h_a17c62c2a56dc2b6f8ad20c3359562b2e}} 
+unsigned long long&
+time&
 \\
 \hline
 
@@ -216,13 +207,53 @@ Collaboration diagram for gaihr\+\_\+platform\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[width=175pt]{uniongaihr__platform__coll__graph}
+\includegraphics[width=284pt]{uniongaihr__platform__coll__graph}
 \end{center}
 \end{figure}
 \begin{DoxyFields}{Class Members}
-\mbox{\Hypertarget{gai__hotreload_8h_afe6263d41992ba905300fa023baf1125}\label{gai__hotreload_8h_afe6263d41992ba905300fa023baf1125}} 
-\hyperlink{gai__hotreload_8h_structgaihr__platform__win32}{gaihr\_platform\_win32}&
+\mbox{\Hypertarget{gai__hotreload_8h_aff9109eeb79bcbee6ddf4eab05477a83}\label{gai__hotreload_8h_aff9109eeb79bcbee6ddf4eab05477a83}} 
+struct \hyperlink{gai__hotreload_8h_structgaihr__platform_1_1gaihr__platform__linux}{gaihr\_platform\_linux}&
+linux&
+\\
+\hline
+
+\mbox{\Hypertarget{gai__hotreload_8h_ab100a9280dca047d4c625cbf6ea7e64c}\label{gai__hotreload_8h_ab100a9280dca047d4c625cbf6ea7e64c}} 
+struct \hyperlink{gai__hotreload_8h_structgaihr__platform_1_1gaihr__platform__win32}{gaihr\_platform\_win32}&
 win32&
+\\
+\hline
+
+\end{DoxyFields}
+\index{gaihr\+\_\+platform\+::gaihr\+\_\+platform\+\_\+win32@{gaihr\+\_\+platform\+::gaihr\+\_\+platform\+\_\+win32}}\label{structgaihr__platform_1_1gaihr__platform__win32}
+\Hypertarget{gai__hotreload_8h_structgaihr__platform_1_1gaihr__platform__win32}
+\subsubsection{struct gaihr\+\_\+platform\+:\+:gaihr\+\_\+platform\+\_\+win32}
+\begin{DoxyFields}{Class Members}
+\mbox{\Hypertarget{gai__hotreload_8h_aa9b31d30dfd3fa64e40b7cd771f98253}\label{gai__hotreload_8h_aa9b31d30dfd3fa64e40b7cd771f98253}} 
+HANDLE&
+event&
+\\
+\hline
+
+\mbox{\Hypertarget{gai__hotreload_8h_ab17cd0ffa18b4ef60cd0d4736f0abc0a}\label{gai__hotreload_8h_ab17cd0ffa18b4ef60cd0d4736f0abc0a}} 
+HANDLE&
+mutex&
+\\
+\hline
+
+\end{DoxyFields}
+\index{gaihr\+\_\+platform\+::gaihr\+\_\+platform\+\_\+linux@{gaihr\+\_\+platform\+::gaihr\+\_\+platform\+\_\+linux}}\label{structgaihr__platform_1_1gaihr__platform__linux}
+\Hypertarget{gai__hotreload_8h_structgaihr__platform_1_1gaihr__platform__linux}
+\subsubsection{struct gaihr\+\_\+platform\+:\+:gaihr\+\_\+platform\+\_\+linux}
+\begin{DoxyFields}{Class Members}
+\mbox{\Hypertarget{gai__hotreload_8h_a50324e3fd2b5fdcfd27f1ae040656ac2}\label{gai__hotreload_8h_a50324e3fd2b5fdcfd27f1ae040656ac2}} 
+void $\ast$&
+event&
+\\
+\hline
+
+\mbox{\Hypertarget{gai__hotreload_8h_a02af0c94ad547b2616feff49dcee343e}\label{gai__hotreload_8h_a02af0c94ad547b2616feff49dcee343e}} 
+void $\ast$&
+mutex&
 \\
 \hline
 
@@ -241,7 +272,7 @@ Collaboration diagram for gaihr\+\_\+file\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[width=245pt]{structgaihr__file__coll__graph}
+\includegraphics[width=299pt]{structgaihr__file__coll__graph}
 \end{center}
 \end{figure}
 \begin{DoxyFields}{Class Members}
@@ -264,7 +295,7 @@ Flags to specify event handling and callback behaviour. \\
 \hline
 
 \mbox{\Hypertarget{gai__hotreload_8h_a38b2bc43116a1fd59715ca1714d80462}\label{gai__hotreload_8h_a38b2bc43116a1fd59715ca1714d80462}} 
-\hyperlink{gai__hotreload_8h_structgaihr__filetime}{gaihr\_filetime}&
+\hyperlink{gai__hotreload_8h_uniongaihr__filetime}{gaihr\_filetime}&
 last\_write\_time&
 Filetime structure. \\
 \hline
@@ -279,6 +310,23 @@ Platform specfic structure for semaphore or mutex handles. \\
 void $\ast$&
 userdata&
 User passed data. \\
+\hline
+
+\end{DoxyFields}
+\index{gaihr\+\_\+filetime.\+parts@{gaihr\+\_\+filetime.\+parts}}\label{structgaihr__filetime_8parts}
+\Hypertarget{gai__hotreload_8h_structgaihr__filetime_8parts}
+\subsubsection{struct gaihr\+\_\+filetime.\+parts}
+\begin{DoxyFields}{Class Members}
+\mbox{\Hypertarget{gai__hotreload_8h_a8d966b2253a917086c8604959e152243}\label{gai__hotreload_8h_a8d966b2253a917086c8604959e152243}} 
+long&
+high&
+\\
+\hline
+
+\mbox{\Hypertarget{gai__hotreload_8h_a53cced8d281a1a0ace3cb6594daaa4f7}\label{gai__hotreload_8h_a53cced8d281a1a0ace3cb6594daaa4f7}} 
+long&
+low&
+\\
 \hline
 
 \end{DoxyFields}
@@ -421,6 +469,55 @@ Opens a mutex to access the data safely in a multi-\/threaded way.
 \end{longtabu}
 
 \end{DoxyReturn}
+\mbox{\Hypertarget{gai__hotreload_8h_acee43647e5f69a31c40726d43bfe19e3}\label{gai__hotreload_8h_acee43647e5f69a31c40726d43bfe19e3}} 
+\index{gai\+\_\+hotreload.\+h@{gai\+\_\+hotreload.\+h}!\+\_\+gaihr\+\_\+\+Compare\+File\+Time@{\+\_\+gaihr\+\_\+\+Compare\+File\+Time}}
+\index{\+\_\+gaihr\+\_\+\+Compare\+File\+Time@{\+\_\+gaihr\+\_\+\+Compare\+File\+Time}!gai\+\_\+hotreload.\+h@{gai\+\_\+hotreload.\+h}}
+\subsubsection{\texorpdfstring{\+\_\+gaihr\+\_\+\+Compare\+File\+Time()}{\_gaihr\_CompareFileTime()}}
+{\footnotesize\ttfamily \hyperlink{gai__hotreload_8h_a32983003a4e816a8350f01cb22d1b01b}{G\+A\+I\+H\+R\+\_\+\+A\+PI} int \+\_\+gaihr\+\_\+\+Compare\+File\+Time (\begin{DoxyParamCaption}\item[{\hyperlink{gai__hotreload_8h_uniongaihr__filetime}{gaihr\+\_\+filetime} $\ast$}]{a,  }\item[{\hyperlink{gai__hotreload_8h_uniongaihr__filetime}{gaihr\+\_\+filetime} $\ast$}]{b }\end{DoxyParamCaption})}
+
+
+
+Compare two gaihr\+\_\+filetimes to each other. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em a} & A pointer to a \hyperlink{gai__hotreload_8h_uniongaihr__filetime}{gaihr\+\_\+filetime} structure \\
+\hline
+{\em b} & A pointer to a \hyperlink{gai__hotreload_8h_uniongaihr__filetime}{gaihr\+\_\+filetime} structure\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\tabulinesep=1mm
+\begin{longtabu} spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Return Code }&\textbf{ Description  }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\rowcolor{\tableheadbgcolor}\textbf{ Return Code }&\textbf{ Description  }\\\cline{1-2}
+\endhead
+-\/1 &a is higher than b \\\cline{1-2}
+0 &a equals b \\\cline{1-2}
+1 &b is higher than a \\\cline{1-2}
+\end{longtabu}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{gai__hotreload_8h_a7017705231a1470b0a03c14a9c28aa11}\label{gai__hotreload_8h_a7017705231a1470b0a03c14a9c28aa11}} 
+\index{gai\+\_\+hotreload.\+h@{gai\+\_\+hotreload.\+h}!\+\_\+gaihr\+\_\+\+Do\+Work@{\+\_\+gaihr\+\_\+\+Do\+Work}}
+\index{\+\_\+gaihr\+\_\+\+Do\+Work@{\+\_\+gaihr\+\_\+\+Do\+Work}!gai\+\_\+hotreload.\+h@{gai\+\_\+hotreload.\+h}}
+\subsubsection{\texorpdfstring{\+\_\+gaihr\+\_\+\+Do\+Work()}{\_gaihr\_DoWork()}}
+{\footnotesize\ttfamily \hyperlink{gai__hotreload_8h_a32983003a4e816a8350f01cb22d1b01b}{G\+A\+I\+H\+R\+\_\+\+A\+PI} void \+\_\+gaihr\+\_\+\+Do\+Work (\begin{DoxyParamCaption}\item[{\hyperlink{gai__hotreload_8h_structgaihr__file}{gaihr\+\_\+file} $\ast$$\ast$}]{files }\end{DoxyParamCaption})}
+
+
+
+Loops through all files to track. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em files} & A pointer to an array of \hyperlink{gai__hotreload_8h_structgaihr__file}{gaihr\+\_\+file} structures \\
+\hline
+\end{DoxyParams}
 \mbox{\Hypertarget{gai__hotreload_8h_ae6e501372d35a3645332dadb8f612e3c}\label{gai__hotreload_8h_ae6e501372d35a3645332dadb8f612e3c}} 
 \index{gai\+\_\+hotreload.\+h@{gai\+\_\+hotreload.\+h}!\+\_\+gaihr\+\_\+\+End\+Ticket\+Mutex@{\+\_\+gaihr\+\_\+\+End\+Ticket\+Mutex}}
 \index{\+\_\+gaihr\+\_\+\+End\+Ticket\+Mutex@{\+\_\+gaihr\+\_\+\+End\+Ticket\+Mutex}!gai\+\_\+hotreload.\+h@{gai\+\_\+hotreload.\+h}}

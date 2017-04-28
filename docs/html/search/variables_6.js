@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['keys',['keys',['../gai__xwindow_8h.html#ab0a6fb70cf772d62d05bce47884256cb',1,'gaixw_input']]],
-  ['keys_5fhistory',['keys_history',['../gai__xwindow_8h.html#aeefc7998758b3f5783de412a70e9e0ca',1,'gaixw_input']]]
+  ['info',['info',['../gai__xwindow_8h.html#a488c7d5344206e2f55cd62ffc258e77b',1,'gaixw_context']]],
+  ['input',['input',['../gai__xwindow_8h.html#a4a9d2e14ebb24977fb5df84d361c851f',1,'gaixw_context']]],
+  ['is_5frunning',['is_running',['../gai__xwindow_8h.html#a7165f8e7f0c548dd3a11c8648fb8071a',1,'gaixw_context']]]
 ];

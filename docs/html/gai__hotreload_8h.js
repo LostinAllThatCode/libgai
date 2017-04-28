@@ -1,15 +1,28 @@
 var gai__hotreload_8h =
 [
-    [ "gaihr_filetime", "gai__hotreload_8h.html#structgaihr__filetime", [
-      [ "highpart", "gai__hotreload_8h.html#aa35cb3a699771f27e62ecff738665169", null ],
-      [ "lowpart", "gai__hotreload_8h.html#ac97443b53714d1ed266459ef0158c278", null ]
-    ] ],
-    [ "gaihr_platform_win32", "gai__hotreload_8h.html#structgaihr__platform__win32", [
-      [ "event", "gai__hotreload_8h.html#a146c8d18d7cc6be7113e1afcb92e6a8f", null ],
-      [ "mutex", "gai__hotreload_8h.html#a6119861cabb0b6251f23e90033780a82", null ]
+    [ "gaihr_filetime", "gai__hotreload_8h.html#uniongaihr__filetime", [
+      [ "parts", "gai__hotreload_8h.html#a61446b486ff5dbcd62b9b83418d853ac", null ],
+      [ "time", "gai__hotreload_8h.html#a17c62c2a56dc2b6f8ad20c3359562b2e", null ]
     ] ],
     [ "gaihr_platform", "gai__hotreload_8h.html#uniongaihr__platform", [
-      [ "win32", "gai__hotreload_8h.html#afe6263d41992ba905300fa023baf1125", null ]
+      [ "gaihr_platform_linux", "gai__hotreload_8h.html#structgaihr__platform_1_1gaihr__platform__linux", [
+        [ "event", "gai__hotreload_8h.html#a50324e3fd2b5fdcfd27f1ae040656ac2", null ],
+        [ "mutex", "gai__hotreload_8h.html#a02af0c94ad547b2616feff49dcee343e", null ]
+      ] ],
+      [ "gaihr_platform_win32", "gai__hotreload_8h.html#structgaihr__platform_1_1gaihr__platform__win32", [
+        [ "event", "gai__hotreload_8h.html#aa9b31d30dfd3fa64e40b7cd771f98253", null ],
+        [ "mutex", "gai__hotreload_8h.html#ab17cd0ffa18b4ef60cd0d4736f0abc0a", null ]
+      ] ],
+      [ "linux", "gai__hotreload_8h.html#aff9109eeb79bcbee6ddf4eab05477a83", null ],
+      [ "win32", "gai__hotreload_8h.html#ab100a9280dca047d4c625cbf6ea7e64c", null ]
+    ] ],
+    [ "gaihr_platform_win32", "gai__hotreload_8h.html#structgaihr__platform_1_1gaihr__platform__win32", [
+      [ "event", "gai__hotreload_8h.html#aa9b31d30dfd3fa64e40b7cd771f98253", null ],
+      [ "mutex", "gai__hotreload_8h.html#ab17cd0ffa18b4ef60cd0d4736f0abc0a", null ]
+    ] ],
+    [ "gaihr_platform_linux", "gai__hotreload_8h.html#structgaihr__platform_1_1gaihr__platform__linux", [
+      [ "event", "gai__hotreload_8h.html#a50324e3fd2b5fdcfd27f1ae040656ac2", null ],
+      [ "mutex", "gai__hotreload_8h.html#a02af0c94ad547b2616feff49dcee343e", null ]
     ] ],
     [ "gaihr_file", "gai__hotreload_8h.html#structgaihr__file", [
       [ "callback", "gai__hotreload_8h.html#a9ac45c0142ff1eaf591b870e163d7f31", null ],
@@ -18,6 +31,10 @@ var gai__hotreload_8h =
       [ "last_write_time", "gai__hotreload_8h.html#a38b2bc43116a1fd59715ca1714d80462", null ],
       [ "platform", "gai__hotreload_8h.html#a138044c270d5f0e83917ae2841efe8b7", null ],
       [ "userdata", "gai__hotreload_8h.html#a06bf963cb9c08e69fcc6c4bb3140a2b8", null ]
+    ] ],
+    [ "gaihr_filetime.parts", "gai__hotreload_8h.html#structgaihr__filetime_8parts", [
+      [ "high", "gai__hotreload_8h.html#a8d966b2253a917086c8604959e152243", null ],
+      [ "low", "gai__hotreload_8h.html#a53cced8d281a1a0ace3cb6594daaa4f7", null ]
     ] ],
     [ "GAIHR_API", "gai__hotreload_8h.html#a32983003a4e816a8350f01cb22d1b01b", null ],
     [ "GAIHR_ASSERT", "gai__hotreload_8h.html#a11e965cbb3e2af8ed1888b0c6b2777da", null ],
@@ -33,6 +50,8 @@ var gai__hotreload_8h =
       [ "gaihr_FlagsSkipInitialChange", "gai__hotreload_8h.html#aaebb069b6896f065efd75640e0e4150baee50ce1492a508e5605592106fa00bd5", null ]
     ] ],
     [ "_gaihr_BeginTicketMutex", "gai__hotreload_8h.html#a52aa011dc92eb63b9d5fc7993042eb3f", null ],
+    [ "_gaihr_CompareFileTime", "gai__hotreload_8h.html#acee43647e5f69a31c40726d43bfe19e3", null ],
+    [ "_gaihr_DoWork", "gai__hotreload_8h.html#a7017705231a1470b0a03c14a9c28aa11", null ],
     [ "_gaihr_EndTicketMutex", "gai__hotreload_8h.html#ae6e501372d35a3645332dadb8f612e3c", null ],
     [ "_gaihr_ResetEvent", "gai__hotreload_8h.html#aba347f4afef1dd5f850142adf487fa26", null ],
     [ "_gaihr_SetEvent", "gai__hotreload_8h.html#a465162f1865f5f804311c153c0995543", null ],

@@ -26,14 +26,14 @@
  * A file with the name "testfile.txt" has to be in the directory of the executable.
  * After running the executable you have to change the file's content and save it
  * or replace it with another file (same filename).
- *	
+ *
  * @include hotreload\win32\main.cpp
  *
  * @author Andreas Gaida
  * @date   25.04.2017
  * @see    https://github.com/LostinAllThatCode/libgai
- * 
- * @example hotreload\win32\main.cpp __Example: win32 gai_hotreload.h__* 
+ *
+ * @example hotreload\win32\main.cpp __Example: win32 gai_hotreload.h__*
  */
 
 #ifndef _GAI_INCLUDE_HOTRELOAD_H
@@ -41,7 +41,6 @@
 #if _WIN32
 	#define WIN32_LEAN_AND_MEAN
 	#include <windows.h>
-	#pragma comment( lib, "user32.lib" )
 #endif
 
 #define GAIHR_WAIT_INFINITE  -1		/**< Note: Currently the windows specified value for INFINITE. Will possibly be changed! */
@@ -110,25 +109,28 @@ enum gaihr_flags
 	gaihr_FlagsSkipInitialChange 	= 0x4, /**< Indicates whether the initial file change will not result in an event. */
 };
 
-struct gaihr_filetime
+union gaihr_filetime
 {
-	unsigned int lowpart;
-	unsigned int highpart;
-};
-
-struct gaihr_platform_win32
-{
-	#if _WIN32
-	HANDLE 	mutex;
-	HANDLE 	event;
-	#else 
-	void*   not_supported;
-	#endif
+	struct { long low, high; } parts; /**< This is here to easily cast windows FILETIME structure to this one. */
+	unsigned long long time;
 };
 
 union gaihr_platform
 {
-	gaihr_platform_win32 win32;
+	#if _WIN32
+	struct gaihr_platform_win32
+	{
+		HANDLE 	mutex;
+		HANDLE 	event;
+	} win32;
+	#endif
+	#if __linux__
+	struct gaihr_platform_linux
+	{
+		void* 	mutex;
+		void* 	event;
+	} linux;
+	#endif
 };
 
 /**
@@ -212,10 +214,43 @@ GAIHR_API void  			_gaihr_SetEvent 		(gaihr_file *file);
  * @param      file  Handle to a gaihr_file instance.
  */
 GAIHR_API void  			_gaihr_ResetEvent 		(gaihr_file *file);
+/**
+ * @brief      Compare two gaihr_filetimes to each other.
+ *
+ * @param      a     A pointer to a gaihr_filetime structure
+ * @param      b     A pointer to a gaihr_filetime structure
+ *
+ * @return
+ * Return Code 	| Description
+ * :----		|:-----------
+ * -1 			| a is higher than b
+ * 0 			| a equals b
+ * 1 			| b is higher than a
+ */
+GAIHR_API int 				_gaihr_CompareFileTime	(gaihr_filetime *a, gaihr_filetime *b);
+/**
+ * @brief      Loops through all files to track
+ *
+ * @param      files  A pointer to an array of gaihr_file structures
+ */
+GAIHR_API void 				_gaihr_DoWork			(gaihr_file **files);
 
 #ifdef GAIHR_IMPLEMENTATION
 
 #if _WIN32
+#pragma comment( lib, "user32.lib" )
+
+GAIHR_API void*
+_gaihr_CreateMutex()
+{
+	return CreateMutex(0, 0, 0);
+}
+
+GAIHR_API void
+_gaihr_CloseMutex(void *mutex)
+{
+	CloseHandle(mutex);
+}
 
 inline GAIHR_API unsigned int
 _gaihr_BeginTicketMutex(gaihr_file *file, int timeout)
@@ -230,6 +265,18 @@ _gaihr_EndTicketMutex(gaihr_file *file)
 	ReleaseMutex(file->platform.win32.mutex);
 }
 
+GAIHR_API void*
+_gaihr_CreateEvent(unsigned int initial_state)
+{
+	return CreateEvent(0, 1, initial_state, 0);
+}
+
+GAIHR_API void
+_gaihr_CloseEvent(void *event)
+{
+	CloseHandle(event);
+}
+
 inline GAIHR_API void
 _gaihr_SetEvent(gaihr_file *file)
 {
@@ -242,46 +289,28 @@ _gaihr_ResetEvent(gaihr_file *file)
 	ResetEvent(file->platform.win32.event);
 }
 
-inline GAIHR_API void
-gaihr_WaitForEvent(gaihr_file *file)
+inline GAIHR_API unsigned int
+_gaihr_WaitEvent(gaihr_file *file, int timeout)
 {
-	if (WaitForSingleObject(file->platform.win32.event, 0) == WAIT_OBJECT_0)
-	{
-		_gaihr_BeginTicketMutex(file);
-		if (file->callback) file->callback(file);
-		if (!(file->flags & gaihr_FlagsDontResetEvent)) _gaihr_ResetEvent(file);
-		_gaihr_EndTicketMutex(file);
-	}
+	return (WaitForSingleObject(file->platform.win32.event, timeout) == WAIT_OBJECT_0);
 }
-
-#define _GAIHR_SIGN(x) ((x) > 0) - ((x) < 0)
-inline GAIHR_API int
-_gaihr_CompareFileTime(gaihr_filetime *a, gaihr_filetime *b)
-{
-	int result = _GAIHR_SIGN(b->highpart - a->highpart);
-	return (result == 0 ? (_GAIHR_SIGN(b->lowpart - a->lowpart)) : result);
-}
-#undef _GAIHR_SIGN
 
 inline GAIHR_API unsigned int
 _gaihr_CheckFileChanged(gaihr_file *file)
 {
 	unsigned int result = 0;
 	WIN32_FILE_ATTRIBUTE_DATA file_info_now = {};
-	GetFileAttributesExA(file->filename, GetFileExInfoStandard, &file_info_now);
-	if ( _gaihr_CompareFileTime(&file->last_write_time, (gaihr_filetime*) &file_info_now.ftLastWriteTime) != 0 )
-	{
-		if ( (file->flags & gaihr_FlagsSkipInitialChange) && file->last_write_time.lowpart == 0 )
-		{
-			result = 0;
-		}
-		else
-		{
-			result = 1;
-		}
 
-		file->last_write_time.lowpart = file_info_now.ftLastWriteTime.dwLowDateTime;
-		file->last_write_time.highpart = file_info_now.ftLastWriteTime.dwHighDateTime;
+	int file_attrib_result = GetFileAttributesExA(file->filename, GetFileExInfoStandard, &file_info_now);
+	if (file_attrib_result)
+	{
+		int has_changed = (_gaihr_CompareFileTime(&file->last_write_time, (gaihr_filetime*) &file_info_now.ftLastWriteTime) == 1);
+		if (has_changed)
+		{
+			if (!((file->flags & gaihr_FlagsSkipInitialChange) && (file->last_write_time.time == 0))) result = 1;
+			file->last_write_time.parts.low 	= file_info_now.ftLastWriteTime.dwLowDateTime;
+			file->last_write_time.parts.high 	= file_info_now.ftLastWriteTime.dwHighDateTime;
+		}
 	}
 	return result;
 }
@@ -291,7 +320,27 @@ _gaihr_WorkerThread(void *data)
 {
 	for (;;)
 	{
-		gaihr_file **files = _gaihr_files;
+		_gaihr_DoWork(_gaihr_files);
+		Sleep(GAIHR_THREAD_TIMEOUT);
+	}
+	return 1;
+}
+
+GAIHR_API int
+_gaihr_CreateThread()
+{
+	return (CreateThread(0, 0, _gaihr_WorkerThread, 0, 0, 0) != 0);
+}
+
+#else
+#error gai_hotreload.h: Error. This platform is not supported!
+#endif // PLATFORM IMPLEMENTATIONS
+
+inline GAIHR_API void
+_gaihr_DoWork(gaihr_file **files)
+{
+	if (files)
+	{
 		for (int i = 0; i < (sizeof(_gaihr_files) / sizeof(_gaihr_files[0])); i++)
 		{
 			gaihr_file *file = files[i];
@@ -304,13 +353,30 @@ _gaihr_WorkerThread(void *data)
 				}
 			}
 		}
-		Sleep(GAIHR_THREAD_TIMEOUT);
 	}
-	return 1;
+}
+
+inline GAIHR_API void
+gaihr_WaitForEvent(gaihr_file * file)
+{
+	if (_gaihr_WaitEvent(file, 0))
+	{
+		_gaihr_BeginTicketMutex(file);
+		if (file->callback) file->callback(file);
+		if (!(file->flags & gaihr_FlagsDontResetEvent)) _gaihr_ResetEvent(file);
+		_gaihr_EndTicketMutex(file);
+	}
+}
+
+inline GAIHR_API int
+_gaihr_CompareFileTime(gaihr_filetime * a, gaihr_filetime * b)
+{
+	int result = (((b->time - a->time)) > 0) - (((b->time - a->time) < 0));
+	return result;
 }
 
 GAIHR_API unsigned int
-gaihr_Track(gaihr_file *file, const char *filename, gaihr_callback *callback, void *userdata, gaihr_flags flags)
+gaihr_Track(gaihr_file * file, const char *filename, gaihr_callback * callback, void *userdata, gaihr_flags flags)
 {
 	static int file_count;
 	GAIHR_ASSERT(file && file_count < GAIHR_FILE_LIMIT);
@@ -319,13 +385,14 @@ gaihr_Track(gaihr_file *file, const char *filename, gaihr_callback *callback, vo
 	file->callback                 = callback;
 	file->userdata                 = userdata;
 	file->flags                    = flags;
-	file->platform.win32.mutex     = CreateMutex(0, 0, 0);
-	file->platform.win32.event     = CreateEvent(0, 1, 0, 0);
-	file->last_write_time 		   = {0, 0};
+	file->platform.win32.mutex     = _gaihr_CreateMutex();
+	file->platform.win32.event     = _gaihr_CreateEvent(0);
+	file->last_write_time 		   = {0};
 
+	_gaihr_files[file_count] = file;
 	if (file_count == 0)
 	{
-		CreateThread(0, 0, _gaihr_WorkerThread, 0, 0, 0);
+		_gaihr_CreateThread();
 		#if 0
 		__filelist.file = file;
 		__filelist.next = 0;
@@ -346,14 +413,12 @@ gaihr_Track(gaihr_file *file, const char *filename, gaihr_callback *callback, vo
 		}
 		#endif
 	}
-	_gaihr_files[file_count] = file;
-
 	file_count++;
 	return 1;
 }
 
 GAIHR_API unsigned int
-gaihr_Untrack(gaihr_file *file)
+gaihr_Untrack(gaihr_file * file)
 {
 	for (;;)
 	{
@@ -363,8 +428,8 @@ gaihr_Untrack(gaihr_file *file)
 			gaihr_file *target_file = files[i];
 			if (target_file == file)
 			{
-				CloseHandle(file->platform.win32.event);
-				CloseHandle(file->platform.win32.mutex);
+				_gaihr_CloseEvent(file->platform.win32.event);
+				_gaihr_CloseMutex(file->platform.win32.mutex);
 				files[i] = 0;
 				return 1;
 			}
@@ -372,14 +437,9 @@ gaihr_Untrack(gaihr_file *file)
 	}
 	return 0;
 }
+#endif	// GAIHR_IMPLEMENTATION
 
-#else
 
-#error gai_hotreload.h: Error. This platform is not supported!
-
-#endif
-
-#endif
 
 #define _GAI_INCLUDE_HOTRELOAD_H
 #endif

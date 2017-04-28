@@ -1,5 +1,6 @@
 <map id="gaihr_file" name="gaihr_file">
-<area shape="rect" id="node2" href="$gai__hotreload_8h.html#structgaihr__filetime" title="gaihr_filetime" alt="" coords="5,89,92,113"/>
-<area shape="rect" id="node3" href="$gai__hotreload_8h.html#uniongaihr__platform" title="gaihr_platform" alt="" coords="116,89,208,113"/>
-<area shape="rect" id="node4" href="$gai__hotreload_8h.html#structgaihr__platform__win32" title="gaihr_platform_win32" alt="" coords="99,5,225,29"/>
+<area shape="rect" id="node2" href="$gai__hotreload_8h.html#uniongaihr__filetime" title="gaihr_filetime" alt="" coords="5,101,92,125"/>
+<area shape="rect" id="node3" href="$gai__hotreload_8h.html#uniongaihr__platform" title="gaihr_platform" alt="" coords="116,101,208,125"/>
+<area shape="rect" id="node4" href="$gai__hotreload_8h.html#structgaihr__platform_1_1gaihr__platform__linux" title="gaihr_platform::gaihr\l_platform_linux" alt="" coords="25,5,149,41"/>
+<area shape="rect" id="node5" href="$gai__hotreload_8h.html#structgaihr__platform_1_1gaihr__platform__win32" title="gaihr_platform::gaihr\l_platform_win32" alt="" coords="173,5,297,41"/>
 </map>

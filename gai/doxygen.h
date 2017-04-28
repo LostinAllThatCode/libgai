@@ -8,6 +8,6 @@
  * filename | description
  * :--------|:-----------
  *  {@link gai_hotreload.h} | @copybrief gai_hotreload.h
- *  {@link gai_xwindow.h} | @copybrief gai_xwindow.h
+ *  {@link gai_xwindow.h}   | @copybrief gai_xwindow.h
  */
 // doxygen index generation file

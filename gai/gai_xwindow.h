@@ -18,10 +18,10 @@
  * Do this:
  * @code{.cpp}#define GAIXW_IMPLEMENTATION@endcode
  * before you include this file in *one* C or C++ file to create the implementation.
- *
- * @subsection gaixw_gdi_win32_example GDI Example:
+ * @subsection gaixw_examples Examples
+ * @subsubsection gaixw_gdi_win32_example GDI Example
  * @include xwindow\gdi_win32\main.cpp
- * @subsection gaixw_opengl_win32_example OpenGL Example:
+ * @subsubsection gaixw_opengl_win32_example OpenGL Example
  * @include xwindow\opengl_win32\main.cpp
  * If you want to get a modern opengl context you have to specify these macros as well
  * @code{.cpp}
@@ -108,7 +108,7 @@
  *
  * To specifiy which backend you want to use, you have to request them like shown below.
  *
- * Also see the checkout the example code section.
+ * Read the @ref gaixw_examples section for more information.
  */
 enum gaixw_renderer_enum
 {
@@ -146,13 +146,13 @@ enum gaixw_renderer_enum
 	 *
 	 * @code{.cpp}
 	 * #define GAIXW_OPENGL
-	 * #define GAIXW_OPENGL_MAJOR 4			// Optional macro! Not needed if you dont want to specify this.
-	 * #define GAIXW_OPENGL_MINOR 3			// Optional macro! Not needed if you dont want to specify this.
+	 * #define GAIXW_OPENGL_MAJOR 4	// (optional)
+	 * #define GAIXW_OPENGL_MINOR 3	// (optional)
 	 * #define GAIXW_IMPLEMENTATION
 	 * #include <gai_xwindow.h>
 	 * @endcode
 	 *
-	 * @note You can also request a modern opengl context (3.x or higher)
+	 * @note If you specifiy @b GAIXW_OPENGL_MAJOR and @b GAIXW_OPENGL_MINOR you can request a specific opengl context version!
 	 */
 	gaixwRendererOpenGL 		= 6,
 	/**
@@ -209,52 +209,47 @@ struct gaixw_input
 	unsigned char mouse_history[3];			/**< Last state of all mouse keys */
 };
 
-struct gaixw_opengl
+union gaixw_graphics
 {
-	char 	*vendor;
-	char 	*version;
-	char 	*renderer;
-	char 	*shading_language_version;
-	void 	*context;
-};
-
-struct gaixw_directx
-{
-	void 	*context;
-};
-
-union gaixw_interface
-{
-	gaixw_opengl  	opengl;			/**< OpenGL renderer informations like vendor, version, renderer, shading language version */
-	gaixw_directx 	directx;
-};
-
-struct gaixw_platform_win32
-{
-	HWND 				hwnd;
-	HDC 				hdc;
-	HINSTANCE 			instance;
-	WINDOWPLACEMENT     position;
-};
-
-struct gaixw_platform_linux
-{
-	void* display;
-	void* visual;
-	void* window;
+	struct OPENGL
+	{
+		char 	*vendor;
+		char 	*version;
+		char 	*renderer;
+		char 	*shading_language_version;
+	} opengl; /**< OpenGL renderer informations like vendor, version, renderer, shading language version */
+	struct DIRECTX 	{ int version; 		} directx;
+	struct X11 		{ void 	*__ignored; } x11;
+	struct GDI 		{ void 	*__ignored; } gdi;
+	struct VULCAN 	{ void 	*__ignored; } vulcan;
 };
 
 union gaixw_platform
 {
-	gaixw_platform_win32 win32;
-	gaixw_platform_linux linux;
+	#if _WIN32
+	struct WINDOWS
+	{
+		HWND 				hwnd;
+		HDC 				hdc;
+		HINSTANCE 			instance;
+		WINDOWPLACEMENT     position;
+	} win32;
+	#endif
+	#if __linux__
+	struct LINUX
+	{
+		Display* 			display;
+		Visual* 			visual;
+		Window* 			window;
+	} linux;
+	#endif
 };
 
 struct gaixw_renderer
 {
 	int 				attributes;		/**< Current state of the window. See @ref gaixw_renderer_flags */
 	gaixw_renderer_enum type;			/**< Type of the renderer. See @ref gaixw_renderer_enum */
-	gaixw_interface 	interface;		/**< Renderer interface union for all supported renderer backends. See @ref gaixw_renderer_enum */
+	gaixw_graphics 		graphics;		/**< Renderer interface union for all supported renderer backends. See @ref gaixw_renderer_enum */
 };
 
 struct gaixw_context
@@ -924,7 +919,7 @@ gaixw_Update(gaixw_context *window)
 	MSG msg;
 	#ifdef GAIXW_OPENGL
 	if (gaixw_KeyReleased(window, VK_F1)) gaixw_ToggleFullscreen(window);
-	if (gaixw_KeyReleased(window, VK_F2)) gaixw_SetVerticalSync(window, !(window->renderer.attributes & gaixwFlagsVSYNC));
+	if (gaixw_KeyReleased(window, VK_F2)) gaixw_SetVerticalSync(window, !gaixw_GetAttribute(window, gaixwFlagsVSYNC));
 
 	static LARGE_INTEGER _frequency;
 	static LARGE_INTEGER _ltframetime;
@@ -1092,10 +1087,9 @@ gaixw_Init(gaixw_context *window, const char *title, int width, int height, int 
 		return -6;
 	}
 
-	window->renderer.interface.opengl.context 					= old_glctx;
-	window->renderer.interface.opengl.vendor                    = (char *) glGetString(GL_VENDOR);
-	window->renderer.interface.opengl.version                   = (char *) glGetString(GL_VERSION);
-	window->renderer.interface.opengl.renderer                  = (char *) glGetString(GL_RENDERER);
+	window->renderer.graphics.opengl.vendor                    = (char *) glGetString(GL_VENDOR);
+	window->renderer.graphics.opengl.version                   = (char *) glGetString(GL_VERSION);
+	window->renderer.graphics.opengl.renderer                  = (char *) glGetString(GL_RENDERER);
 
 	if (gaixw_WGLIsSupported("WGL_ARB_create_context"))
 	{
@@ -1126,11 +1120,10 @@ gaixw_Init(gaixw_context *window, const char *title, int width, int height, int 
 				wglDeleteContext(old_glctx);
 				wglMakeCurrent(hdc, new_oglctx);
 
-				window->renderer.interface.opengl.context 				   = new_oglctx;
-				window->renderer.interface.opengl.vendor                   = (char *) glGetString(GL_VENDOR);
-				window->renderer.interface.opengl.version                  = (char *) glGetString(GL_VERSION);
-				window->renderer.interface.opengl.renderer                 = (char *) glGetString(GL_RENDERER);
-				window->renderer.interface.opengl.shading_language_version = (char *) glGetString(0x8B8C);  // 0x8B8C GL_SHADING_LANGUAGE_VERSION
+				window->renderer.graphics.opengl.vendor                   = (char *) glGetString(GL_VENDOR);
+				window->renderer.graphics.opengl.version                  = (char *) glGetString(GL_VERSION);
+				window->renderer.graphics.opengl.renderer                 = (char *) glGetString(GL_RENDERER);
+				window->renderer.graphics.opengl.shading_language_version = (char *) glGetString(0x8B8C);  // 0x8B8C GL_SHADING_LANGUAGE_VERSION
 
 				gaixw_SetVerticalSync(window, 1);
 
@@ -1160,8 +1153,10 @@ gaixw_Init(gaixw_context *window, const char *title, int width, int height, int 
 
 #elif __linux__
 #error gai_xwindow.h: Error. No linux implementation yet!
+
 #else
 #error gai_xwindow.h: Error. This platform is not supported!
+
 #endif
 
 #endif

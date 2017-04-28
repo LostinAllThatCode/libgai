@@ -1,4 +1,4 @@
 <map id="gaixw_platform" name="gaixw_platform">
-<area shape="rect" id="node2" href="$gai__xwindow_8h.html#structgaixw__platform__linux" title="gaixw_platform_linux" alt="" coords="5,5,129,29"/>
-<area shape="rect" id="node3" href="$gai__xwindow_8h.html#structgaixw__platform__win32" title="gaixw_platform_win32" alt="" coords="154,5,285,29"/>
+<area shape="rect" id="node2" href="$gai__xwindow_8h.html#structgaixw__platform_1_1_l_i_n_u_x" title="gaixw_platform::LINUX" alt="" coords="5,5,139,29"/>
+<area shape="rect" id="node3" href="$gai__xwindow_8h.html#structgaixw__platform_1_1_w_i_n_d_o_w_s" title="gaixw_platform::WINDOWS" alt="" coords="163,5,319,29"/>
 </map>

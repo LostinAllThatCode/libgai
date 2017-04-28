@@ -1,13 +1,31 @@
 
 #if _DEBUG
 	#define GAIXW_DEBUG
+#else
+	#define LOG_ASSERT(cond) 	if(cond) {} else WriteToLog(__FILE__, __LINE__, #cond);
+	#define GAIXW_ASSERT(cond) 	LOG_ASSERT(cond)
+	#define GAIRB_ASSERT(cond) 	LOG_ASSERT(cond)
+	#define GAIHR_ASSERT(cond) 	LOG_ASSERT(cond)
+	#define GAIRGL_ASSERT(cond) LOG_ASSERT(cond)
 #endif
+
+#include <stdio.h>
+
+void
+WriteToLog(char *source, unsigned int linenumber, char *line)
+{
+	FILE *fp = fopen("log.txt", "a+");
+	if (fp)
+	{
+		fprintf(fp, "Assertion failed! %s(%i): %s\n", source, linenumber, line );
+		fclose(fp);
+	}
+}
 
 #include "renderer_shared.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
-
 
 #define GAIXW_OPENGL
 #define GAIXW_IMPLEMENTATION
@@ -22,11 +40,10 @@
 #define GAIHR_IMPLEMENTATION
 #include "gai_hotreload.h"
 
-#include <stdio.h>
 
 PLATFORM_API_LOAD_BITMAP(win32_LoadBitmapFromFile)
 {
-	if(!bitmap) assert(!"error");
+	if (!bitmap) assert(!"error");
 	int bpp;
 	stbi_set_flip_vertically_on_load(0);
 	bitmap->memory 		= stbi_load(filename, &bitmap->width, &bitmap->height, &bpp, 4);
@@ -37,8 +54,9 @@ PLATFORM_API_LOAD_BITMAP(win32_LoadBitmapFromFile)
 void hotreloadtexture(gaihr_file *file)
 {
 	loaded_bitmap *bitmap = (loaded_bitmap*) file->userdata;
-	if(bitmap) {
-		if(bitmap->memory) stbi_image_free(bitmap->memory);
+	if (bitmap)
+	{
+		if (bitmap->memory) stbi_image_free(bitmap->memory);
 		win32_LoadBitmapFromFile(bitmap, (char *)file->filename);
 	}
 }
@@ -114,7 +132,7 @@ int main(int argc, char **argv)
 
 		gairb_renderbuffer render_commands = gairb_RenderBuffer(V4(.0f, .0f, .0f, 1.0f), pbuffersize, pbuffer, vertex_count_max, vbuffer, quad_textures, &assets[0]);
 
-		if(gaixw_KeyPressed(&window, 'K')) gaihr_Untrack(&texture);
+		if (gaixw_KeyPressed(&window, 'K')) gaihr_Untrack(&texture);
 
 		gaihr_WaitForEvent(&reloadable_file);
 		if (UpdateAndRender) UpdateAndRender(&window, &render_commands, &platform);

@@ -108,7 +108,7 @@ gairgl_LoadTexture(gairgl *opengl, gairb_renderbuffer *commands, int quad_id)
 	{
 		if (!b->memory)
 		{
-			GAIRGL_ASSERT(commands->default_texture->handle);
+			//			GAIRGL_ASSERT(commands->default_texture->handle);
 			return U32FromHandle(commands->default_texture->handle);
 		}
 		u32 *handle = (u32*) &b->handle;
@@ -151,6 +151,7 @@ gairgl_Render(gairgl *opengl, gairb_renderbuffer *commands, v2 draw_region)
 		glBufferData(0x8892,  commands->vertex_count * sizeof(gairb_textured_vertex), commands->vertex_array, 0x88E8);//0x88E0);
 		glBindVertexArray(opengl->vao);
 
+		static u32 active_texture;
 		for (u8 *header_at = commands->pushbuffer_base; header_at < commands->pushbuffer_at; )//header_at += sizeof(gairb_entry_header))
 		{
 			gairb_entry_header *header = (gairb_entry_header *) header_at;
@@ -163,13 +164,27 @@ gairgl_Render(gairgl *opengl, gairb_renderbuffer *commands, v2 draw_region)
 					gairb_entry_textured_quads *entry = (gairb_entry_textured_quads *) header;
 
 					glUniformMatrix4fv(opengl->transform, 1, GL_TRUE, entry->setup.transform.E[0]);
-
+					
+					#if 1
 					for (u32 vertex_index = entry->vertex_array_offset; vertex_index < (entry->vertex_array_offset + 4 * entry->quad_count); vertex_index += 4)
 					{
+
 						u32 textureid = gairgl_LoadTexture(opengl, commands, vertex_index >> 2);
-						if (textureid != -1) glBindTexture(GL_TEXTURE_2D, textureid);
+						if (textureid != -1)
+						{
+							if(active_texture != textureid) {
+								glBindTexture(GL_TEXTURE_2D, textureid);		
+								active_texture = textureid;
+							}
+						}
+
 						glDrawArrays(GL_TRIANGLE_STRIP, vertex_index, 4);
 					}
+					#else
+					u32 textureid = gairgl_LoadTexture(opengl, commands, 0);
+					if (textureid != -1) glBindTexture(GL_TEXTURE_2D, textureid);
+					glDrawArrays(0x0005 /* GL_TRIANGLE_STRIP */, entry->vertex_array_offset, (4 * entry->quad_count));
+					#endif
 				} break;
 				default: { GAIRGL_ASSERT(!"Invalid code path") ;}
 			}

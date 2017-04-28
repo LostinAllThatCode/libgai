@@ -105,14 +105,18 @@ Include dependency graph for gai_hotreload.h:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:structgaihr__filetime"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gai__hotreload_8h.html#structgaihr__filetime">gaihr_filetime</a></td></tr>
-<tr class="separator:structgaihr__filetime"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:structgaihr__platform__win32"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gai__hotreload_8h.html#structgaihr__platform__win32">gaihr_platform_win32</a></td></tr>
-<tr class="separator:structgaihr__platform__win32"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:uniongaihr__filetime"><td class="memItemLeft" align="right" valign="top">union &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gai__hotreload_8h.html#uniongaihr__filetime">gaihr_filetime</a></td></tr>
+<tr class="separator:uniongaihr__filetime"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:uniongaihr__platform"><td class="memItemLeft" align="right" valign="top">union &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gai__hotreload_8h.html#uniongaihr__platform">gaihr_platform</a></td></tr>
 <tr class="separator:uniongaihr__platform"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:structgaihr__platform_1_1gaihr__platform__win32"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gai__hotreload_8h.html#structgaihr__platform_1_1gaihr__platform__win32">gaihr_platform::gaihr_platform_win32</a></td></tr>
+<tr class="separator:structgaihr__platform_1_1gaihr__platform__win32"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:structgaihr__platform_1_1gaihr__platform__linux"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gai__hotreload_8h.html#structgaihr__platform_1_1gaihr__platform__linux">gaihr_platform::gaihr_platform_linux</a></td></tr>
+<tr class="separator:structgaihr__platform_1_1gaihr__platform__linux"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:structgaihr__file"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gai__hotreload_8h.html#structgaihr__file">gaihr_file</a></td></tr>
 <tr class="separator:structgaihr__file"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:structgaihr__filetime_8parts"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gai__hotreload_8h.html#structgaihr__filetime_8parts">gaihr_filetime.parts</a></td></tr>
+<tr class="separator:structgaihr__filetime_8parts"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
@@ -173,6 +177,12 @@ Functions</h2></td></tr>
 <tr class="memitem:aba347f4afef1dd5f850142adf487fa26"><td class="memItemLeft" align="right" valign="top"><a class="el" href="gai__hotreload_8h.html#a32983003a4e816a8350f01cb22d1b01b">GAIHR_API</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gai__hotreload_8h.html#aba347f4afef1dd5f850142adf487fa26">_gaihr_ResetEvent</a> (<a class="el" href="gai__hotreload_8h.html#structgaihr__file">gaihr_file</a> *file)</td></tr>
 <tr class="memdesc:aba347f4afef1dd5f850142adf487fa26"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resets the previously set signal.  <a href="#aba347f4afef1dd5f850142adf487fa26">More...</a><br /></td></tr>
 <tr class="separator:aba347f4afef1dd5f850142adf487fa26"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acee43647e5f69a31c40726d43bfe19e3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="gai__hotreload_8h.html#a32983003a4e816a8350f01cb22d1b01b">GAIHR_API</a> int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gai__hotreload_8h.html#acee43647e5f69a31c40726d43bfe19e3">_gaihr_CompareFileTime</a> (<a class="el" href="gai__hotreload_8h.html#uniongaihr__filetime">gaihr_filetime</a> *a, <a class="el" href="gai__hotreload_8h.html#uniongaihr__filetime">gaihr_filetime</a> *b)</td></tr>
+<tr class="memdesc:acee43647e5f69a31c40726d43bfe19e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare two gaihr_filetimes to each other.  <a href="#acee43647e5f69a31c40726d43bfe19e3">More...</a><br /></td></tr>
+<tr class="separator:acee43647e5f69a31c40726d43bfe19e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7017705231a1470b0a03c14a9c28aa11"><td class="memItemLeft" align="right" valign="top"><a class="el" href="gai__hotreload_8h.html#a32983003a4e816a8350f01cb22d1b01b">GAIHR_API</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gai__hotreload_8h.html#a7017705231a1470b0a03c14a9c28aa11">_gaihr_DoWork</a> (<a class="el" href="gai__hotreload_8h.html#structgaihr__file">gaihr_file</a> **files)</td></tr>
+<tr class="memdesc:a7017705231a1470b0a03c14a9c28aa11"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loops through all files to track.  <a href="#a7017705231a1470b0a03c14a9c28aa11">More...</a><br /></td></tr>
+<tr class="separator:a7017705231a1470b0a03c14a9c28aa11"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
@@ -198,58 +208,30 @@ Example Code</h2>
 <dl class="section date"><dt>Date</dt><dd>25.04.2017 </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a href="https://github.com/LostinAllThatCode/libgai">https://github.com/LostinAllThatCode/libgai</a> </dd></dl>
 </div><hr/><h2 class="groupheader">Class Documentation</h2>
-<a name="structgaihr__filetime" id="structgaihr__filetime"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#structgaihr__filetime">&#9670;&nbsp;</a></span>gaihr_filetime</h2>
+<a name="uniongaihr__filetime" id="uniongaihr__filetime"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#uniongaihr__filetime">&#9670;&nbsp;</a></span>gaihr_filetime</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">struct gaihr_filetime</td>
+          <td class="memname">union gaihr_filetime</td>
         </tr>
       </table>
 </div><div class="memdoc">
 <div class="textblock"></div><table class="fieldtable">
 <tr><th colspan="3">Class Members</th></tr>
 <tr><td class="fieldtype">
-<a id="aa35cb3a699771f27e62ecff738665169"></a>unsigned int</td>
+<a id="a61446b486ff5dbcd62b9b83418d853ac"></a>struct <a class="el" href="gai__hotreload_8h.html#structgaihr__filetime_8parts">gaihr_filetime</a></td>
 <td class="fieldname">
-highpart</td>
+parts</td>
 <td class="fielddoc">
+<p>This is here to easily cast windows FILETIME structure to this one. </p>
 </td></tr>
 <tr><td class="fieldtype">
-<a id="ac97443b53714d1ed266459ef0158c278"></a>unsigned int</td>
+<a id="a17c62c2a56dc2b6f8ad20c3359562b2e"></a>unsigned long long</td>
 <td class="fieldname">
-lowpart</td>
-<td class="fielddoc">
-</td></tr>
-</table>
-
-</div>
-</div>
-<a name="structgaihr__platform__win32" id="structgaihr__platform__win32"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#structgaihr__platform__win32">&#9670;&nbsp;</a></span>gaihr_platform_win32</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">struct gaihr_platform_win32</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<div class="textblock"></div><table class="fieldtable">
-<tr><th colspan="3">Class Members</th></tr>
-<tr><td class="fieldtype">
-<a id="a146c8d18d7cc6be7113e1afcb92e6a8f"></a>HANDLE</td>
-<td class="fieldname">
-event</td>
-<td class="fielddoc">
-</td></tr>
-<tr><td class="fieldtype">
-<a id="a6119861cabb0b6251f23e90033780a82"></a>HANDLE</td>
-<td class="fieldname">
-mutex</td>
+time</td>
 <td class="fielddoc">
 </td></tr>
 </table>
@@ -272,15 +254,80 @@ Collaboration diagram for gaihr_platform:</div>
 <div class="dyncontent">
 <div class="center"><img src="uniongaihr__platform__coll__graph.png" border="0" usemap="#gaihr__platform_coll__map" alt="Collaboration graph"/></div>
 <map name="gaihr__platform_coll__map" id="gaihr__platform_coll__map">
-<area shape="rect" id="node2" href="gai__hotreload_8h.html#structgaihr__platform__win32" title="gaihr_platform_win32" alt="" coords="5,5,132,29"/>
+<area shape="rect" id="node2" href="gai__hotreload_8h.html#structgaihr__platform_1_1gaihr__platform__linux" title="gaihr_platform::gaihr\l_platform_linux" alt="" coords="5,5,129,41"/>
+<area shape="rect" id="node3" href="gai__hotreload_8h.html#structgaihr__platform_1_1gaihr__platform__win32" title="gaihr_platform::gaihr\l_platform_win32" alt="" coords="153,5,277,41"/>
 </map>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="fieldtable">
 <tr><th colspan="3">Class Members</th></tr>
 <tr><td class="fieldtype">
-<a id="afe6263d41992ba905300fa023baf1125"></a><a class="el" href="gai__hotreload_8h.html#structgaihr__platform__win32">gaihr_platform_win32</a></td>
+<a id="aff9109eeb79bcbee6ddf4eab05477a83"></a>struct <a class="el" href="gai__hotreload_8h.html#structgaihr__platform_1_1gaihr__platform__linux">gaihr_platform_linux</a></td>
+<td class="fieldname">
+linux</td>
+<td class="fielddoc">
+</td></tr>
+<tr><td class="fieldtype">
+<a id="ab100a9280dca047d4c625cbf6ea7e64c"></a>struct <a class="el" href="gai__hotreload_8h.html#structgaihr__platform_1_1gaihr__platform__win32">gaihr_platform_win32</a></td>
 <td class="fieldname">
 win32</td>
+<td class="fielddoc">
+</td></tr>
+</table>
+
+</div>
+</div>
+<a name="structgaihr__platform_1_1gaihr__platform__win32" id="structgaihr__platform_1_1gaihr__platform__win32"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#structgaihr__platform_1_1gaihr__platform__win32">&#9670;&nbsp;</a></span>gaihr_platform::gaihr_platform_win32</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct gaihr_platform::gaihr_platform_win32</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="textblock"></div><table class="fieldtable">
+<tr><th colspan="3">Class Members</th></tr>
+<tr><td class="fieldtype">
+<a id="aa9b31d30dfd3fa64e40b7cd771f98253"></a>HANDLE</td>
+<td class="fieldname">
+event</td>
+<td class="fielddoc">
+</td></tr>
+<tr><td class="fieldtype">
+<a id="ab17cd0ffa18b4ef60cd0d4736f0abc0a"></a>HANDLE</td>
+<td class="fieldname">
+mutex</td>
+<td class="fielddoc">
+</td></tr>
+</table>
+
+</div>
+</div>
+<a name="structgaihr__platform_1_1gaihr__platform__linux" id="structgaihr__platform_1_1gaihr__platform__linux"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#structgaihr__platform_1_1gaihr__platform__linux">&#9670;&nbsp;</a></span>gaihr_platform::gaihr_platform_linux</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct gaihr_platform::gaihr_platform_linux</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="textblock"></div><table class="fieldtable">
+<tr><th colspan="3">Class Members</th></tr>
+<tr><td class="fieldtype">
+<a id="a50324e3fd2b5fdcfd27f1ae040656ac2"></a>void *</td>
+<td class="fieldname">
+event</td>
+<td class="fielddoc">
+</td></tr>
+<tr><td class="fieldtype">
+<a id="a02af0c94ad547b2616feff49dcee343e"></a>void *</td>
+<td class="fieldname">
+mutex</td>
 <td class="fielddoc">
 </td></tr>
 </table>
@@ -305,9 +352,10 @@ Collaboration diagram for gaihr_file:</div>
 <div class="dyncontent">
 <div class="center"><img src="structgaihr__file__coll__graph.png" border="0" usemap="#gaihr__file_coll__map" alt="Collaboration graph"/></div>
 <map name="gaihr__file_coll__map" id="gaihr__file_coll__map">
-<area shape="rect" id="node2" href="gai__hotreload_8h.html#structgaihr__filetime" title="gaihr_filetime" alt="" coords="5,89,92,113"/>
-<area shape="rect" id="node3" href="gai__hotreload_8h.html#uniongaihr__platform" title="gaihr_platform" alt="" coords="116,89,208,113"/>
-<area shape="rect" id="node4" href="gai__hotreload_8h.html#structgaihr__platform__win32" title="gaihr_platform_win32" alt="" coords="99,5,225,29"/>
+<area shape="rect" id="node2" href="gai__hotreload_8h.html#uniongaihr__filetime" title="gaihr_filetime" alt="" coords="5,101,92,125"/>
+<area shape="rect" id="node3" href="gai__hotreload_8h.html#uniongaihr__platform" title="gaihr_platform" alt="" coords="116,101,208,125"/>
+<area shape="rect" id="node4" href="gai__hotreload_8h.html#structgaihr__platform_1_1gaihr__platform__linux" title="gaihr_platform::gaihr\l_platform_linux" alt="" coords="25,5,149,41"/>
+<area shape="rect" id="node5" href="gai__hotreload_8h.html#structgaihr__platform_1_1gaihr__platform__win32" title="gaihr_platform::gaihr\l_platform_win32" alt="" coords="173,5,297,41"/>
 </map>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="fieldtable">
@@ -334,7 +382,7 @@ flags</td>
 <p>Flags to specify event handling and callback behaviour. </p>
 </td></tr>
 <tr><td class="fieldtype">
-<a id="a38b2bc43116a1fd59715ca1714d80462"></a><a class="el" href="gai__hotreload_8h.html#structgaihr__filetime">gaihr_filetime</a></td>
+<a id="a38b2bc43116a1fd59715ca1714d80462"></a><a class="el" href="gai__hotreload_8h.html#uniongaihr__filetime">gaihr_filetime</a></td>
 <td class="fieldname">
 last_write_time</td>
 <td class="fielddoc">
@@ -353,6 +401,35 @@ platform</td>
 userdata</td>
 <td class="fielddoc">
 <p>User passed data. </p>
+</td></tr>
+</table>
+
+</div>
+</div>
+<a name="structgaihr__filetime_8parts" id="structgaihr__filetime_8parts"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#structgaihr__filetime_8parts">&#9670;&nbsp;</a></span>gaihr_filetime.parts</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct gaihr_filetime.parts</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="textblock"></div><table class="fieldtable">
+<tr><th colspan="3">Class Members</th></tr>
+<tr><td class="fieldtype">
+<a id="a8d966b2253a917086c8604959e152243"></a>long</td>
+<td class="fieldname">
+high</td>
+<td class="fielddoc">
+</td></tr>
+<tr><td class="fieldtype">
+<a id="a53cced8d281a1a0ace3cb6594daaa4f7"></a>long</td>
+<td class="fieldname">
+low</td>
+<td class="fielddoc">
 </td></tr>
 </table>
 
@@ -524,6 +601,80 @@ userdata</td>
 <td align="left">0 </td><td align="left">Failure (mutex is probably used by another thread) </td></tr>
 </table>
 </dd></dl>
+
+</div>
+</div>
+<a id="acee43647e5f69a31c40726d43bfe19e3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acee43647e5f69a31c40726d43bfe19e3">&#9670;&nbsp;</a></span>_gaihr_CompareFileTime()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="gai__hotreload_8h.html#a32983003a4e816a8350f01cb22d1b01b">GAIHR_API</a> int _gaihr_CompareFileTime </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="gai__hotreload_8h.html#uniongaihr__filetime">gaihr_filetime</a> *&#160;</td>
+          <td class="paramname"><em>a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="gai__hotreload_8h.html#uniongaihr__filetime">gaihr_filetime</a> *&#160;</td>
+          <td class="paramname"><em>b</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Compare two gaihr_filetimes to each other. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">a</td><td>A pointer to a <a class="el" href="gai__hotreload_8h.html#uniongaihr__filetime">gaihr_filetime</a> structure </td></tr>
+    <tr><td class="paramname">b</td><td>A pointer to a <a class="el" href="gai__hotreload_8h.html#uniongaihr__filetime">gaihr_filetime</a> structure</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><table class="doxtable">
+<tr>
+<th align="left">Return Code </th><th align="left">Description  </th></tr>
+<tr>
+<td align="left">-1 </td><td align="left">a is higher than b </td></tr>
+<tr>
+<td align="left">0 </td><td align="left">a equals b </td></tr>
+<tr>
+<td align="left">1 </td><td align="left">b is higher than a </td></tr>
+</table>
+</dd></dl>
+
+</div>
+</div>
+<a id="a7017705231a1470b0a03c14a9c28aa11"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7017705231a1470b0a03c14a9c28aa11">&#9670;&nbsp;</a></span>_gaihr_DoWork()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="gai__hotreload_8h.html#a32983003a4e816a8350f01cb22d1b01b">GAIHR_API</a> void _gaihr_DoWork </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="gai__hotreload_8h.html#structgaihr__file">gaihr_file</a> **&#160;</td>
+          <td class="paramname"><em>files</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Loops through all files to track. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">files</td><td>A pointer to an array of <a class="el" href="gai__hotreload_8h.html#structgaihr__file">gaihr_file</a> structures </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -740,7 +891,7 @@ userdata</td>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="gai__hotreload_8h.html">gai_hotreload.h</a></li>
-    <li class="footer">Generated on Wed Apr 26 2017 23:36:06 for libgai by
+    <li class="footer">Generated on Thu Apr 27 2017 12:44:40 for libgai by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

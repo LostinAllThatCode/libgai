@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['userdata',['userdata',['../gai__hotreload_8h.html#a06bf963cb9c08e69fcc6c4bb3140a2b8',1,'gaihr_file']]]
+  ['title',['title',['../gai__xwindow_8h.html#a7e93633a635a19ca5b6e4d8f8ad7ee52',1,'gaixw_info']]],
+  ['type',['type',['../gai__xwindow_8h.html#a287bd5241e45837849116cf46c5591ba',1,'gaixw_renderer']]]
 ];
