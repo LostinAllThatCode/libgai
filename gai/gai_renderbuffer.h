@@ -23,9 +23,11 @@
 	#define GAIRB_API extern
 #endif
 
-#ifndef GAIRB_ASSERT
+#ifdef GAIRB_ASSERT
 	#include <assert.h>
 	#define GAIRB_ASSERT(x) assert(x)
+#else
+	#define GAIRB_ASSERT(x)
 #endif
 
 #ifndef GAIRB_NO_MATH_AND_DEFINES
@@ -286,7 +288,7 @@ _gairb_GetQuads(gairb_group *group, u32 quad_count)
 	}
 
 	gairb_entry_textured_quads *result = group->current_quads;
-	if ((group->commands->vertex_count + 4 * quad_count) > group->commands->vertex_max)
+	if ((group->commands->vertex_count + 6 * quad_count) > group->commands->vertex_max)
 	{
 		result = 0;
 	}
@@ -309,12 +311,37 @@ gairb_PushRect(gairb_group *group, loaded_bitmap *bitmap, v4 p1, v2 uv1, v4 c1, 
 
 
 	gairb_textured_vertex *v = group->commands->vertex_array + group->commands->vertex_count;
-	group->commands->vertex_count += 4;
+	group->commands->vertex_count += 6;
 
-	v[0].p = p1; v[0].uv = uv1; v[0].color = c1;
+	v[0].uv.u  	 = uv1.u; v[0].uv.v 	= uv1.v;
+	v[0].p.x 	 = p1.x;  v[0].p.y 		= p1.y;  v[0].p.z 	  = p1.z; v[0].p.w 	   = p1.w;
+	v[0].color.x = c1.x;  v[0].color.y  = c1.y;  v[0].color.z = c1.z; v[0].color.w = c1.w;
+
+	v[1].uv.u  	 = uv1.u; v[1].uv.v 	= uv1.v;
+	v[1].p.x 	 = p1.x;  v[1].p.y 		= p1.y;  v[1].p.z 	  = p1.z; v[1].p.w 	   = p1.w;
+	v[1].color.x = c1.x;  v[1].color.y  = c1.y;  v[1].color.z = c1.z; v[1].color.w = c1.w;
+
+	v[2].uv.u  	 = uv2.u; v[2].uv.v 	= uv2.v;
+	v[2].p.x 	 = p2.x;  v[2].p.y 		= p2.y;  v[2].p.z 	  = p2.z; v[2].p.w 	   = p2.w;
+	v[2].color.x = c2.x;  v[2].color.y  = c2.y;  v[2].color.z = c2.z; v[2].color.w = c2.w;
+
+	v[3].uv.u  	 = uv3.u; v[3].uv.v 	= uv3.v;
+	v[3].p.x 	 = p3.x;  v[3].p.y 		= p3.y;  v[3].p.z 	  = p3.z; v[3].p.w 	   = p3.w;
+	v[3].color.x = c3.x;  v[3].color.y  = c3.y;  v[3].color.z = c3.z; v[3].color.w = c3.w;
+
+	v[4].uv.u  	 = uv4.u; v[4].uv.v 	= uv4.v;
+	v[4].p.x 	 = p4.x;  v[4].p.y 		= p4.y;  v[4].p.z 	  = p4.z; v[4].p.w 	   = p4.w;
+	v[4].color.x = c4.x;  v[4].color.y  = c4.y;  v[4].color.z = c4.z; v[4].color.w = c4.w;
+
+	v[5].uv.u  	 = uv4.u; v[5].uv.v 	= uv4.v;
+	v[5].p.x 	 = p4.x;  v[5].p.y 		= p4.y;  v[5].p.z 	  = p4.z; v[5].p.w 	   = p4.w;
+	v[5].color.x = c4.x;  v[5].color.y  = c4.y;  v[5].color.z = c4.z; v[5].color.w = c4.w;
+
+	#if 0
 	v[1].p = p2; v[1].uv = uv2; v[1].color = c2;
 	v[2].p = p3; v[2].uv = uv3; v[2].color = c3;
 	v[3].p = p4; v[3].uv = uv4; v[3].color = c4;
+	#endif
 }
 
 inline GAIRB_API void
@@ -375,7 +402,7 @@ gairb_PushRect(gairb_group *group, loaded_bitmap *bitmap, v4 color, v3 position,
 		} break;
 		default: { return; };
 	}
-	if(flipped) gairb_PushRect(group, bitmap, color, tl, V2i(0, 1), bl, V2i(0, 0), tr, V2i(1, 1), br, V2i(1, 0) );
+	if (flipped) gairb_PushRect(group, bitmap, color, tl, V2i(0, 1), bl, V2i(0, 0), tr, V2i(1, 1), br, V2i(1, 0) );
 	else gairb_PushRect(group, bitmap, color, bl, V2i(0, 1), br, V2i(1, 1), tl, V2i(0, 0), tr, V2i(1, 0) );
 }
 
@@ -408,7 +435,7 @@ gairb_PushCube(gairb_group *group, loaded_bitmap *bitmap, v4 color, v3 position,
 
 	r32 half_height = height * .5f;
 	r32 half_width	= radius * .5f;
-	v2 uv1,uv2,uv3,uv4;
+	v2 uv1, uv2, uv3, uv4;
 	if (flip_texture == 1) { uv1 = V2(0, 1); uv2 = V2(0, 0); uv3 = V2(1, 1); uv4 = V2(1, 0); }
 	else { uv1 = V2(0, 0); uv2 = V2(0, 1); uv3 = V2(1, 0); uv4 = V2(1, 1); }
 

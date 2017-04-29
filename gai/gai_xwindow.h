@@ -536,9 +536,12 @@ GAIXW_API void* 		gaixw_GetProc						(gaixw_context *window, const char *name);
 #pragma comment( lib, "opengl32.lib" )
 
 #include <gl\gl.h>
+#include <stdint.h>
+typedef uint64_t GLuint64;
 typedef char GLchar;
 typedef size_t GLsizeiptr;
 typedef size_t GLintptr;
+typedef struct __GLsync *GLsync;
 typedef void (*DEBUGPROC)(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, void *userParam);
 #define GAIXW_FUNCWRAPPER \
 	GAIXW_FUNC_DEF(, attach_shader_fn,  				void, 	 	AttachShader, GLuint, GLuint) \
@@ -594,7 +597,10 @@ typedef void (*DEBUGPROC)(GLenum source, GLenum type, GLuint id, GLenum severity
 	GAIXW_FUNC_DEF(, map_buffer_range_fn,				GLvoid*,	MapBufferRange, GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access) \
 	GAIXW_FUNC_DEF(, buffer_storage_fn,					void,  		BufferStorage, GLenum target, GLsizeiptr size, const void *data, GLbitfield flags) \
 	GAIXW_FUNC_DEF(, blend_equation_fn,					void, 		BlendEquation, GLenum) \
-	GAIXW_FUNC_DEF(, blend_func_seperate_fn,			void,		BlendFuncSeparate, GLenum, GLenum, GLenum, GLenum)
+	GAIXW_FUNC_DEF(, blend_func_seperate_fn,			void,		BlendFuncSeparate, GLenum, GLenum, GLenum, GLenum) \
+	GAIXW_FUNC_DEF(, fence_sync_fn,						GLsync,		FenceSync, GLenum, GLbitfield) \
+	GAIXW_FUNC_DEF(, client_wait_sync_fn,				GLenum,		ClientWaitSync, GLsync, GLbitfield, GLuint64) \
+	GAIXW_FUNC_DEF(, flush_mapped_buffer_range_fn,		void,		FlushMappedBufferRange, GLenum, GLintptr, GLsizeiptr) 
 
 #define GAIXW_FUNC_DEF(ext, def, a, b, ...) typedef a (gl_##def) (__VA_ARGS__);
 GAIXW_FUNCWRAPPER
@@ -908,7 +914,7 @@ gaixw_SetVerticalSync(gaixw_context *window, unsigned int state)
 	#ifdef GAIXW_OPENGL
 	gaixw_GLSetSwapInterval(state);
 	result = gaixw_GLGetSwapInterval();
-	window->renderer.attributes = (result == 1 ? window->renderer.attributes | gaixwFlagsVSYNC : window->renderer.attributes & ~gaixwFlagsVSYNC);
+	window->renderer.attributes = (result != 0 ? window->renderer.attributes | gaixwFlagsVSYNC : window->renderer.attributes & ~gaixwFlagsVSYNC);
 	#endif
 	return result;
 }

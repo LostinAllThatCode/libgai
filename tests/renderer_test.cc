@@ -1,4 +1,5 @@
 
+#if 0
 #if _DEBUG
 	#define GAIXW_DEBUG
 #else
@@ -7,6 +8,7 @@
 	#define GAIRB_ASSERT(cond) 	LOG_ASSERT(cond)
 	#define GAIHR_ASSERT(cond) 	LOG_ASSERT(cond)
 	#define GAIRGL_ASSERT(cond) LOG_ASSERT(cond)
+#endif
 #endif
 
 #include <stdio.h>
@@ -27,12 +29,14 @@ WriteToLog(char *source, unsigned int linenumber, char *line)
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+#define GAIXW_DEBUG
 #define GAIXW_OPENGL
 #define GAIXW_IMPLEMENTATION
 #include "gai_xwindow.h"
 
 #define GAIRB_IMPLEMENTATION
 #include "gai_renderbuffer.h"
+
 
 #define GAIRGL_IMPLEMENTATION
 #include "gai_renderer_opengl.h"
@@ -109,7 +113,7 @@ int main(int argc, char **argv)
 	gaihr_file reloadable_file = {};
 	gaihr_Track(&reloadable_file, "renderer.dll", reloadDLL, 0, gaihr_FlagsDontHandleEvent);
 
-	u32 pbuffersize = 1024 * 1024 * 2;
+	u32 pbuffersize = 1024;
 	u8 *pbuffer = (u8*) VirtualAlloc(0, pbuffersize, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 	u32 vertex_count_max = (1 << 16) * 2;
 	gairb_textured_vertex *vbuffer = (gairb_textured_vertex*) VirtualAlloc(0, sizeof(gairb_textured_vertex) * vertex_count_max, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
@@ -137,7 +141,7 @@ int main(int argc, char **argv)
 		gaihr_WaitForEvent(&reloadable_file);
 		if (UpdateAndRender) UpdateAndRender(&window, &render_commands, &platform);
 
-		gairgl_Render(&opengl, &render_commands, V2i(window.info.width, window.info.height));
+		int draw_calls = gairgl_Render(&opengl, &render_commands, V2i(window.info.width, window.info.height));
 		gaixw_SwapBuffers(&window);
 	}
 

@@ -118,14 +118,14 @@ union gaihr_filetime
 union gaihr_platform
 {
 	#if _WIN32
-	struct gaihr_platform_win32
+	struct WINDOWS
 	{
 		HANDLE 	mutex;
 		HANDLE 	event;
 	} win32;
 	#endif
 	#if __linux__
-	struct gaihr_platform_linux
+	struct LINUX
 	{
 		void* 	mutex;
 		void* 	event;

@@ -26,9 +26,21 @@ GAIRGL_DEF GLuint 	gairgl_LoadShader(char *version, char *vertex, char *fragment
 
 #ifdef GAIRGL_IMPLEMENTATION
 
+#if _WIN32
+
+void* _gairgl_IsOpenGLContextAvailable()
+{
+	HGLRC opengl_context = wglGetCurrentContext();
+	GAIRGL_ASSERT(opengl_context);
+	return opengl_context;
+}
+
+#endif
+
 GAIRGL_DEF void
 gairgl_Initialize(gairgl *opengl)
 {
+	_gairgl_IsOpenGLContextAvailable();
 	GAIRGL_ASSERT(opengl);
 
 	char *version = R"GLSL(#version 330)GLSL";
@@ -66,7 +78,7 @@ gairgl_Initialize(gairgl *opengl)
 
 	glGenBuffers(1, &opengl->vbo);
 	glBindBuffer(0x8892 /*  GL_ARRAY_BUFFER */, opengl->vbo);
-	glBufferData(0x8892, 0, 0,  0x88E8);//0x88E0);
+	glBufferData(0x8892, 0, 0,  0x88E8); //0x88E0);
 
 	glGenVertexArrays(1, &opengl->vao);
 	glBindVertexArray(opengl->vao);
@@ -136,21 +148,52 @@ gairgl_ManageOpenGLTextures()
 
 }
 
-inline GAIRGL_DEF void
+#define GL_ARRAY_BUFFER 				  0x8892
+#define GL_MAP_WRITE_BIT                  0x0002
+#define GL_MAP_INVALIDATE_RANGE_BIT       0x0004
+#define GL_MAP_INVALIDATE_BUFFER_BIT      0x0008
+#define GL_MAP_FLUSH_EXPLICIT_BIT         0x0010
+#define GL_MAP_UNSYNCHRONIZED_BIT         0x0020
+
+inline GAIRGL_DEF unsigned int
 gairgl_Render(gairgl *opengl, gairb_renderbuffer *commands, v2 draw_region)
 {
+	int draw_calls = 0;
+	static GLsync fence = 0;
 	if (commands)
 	{
+		size_t offset 	 = 0;
+		size_t data_size = commands->vertex_count * sizeof(gairb_textured_vertex);
+		#if 0
+		if (data_size)
+		{
+			glUseProgram(opengl->shader);
+			glBindBuffer(GL_ARRAY_BUFFER, opengl->vbo);
+
+			glClearColor( commands->clear_color.x, commands->clear_color.y, commands->clear_color.z, commands->clear_color.w);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+			if ( fence ) glClientWaitSync(fence, 1 /* GL_SYNC_FLUSH_COMMANDS_BIT */, 0xFFFFFFFFFFFFFFFFull /* GL_TIMEOUT_IGNORED */);
+
+			void *old_data = glMapBufferRange(GL_ARRAY_BUFFER, offset, data_size, GL_MAP_WRITE_BIT | GL_MAP_FLUSH_EXPLICIT_BIT | GL_MAP_UNSYNCHRONIZED_BIT );
+			// Modify buffer, flush, and unmap.
+			memcpy(old_data, commands->vertex_array, data_size);
+			glFlushMappedBufferRange(GL_ARRAY_BUFFER, offset, data_size);
+			glUnmapBuffer(GL_ARRAY_BUFFER);
+			glBindVertexArray(opengl->vao);
+		}
+		#else
+		glUseProgram(opengl->shader);
+		glBindBuffer(GL_ARRAY_BUFFER, opengl->vbo);
+
 		glClearColor( commands->clear_color.x, commands->clear_color.y, commands->clear_color.z, commands->clear_color.w);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glUseProgram(opengl->shader);
-
-		glBindBuffer(0x8892, opengl->vbo);
 		//glBufferSubData(0x8892, 0, commands->vertex_count * sizeof(gairb_textured_vertex), commands->vertex_array);
-		glBufferData(0x8892,  commands->vertex_count * sizeof(gairb_textured_vertex), commands->vertex_array, 0x88E8);//0x88E0);
+		glBufferData(0x8892,  data_size, commands->vertex_array, 0x88E8);
 		glBindVertexArray(opengl->vao);
-
+		#endif
+		
 		static u32 active_texture;
 		for (u8 *header_at = commands->pushbuffer_base; header_at < commands->pushbuffer_at; )//header_at += sizeof(gairb_entry_header))
 		{
@@ -164,34 +207,41 @@ gairgl_Render(gairgl *opengl, gairb_renderbuffer *commands, v2 draw_region)
 					gairb_entry_textured_quads *entry = (gairb_entry_textured_quads *) header;
 
 					glUniformMatrix4fv(opengl->transform, 1, GL_TRUE, entry->setup.transform.E[0]);
-					
-					#if 1
-					for (u32 vertex_index = entry->vertex_array_offset; vertex_index < (entry->vertex_array_offset + 4 * entry->quad_count); vertex_index += 4)
+
+					#if 0
+					for (u32 vertex_index = entry->vertex_array_offset; vertex_index < (entry->vertex_array_offset + 6 * entry->quad_count); vertex_index += 6)
 					{
 
 						u32 textureid = gairgl_LoadTexture(opengl, commands, vertex_index >> 2);
 						if (textureid != -1)
 						{
-							if(active_texture != textureid) {
-								glBindTexture(GL_TEXTURE_2D, textureid);		
+							if (active_texture != textureid)
+							{
+								glBindTexture(GL_TEXTURE_2D, textureid);
 								active_texture = textureid;
 							}
 						}
 
-						glDrawArrays(GL_TRIANGLE_STRIP, vertex_index, 4);
+						glDrawArrays(GL_TRIANGLE_STRIP, vertex_index, 6);
 					}
 					#else
-					u32 textureid = gairgl_LoadTexture(opengl, commands, 0);
+					u32 textureid = gairgl_LoadTexture(opengl, commands, entry->vertex_array_offset >> 2);
 					if (textureid != -1) glBindTexture(GL_TEXTURE_2D, textureid);
-					glDrawArrays(0x0005 /* GL_TRIANGLE_STRIP */, entry->vertex_array_offset, (4 * entry->quad_count));
+					glDrawArrays(0x0005 /* GL_TRIANGLE_STRIP */, entry->vertex_array_offset, (6 * entry->quad_count));
+					draw_calls++;
 					#endif
 				} break;
 				default: { GAIRGL_ASSERT(!"Invalid code path") ;}
 			}
 		}
 
-		glViewport(0, 0, (int)draw_region.x, (int)draw_region.y);
+		if (data_size)
+		{
+			glViewport(0, 0, (int)draw_region.x, (int)draw_region.y);
+			//fence = glFenceSync(0x9117 /* GL_SYNC_GPU_COMMANDS_COMPLETE */, 0);
+		}
 	}
+	return draw_calls;
 }
 
 GAIRGL_DEF GLuint
