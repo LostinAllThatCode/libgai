@@ -307,7 +307,14 @@ _gaihr_CheckFileChanged(gaihr_file *file)
 		int has_changed = (_gaihr_CompareFileTime(&file->last_write_time, (gaihr_filetime*) &file_info_now.ftLastWriteTime) == 1);
 		if (has_changed)
 		{
-			if (!((file->flags & gaihr_FlagsSkipInitialChange) && (file->last_write_time.time == 0))) result = 1;
+			if ( (file->flags & gaihr_FlagsSkipInitialChange) && (file->last_write_time.time == 0) )
+			{
+				result = 0;
+			}
+			else
+			{
+				result = 1;
+			}
 			file->last_write_time.parts.low 	= file_info_now.ftLastWriteTime.dwLowDateTime;
 			file->last_write_time.parts.high 	= file_info_now.ftLastWriteTime.dwHighDateTime;
 		}

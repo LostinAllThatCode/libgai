@@ -65,6 +65,9 @@
 	#ifndef GAIXW_PRINT
 		#define GAIXW_PRINT(fmt, ...) printf(fmt, __VA_ARGS__)
 	#endif
+	#ifdef GAIXW_OPENGL
+		#define GAIXW_OPENGL_DEBUG
+	#endif
 #else
 	/**
 	* @brief      Define this macro before including this file if you want to redirect the output
@@ -84,8 +87,6 @@
 	#define GAIXW_PRINT(fmt, ...)
 #endif
 
-#include <string.h>
-
 #if _WIN32
 	#ifndef GAIXW_DONT_INCL_WIN
 		#define WIN32_LEAN_AND_MEAN
@@ -102,6 +103,30 @@
  * Default classname
  */
 #define GAIXW_CLASSNAME "libgai_xwindow_framework"
+
+// I chose the if endif macro style instead of a if elif style just because of documentation generation via doxygen.
+// So i will get a documentation which includes both structs, which actually should NEVER happen in any compiling case anyways.
+union gaixw_platform
+{
+	#if _WIN32
+	struct WINDOWS
+	{
+		HWND 				hwnd;
+		HDC 				hdc;
+		HINSTANCE 			instance;
+		WINDOWPLACEMENT     position;
+		const char *		classname;
+	} win32;
+	#endif
+	#if __linux__
+	struct LINUX
+	{
+		Display* 			display;
+		Visual* 			visual;
+		Window* 			window;
+	} linux;
+	#endif
+};
 
 /**
  * @brief      Renderer backend types
@@ -213,10 +238,11 @@ union gaixw_graphics
 {
 	struct OPENGL
 	{
-		char 	*vendor;
-		char 	*version;
-		char 	*renderer;
-		char 	*shading_language_version;
+		char 			*vendor;
+		char 			*version;
+		char 			*renderer;
+		char 			*shading_language_version;
+		void			*context;
 	} opengl; /**< OpenGL renderer informations like vendor, version, renderer, shading language version */
 	struct DIRECTX 	{ int version; 		} directx;
 	struct X11 		{ void 	*__ignored; } x11;
@@ -224,45 +250,25 @@ union gaixw_graphics
 	struct VULCAN 	{ void 	*__ignored; } vulcan;
 };
 
-union gaixw_platform
-{
-	#if _WIN32
-	struct WINDOWS
-	{
-		HWND 				hwnd;
-		HDC 				hdc;
-		HINSTANCE 			instance;
-		WINDOWPLACEMENT     position;
-	} win32;
-	#endif
-	#if __linux__
-	struct LINUX
-	{
-		Display* 			display;
-		Visual* 			visual;
-		Window* 			window;
-	} linux;
-	#endif
-};
-
 struct gaixw_renderer
 {
-	int 				attributes;		/**< Current state of the window. See @ref gaixw_renderer_flags */
-	gaixw_renderer_enum type;			/**< Type of the renderer. See @ref gaixw_renderer_enum */
-	gaixw_graphics 		graphics;		/**< Renderer interface union for all supported renderer backends. See @ref gaixw_renderer_enum */
+	int 					attributes;		/**< Current state of the window. See @ref gaixw_renderer_flags */
+	gaixw_renderer_enum 	type;			/**< Type of the renderer. See @ref gaixw_renderer_enum */
+	gaixw_graphics 			graphics;		/**< Renderer interface union for all supported renderer backends. See @ref gaixw_renderer_enum */
 };
 
 struct gaixw_context
 {
-	gaixw_frametime dt; 					/**< Time since last frame in seconds, milliseconds and microseconds */
-	gaixw_info		info;					/**< Window information like title, width, height, x, y ... */
-	gaixw_input		input;					/**< Input states for mouse and keyboard */
-	gaixw_platform  platform;				/**< Platform layer union for all supported platforms */
-	gaixw_renderer  renderer;				/**< Renderer struct with the current render interface */
+	gaixw_frametime 		dt; 			/**< Time since last frame in seconds, milliseconds and microseconds */
+	gaixw_info				info;			/**< Window information like title, width, height, x, y ... */
+	gaixw_input				input;			/**< Input states for mouse and keyboard */
+	gaixw_platform  		platform;		/**< Platform layer union for all supported platforms */
+	gaixw_renderer  		renderer;		/**< Renderer struct with the current render interface */
 	int is_running;							/**< Running state of the window. If the window gets closed this value will be 0. */
 	int is_visible;
 };
 
+static gaixw_context _gaixw_null_context_;
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -282,8 +288,8 @@ extern "C" {
  * @return
  * Returns 	    | Windows									| Linux
  * :----		|:------------------------------------------|:----
- * 1 			| Success 									| Success
- * 0 			| ConvertThreadToFiber failed 				| Not implemented yet!
+ *  1 			| Success 									| Success
+ *  0 			| ConvertThreadToFiber failed 				| Not implemented yet!
  * -1 			| RegisterClassExA failed 					| Not implemented yet!
  * -2 			| CreateWindowA failed 						| Not implemented yet!
  * -3 			| (OpenGL) ChoosePixelFormat failed 		| Not implemented yet!
@@ -352,16 +358,12 @@ GAIXW_API void 			gaixw_SwapBuffers					(gaixw_context *window);
  * @brief      Current attribute state of the window
  *
  * @param      window  A pointer to a gaixw_context structure
- * @param  	   attrib  Attribute flags as specified in @ref gaixw_renderer_flags\n
- * @ref gaixwFlagsMinimized\n
- * @ref gaixwFlagsMaximized\n
- * @ref gaixwFlagsFullscreen\n
- * @ref gaixwFlagsVSYNC\n
+ * @param  	   attrib  Attribute flags as specified in @ref gaixw_renderer_flags (@ref gaixwFlagsMinimized, @ref gaixwFlagsMaximized, @ref gaixwFlagsFullscreen, @ref gaixwFlagsVSYNC)
  *
  * @return
  * Return Code 	| Description
  * :----		|:-----------
- * 1 			| Set
+ * 1 			| Is Set
  * 0 			| Not set
  */
 GAIXW_API unsigned int  gaixw_GetAttribute					(gaixw_context *window, gaixw_renderer_flags attrib);
@@ -381,7 +383,8 @@ GAIXW_API unsigned int  gaixw_GetAttribute					(gaixw_context *window, gaixw_ren
  */
 GAIXW_API int  			gaixw_SetVerticalSync				(gaixw_context *window, unsigned int state);
 /**
- * @brief      Gets the vertical sync state
+ * @brief      Gets the vertical sync 
+ * state
  * @note       This is a call to the graphics driver. Since the drivers implementations
  *             are different, this can have different results on different graphic cards.
  *
@@ -477,7 +480,7 @@ GAIXW_API unsigned char gaixw_MouseReleased					(gaixw_context *window, int key)
  * @return
  * Return Code 	| Description
  * :----		|:-----------
- * 1 			| Pressed
+ * 1 			| Is Pressed
  * 0 			| Not pressed
  */
 GAIXW_API unsigned char gaixw_KeyDown 						(gaixw_context *window, int key);
@@ -519,7 +522,7 @@ GAIXW_API unsigned char gaixw_KeyReleased					(gaixw_context *window, int key);
  * @return
  * Return Code 	| Description
  * :----		|:-----------
- * 0 			| Null ( function with that name not found )
+ * 0 			| Null Pointer ( function with that name not found )
  * Pointer		| A pointer to functions address
  */
 GAIXW_API void* 		gaixw_GetProc						(gaixw_context *window, const char *name);
@@ -530,94 +533,99 @@ GAIXW_API void* 		gaixw_GetProc						(gaixw_context *window, const char *name);
 
 #ifdef GAIXW_IMPLEMENTATION
 
+#ifndef gaixw_StringCompare
+	#include <string.h>
+	#define gaixw_StringCompare(a, b) strcmp( (a), (b) )
+#endif
+
 #ifdef _WIN32
 
 #ifdef GAIXW_OPENGL
 #pragma comment( lib, "opengl32.lib" )
 
 #include <gl\gl.h>
-#include <stdint.h>
+#include <inttypes.h>
+typedef int64_t GLint64;
 typedef uint64_t GLuint64;
+typedef struct __GLsync *GLsync;
 typedef char GLchar;
 typedef size_t GLsizeiptr;
 typedef size_t GLintptr;
-typedef struct __GLsync *GLsync;
 typedef void (*DEBUGPROC)(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, void *userParam);
 #define GAIXW_FUNCWRAPPER \
-	GAIXW_FUNC_DEF(, attach_shader_fn,  				void, 	 	AttachShader, GLuint, GLuint) \
-	GAIXW_FUNC_DEF(, compile_shader_fn, 				void, 	 	CompileShader, GLuint) \
-	GAIXW_FUNC_DEF(, create_program_fn, 				GLuint,  	CreateProgram, void) \
-	GAIXW_FUNC_DEF(, create_shader_fn,  				GLuint,  	CreateShader, GLenum) \
-	GAIXW_FUNC_DEF(, delete_program_fn, 				void,    	DeleteProgram, GLuint) \
-	GAIXW_FUNC_DEF(, delete_shader_fn,  				void,    	DeleteShader, GLuint) \
-	GAIXW_FUNC_DEF(, detach_shader_fn,  			    void,    	DetachShader, GLuint, GLuint) \
-	GAIXW_FUNC_DEF(, disable_vertex_attrib_array_fn,  	void,    	DisableVertexAttribArray, GLuint) \
-	GAIXW_FUNC_DEF(, enable_vertex_attrib_array_fn,   	void,    	EnableVertexAttribArray, GLuint) \
-	GAIXW_FUNC_DEF(, get_program_iv_fn,			    	void,    	GetProgramiv, GLuint, GLenum, GLint*) \
-	GAIXW_FUNC_DEF(, get_program_info_log_fn,			void,    	GetProgramInfoLog, GLuint, GLsizei, GLsizei*, GLchar*) \
-	GAIXW_FUNC_DEF(, get_shader_info_log_fn,			void,    	GetShaderInfoLog, GLuint, GLsizei, GLsizei*, GLchar*) \
-	GAIXW_FUNC_DEF(, get_shader_source_fn, 				void,    	GetShaderSource, GLuint, GLsizei, GLsizei*, GLchar *) \
-	GAIXW_FUNC_DEF(, get_uniform_location_fn,         	GLint,   	GetUniformLocation, GLuint, const GLchar*) \
-	GAIXW_FUNC_DEF(, link_program_fn,					void,    	LinkProgram, GLuint) \
-	GAIXW_FUNC_DEF(, shader_source_fn,                	void,    	ShaderSource, GLuint, GLsizei, GLchar**, GLint*) \
-	GAIXW_FUNC_DEF(, use_program, 						void,    	UseProgram, GLuint) \
-	GAIXW_FUNC_DEF(, uniform_1f_fn,						void,    	Uniform1f, GLint, GLfloat) \
-	GAIXW_FUNC_DEF(, uniform_2f_fn,						void,    	Uniform2f, GLint, GLfloat, GLfloat) \
-	GAIXW_FUNC_DEF(, uniform_3f_fn,						void,    	Uniform3f, GLint, GLfloat, GLfloat, GLfloat) \
-	GAIXW_FUNC_DEF(, uniform_4f_fn,						void,    	Uniform4f, GLint, GLfloat, GLfloat, GLfloat, GLfloat) \
-	GAIXW_FUNC_DEF(, uniform_1i_fn,						void,    	Uniform1i, GLint, GLint) \
-	GAIXW_FUNC_DEF(, uniform_2i_fn,						void,    	Uniform2i, GLint, GLint, GLint) \
-	GAIXW_FUNC_DEF(, uniform_3i_fn, 					void,    	Uniform3i, GLint, GLint, GLint, GLint) \
-	GAIXW_FUNC_DEF(, uniform_4i_fn, 					void,    	Uniform4i, GLint, GLint, GLint, GLint, GLint) \
-	GAIXW_FUNC_DEF(, uniform_1fv_fn,					void,    	Uniform1fv, GLint, GLsizei, const GLfloat*) \
-	GAIXW_FUNC_DEF(, uniform_2fv_fn,					void,    	Uniform2fv, GLint, GLsizei, const GLfloat*) \
-	GAIXW_FUNC_DEF(, uniform_3fv_fn,					void,    	Uniform3fv, GLint, GLsizei, const GLfloat*) \
-	GAIXW_FUNC_DEF(, uniform_4fv_fn,					void,    	Uniform4fv, GLint, GLsizei, const GLfloat*) \
-	GAIXW_FUNC_DEF(, uniform_1iv_fn,					void,    	Uniform1iv, GLint, GLsizei, const GLint*) \
-	GAIXW_FUNC_DEF(, uniform_2iv_fn,					void,    	Uniform2iv, GLint, GLsizei, const GLint*) \
-	GAIXW_FUNC_DEF(, uniform_3iv_fn,					void,    	Uniform3iv, GLint, GLsizei, const GLint*) \
-	GAIXW_FUNC_DEF(, uniform_4iv_fn,					void,    	Uniform4iv, GLint, GLsizei, const GLint*) \
-	GAIXW_FUNC_DEF(, uniform_matrix_2fv_fn, 			void,    	UniformMatrix2fv, GLint, GLsizei, GLboolean, const GLfloat *) \
-	GAIXW_FUNC_DEF(, uniform_matrix_3fv_fn,				void,    	UniformMatrix3fv, GLint, GLsizei, GLboolean, const GLfloat *) \
-	GAIXW_FUNC_DEF(, uniform_matrix_4fv_fn,				void,    	UniformMatrix4fv, GLint, GLsizei, GLboolean, const GLfloat *) \
-	GAIXW_FUNC_DEF(, validate_program_fn, 				void,	 	ValidateProgram ,GLuint) \
-	GAIXW_FUNC_DEF(, vertex_attrib_pointer_fn,   		void,    	VertexAttribPointer, GLuint, GLint, GLenum, GLboolean, GLsizei, const void *) \
-	GAIXW_FUNC_DEF(, debug_message_callback_fn, 		void,    	DebugMessageCallback, DEBUGPROC, void *) \
-	GAIXW_FUNC_DEF(, get_string_i_fn,					GLubyte*,	GetStringi, GLenum, GLuint ) \
-	GAIXW_FUNC_DEF(, bind_buffer_fn,					void,	 	BindBuffer, GLenum, GLuint buffer) \
-	GAIXW_FUNC_DEF(, delete_buffers_fn,					void, 	 	DeleteBuffers, GLsizei, const GLuint*) \
-	GAIXW_FUNC_DEF(, gen_buffers_fn, 					void,    	GenBuffers, GLsizei, GLuint*) \
-	GAIXW_FUNC_DEF(, buffer_data_fn, 					void,	 	BufferData, GLenum, GLsizeiptr, const void*, GLenum) \
-	GAIXW_FUNC_DEF(, buffer_sub_data_fn,				void, 	 	BufferSubData, GLenum, GLintptr, GLsizeiptr, const void *) \
-	GAIXW_FUNC_DEF(, map_buffer_fn, 					GLvoid*, 	MapBuffer, GLenum, GLenum) \
-	GAIXW_FUNC_DEF(, unmap_buffer_fn, 					void, 	 	UnmapBuffer, GLenum) \
-	GAIXW_FUNC_DEF(, bind_vertex_array_fn,				void, 		BindVertexArray, GLuint) \
-	GAIXW_FUNC_DEF(, delete_vertex_arrays_fn,			void, 		DeleteVertexArrays, GLsizei, const GLuint*) \
-	GAIXW_FUNC_DEF(, gen_vertex_arrays_fn,				void, 		GenVertexArrays, GLsizei, GLuint*) \
-	GAIXW_FUNC_DEF(, map_buffer_range_fn,				GLvoid*,	MapBufferRange, GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access) \
-	GAIXW_FUNC_DEF(, buffer_storage_fn,					void,  		BufferStorage, GLenum target, GLsizeiptr size, const void *data, GLbitfield flags) \
-	GAIXW_FUNC_DEF(, blend_equation_fn,					void, 		BlendEquation, GLenum) \
-	GAIXW_FUNC_DEF(, blend_func_seperate_fn,			void,		BlendFuncSeparate, GLenum, GLenum, GLenum, GLenum) \
-	GAIXW_FUNC_DEF(, fence_sync_fn,						GLsync,		FenceSync, GLenum, GLbitfield) \
-	GAIXW_FUNC_DEF(, client_wait_sync_fn,				GLenum,		ClientWaitSync, GLsync, GLbitfield, GLuint64) \
-	GAIXW_FUNC_DEF(, flush_mapped_buffer_range_fn,		void,		FlushMappedBufferRange, GLenum, GLintptr, GLsizeiptr) 
-
+	GAIXW_FUNC_DEF(, attach_shader_fn, void, AttachShader, GLuint, GLuint) \
+	GAIXW_FUNC_DEF(, compile_shader_fn, void, CompileShader, GLuint) \
+	GAIXW_FUNC_DEF(, create_program_fn, GLuint, CreateProgram, void) \
+	GAIXW_FUNC_DEF(, create_shader_fn, GLuint, CreateShader, GLenum) \
+	GAIXW_FUNC_DEF(, delete_program_fn, void, DeleteProgram, GLuint) \
+	GAIXW_FUNC_DEF(, delete_shader_fn, void, DeleteShader, GLuint) \
+	GAIXW_FUNC_DEF(, detach_shader_fn, void, DetachShader, GLuint, GLuint) \
+	GAIXW_FUNC_DEF(, disable_vertex_attrib_array_fn, void, DisableVertexAttribArray, GLuint) \
+	GAIXW_FUNC_DEF(, enable_vertex_attrib_array_fn, void, EnableVertexAttribArray, GLuint) \
+	GAIXW_FUNC_DEF(, get_program_iv_fn, void, GetProgramiv, GLuint, GLenum, GLint*) \
+	GAIXW_FUNC_DEF(, get_program_info_log_fn, void, GetProgramInfoLog, GLuint, GLsizei, GLsizei*, GLchar*) \
+	GAIXW_FUNC_DEF(, get_shader_info_log_fn, void, GetShaderInfoLog, GLuint, GLsizei, GLsizei*, GLchar*) \
+	GAIXW_FUNC_DEF(, get_shader_source_fn, void, GetShaderSource, GLuint, GLsizei, GLsizei*, GLchar *) \
+	GAIXW_FUNC_DEF(, get_uniform_location_fn, GLint, GetUniformLocation, GLuint, const GLchar*) \
+	GAIXW_FUNC_DEF(, link_program_fn, void, LinkProgram, GLuint) \
+	GAIXW_FUNC_DEF(, shader_source_fn, void, ShaderSource, GLuint, GLsizei, GLchar**, GLint*) \
+	GAIXW_FUNC_DEF(, use_program, void, UseProgram, GLuint) \
+	GAIXW_FUNC_DEF(, uniform_1f_fn, void, Uniform1f, GLint, GLfloat) \
+	GAIXW_FUNC_DEF(, uniform_2f_fn,	void, Uniform2f, GLint, GLfloat, GLfloat) \
+	GAIXW_FUNC_DEF(, uniform_3f_fn,	void, Uniform3f, GLint, GLfloat, GLfloat, GLfloat) \
+	GAIXW_FUNC_DEF(, uniform_4f_fn,	void, Uniform4f, GLint, GLfloat, GLfloat, GLfloat, GLfloat) \
+	GAIXW_FUNC_DEF(, uniform_1i_fn,	void, Uniform1i, GLint, GLint) \
+	GAIXW_FUNC_DEF(, uniform_2i_fn,	void, Uniform2i, GLint, GLint, GLint) \
+	GAIXW_FUNC_DEF(, uniform_3i_fn, void, Uniform3i, GLint, GLint, GLint, GLint) \
+	GAIXW_FUNC_DEF(, uniform_4i_fn, void, Uniform4i, GLint, GLint, GLint, GLint, GLint) \
+	GAIXW_FUNC_DEF(, uniform_1fv_fn, void, Uniform1fv, GLint, GLsizei, const GLfloat*) \
+	GAIXW_FUNC_DEF(, uniform_2fv_fn, void, Uniform2fv, GLint, GLsizei, const GLfloat*) \
+	GAIXW_FUNC_DEF(, uniform_3fv_fn, void, Uniform3fv, GLint, GLsizei, const GLfloat*) \
+	GAIXW_FUNC_DEF(, uniform_4fv_fn, void, Uniform4fv, GLint, GLsizei, const GLfloat*) \
+	GAIXW_FUNC_DEF(, uniform_1iv_fn, void, Uniform1iv, GLint, GLsizei, const GLint*) \
+	GAIXW_FUNC_DEF(, uniform_2iv_fn, void, Uniform2iv, GLint, GLsizei, const GLint*) \
+	GAIXW_FUNC_DEF(, uniform_3iv_fn, void, Uniform3iv, GLint, GLsizei, const GLint*) \
+	GAIXW_FUNC_DEF(, uniform_4iv_fn, void, Uniform4iv, GLint, GLsizei, const GLint*) \
+	GAIXW_FUNC_DEF(, uniform_matrix_2fv_fn, void, UniformMatrix2fv, GLint, GLsizei, GLboolean, const GLfloat *) \
+	GAIXW_FUNC_DEF(, uniform_matrix_3fv_fn,	void, UniformMatrix3fv, GLint, GLsizei, GLboolean, const GLfloat *) \
+	GAIXW_FUNC_DEF(, uniform_matrix_4fv_fn,	void, UniformMatrix4fv, GLint, GLsizei, GLboolean, const GLfloat *) \
+	GAIXW_FUNC_DEF(, validate_program_fn, void, ValidateProgram ,GLuint) \
+	GAIXW_FUNC_DEF(, vertex_attrib_pointer_fn, void, VertexAttribPointer, GLuint, GLint, GLenum, GLboolean, GLsizei, const void *) \
+	GAIXW_FUNC_DEF(, debug_message_callback_fn, void, DebugMessageCallback, DEBUGPROC, void *) \
+	GAIXW_FUNC_DEF(, get_string_i_fn, GLubyte*,	GetStringi, GLenum, GLuint ) \
+	GAIXW_FUNC_DEF(, bind_buffer_fn, void, BindBuffer, GLenum, GLuint buffer) \
+	GAIXW_FUNC_DEF(, delete_buffers_fn, void, DeleteBuffers, GLsizei, const GLuint*) \
+	GAIXW_FUNC_DEF(, gen_buffers_fn, void, GenBuffers, GLsizei, GLuint*) \
+	GAIXW_FUNC_DEF(, buffer_data_fn, void, BufferData, GLenum, GLsizeiptr, const void*, GLenum) \
+	GAIXW_FUNC_DEF(, buffer_sub_data_fn, void, BufferSubData, GLenum, GLintptr, GLsizeiptr, const void *) \
+	GAIXW_FUNC_DEF(, map_buffer_fn, GLvoid*, MapBuffer, GLenum, GLenum) \
+	GAIXW_FUNC_DEF(, unmap_buffer_fn, void, UnmapBuffer, GLenum) \
+	GAIXW_FUNC_DEF(, bind_vertex_array_fn, void, BindVertexArray, GLuint) \
+	GAIXW_FUNC_DEF(, delete_vertex_arrays_fn, void, DeleteVertexArrays, GLsizei, const GLuint*) \
+	GAIXW_FUNC_DEF(, gen_vertex_arrays_fn, void, GenVertexArrays, GLsizei, GLuint*) \
+	GAIXW_FUNC_DEF(, glActiveTexture_PROC, void, ActiveTexture, GLenum texture) \
+	GAIXW_FUNC_DEF(, map_buffer_range_fn, GLvoid*, MapBufferRange, GLenum, GLintptr, GLsizeiptr, GLbitfield) /* GL_ARB_map_buffer_range */ \
+	GAIXW_FUNC_DEF(, flush_mapped_buffer_range_fn, void, FlushMappedBufferRange, GLenum, GLintptr, GLsizeiptr) /* GL_ARB_map_buffer_range */ \
+	GAIXW_FUNC_DEF(, buffer_storage_fn,	void, BufferStorage, GLenum, GLsizeiptr, const void *, GLbitfield ) /* GL_ARB_buffer_storage */ \
+	GAIXW_FUNC_DEF(, blend_equation_fn,	void, BlendEquation, GLenum) \
+	GAIXW_FUNC_DEF(, blend_func_seperate_fn, void, BlendFuncSeparate, GLenum, GLenum, GLenum, GLenum) \
+	GAIXW_FUNC_DEF(, fence_sync_fn, GLsync,	FenceSync, GLenum, GLbitfield) /* GL_ARB_sync */ \
+	GAIXW_FUNC_DEF(, is_sync_fn, GLboolean,	IsSync, GLsync) /* GL_ARB_sync */ \
+	GAIXW_FUNC_DEF(, delete_sync_fn, void, DeleteSync, GLsync) /* GL_ARB_sync */ \
+	GAIXW_FUNC_DEF(, client_wait_sync_fn, GLenum, ClientWaitSync, GLsync, GLbitfield, GLuint64) /* GL_ARB_sync */ \
+	GAIXW_FUNC_DEF(, wait_sync_fn, void, WaitSync, GLsync, GLbitfield, GLuint64) /* GL_ARB_sync */ \
+	GAIXW_FUNC_DEF(, get_integer_64v_fn, void, GetInteger64v, GLenum, GLint64*) /* GL_ARB_sync */ \
+	GAIXW_FUNC_DEF(, get_sync_iv_fn, void, GetSynciv, GLsync, GLenum, GLsizei, GLsizei*, GLint*) /* GL_ARB_sync */ \
+	GAIXW_FUNC_DEF(, tex_storage_1d_fn, void, TexStorage1D, GLenum, GLsizei, GLenum, GLsizei) /* GL_ARB_texture_storage */ \
+	GAIXW_FUNC_DEF(, tex_storage_2d_fn, void, TexStorage2D, GLenum, GLsizei, GLenum, GLsizei, GLsizei) /* GL_ARB_texture_storage */ \
+	GAIXW_FUNC_DEF(, tex_storage_3d_fn, void, TexStorage3D, GLenum, GLsizei, GLenum, GLsizei, GLsizei, GLsizei) /* GL_ARB_texture_storage */
 #define GAIXW_FUNC_DEF(ext, def, a, b, ...) typedef a (gl_##def) (__VA_ARGS__);
 GAIXW_FUNCWRAPPER
 #undef GAIXW_FUNC_DEF
 
-#define GAIXW_FUNC_DEF(ext, def, a, b, ...) gl_##def *gl##b;;
+#define GAIXW_FUNC_DEF(ext, def, a, b, ...) gl_##def *gl##b;
 GAIXW_FUNCWRAPPER
 #undef GAIXW_FUNC_DEF
-
-#define GAIXW_FUNC_DEF(ext, def, a, b, ...) gl##b = (gl_##def *) wglGetProcAddress("gl"#b#ext); GAIXW_ASSERT( gl##b != 0 );
-GAIXW_API void
-gaixw_GLInitFunctions()
-{
-	GAIXW_FUNCWRAPPER
-}
-#undef GAIXW_FUNC_DEF
-#undef GAIXW_FNWRAPPER
 
 GAIXW_API int
 gaixw_WGLIsSupported(const char *extension)
@@ -649,17 +657,17 @@ gaixw_GLDebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GL
 	GAIXW_ASSERT(severity != 0x9146 /* HIGH */);
 }
 
-GAIXW_API int
+inline GAIXW_API unsigned int
 gaixw_GLIsSupported(char *extension)
 {
-	if (glGetStringi)
+	if (glGetStringi && extension)
 	{
 		GLint n, i;
 		glGetIntegerv(0x821D /* GL_NUM_EXTENSIONS */, &n);
 		for (i = 0; i < n; i++)
 		{
 			char *gl_extension = (char *)glGetStringi(GL_EXTENSIONS, i);
-			if (strcmp(gl_extension, extension) == 0)
+			if (gaixw_StringCompare(gl_extension, extension) == 0)
 			{
 				return 1;
 			}
@@ -696,6 +704,123 @@ gaixw_GLSetSwapInterval(unsigned int vsync)
 	}
 }
 
+
+GAIXW_API void
+gaixw_GLInitFunctions(gaixw_context *window)
+{
+#define GAIXW_FUNC_DEF(ext, def, a, b, ...)  \
+	gl##b = (gl_##def *) wglGetProcAddress("gl"#b); \
+	GAIXW_ASSERT( gl##b != 0 );
+
+	GAIXW_FUNCWRAPPER
+#undef GAIXW_FUNC_DEF
+#undef GAIXW_FNWRAPPER
+}
+
+GAIXW_API int
+gaixw_GLInit(gaixw_context *window)
+{
+	window->renderer.type = gaixwRendererOpenGL;
+	//timeBeginPeriod(1);
+	PIXELFORMATDESCRIPTOR pfd = {};
+	pfd.nSize                 = sizeof(pfd);
+	pfd.nVersion              = 1;
+	pfd.iPixelType            = PFD_TYPE_RGBA;
+	pfd.dwFlags               = PFD_SUPPORT_OPENGL | PFD_DRAW_TO_WINDOW | PFD_DOUBLEBUFFER;
+	pfd.cColorBits            = 32;
+	pfd.cAlphaBits            = 8;
+	pfd.cDepthBits            = 32;
+	pfd.iLayerType            = PFD_MAIN_PLANE;
+
+	int pf = ChoosePixelFormat(window->platform.win32.hdc, &pfd);
+	if (!pf)
+	{
+		GAIXW_ASSERT(!"No valid pxiel format found.");
+		return -3;
+	}
+
+	if (!SetPixelFormat(window->platform.win32.hdc, pf, &pfd))
+	{
+		GAIXW_ASSERT(!"Set pixel format failed.");
+		return -4;
+	}
+
+	HGLRC old_glctx = wglCreateContext(window->platform.win32.hdc);
+	if (!old_glctx)
+	{
+		GAIXW_ASSERT(!"Can't create opengl context.");
+		return -5;
+	}
+
+	if (!wglMakeCurrent(window->platform.win32.hdc, old_glctx))
+	{
+		GAIXW_ASSERT(!"Activate opengl context failed..");
+		wglDeleteContext(old_glctx);
+		return -6;
+	}
+
+	window->renderer.graphics.opengl.context 	= old_glctx;
+	window->renderer.graphics.opengl.vendor     = (char *) glGetString(GL_VENDOR);
+	window->renderer.graphics.opengl.version    = (char *) glGetString(GL_VERSION);
+	window->renderer.graphics.opengl.renderer   = (char *) glGetString(GL_RENDERER);
+
+	if (gaixw_WGLIsSupported("WGL_ARB_create_context"))
+	{
+		void *wglCreateContextAttribsARB = wglGetProcAddress("wglCreateContextAttribsARB");
+		if (wglCreateContextAttribsARB)
+		{
+			int attribs[] =
+			{
+				#if GAIXW_OPENGL_MAJOR_VERSION
+				0x2091 /* WGL_CONTEXT_MAJOR_VERSION_ARB */, GAIXW_OPENGL_MAJOR_VERSION,
+				#endif
+				#if GAIXW_OPENGL_MINOR_VERSION
+				0x2092 /* WGL_CONTEXT_MINOR_VERSION_ARB */, GAIXW_OPENGL_MINOR_VERSION,
+				#endif
+				#ifdef GAIXW_OPENGL_CORE_PROFILE
+				0x9126 /* WGL_CONTEXT_PROFILE_MASK_ARB */, 0x00000001 /* WGL_CONTEXT_CORE_PROFILE_BIT_ARB */,
+				#endif
+				0x2094 /* WGL_CONTEXT_FLAGS_ARB */, 0
+				#ifdef GAIXW_OPENGL_DEBUG
+				| 0x00000001
+				#endif
+				,
+				0
+			};
+
+			HGLRC new_oglctx = ((HGLRC(__stdcall *)(HDC, HGLRC, const int *))wglCreateContextAttribsARB)(window->platform.win32.hdc, 0, attribs);
+			if (new_oglctx)
+			{
+				wglMakeCurrent(0, 0);
+				wglDeleteContext(old_glctx);
+				wglMakeCurrent(window->platform.win32.hdc, new_oglctx);
+
+				gaixw_GLInitFunctions(window);
+
+				window->renderer.graphics.opengl.context 				  = new_oglctx;
+				window->renderer.graphics.opengl.vendor                   = (char *) glGetString(GL_VENDOR);
+				window->renderer.graphics.opengl.version                  = (char *) glGetString(GL_VERSION);
+				window->renderer.graphics.opengl.renderer                 = (char *) glGetString(GL_RENDERER);
+				window->renderer.graphics.opengl.shading_language_version = (char *) glGetString(0x8B8C);  // 0x8B8C GL_SHADING_LANGUAGE_VERSION
+
+				gaixw_SetVerticalSync(window, 1);
+				//gaixw_GLInitMultisampling(window);
+
+				#ifdef GAIXW_OPENGL_DEBUG
+				glEnable(0x8242 /* GL_DEBUG_OUTPUT_SYNCHRONOUS */ ); // 0x92E0 /* GL_DEBUG_OUTPUT */
+				glDebugMessageCallback(gaixw_GLDebugCallback, 0);
+				#endif
+			}
+			else GAIXW_ASSERT(!"wglCreateContextAttribsARB failed to create modern context.");
+		}
+		else GAIXW_ASSERT(!"wglGetProcAddress failed for wglCreateContextAttribsARB.");
+	}
+	else GAIXW_ASSERT(!"This graphics card does not support \"WGL_ARB_create_context\".");
+
+	return 1;
+}
+
+
 #elif defined GAIXW_DIRECTX
 #error gai_xwindow.h: Error. DirectX 10 is not implemented yet!
 #elif defined GAIXW_VULCAN
@@ -706,11 +831,13 @@ gaixw_GLSetSwapInterval(unsigned int vsync)
 #pragma comment( lib, "gdi32.lib" )
 #pragma comment( lib, "winmm.lib" )
 
+#include <stdio.h>
+
 GAIXW_API void
 gaixw_Deinit(gaixw_context *window)
 {
 	#ifdef GAIXW_OPENGL
-	HGLRC ctx = wglGetCurrentContext();
+	HGLRC ctx = (HGLRC) window->renderer.graphics.opengl.context;
 	if (ctx)
 	{
 		wglMakeCurrent(0, 0);
@@ -726,6 +853,8 @@ gaixw_Deinit(gaixw_context *window)
 		DispatchMessage(&msg);
 		if (msg.message == WM_QUIT) break;
 	}
+
+	GAIXW_ASSERT(UnregisterClassA(window->platform.win32.classname, window->platform.win32.instance));
 }
 
 GAIXW_API unsigned int
@@ -832,7 +961,7 @@ gaixw_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			case WM_MBUTTONUP:		{ window->input.mouse_history[1] = window->input.mouse[1]; window->input.mouse[1] = 0; return 0; }
 			case WM_RBUTTONDOWN:	{ window->input.mouse_history[2] = window->input.mouse[2]; window->input.mouse[2] = 1; return 0; }
 			case WM_RBUTTONUP:		{ window->input.mouse_history[2] = window->input.mouse[2]; window->input.mouse[2] = 0; return 0; }
-			case WM_MOUSEWHEEL:		{ window->input.dwheel = GET_WHEEL_DELTA_WPARAM(wParam); window->input.wheel  += window->input.dwheel; return 0; }
+			case WM_MOUSEWHEEL:		{ window->input.dwheel = GET_WHEEL_DELTA_WPARAM(wParam) / WHEEL_DELTA; window->input.wheel  += window->input.dwheel; return 0; }
 			case WM_DESTROY:
 			{
 				#if 0
@@ -981,14 +1110,18 @@ gaixw_Update(gaixw_context *window)
 		frametime += window->dt.seconds;
 		frames++;
 	}
+
 	#else
+
 	while (GetMessage(&msg, 0, 0, 0) != 0)
 	{
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 		if (window->is_running == false) break;
 	}
+
 	#endif
+
 	return (float) window->dt.seconds;
 }
 
@@ -1012,7 +1145,7 @@ GAIXW_API int
 gaixw_Init(gaixw_context *window, const char *title, int width, int height, int x, int y, const char *classname, unsigned int visible)
 {
 	GAIXW_ASSERT(window);
-	if (!ConvertThreadToFiber(0) ) return 0;
+	//if (!ConvertThreadToFiber(0) ) return 0;
 
 	gaixw_context init = { {0}, {title, width, height, x, y}, {0}, {0, 0, GetModuleHandle(0)}, { 0, gaixwRendererGDI, 0 } };
 	*window = init;
@@ -1028,131 +1161,46 @@ gaixw_Init(gaixw_context *window, const char *title, int width, int height, int 
 	wnd_class.hCursor       = LoadCursor(0, IDC_ARROW);
 	if (!RegisterClassExA(&wnd_class))
 	{
+		*window = _gaixw_null_context_;
 		GAIXW_ASSERT(!"Can't register window class.");
 		return -1;
 	}
 
+	window->platform.win32.classname = classname;
 	DWORD style = WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
 	HWND hwnd 	= CreateWindowA(classname, title, style,
-	                            (x == -1 ? CW_USEDEFAULT : x),
-	                            (y == -1 ? CW_USEDEFAULT : y),
-	                            (width == -1 ? CW_USEDEFAULT : width),
+	                            (x 		== -1 ? CW_USEDEFAULT : x),
+	                            (y 		== -1 ? CW_USEDEFAULT : y),
+	                            (width 	== -1 ? CW_USEDEFAULT : width),
 	                            (height == -1 ? CW_USEDEFAULT : height),
-	                            0, 0, window->platform.win32.instance, window);
+	                            0, 0, window->platform.win32.instance, 0);
 	if (!hwnd)
 	{
+		*window = _gaixw_null_context_;
 		GAIXW_ASSERT(!"Can't create window.");
 		return -2;
 	}
 
 	SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR) window);
-	HDC hdc = GetDC(hwnd);
+
 	window->platform.win32.hwnd = hwnd;
-	window->platform.win32.hdc  = hdc;
+	window->platform.win32.hdc  = GetDC(hwnd);
 
 	#ifdef GAIXW_OPENGL
-	window->renderer.type = gaixwRendererOpenGL;
-	//timeBeginPeriod(1);
-	PIXELFORMATDESCRIPTOR pfd = {};
-	pfd.nSize                 = sizeof(pfd);
-	pfd.nVersion              = 1;
-	pfd.iPixelType            = PFD_TYPE_RGBA;
-	pfd.dwFlags               = PFD_SUPPORT_OPENGL | PFD_DRAW_TO_WINDOW | PFD_DOUBLEBUFFER;
-	pfd.cColorBits            = 32;
-	pfd.cAlphaBits            = 8;
-	pfd.cDepthBits            = 32;
-	pfd.iLayerType            = PFD_MAIN_PLANE;
-
-	int pf = ChoosePixelFormat(hdc, &pfd);
-	if (!pf)
 	{
-		GAIXW_ASSERT(!"No valid pxiel format found.");
-		DestroyWindow(hwnd);
-		return -3;
-	}
-
-	if (!SetPixelFormat(hdc, pf, &pfd))
-	{
-		GAIXW_ASSERT(!"Set pixel format failed.");
-		return -4;
-	}
-
-	HGLRC old_glctx = wglCreateContext(hdc);
-	if (!old_glctx)
-	{
-		GAIXW_ASSERT(!"Can't create opengl context.");
-		DestroyWindow(hwnd);
-		return -5;
-	}
-
-	if (!wglMakeCurrent(hdc, old_glctx))
-	{
-		GAIXW_ASSERT(!"Activate opengl context failed..");
-		wglDeleteContext(old_glctx);
-		DestroyWindow(hwnd);
-		return -6;
-	}
-
-	window->renderer.graphics.opengl.vendor                    = (char *) glGetString(GL_VENDOR);
-	window->renderer.graphics.opengl.version                   = (char *) glGetString(GL_VERSION);
-	window->renderer.graphics.opengl.renderer                  = (char *) glGetString(GL_RENDERER);
-
-	if (gaixw_WGLIsSupported("WGL_ARB_create_context"))
-	{
-		void *wglCreateContextAttribsARB = wglGetProcAddress("wglCreateContextAttribsARB");
-		if (wglCreateContextAttribsARB)
+		int result = gaixw_GLInit(window);
+		if (result != 1)
 		{
-			int attribs[] =
-			{
-				#if GAIXW_OPENGL_MAJOR_VERSION
-				0x2091 /* WGL_CONTEXT_MAJOR_VERSION_ARB */, GAIXW_OPENGL_MAJOR_VERSION,
-				#endif
-				#if GAIXW_OPENGL_MINOR_VERSION
-				0x2092 /* WGL_CONTEXT_MINOR_VERSION_ARB */, GAIXW_OPENGL_MINOR_VERSION,
-				#endif
-				//0x9126 /* WGL_CONTEXT_PROFILE_MASK_ARB */, /0x00000001 /* WGL_CONTEXT_CORE_PROFILE_BIT_ARB */,
-				0x2094 /* WGL_CONTEXT_FLAGS_ARB */, 0
-				#ifdef _DEBUG
-				| 0x00000001
-				#endif
-				,
-				0
-			};
-
-			HGLRC new_oglctx = ((HGLRC(__stdcall *)(HDC, HGLRC, const int *))wglCreateContextAttribsARB)(hdc, 0, attribs);
-			if (new_oglctx)
-			{
-				wglMakeCurrent(0, 0);
-				wglDeleteContext(old_glctx);
-				wglMakeCurrent(hdc, new_oglctx);
-
-				window->renderer.graphics.opengl.vendor                   = (char *) glGetString(GL_VENDOR);
-				window->renderer.graphics.opengl.version                  = (char *) glGetString(GL_VERSION);
-				window->renderer.graphics.opengl.renderer                 = (char *) glGetString(GL_RENDERER);
-				window->renderer.graphics.opengl.shading_language_version = (char *) glGetString(0x8B8C);  // 0x8B8C GL_SHADING_LANGUAGE_VERSION
-
-				gaixw_SetVerticalSync(window, 1);
-
-				gaixw_GLInitFunctions();
-
-				gaixw_GLInitMultisampling(window);
-
-				#ifdef _DEBUG
-				glEnable(0x8242 /* GL_DEBUG_OUTPUT_SYNCHRONOUS */ ); // 0x92E0 /* GL_DEBUG_OUTPUT */
-				glDebugMessageCallback( gaixw_GLDebugCallback, 0);
-				#endif
-			}
-			else GAIXW_PRINT("Error: wglCreateContextAttribsARB failed to create modern context.");
+			*window = _gaixw_null_context_;
+			DestroyWindow(hwnd);
+			return result;
 		}
-		else GAIXW_PRINT("Error: wglGetProcAddress failed for wglCreateContextAttribsARB.");
 	}
-	else GAIXW_PRINT("Warning : This graphics card does not support \"WGL_ARB_create_context\".");
-
 	#else
 
 	#endif
 
-	window->is_running = true;
+	window->is_running = 1;
 	if (visible) gaixw_Show(window); else gaixw_Hide(window);
 	return 1;
 }

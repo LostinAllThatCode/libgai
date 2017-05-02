@@ -15,8 +15,6 @@ var searchData=
   ['gaihr_5fflagsnone',['gaihr_FlagsNone',['../gai__hotreload_8h.html#aaebb069b6896f065efd75640e0e4150ba6c207a28fdce6637b4aa1e70e64c3e94',1,'gai_hotreload.h']]],
   ['gaihr_5fflagsskipinitialchange',['gaihr_FlagsSkipInitialChange',['../gai__hotreload_8h.html#aaebb069b6896f065efd75640e0e4150baee50ce1492a508e5605592106fa00bd5',1,'gai_hotreload.h']]],
   ['gaihr_5fplatform',['gaihr_platform',['../gai__hotreload_8h.html#uniongaihr__platform',1,'']]],
-  ['gaihr_5fplatform_5flinux',['gaihr_platform_linux',['../gai__hotreload_8h.html#structgaihr__platform_1_1gaihr__platform__linux',1,'gaihr_platform']]],
-  ['gaihr_5fplatform_5fwin32',['gaihr_platform_win32',['../gai__hotreload_8h.html#structgaihr__platform_1_1gaihr__platform__win32',1,'gaihr_platform']]],
   ['gaihr_5fthread_5ftimeout',['GAIHR_THREAD_TIMEOUT',['../gai__hotreload_8h.html#a7385b7149ef022fa38140e2b2a540502',1,'gai_hotreload.h']]],
   ['gaihr_5ftrack',['gaihr_Track',['../gai__hotreload_8h.html#ad83d8f6170f0404fb72803d012ac9f6a',1,'gai_hotreload.h']]],
   ['gaihr_5funtrack',['gaihr_Untrack',['../gai__hotreload_8h.html#a288369c901929574624b267de90007cd',1,'gai_hotreload.h']]],

@@ -1,4 +1,4 @@
 <map id="gaihr_platform" name="gaihr_platform">
-<area shape="rect" id="node2" href="$gai__hotreload_8h.html#structgaihr__platform_1_1gaihr__platform__linux" title="gaihr_platform::gaihr\l_platform_linux" alt="" coords="5,5,129,41"/>
-<area shape="rect" id="node3" href="$gai__hotreload_8h.html#structgaihr__platform_1_1gaihr__platform__win32" title="gaihr_platform::gaihr\l_platform_win32" alt="" coords="153,5,277,41"/>
+<area shape="rect" id="node2" href="$gai__hotreload_8h.html#structgaihr__platform_1_1_w_i_n_d_o_w_s" title="gaihr_platform::WINDOWS" alt="" coords="5,5,157,29"/>
+<area shape="rect" id="node3" href="$gai__hotreload_8h.html#structgaihr__platform_1_1_l_i_n_u_x" title="gaihr_platform::LINUX" alt="" coords="182,5,311,29"/>
 </map>

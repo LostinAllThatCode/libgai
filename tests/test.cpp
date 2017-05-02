@@ -25,10 +25,10 @@ void render(gairb_renderbuffer *commands, v2 draw_region)
 				gairb_entry_textured_quads *entry = (gairb_entry_textured_quads *) header;
 				glLoadMatrixf(entry->setup.transform.E[0]);
 
-				for (u32 vertex_index = entry->vertex_array_offset; vertex_index < (entry->vertex_array_offset + 4 * entry->quad_count); vertex_index += 4)
+				for (u32 vertex_index = entry->vertex_array_offset; vertex_index < (entry->vertex_array_offset + 6 * entry->quad_count); vertex_index += 6)
 				{
 					glBegin(GL_TRIANGLE_STRIP);
-					for (int i = 0; i < 4; i++)
+					for (int i = 0; i < 6; i++)
 					{
 						v4 color = commands->vertex_array[vertex_index + i].color;
 						v4 vertex = commands->vertex_array[vertex_index + i].p;
@@ -62,8 +62,7 @@ int main(int argc, char **argv)
 	{
 		gaixw_Update(&window);
 		if (!window.is_running) break;
-
-		time += window.dt.seconds * 15.f;
+		time += window.dt.seconds;
 		gairb_renderbuffer MyRenderBuffer = gairb_RenderBuffer( V4(0.f), renderbuffer_size, renderbuffer, vertex_count_max, vertexbuffer, 0, 0);
 
 		gairb_group MyRenderGroup = gairb_BeginGroup(V2i(window.info.width, window.info.height), &MyRenderBuffer, 0);

@@ -23,11 +23,9 @@
 	#define GAIRB_API extern
 #endif
 
-#ifdef GAIRB_ASSERT
+#ifndef GAIRB_ASSERT
 	#include <assert.h>
 	#define GAIRB_ASSERT(x) assert(x)
-#else
-	#define GAIRB_ASSERT(x)
 #endif
 
 #ifndef GAIRB_NO_MATH_AND_DEFINES
@@ -63,7 +61,14 @@ inline m4x4 OrthographicProjection(r32 left, r32 right, r32 top, r32 bottom,  r3
 	r32 d = -((right + left) / (right - left));
 	r32 e = -((top + bottom) / (top - bottom));
 	r32 f = -((zfar + znear) / (zfar - znear));
-	m4x4 R = { { {  a,  0,  0,  d }, {  0,  b,  0,  e }, {  0,  0,  c,  f }, {  0,  0,  0,  1 } } };
+	m4x4 R =
+	{
+		{	{  a,  0,  0,  d },
+			{  0,  b,  0,  e },
+			{  0,  0,  c,  f },
+			{  0,  0,  0,  1 }
+		}
+	};
 	return (R);
 }
 inline m4x4 OrthographicProjection(r32 width, r32 height, r32 znear, r32 zfar) { return OrthographicProjection(0, width, 0, height, znear, zfar); }
@@ -272,7 +277,7 @@ _gairb_Push_(gairb_group *group, u32 size, gairb_entry_type_enum type)
 
 		group->commands->pushbuffer_at += size;
 	}
-	else GAIRB_ASSERT(!"pushbuffer overflow");
+	//else GAIRB_ASSERT(!"pushbuffer overflow");
 	return result;
 }
 
@@ -300,15 +305,16 @@ inline GAIRB_API void
 gairb_PushRect(gairb_group *group, loaded_bitmap *bitmap, v4 p1, v2 uv1, v4 c1, v4 p2, v2 uv2, v4 c2, v4 p3, v2 uv3, v4 c3, v4 p4, v2 uv4, v4 c4)
 {
 	gairb_entry_textured_quads *entry = _gairb_GetQuads(group, 1);
+	if(!entry) return;
 	GAIRB_ASSERT(entry);
 
 	if (!bitmap) bitmap = group->commands->default_texture;
 	if (group->commands->quad_textures)
 	{
-		group->commands->quad_textures[group->commands->vertex_count >> 2] = bitmap;
+		int vertex_index = (group->commands->vertex_count != 0 ? group->commands->vertex_count / 6 : group->commands->vertex_count);
+		group->commands->quad_textures[vertex_index] = bitmap;
 	}
 	++entry->quad_count;
-
 
 	gairb_textured_vertex *v = group->commands->vertex_array + group->commands->vertex_count;
 	group->commands->vertex_count += 6;
@@ -431,6 +437,7 @@ GAIRB_API void
 gairb_PushCube(gairb_group *group, loaded_bitmap *bitmap, v4 color, v3 position, r32 radius, r32 height, i32 flip_texture)
 {
 	gairb_entry_textured_quads *entry = _gairb_GetQuads(group, 6);
+	if(!entry) return;
 	GAIRB_ASSERT(entry);
 
 	r32 half_height = height * .5f;

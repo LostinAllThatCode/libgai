@@ -83,7 +83,8 @@ $(document).ready(function(){initNavTree('gai__xwindow_8h.html','');});
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#define-members">Macros</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
-<a href="#func-members">Functions</a>  </div>
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
 <div class="title">gai_xwindow.h File Reference</div>  </div>
 </div><!--header-->
@@ -92,7 +93,6 @@ $(document).ready(function(){initNavTree('gai__xwindow_8h.html','');});
 <p>Requests a window for all currently supported platforms.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;assert.h&gt;</code><br />
-<code>#include &lt;string.h&gt;</code><br />
 <code>#include &lt;windows.h&gt;</code><br />
 <code>#include &lt;X11/Xlib.h&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
@@ -105,6 +105,12 @@ Include dependency graph for gai_xwindow.h:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
+<tr class="memitem:uniongaixw__platform"><td class="memItemLeft" align="right" valign="top">union &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gai__xwindow_8h.html#uniongaixw__platform">gaixw_platform</a></td></tr>
+<tr class="separator:uniongaixw__platform"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:structgaixw__platform_1_1_w_i_n_d_o_w_s"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gai__xwindow_8h.html#structgaixw__platform_1_1_w_i_n_d_o_w_s">gaixw_platform::WINDOWS</a></td></tr>
+<tr class="separator:structgaixw__platform_1_1_w_i_n_d_o_w_s"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:structgaixw__platform_1_1_l_i_n_u_x"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gai__xwindow_8h.html#structgaixw__platform_1_1_l_i_n_u_x">gaixw_platform::LINUX</a></td></tr>
+<tr class="separator:structgaixw__platform_1_1_l_i_n_u_x"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:structgaixw__frametime"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gai__xwindow_8h.html#structgaixw__frametime">gaixw_frametime</a></td></tr>
 <tr class="separator:structgaixw__frametime"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:structgaixw__info"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gai__xwindow_8h.html#structgaixw__info">gaixw_info</a></td></tr>
@@ -123,12 +129,6 @@ Classes</h2></td></tr>
 <tr class="separator:structgaixw__graphics_1_1_g_d_i"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:structgaixw__graphics_1_1_v_u_l_c_a_n"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gai__xwindow_8h.html#structgaixw__graphics_1_1_v_u_l_c_a_n">gaixw_graphics::VULCAN</a></td></tr>
 <tr class="separator:structgaixw__graphics_1_1_v_u_l_c_a_n"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:uniongaixw__platform"><td class="memItemLeft" align="right" valign="top">union &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gai__xwindow_8h.html#uniongaixw__platform">gaixw_platform</a></td></tr>
-<tr class="separator:uniongaixw__platform"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:structgaixw__platform_1_1_w_i_n_d_o_w_s"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gai__xwindow_8h.html#structgaixw__platform_1_1_w_i_n_d_o_w_s">gaixw_platform::WINDOWS</a></td></tr>
-<tr class="separator:structgaixw__platform_1_1_w_i_n_d_o_w_s"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:structgaixw__platform_1_1_l_i_n_u_x"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gai__xwindow_8h.html#structgaixw__platform_1_1_l_i_n_u_x">gaixw_platform::LINUX</a></td></tr>
-<tr class="separator:structgaixw__platform_1_1_l_i_n_u_x"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:structgaixw__renderer"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gai__xwindow_8h.html#structgaixw__renderer">gaixw_renderer</a></td></tr>
 <tr class="separator:structgaixw__renderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:structgaixw__context"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gai__xwindow_8h.html#structgaixw__context">gaixw_context</a></td></tr>
@@ -238,6 +238,12 @@ Functions</h2></td></tr>
 <tr class="memitem:afb8573bf3e47bef617b0c575cabd56b1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="gai__xwindow_8h.html#ab41ae714bb16012af56329f9032e6d16">GAIXW_API</a> void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gai__xwindow_8h.html#afb8573bf3e47bef617b0c575cabd56b1">gaixw_GetProc</a> (<a class="el" href="gai__xwindow_8h.html#structgaixw__context">gaixw_context</a> *window, const char *name)</td></tr>
 <tr class="memdesc:afb8573bf3e47bef617b0c575cabd56b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the procedure's memory address for the specified function name.  <a href="#afb8573bf3e47bef617b0c575cabd56b1">More...</a><br /></td></tr>
 <tr class="separator:afb8573bf3e47bef617b0c575cabd56b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:abc9e11ebe6a967f9f3b3354974bd6a47"><td class="memItemLeft" align="right" valign="top"><a id="abc9e11ebe6a967f9f3b3354974bd6a47"></a>
+static <a class="el" href="gai__xwindow_8h.html#structgaixw__context">gaixw_context</a>&#160;</td><td class="memItemRight" valign="bottom"><b>_gaixw_null_context_</b></td></tr>
+<tr class="separator:abc9e11ebe6a967f9f3b3354974bd6a47"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Requests a window for all currently supported platforms. </p>
@@ -263,10 +269,130 @@ Examples</h2>
 GDI Example</h3>
 <div class="fragment"><div class="line"><span class="preprocessor">#define GAIXW_IMPLEMENTATION</span></div><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="gai__xwindow_8h.html">gai_xwindow.h</a>&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;stdio.h&gt;</span></div><div class="line"></div><div class="line">LRESULT CALLBACK</div><div class="line">MyWindowMessageHandler(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)</div><div class="line">{</div><div class="line">    <a class="code" href="gai__xwindow_8h.html#structgaixw__context">gaixw_context</a> *window = (<a class="code" href="gai__xwindow_8h.html#structgaixw__context">gaixw_context</a> *) GetWindowLongPtr(hWnd, GWLP_USERDATA);</div><div class="line">    <span class="keywordflow">if</span> (window)</div><div class="line">    {</div><div class="line">        <span class="keywordflow">switch</span> (uMsg)</div><div class="line">        {</div><div class="line">            <span class="keywordflow">case</span> WM_PAINT:</div><div class="line">            {</div><div class="line">                RECT r = { 0, 0, 120, 50 };</div><div class="line">                DrawText(window-&gt;<a class="code" href="gai__xwindow_8h.html#aa297ac21e147f4cde74e021b62b3e673">platform</a>.win32.hdc, <span class="stringliteral">&quot;Hallo&quot;</span>, 5, &amp;r, DT_INTERNAL | DT_NOCLIP);</div><div class="line">            } <span class="keywordflow">break</span>;</div><div class="line">        }</div><div class="line">    }</div><div class="line">    <span class="keywordflow">return</span> gaixw_WindowProc(hWnd, uMsg, wParam, lParam);</div><div class="line">}</div><div class="line"></div><div class="line"><span class="keywordtype">int</span> main(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>** argv)</div><div class="line">{</div><div class="line">    <span class="keywordtype">int</span> retval = 0;</div><div class="line">    <a class="code" href="gai__xwindow_8h.html#structgaixw__context">gaixw_context</a> window = {};</div><div class="line">    retval = <a class="code" href="gai__xwindow_8h.html#adec8bb998b6861c4d239b25634c8eb55">gaixw_Init</a>(&amp;window, <span class="stringliteral">&quot;gdi example&quot;</span>, 640, 480);</div><div class="line">    <span class="keywordflow">if</span>(retval != 1) <span class="keywordflow">return</span> retval;</div><div class="line">    printf(<span class="stringliteral">&quot;Renderer: %u\n&quot;</span>, window.<a class="code" href="gai__xwindow_8h.html#a5984d461e227d9028db4d9327bc9c2c4">renderer</a>.<a class="code" href="gai__xwindow_8h.html#a287bd5241e45837849116cf46c5591ba">type</a>);</div><div class="line">    SetWindowLongPtr(window.<a class="code" href="gai__xwindow_8h.html#aa297ac21e147f4cde74e021b62b3e673">platform</a>.win32.hwnd, GWLP_WNDPROC, (LONG_PTR) MyWindowMessageHandler);</div><div class="line">    <a class="code" href="gai__xwindow_8h.html#a2f1b687718407be2be1eaf2646405c2c">gaixw_Update</a>(&amp;window);</div><div class="line">    <a class="code" href="gai__xwindow_8h.html#a986353262ac6038b69005bec8111ac56">gaixw_Deinit</a>(&amp;window);</div><div class="line">    <span class="keywordflow">return</span> 0;</div><div class="line">}</div></div><!-- fragment --> <h3><a class="anchor" id="gaixw_opengl_win32_example"></a>
 OpenGL Example</h3>
-<div class="fragment"><div class="line"><span class="preprocessor">#define GAIXW_OPENGL</span></div><div class="line"><span class="preprocessor">#define GAIXW_IMPLEMENTATION</span></div><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="gai__xwindow_8h.html">gai_xwindow.h</a>&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;stdio.h&gt;</span></div><div class="line"></div><div class="line"><span class="keywordtype">int</span> main(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>** argv)</div><div class="line">{</div><div class="line">    <span class="keywordtype">int</span> retval = 0;</div><div class="line">    <a class="code" href="gai__xwindow_8h.html#structgaixw__context">gaixw_context</a> window = {};</div><div class="line">    retval = <a class="code" href="gai__xwindow_8h.html#adec8bb998b6861c4d239b25634c8eb55">gaixw_Init</a>(&amp;window, <span class="stringliteral">&quot;opengl example&quot;</span>, 640, 480);</div><div class="line">    <span class="keywordflow">if</span> (retval != 1) <span class="keywordflow">return</span> retval;</div><div class="line"></div><div class="line">    printf(<span class="stringliteral">&quot;Vendor: %s, Version: %s, Renderer: %s, Shading Language Version: %s, OpenGL Context: %p\n&quot;</span>,</div><div class="line">           window.<a class="code" href="gai__xwindow_8h.html#a5984d461e227d9028db4d9327bc9c2c4">renderer</a>.interface.opengl.vendor, window.<a class="code" href="gai__xwindow_8h.html#a5984d461e227d9028db4d9327bc9c2c4">renderer</a>.interface.opengl.version, window.<a class="code" href="gai__xwindow_8h.html#a5984d461e227d9028db4d9327bc9c2c4">renderer</a>.interface.opengl.renderer,</div><div class="line">           window.<a class="code" href="gai__xwindow_8h.html#a5984d461e227d9028db4d9327bc9c2c4">renderer</a>.interface.opengl.shading_language_version, window.<a class="code" href="gai__xwindow_8h.html#a5984d461e227d9028db4d9327bc9c2c4">renderer</a>.interface.opengl.context);</div><div class="line"></div><div class="line">    <a class="code" href="gai__xwindow_8h.html#a51eafe897c3737f146cda3c50884b9dd">gaixw_SetVerticalSync</a>(&amp;window, 1);</div><div class="line">    glClearColor(0.f, 0.f, 0.f, 1.f);</div><div class="line">    <span class="keywordflow">for</span> (;;)</div><div class="line">    {</div><div class="line">        <a class="code" href="gai__xwindow_8h.html#a2f1b687718407be2be1eaf2646405c2c">gaixw_Update</a>(&amp;window);</div><div class="line">        <span class="keywordflow">if</span> (!window.<a class="code" href="gai__xwindow_8h.html#a7165f8e7f0c548dd3a11c8648fb8071a">is_running</a>) <span class="keywordflow">break</span>;</div><div class="line">        glClear(GL_COLOR_BUFFER_BIT);</div><div class="line">        glBegin(GL_QUADS);</div><div class="line">        {</div><div class="line">            glColor4f(1.f, 0.f, 0.0f, 1.f);</div><div class="line">            glVertex2f(-.5f, -.5f);</div><div class="line">            glColor4f(0.f, 1.f, 0.0f, 1.f);</div><div class="line">            glVertex2f(-.5f, .5f);</div><div class="line">            glColor4f(1.f, 1.f, 1.0f, 1.f);</div><div class="line">            glVertex2f(.5f, .5f);</div><div class="line">            glColor4f(0.f, 0.f, 1.f, 1.f);</div><div class="line">            glVertex2f(.5f, -.5f);</div><div class="line">        }</div><div class="line">        glEnd();</div><div class="line">        glViewport(0, 0, window.<a class="code" href="gai__xwindow_8h.html#a488c7d5344206e2f55cd62ffc258e77b">info</a>.<a class="code" href="gai__xwindow_8h.html#acf87d56219f894f3bf3d3968c7a54447">width</a>, window.<a class="code" href="gai__xwindow_8h.html#a488c7d5344206e2f55cd62ffc258e77b">info</a>.<a class="code" href="gai__xwindow_8h.html#a0e0d7732967837269e7898794beba31b">height</a>);</div><div class="line">        <a class="code" href="gai__xwindow_8h.html#ac612fdfe7c233bf8ecaf7112318d5e1f">gaixw_SwapBuffers</a>(&amp;window);</div><div class="line">    }</div><div class="line">    <a class="code" href="gai__xwindow_8h.html#a986353262ac6038b69005bec8111ac56">gaixw_Deinit</a>(&amp;window);</div><div class="line">    <span class="keywordflow">return</span> 0;</div><div class="line">}</div></div><!-- fragment --><p> If you want to get a modern opengl context you have to specify these macros as well </p><div class="fragment"><div class="line"><span class="preprocessor">#define GAIXW_OPENGL</span></div><div class="line"><span class="preprocessor">#define GAIXW_OPENGL_MAJOR 3</span></div><div class="line"><span class="preprocessor">#define GAIXW_OPENGL_MINOR 2</span></div><div class="line"><span class="preprocessor">#define GAIXW_IMPLEMENTATION</span></div><div class="line"><span class="preprocessor">#include &lt;gai_xwindow.h&gt;</span></div></div><!-- fragment --> <dl class="section author"><dt>Author</dt><dd>Andreas Gaida </dd></dl>
+<div class="fragment"><div class="line"><span class="preprocessor">#define GAIXW_OPENGL</span></div><div class="line"><span class="preprocessor">#define GAIXW_IMPLEMENTATION</span></div><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="gai__xwindow_8h.html">gai_xwindow.h</a>&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;stdio.h&gt;</span></div><div class="line"></div><div class="line"><span class="keywordtype">int</span> main(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>** argv)</div><div class="line">{</div><div class="line">    <span class="keywordtype">int</span> retval = 0;</div><div class="line">    <a class="code" href="gai__xwindow_8h.html#structgaixw__context">gaixw_context</a> window = {};</div><div class="line">    retval = <a class="code" href="gai__xwindow_8h.html#adec8bb998b6861c4d239b25634c8eb55">gaixw_Init</a>(&amp;window, <span class="stringliteral">&quot;opengl example&quot;</span>, 640, 480);</div><div class="line">    <span class="keywordflow">if</span> (retval != 1) <span class="keywordflow">return</span> retval;</div><div class="line"></div><div class="line">    <a class="code" href="gai__xwindow_8h.html#structgaixw__graphics_1_1_o_p_e_n_g_l">gaixw_graphics::OPENGL</a> ogl = window.<a class="code" href="gai__xwindow_8h.html#a5984d461e227d9028db4d9327bc9c2c4">renderer</a>.<a class="code" href="gai__xwindow_8h.html#a9fc6dc47652f101ae6dd13b6348474f8">graphics</a>.<a class="code" href="gai__xwindow_8h.html#a7e427fc59e9f524b1f8f87532e46992e">opengl</a>;</div><div class="line">    printf(<span class="stringliteral">&quot;Vendor: %s, Version: %s, Renderer: %s, Shading Language Version: %s\n&quot;</span>,</div><div class="line">           ogl.vendor, ogl.version, ogl.renderer, ogl.shading_language_version);</div><div class="line"></div><div class="line">    <a class="code" href="gai__xwindow_8h.html#a51eafe897c3737f146cda3c50884b9dd">gaixw_SetVerticalSync</a>(&amp;window, 1);</div><div class="line">    <a class="code" href="gai__xwindow_8h.html#ab75a5f7466b10622fab1a1cdb443b447">gaixw_ToggleFullscreen</a>(&amp;window);</div><div class="line">    glClearColor(0.f, 0.f, 0.f, 1.f);</div><div class="line">    <span class="keywordflow">for</span> (;;)</div><div class="line">    {</div><div class="line">        <a class="code" href="gai__xwindow_8h.html#a2f1b687718407be2be1eaf2646405c2c">gaixw_Update</a>(&amp;window);</div><div class="line">        <span class="keywordflow">if</span> (!window.<a class="code" href="gai__xwindow_8h.html#a7165f8e7f0c548dd3a11c8648fb8071a">is_running</a>) <span class="keywordflow">break</span>;</div><div class="line">        glClear(GL_COLOR_BUFFER_BIT);</div><div class="line">        glBegin(GL_QUADS);</div><div class="line">        {</div><div class="line">            glColor4f(1.f, 0.f, 0.0f, 1.f);</div><div class="line">            glVertex2f(-.5f, -.5f);</div><div class="line">            glColor4f(0.f, 1.f, 0.0f, 1.f);</div><div class="line">            glVertex2f(-.5f, .5f);</div><div class="line">            glColor4f(1.f, 1.f, 1.0f, 1.f);</div><div class="line">            glVertex2f(.5f, .5f);</div><div class="line">            glColor4f(0.f, 0.f, 1.f, 1.f);</div><div class="line">            glVertex2f(.5f, -.5f);</div><div class="line">        }</div><div class="line">        glEnd();</div><div class="line">        glViewport(0, 0, window.<a class="code" href="gai__xwindow_8h.html#a488c7d5344206e2f55cd62ffc258e77b">info</a>.<a class="code" href="gai__xwindow_8h.html#acf87d56219f894f3bf3d3968c7a54447">width</a>, window.<a class="code" href="gai__xwindow_8h.html#a488c7d5344206e2f55cd62ffc258e77b">info</a>.<a class="code" href="gai__xwindow_8h.html#a0e0d7732967837269e7898794beba31b">height</a>);</div><div class="line">        <a class="code" href="gai__xwindow_8h.html#ac612fdfe7c233bf8ecaf7112318d5e1f">gaixw_SwapBuffers</a>(&amp;window);</div><div class="line">    }</div><div class="line">    <a class="code" href="gai__xwindow_8h.html#a986353262ac6038b69005bec8111ac56">gaixw_Deinit</a>(&amp;window);</div><div class="line">    <span class="keywordflow">return</span> 0;</div><div class="line">}</div></div><!-- fragment --><p> If you want to get a modern opengl context you have to specify these macros as well </p><div class="fragment"><div class="line"><span class="preprocessor">#define GAIXW_OPENGL</span></div><div class="line"><span class="preprocessor">#define GAIXW_OPENGL_MAJOR 3</span></div><div class="line"><span class="preprocessor">#define GAIXW_OPENGL_MINOR 2</span></div><div class="line"><span class="preprocessor">#define GAIXW_IMPLEMENTATION</span></div><div class="line"><span class="preprocessor">#include &lt;gai_xwindow.h&gt;</span></div></div><!-- fragment --> <dl class="section author"><dt>Author</dt><dd>Andreas Gaida </dd></dl>
 <dl class="section date"><dt>Date</dt><dd>25.04.2017 </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a href="https://github.com/LostinAllThatCode/libgai">https://github.com/LostinAllThatCode/libgai</a> </dd></dl>
 </div><hr/><h2 class="groupheader">Class Documentation</h2>
+<a name="uniongaixw__platform" id="uniongaixw__platform"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#uniongaixw__platform">&#9670;&nbsp;</a></span>gaixw_platform</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">union gaixw_platform</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="textblock"></div><div class="dynheader">
+Collaboration diagram for gaixw_platform:</div>
+<div class="dyncontent">
+<div class="center"><img src="uniongaixw__platform__coll__graph.png" border="0" usemap="#gaixw__platform_coll__map" alt="Collaboration graph"/></div>
+<map name="gaixw__platform_coll__map" id="gaixw__platform_coll__map">
+<area shape="rect" id="node2" href="gai__xwindow_8h.html#structgaixw__platform_1_1_l_i_n_u_x" title="gaixw_platform::LINUX" alt="" coords="5,5,139,29"/>
+<area shape="rect" id="node3" href="gai__xwindow_8h.html#structgaixw__platform_1_1_w_i_n_d_o_w_s" title="gaixw_platform::WINDOWS" alt="" coords="163,5,319,29"/>
+</map>
+<center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
+<table class="fieldtable">
+<tr><th colspan="3">Class Members</th></tr>
+<tr><td class="fieldtype">
+<a id="aeaf4e334f8114cb2ea5bb7bb4db932c7"></a>struct <a class="el" href="gai__xwindow_8h.html#structgaixw__platform_1_1_l_i_n_u_x">LINUX</a></td>
+<td class="fieldname">
+linux</td>
+<td class="fielddoc">
+</td></tr>
+<tr><td class="fieldtype">
+<a id="a414771117594e590710593e85c5feeab"></a>struct <a class="el" href="gai__xwindow_8h.html#structgaixw__platform_1_1_w_i_n_d_o_w_s">WINDOWS</a></td>
+<td class="fieldname">
+win32</td>
+<td class="fielddoc">
+</td></tr>
+</table>
+
+</div>
+</div>
+<a name="structgaixw__platform_1_1_w_i_n_d_o_w_s" id="structgaixw__platform_1_1_w_i_n_d_o_w_s"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#structgaixw__platform_1_1_w_i_n_d_o_w_s">&#9670;&nbsp;</a></span>gaixw_platform::WINDOWS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct gaixw_platform::WINDOWS</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="textblock"></div><table class="fieldtable">
+<tr><th colspan="3">Class Members</th></tr>
+<tr><td class="fieldtype">
+<a id="a7d43133ae17f29830ae5c8b8aba74b28"></a>const char *</td>
+<td class="fieldname">
+classname</td>
+<td class="fielddoc">
+</td></tr>
+<tr><td class="fieldtype">
+<a id="a97f0ce74778809679f008d579c5bb0ce"></a>HDC</td>
+<td class="fieldname">
+hdc</td>
+<td class="fielddoc">
+</td></tr>
+<tr><td class="fieldtype">
+<a id="ae140b6b26127c3f9dab085854229ea43"></a>HWND</td>
+<td class="fieldname">
+hwnd</td>
+<td class="fielddoc">
+</td></tr>
+<tr><td class="fieldtype">
+<a id="aa67a9cf5ac00f38a42ab21be99024b2c"></a>HINSTANCE</td>
+<td class="fieldname">
+instance</td>
+<td class="fielddoc">
+</td></tr>
+<tr><td class="fieldtype">
+<a id="a38273138bcef4654441804c28e5d1576"></a>WINDOWPLACEMENT</td>
+<td class="fieldname">
+position</td>
+<td class="fielddoc">
+</td></tr>
+</table>
+
+</div>
+</div>
+<a name="structgaixw__platform_1_1_l_i_n_u_x" id="structgaixw__platform_1_1_l_i_n_u_x"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#structgaixw__platform_1_1_l_i_n_u_x">&#9670;&nbsp;</a></span>gaixw_platform::LINUX</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct gaixw_platform::LINUX</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="textblock"></div><table class="fieldtable">
+<tr><th colspan="3">Class Members</th></tr>
+<tr><td class="fieldtype">
+<a id="a77b180a054dbb37600a2900bfd966a74"></a>Display *</td>
+<td class="fieldname">
+display</td>
+<td class="fielddoc">
+</td></tr>
+<tr><td class="fieldtype">
+<a id="ad65943f512f916a117371b38289e1792"></a>Visual *</td>
+<td class="fieldname">
+visual</td>
+<td class="fielddoc">
+</td></tr>
+<tr><td class="fieldtype">
+<a id="abbf5ab09ddf03c12f7c6232849d9599e"></a>Window *</td>
+<td class="fieldname">
+window</td>
+<td class="fielddoc">
+</td></tr>
+</table>
+
+</div>
+</div>
 <a name="structgaixw__frametime" id="structgaixw__frametime"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#structgaixw__frametime">&#9670;&nbsp;</a></span>gaixw_frametime</h2>
 
@@ -543,8 +669,15 @@ x11</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<div class="textblock"></div><table class="fieldtable">
+<div class="textblock"><dl><dt><b>Examples: </b></dt><dd><a class="el" href="xwindow_0Copengl_win32_0Cmain_8cpp-example.html#_a2">xwindow\opengl_win32\main.cpp</a>.</dd>
+</dl></div><table class="fieldtable">
 <tr><th colspan="3">Class Members</th></tr>
+<tr><td class="fieldtype">
+<a id="a57b851c54ec901a4d6c0882db90a5ef6"></a>void *</td>
+<td class="fieldname">
+context</td>
+<td class="fielddoc">
+</td></tr>
 <tr><td class="fieldtype">
 <a id="a18b52caa6925c214c13c321c474e99d1"></a>char *</td>
 <td class="fieldname">
@@ -659,120 +792,6 @@ __ignored</td>
 <a id="adc5e0978b05f16ef33923e2ef55b323c"></a>void *</td>
 <td class="fieldname">
 __ignored</td>
-<td class="fielddoc">
-</td></tr>
-</table>
-
-</div>
-</div>
-<a name="uniongaixw__platform" id="uniongaixw__platform"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#uniongaixw__platform">&#9670;&nbsp;</a></span>gaixw_platform</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">union gaixw_platform</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<div class="textblock"></div><div class="dynheader">
-Collaboration diagram for gaixw_platform:</div>
-<div class="dyncontent">
-<div class="center"><img src="uniongaixw__platform__coll__graph.png" border="0" usemap="#gaixw__platform_coll__map" alt="Collaboration graph"/></div>
-<map name="gaixw__platform_coll__map" id="gaixw__platform_coll__map">
-<area shape="rect" id="node2" href="gai__xwindow_8h.html#structgaixw__platform_1_1_l_i_n_u_x" title="gaixw_platform::LINUX" alt="" coords="5,5,139,29"/>
-<area shape="rect" id="node3" href="gai__xwindow_8h.html#structgaixw__platform_1_1_w_i_n_d_o_w_s" title="gaixw_platform::WINDOWS" alt="" coords="163,5,319,29"/>
-</map>
-<center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
-<table class="fieldtable">
-<tr><th colspan="3">Class Members</th></tr>
-<tr><td class="fieldtype">
-<a id="aeaf4e334f8114cb2ea5bb7bb4db932c7"></a>struct <a class="el" href="gai__xwindow_8h.html#structgaixw__platform_1_1_l_i_n_u_x">LINUX</a></td>
-<td class="fieldname">
-linux</td>
-<td class="fielddoc">
-</td></tr>
-<tr><td class="fieldtype">
-<a id="a414771117594e590710593e85c5feeab"></a>struct <a class="el" href="gai__xwindow_8h.html#structgaixw__platform_1_1_w_i_n_d_o_w_s">WINDOWS</a></td>
-<td class="fieldname">
-win32</td>
-<td class="fielddoc">
-</td></tr>
-</table>
-
-</div>
-</div>
-<a name="structgaixw__platform_1_1_w_i_n_d_o_w_s" id="structgaixw__platform_1_1_w_i_n_d_o_w_s"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#structgaixw__platform_1_1_w_i_n_d_o_w_s">&#9670;&nbsp;</a></span>gaixw_platform::WINDOWS</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">struct gaixw_platform::WINDOWS</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<div class="textblock"></div><table class="fieldtable">
-<tr><th colspan="3">Class Members</th></tr>
-<tr><td class="fieldtype">
-<a id="a97f0ce74778809679f008d579c5bb0ce"></a>HDC</td>
-<td class="fieldname">
-hdc</td>
-<td class="fielddoc">
-</td></tr>
-<tr><td class="fieldtype">
-<a id="ae140b6b26127c3f9dab085854229ea43"></a>HWND</td>
-<td class="fieldname">
-hwnd</td>
-<td class="fielddoc">
-</td></tr>
-<tr><td class="fieldtype">
-<a id="aa67a9cf5ac00f38a42ab21be99024b2c"></a>HINSTANCE</td>
-<td class="fieldname">
-instance</td>
-<td class="fielddoc">
-</td></tr>
-<tr><td class="fieldtype">
-<a id="a38273138bcef4654441804c28e5d1576"></a>WINDOWPLACEMENT</td>
-<td class="fieldname">
-position</td>
-<td class="fielddoc">
-</td></tr>
-</table>
-
-</div>
-</div>
-<a name="structgaixw__platform_1_1_l_i_n_u_x" id="structgaixw__platform_1_1_l_i_n_u_x"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#structgaixw__platform_1_1_l_i_n_u_x">&#9670;&nbsp;</a></span>gaixw_platform::LINUX</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">struct gaixw_platform::LINUX</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<div class="textblock"></div><table class="fieldtable">
-<tr><th colspan="3">Class Members</th></tr>
-<tr><td class="fieldtype">
-<a id="a77b180a054dbb37600a2900bfd966a74"></a>Display *</td>
-<td class="fieldname">
-display</td>
-<td class="fielddoc">
-</td></tr>
-<tr><td class="fieldtype">
-<a id="ad65943f512f916a117371b38289e1792"></a>Visual *</td>
-<td class="fieldname">
-visual</td>
-<td class="fielddoc">
-</td></tr>
-<tr><td class="fieldtype">
-<a id="abbf5ab09ddf03c12f7c6232849d9599e"></a>Window *</td>
-<td class="fieldname">
-window</td>
 <td class="fielddoc">
 </td></tr>
 </table>
@@ -1085,7 +1104,7 @@ renderer</td>
   </table>
   </dd>
 </dl>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="xwindow_0Cgdi_win32_0Cmain_8cpp-example.html#a9">xwindow\gdi_win32\main.cpp</a>, and <a class="el" href="xwindow_0Copengl_win32_0Cmain_8cpp-example.html#a10">xwindow\opengl_win32\main.cpp</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="xwindow_0Cgdi_win32_0Cmain_8cpp-example.html#a9">xwindow\gdi_win32\main.cpp</a>, and <a class="el" href="xwindow_0Copengl_win32_0Cmain_8cpp-example.html#a18">xwindow\opengl_win32\main.cpp</a>.</dd>
 </dl>
 </div>
 </div>
@@ -1119,12 +1138,7 @@ renderer</td>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">window</td><td>A pointer to a <a class="el" href="gai__xwindow_8h.html#structgaixw__context">gaixw_context</a> structure </td></tr>
-    <tr><td class="paramname">attrib</td><td>Attribute flags as specified in <a class="el" href="gai__xwindow_8h.html#a52d65318fd4fb0d358385d67f156d00c">gaixw_renderer_flags</a><br />
-<a class="el" href="gai__xwindow_8h.html#a52d65318fd4fb0d358385d67f156d00ca024bb28b1d09e6dabb43cca1db088cd1">gaixwFlagsMinimized</a><br />
-<a class="el" href="gai__xwindow_8h.html#a52d65318fd4fb0d358385d67f156d00ca4c1b948394dbf097f6007e01ded11242">gaixwFlagsMaximized</a><br />
-<a class="el" href="gai__xwindow_8h.html#a52d65318fd4fb0d358385d67f156d00ca1b5d286481622b104b8dd24bf3114cd2">gaixwFlagsFullscreen</a><br />
-<a class="el" href="gai__xwindow_8h.html#a52d65318fd4fb0d358385d67f156d00ca39f9d8a5253caf225480a80d1b52e4c2">gaixwFlagsVSYNC</a><br />
- </td></tr>
+    <tr><td class="paramname">attrib</td><td>Attribute flags as specified in <a class="el" href="gai__xwindow_8h.html#a52d65318fd4fb0d358385d67f156d00c">gaixw_renderer_flags</a> (<a class="el" href="gai__xwindow_8h.html#a52d65318fd4fb0d358385d67f156d00ca024bb28b1d09e6dabb43cca1db088cd1">gaixwFlagsMinimized</a>, <a class="el" href="gai__xwindow_8h.html#a52d65318fd4fb0d358385d67f156d00ca4c1b948394dbf097f6007e01ded11242">gaixwFlagsMaximized</a>, <a class="el" href="gai__xwindow_8h.html#a52d65318fd4fb0d358385d67f156d00ca1b5d286481622b104b8dd24bf3114cd2">gaixwFlagsFullscreen</a>, <a class="el" href="gai__xwindow_8h.html#a52d65318fd4fb0d358385d67f156d00ca39f9d8a5253caf225480a80d1b52e4c2">gaixwFlagsVSYNC</a>)</td></tr>
   </table>
   </dd>
 </dl>
@@ -1178,7 +1192,7 @@ renderer</td>
 <tr>
 <th align="left">Return Code </th><th align="left">Description  </th></tr>
 <tr>
-<td align="left">0 </td><td align="left">Null ( function with that name not found ) </td></tr>
+<td align="left">0 </td><td align="left">Null Pointer ( function with that name not found ) </td></tr>
 <tr>
 <td align="left">Pointer </td><td align="left">A pointer to functions address </td></tr>
 </table>
@@ -1784,7 +1798,7 @@ renderer</td>
 <td align="left">0 </td><td align="left">Failure </td></tr>
 </table>
 </dd></dl>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="xwindow_0Copengl_win32_0Cmain_8cpp-example.html#a3">xwindow\opengl_win32\main.cpp</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="xwindow_0Copengl_win32_0Cmain_8cpp-example.html#a10">xwindow\opengl_win32\main.cpp</a>.</dd>
 </dl>
 </div>
 </div>
@@ -1846,7 +1860,7 @@ renderer</td>
   </table>
   </dd>
 </dl>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="xwindow_0Copengl_win32_0Cmain_8cpp-example.html#a9">xwindow\opengl_win32\main.cpp</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="xwindow_0Copengl_win32_0Cmain_8cpp-example.html#a17">xwindow\opengl_win32\main.cpp</a>.</dd>
 </dl>
 </div>
 </div>
@@ -1873,7 +1887,8 @@ renderer</td>
   </table>
   </dd>
 </dl>
-
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="xwindow_0Copengl_win32_0Cmain_8cpp-example.html#a11">xwindow\opengl_win32\main.cpp</a>.</dd>
+</dl>
 </div>
 </div>
 <a id="a2f1b687718407be2be1eaf2646405c2c"></a>
@@ -1901,7 +1916,7 @@ renderer</td>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Time passed since last frame in seconds </dd></dl>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="xwindow_0Cgdi_win32_0Cmain_8cpp-example.html#a8">xwindow\gdi_win32\main.cpp</a>, and <a class="el" href="xwindow_0Copengl_win32_0Cmain_8cpp-example.html#a4">xwindow\opengl_win32\main.cpp</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="xwindow_0Cgdi_win32_0Cmain_8cpp-example.html#a8">xwindow\gdi_win32\main.cpp</a>, and <a class="el" href="xwindow_0Copengl_win32_0Cmain_8cpp-example.html#a12">xwindow\opengl_win32\main.cpp</a>.</dd>
 </dl>
 </div>
 </div>
@@ -1911,7 +1926,7 @@ renderer</td>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="gai__xwindow_8h.html">gai_xwindow.h</a></li>
-    <li class="footer">Generated on Thu Apr 27 2017 12:44:40 for libgai by
+    <li class="footer">Generated on Mon May 1 2017 19:16:48 for libgai by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

@@ -6,18 +6,23 @@ Requests a window for all currently supported platforms.
 
 
 {\ttfamily \#include $<$assert.\+h$>$}\newline
-{\ttfamily \#include $<$string.\+h$>$}\newline
 {\ttfamily \#include $<$windows.\+h$>$}\newline
 {\ttfamily \#include $<$X11/\+Xlib.\+h$>$}\newline
 Include dependency graph for gai\+\_\+xwindow.\+h\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[width=334pt]{gai__xwindow_8h__incl}
+\includegraphics[width=271pt]{gai__xwindow_8h__incl}
 \end{center}
 \end{figure}
 \subsection*{Classes}
 \begin{DoxyCompactItemize}
+\item 
+union \hyperlink{gai__xwindow_8h_uniongaixw__platform}{gaixw\+\_\+platform}
+\item 
+struct \hyperlink{gai__xwindow_8h_structgaixw__platform_1_1_w_i_n_d_o_w_s}{gaixw\+\_\+platform\+::\+W\+I\+N\+D\+O\+WS}
+\item 
+struct \hyperlink{gai__xwindow_8h_structgaixw__platform_1_1_l_i_n_u_x}{gaixw\+\_\+platform\+::\+L\+I\+N\+UX}
 \item 
 struct \hyperlink{gai__xwindow_8h_structgaixw__frametime}{gaixw\+\_\+frametime}
 \item 
@@ -36,12 +41,6 @@ struct \hyperlink{gai__xwindow_8h_structgaixw__graphics_1_1_x11}{gaixw\+\_\+grap
 struct \hyperlink{gai__xwindow_8h_structgaixw__graphics_1_1_g_d_i}{gaixw\+\_\+graphics\+::\+G\+DI}
 \item 
 struct \hyperlink{gai__xwindow_8h_structgaixw__graphics_1_1_v_u_l_c_a_n}{gaixw\+\_\+graphics\+::\+V\+U\+L\+C\+AN}
-\item 
-union \hyperlink{gai__xwindow_8h_uniongaixw__platform}{gaixw\+\_\+platform}
-\item 
-struct \hyperlink{gai__xwindow_8h_structgaixw__platform_1_1_w_i_n_d_o_w_s}{gaixw\+\_\+platform\+::\+W\+I\+N\+D\+O\+WS}
-\item 
-struct \hyperlink{gai__xwindow_8h_structgaixw__platform_1_1_l_i_n_u_x}{gaixw\+\_\+platform\+::\+L\+I\+N\+UX}
 \item 
 struct \hyperlink{gai__xwindow_8h_structgaixw__renderer}{gaixw\+\_\+renderer}
 \item 
@@ -126,6 +125,12 @@ enum \hyperlink{gai__xwindow_8h_a52d65318fd4fb0d358385d67f156d00c}{gaixw\+\_\+re
 \begin{DoxyCompactList}\small\item\em Current released state of the specified keyboard key. \end{DoxyCompactList}\item 
 \hyperlink{gai__xwindow_8h_ab41ae714bb16012af56329f9032e6d16}{G\+A\+I\+X\+W\+\_\+\+A\+PI} void $\ast$ \hyperlink{gai__xwindow_8h_afb8573bf3e47bef617b0c575cabd56b1}{gaixw\+\_\+\+Get\+Proc} (\hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} $\ast$window, const char $\ast$name)
 \begin{DoxyCompactList}\small\item\em Gets the procedure\textquotesingle{}s memory address for the specified function name. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{gai__xwindow_8h_abc9e11ebe6a967f9f3b3354974bd6a47}\label{gai__xwindow_8h_abc9e11ebe6a967f9f3b3354974bd6a47}} 
+static \hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} {\bfseries \+\_\+gaixw\+\_\+null\+\_\+context\+\_\+}
+\end{DoxyCompactItemize}
 
 
 \subsection{Detailed Description}
@@ -214,13 +219,13 @@ MyWindowMessageHandler(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     retval = \hyperlink{gai__xwindow_8h_adec8bb998b6861c4d239b25634c8eb55}{gaixw\_Init}(&window, \textcolor{stringliteral}{"opengl example"}, 640, 480);
     \textcolor{keywordflow}{if} (retval != 1) \textcolor{keywordflow}{return} retval;
 
-    printf(\textcolor{stringliteral}{"Vendor: %s, Version: %s, Renderer: %s, Shading Language Version: %s, OpenGL Context: %p\(\backslash\)n"},
-           window.\hyperlink{gai__xwindow_8h_a5984d461e227d9028db4d9327bc9c2c4}{renderer}.interface.opengl.vendor, window.\hyperlink{gai__xwindow_8h_a5984d461e227d9028db4d9327bc9c2c4}{renderer}.interface.opengl.
-      version, window.\hyperlink{gai__xwindow_8h_a5984d461e227d9028db4d9327bc9c2c4}{renderer}.interface.opengl.renderer,
-           window.\hyperlink{gai__xwindow_8h_a5984d461e227d9028db4d9327bc9c2c4}{renderer}.interface.opengl.shading\_language\_version, window.
-      \hyperlink{gai__xwindow_8h_a5984d461e227d9028db4d9327bc9c2c4}{renderer}.interface.opengl.context);
+    \hyperlink{gai__xwindow_8h_structgaixw__graphics_1_1_o_p_e_n_g_l}{gaixw\_graphics::OPENGL} ogl = window.\hyperlink{gai__xwindow_8h_a5984d461e227d9028db4d9327bc9c2c4}{renderer}.
+      \hyperlink{gai__xwindow_8h_a9fc6dc47652f101ae6dd13b6348474f8}{graphics}.\hyperlink{gai__xwindow_8h_a7e427fc59e9f524b1f8f87532e46992e}{opengl};
+    printf(\textcolor{stringliteral}{"Vendor: %s, Version: %s, Renderer: %s, Shading Language Version: %s\(\backslash\)n"},
+           ogl.vendor, ogl.version, ogl.renderer, ogl.shading\_language\_version);
 
     \hyperlink{gai__xwindow_8h_a51eafe897c3737f146cda3c50884b9dd}{gaixw\_SetVerticalSync}(&window, 1);
+    \hyperlink{gai__xwindow_8h_ab75a5f7466b10622fab1a1cdb443b447}{gaixw\_ToggleFullscreen}(&window);
     glClearColor(0.f, 0.f, 0.f, 1.f);
     \textcolor{keywordflow}{for} (;;)
     \{
@@ -266,6 +271,90 @@ Andreas Gaida
 
 
 \subsection{Class Documentation}
+\index{gaixw\+\_\+platform@{gaixw\+\_\+platform}}\label{uniongaixw__platform}
+\Hypertarget{gai__xwindow_8h_uniongaixw__platform}
+\subsubsection{union gaixw\+\_\+platform}
+
+
+Collaboration diagram for gaixw\+\_\+platform\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=316pt]{uniongaixw__platform__coll__graph}
+\end{center}
+\end{figure}
+\begin{DoxyFields}{Class Members}
+\mbox{\Hypertarget{gai__xwindow_8h_aeaf4e334f8114cb2ea5bb7bb4db932c7}\label{gai__xwindow_8h_aeaf4e334f8114cb2ea5bb7bb4db932c7}} 
+struct \hyperlink{gai__xwindow_8h_structgaixw__platform_1_1_l_i_n_u_x}{LINUX}&
+linux&
+\\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_a414771117594e590710593e85c5feeab}\label{gai__xwindow_8h_a414771117594e590710593e85c5feeab}} 
+struct \hyperlink{gai__xwindow_8h_structgaixw__platform_1_1_w_i_n_d_o_w_s}{WINDOWS}&
+win32&
+\\
+\hline
+
+\end{DoxyFields}
+\index{gaixw\+\_\+platform\+::\+W\+I\+N\+D\+O\+WS@{gaixw\+\_\+platform\+::\+W\+I\+N\+D\+O\+WS}}\label{structgaixw__platform_1_1_w_i_n_d_o_w_s}
+\Hypertarget{gai__xwindow_8h_structgaixw__platform_1_1_w_i_n_d_o_w_s}
+\subsubsection{struct gaixw\+\_\+platform\+:\+:W\+I\+N\+D\+O\+WS}
+\begin{DoxyFields}{Class Members}
+\mbox{\Hypertarget{gai__xwindow_8h_a7d43133ae17f29830ae5c8b8aba74b28}\label{gai__xwindow_8h_a7d43133ae17f29830ae5c8b8aba74b28}} 
+const char $\ast$&
+classname&
+\\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_a97f0ce74778809679f008d579c5bb0ce}\label{gai__xwindow_8h_a97f0ce74778809679f008d579c5bb0ce}} 
+HDC&
+hdc&
+\\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_ae140b6b26127c3f9dab085854229ea43}\label{gai__xwindow_8h_ae140b6b26127c3f9dab085854229ea43}} 
+HWND&
+hwnd&
+\\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_aa67a9cf5ac00f38a42ab21be99024b2c}\label{gai__xwindow_8h_aa67a9cf5ac00f38a42ab21be99024b2c}} 
+HINSTANCE&
+instance&
+\\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_a38273138bcef4654441804c28e5d1576}\label{gai__xwindow_8h_a38273138bcef4654441804c28e5d1576}} 
+WINDOWPLACEMENT&
+position&
+\\
+\hline
+
+\end{DoxyFields}
+\index{gaixw\+\_\+platform\+::\+L\+I\+N\+UX@{gaixw\+\_\+platform\+::\+L\+I\+N\+UX}}\label{structgaixw__platform_1_1_l_i_n_u_x}
+\Hypertarget{gai__xwindow_8h_structgaixw__platform_1_1_l_i_n_u_x}
+\subsubsection{struct gaixw\+\_\+platform\+:\+:L\+I\+N\+UX}
+\begin{DoxyFields}{Class Members}
+\mbox{\Hypertarget{gai__xwindow_8h_a77b180a054dbb37600a2900bfd966a74}\label{gai__xwindow_8h_a77b180a054dbb37600a2900bfd966a74}} 
+Display $\ast$&
+display&
+\\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_ad65943f512f916a117371b38289e1792}\label{gai__xwindow_8h_ad65943f512f916a117371b38289e1792}} 
+Visual $\ast$&
+visual&
+\\
+\hline
+
+\mbox{\Hypertarget{gai__xwindow_8h_abbf5ab09ddf03c12f7c6232849d9599e}\label{gai__xwindow_8h_abbf5ab09ddf03c12f7c6232849d9599e}} 
+Window $\ast$&
+window&
+\\
+\hline
+
+\end{DoxyFields}
 \index{gaixw\+\_\+frametime@{gaixw\+\_\+frametime}}\label{structgaixw__frametime}
 \Hypertarget{gai__xwindow_8h_structgaixw__frametime}
 \subsubsection{struct gaixw\+\_\+frametime}
@@ -463,7 +552,16 @@ x11&
 \index{gaixw\+\_\+graphics\+::\+O\+P\+E\+N\+GL@{gaixw\+\_\+graphics\+::\+O\+P\+E\+N\+GL}}\label{structgaixw__graphics_1_1_o_p_e_n_g_l}
 \Hypertarget{gai__xwindow_8h_structgaixw__graphics_1_1_o_p_e_n_g_l}
 \subsubsection{struct gaixw\+\_\+graphics\+:\+:O\+P\+E\+N\+GL}
+\begin{Desc}
+\item[Examples\+: ]\par
+\hyperlink{xwindow_0Copengl_win32_0Cmain_8cpp-example}{xwindow\textbackslash{}opengl\+\_\+win32\textbackslash{}main.\+cpp}.\end{Desc}
 \begin{DoxyFields}{Class Members}
+\mbox{\Hypertarget{gai__xwindow_8h_a57b851c54ec901a4d6c0882db90a5ef6}\label{gai__xwindow_8h_a57b851c54ec901a4d6c0882db90a5ef6}} 
+void $\ast$&
+context&
+\\
+\hline
+
 \mbox{\Hypertarget{gai__xwindow_8h_a18b52caa6925c214c13c321c474e99d1}\label{gai__xwindow_8h_a18b52caa6925c214c13c321c474e99d1}} 
 char $\ast$&
 renderer&
@@ -529,84 +627,6 @@ void $\ast$&
 \mbox{\Hypertarget{gai__xwindow_8h_adc5e0978b05f16ef33923e2ef55b323c}\label{gai__xwindow_8h_adc5e0978b05f16ef33923e2ef55b323c}} 
 void $\ast$&
 \_\_ignored&
-\\
-\hline
-
-\end{DoxyFields}
-\index{gaixw\+\_\+platform@{gaixw\+\_\+platform}}\label{uniongaixw__platform}
-\Hypertarget{gai__xwindow_8h_uniongaixw__platform}
-\subsubsection{union gaixw\+\_\+platform}
-
-
-Collaboration diagram for gaixw\+\_\+platform\+:\nopagebreak
-\begin{figure}[H]
-\begin{center}
-\leavevmode
-\includegraphics[width=316pt]{uniongaixw__platform__coll__graph}
-\end{center}
-\end{figure}
-\begin{DoxyFields}{Class Members}
-\mbox{\Hypertarget{gai__xwindow_8h_aeaf4e334f8114cb2ea5bb7bb4db932c7}\label{gai__xwindow_8h_aeaf4e334f8114cb2ea5bb7bb4db932c7}} 
-struct \hyperlink{gai__xwindow_8h_structgaixw__platform_1_1_l_i_n_u_x}{LINUX}&
-linux&
-\\
-\hline
-
-\mbox{\Hypertarget{gai__xwindow_8h_a414771117594e590710593e85c5feeab}\label{gai__xwindow_8h_a414771117594e590710593e85c5feeab}} 
-struct \hyperlink{gai__xwindow_8h_structgaixw__platform_1_1_w_i_n_d_o_w_s}{WINDOWS}&
-win32&
-\\
-\hline
-
-\end{DoxyFields}
-\index{gaixw\+\_\+platform\+::\+W\+I\+N\+D\+O\+WS@{gaixw\+\_\+platform\+::\+W\+I\+N\+D\+O\+WS}}\label{structgaixw__platform_1_1_w_i_n_d_o_w_s}
-\Hypertarget{gai__xwindow_8h_structgaixw__platform_1_1_w_i_n_d_o_w_s}
-\subsubsection{struct gaixw\+\_\+platform\+:\+:W\+I\+N\+D\+O\+WS}
-\begin{DoxyFields}{Class Members}
-\mbox{\Hypertarget{gai__xwindow_8h_a97f0ce74778809679f008d579c5bb0ce}\label{gai__xwindow_8h_a97f0ce74778809679f008d579c5bb0ce}} 
-HDC&
-hdc&
-\\
-\hline
-
-\mbox{\Hypertarget{gai__xwindow_8h_ae140b6b26127c3f9dab085854229ea43}\label{gai__xwindow_8h_ae140b6b26127c3f9dab085854229ea43}} 
-HWND&
-hwnd&
-\\
-\hline
-
-\mbox{\Hypertarget{gai__xwindow_8h_aa67a9cf5ac00f38a42ab21be99024b2c}\label{gai__xwindow_8h_aa67a9cf5ac00f38a42ab21be99024b2c}} 
-HINSTANCE&
-instance&
-\\
-\hline
-
-\mbox{\Hypertarget{gai__xwindow_8h_a38273138bcef4654441804c28e5d1576}\label{gai__xwindow_8h_a38273138bcef4654441804c28e5d1576}} 
-WINDOWPLACEMENT&
-position&
-\\
-\hline
-
-\end{DoxyFields}
-\index{gaixw\+\_\+platform\+::\+L\+I\+N\+UX@{gaixw\+\_\+platform\+::\+L\+I\+N\+UX}}\label{structgaixw__platform_1_1_l_i_n_u_x}
-\Hypertarget{gai__xwindow_8h_structgaixw__platform_1_1_l_i_n_u_x}
-\subsubsection{struct gaixw\+\_\+platform\+:\+:L\+I\+N\+UX}
-\begin{DoxyFields}{Class Members}
-\mbox{\Hypertarget{gai__xwindow_8h_a77b180a054dbb37600a2900bfd966a74}\label{gai__xwindow_8h_a77b180a054dbb37600a2900bfd966a74}} 
-Display $\ast$&
-display&
-\\
-\hline
-
-\mbox{\Hypertarget{gai__xwindow_8h_ad65943f512f916a117371b38289e1792}\label{gai__xwindow_8h_ad65943f512f916a117371b38289e1792}} 
-Visual $\ast$&
-visual&
-\\
-\hline
-
-\mbox{\Hypertarget{gai__xwindow_8h_abbf5ab09ddf03c12f7c6232849d9599e}\label{gai__xwindow_8h_abbf5ab09ddf03c12f7c6232849d9599e}} 
-Window $\ast$&
-window&
 \\
 \hline
 
@@ -901,12 +921,7 @@ Current attribute state of the window.
 \begin{DoxyParams}{Parameters}
 {\em window} & A pointer to a \hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} structure \\
 \hline
-{\em attrib} & Attribute flags as specified in \hyperlink{gai__xwindow_8h_a52d65318fd4fb0d358385d67f156d00c}{gaixw\+\_\+renderer\+\_\+flags}~\newline
-\hyperlink{gai__xwindow_8h_a52d65318fd4fb0d358385d67f156d00ca024bb28b1d09e6dabb43cca1db088cd1}{gaixw\+Flags\+Minimized}~\newline
-\hyperlink{gai__xwindow_8h_a52d65318fd4fb0d358385d67f156d00ca4c1b948394dbf097f6007e01ded11242}{gaixw\+Flags\+Maximized}~\newline
-\hyperlink{gai__xwindow_8h_a52d65318fd4fb0d358385d67f156d00ca1b5d286481622b104b8dd24bf3114cd2}{gaixw\+Flags\+Fullscreen}~\newline
-\hyperlink{gai__xwindow_8h_a52d65318fd4fb0d358385d67f156d00ca39f9d8a5253caf225480a80d1b52e4c2}{gaixw\+Flags\+V\+S\+Y\+NC}~\newline
- \\
+{\em attrib} & Attribute flags as specified in \hyperlink{gai__xwindow_8h_a52d65318fd4fb0d358385d67f156d00c}{gaixw\+\_\+renderer\+\_\+flags} (\hyperlink{gai__xwindow_8h_a52d65318fd4fb0d358385d67f156d00ca024bb28b1d09e6dabb43cca1db088cd1}{gaixw\+Flags\+Minimized}, \hyperlink{gai__xwindow_8h_a52d65318fd4fb0d358385d67f156d00ca4c1b948394dbf097f6007e01ded11242}{gaixw\+Flags\+Maximized}, \hyperlink{gai__xwindow_8h_a52d65318fd4fb0d358385d67f156d00ca1b5d286481622b104b8dd24bf3114cd2}{gaixw\+Flags\+Fullscreen}, \hyperlink{gai__xwindow_8h_a52d65318fd4fb0d358385d67f156d00ca39f9d8a5253caf225480a80d1b52e4c2}{gaixw\+Flags\+V\+S\+Y\+NC})\\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
@@ -953,7 +968,7 @@ Gets the procedure\textquotesingle{}s memory address for the specified function 
 \hline
 \rowcolor{\tableheadbgcolor}\textbf{ Return Code }&\textbf{ Description  }\\\cline{1-2}
 \endhead
-0 &Null ( function with that name not found ) \\\cline{1-2}
+0 &Null Pointer ( function with that name not found ) \\\cline{1-2}
 Pointer &A pointer to functions address \\\cline{1-2}
 \end{longtabu}
 
@@ -1481,6 +1496,9 @@ Toggles between fullscreen mode and normal mode.
 {\em window} & A pointer to a \hyperlink{gai__xwindow_8h_structgaixw__context}{gaixw\+\_\+context} structure \\
 \hline
 \end{DoxyParams}
+\begin{Desc}
+\item[Examples\+: ]\par
+\hyperlink{xwindow_0Copengl_win32_0Cmain_8cpp-example}{xwindow\textbackslash{}opengl\+\_\+win32\textbackslash{}main.\+cpp}.\end{Desc}
 \mbox{\Hypertarget{gai__xwindow_8h_a2f1b687718407be2be1eaf2646405c2c}\label{gai__xwindow_8h_a2f1b687718407be2be1eaf2646405c2c}} 
 \index{gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}!gaixw\+\_\+\+Update@{gaixw\+\_\+\+Update}}
 \index{gaixw\+\_\+\+Update@{gaixw\+\_\+\+Update}!gai\+\_\+xwindow.\+h@{gai\+\_\+xwindow.\+h}}

@@ -2,7 +2,7 @@
 REM TODO: Check if -EHa- causes the crash handling to not work properly anymore!
 
 set libgai=..\gai
-set compilerflags=-nologo -fp:fast -Gm- -GR- -Od -MTd -EHa- -Z7 -WX -wd4100 -wd4201 -I%libgai%
+set compilerflags=-nologo -fp:fast -Gm- -GR- -O2 -MTd -EHa- -Z7 -WX -wd4100 -wd4201 -I%libgai%
 set linkerflags=-incremental:no -opt:ref
 
 del *.pdb > NUL 2> NUL
@@ -19,7 +19,7 @@ if "%1"=="static" (
 	REM cl %compilerflags% opengl_win32.cc /link %linkerflags%
 	cl %compilerflags% renderer.cc /LD /link /OUT:renderer.dll -PDB:renderer%random%.pdb -incremental:no -opt:ref
 	cl %compilerflags% renderer_test.cc /link %linkerflags%
-	REM	cl %compilerflags% test.cpp /link %linkerflags%
+	cl %compilerflags% test.cpp /link %linkerflags%
 
 	goto :end
 )

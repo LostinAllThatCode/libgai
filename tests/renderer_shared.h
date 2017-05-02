@@ -7,6 +7,7 @@ struct loaded_bitmap
 	int width;
 	int height;
 	void *handle;
+	int is_font_texture;
 };
 
 #define PLATFORM_API_LOAD_BITMAP(name) void name(loaded_bitmap *bitmap, char *filename)
@@ -15,7 +16,6 @@ typedef PLATFORM_API_LOAD_BITMAP(platform_load_bitmap_fn);
 struct platform
 {
 	platform_load_bitmap_fn *LoadBitmap;
-
 };
 
 struct platform_api

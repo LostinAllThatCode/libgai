@@ -7,6 +7,7 @@ var gai__xwindow_8h_uniongaixw__graphics =
       [ "__ignored", "gai__xwindow_8h.html#a9fcae2c56869cdc7660e865661fe3890", null ]
     ] ],
     [ "OPENGL", "gai__xwindow_8h.html#structgaixw__graphics_1_1_o_p_e_n_g_l", [
+      [ "context", "gai__xwindow_8h.html#a57b851c54ec901a4d6c0882db90a5ef6", null ],
       [ "renderer", "gai__xwindow_8h.html#a18b52caa6925c214c13c321c474e99d1", null ],
       [ "shading_language_version", "gai__xwindow_8h.html#a32949e4e4b86395b914ae53b9bab1afb", null ],
       [ "vendor", "gai__xwindow_8h.html#a9b03f901f025802398d954a944690043", null ],

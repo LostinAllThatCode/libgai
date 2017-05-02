@@ -1,42 +1,45 @@
 
-#if 0
-#if _DEBUG
-	#define GAIXW_DEBUG
-#else
+#if 1
 	#define LOG_ASSERT(cond) 	if(cond) {} else WriteToLog(__FILE__, __LINE__, #cond);
 	#define GAIXW_ASSERT(cond) 	LOG_ASSERT(cond)
 	#define GAIRB_ASSERT(cond) 	LOG_ASSERT(cond)
 	#define GAIHR_ASSERT(cond) 	LOG_ASSERT(cond)
 	#define GAIRGL_ASSERT(cond) LOG_ASSERT(cond)
 #endif
-#endif
 
 #include <stdio.h>
 
+#include <windows.h>
 void
 WriteToLog(char *source, unsigned int linenumber, char *line)
 {
+	SYSTEMTIME time;
+	GetLocalTime(&time);
 	FILE *fp = fopen("log.txt", "a+");
 	if (fp)
 	{
-		fprintf(fp, "Assertion failed! %s(%i): %s\n", source, linenumber, line );
+		fprintf(fp, "[%s(%i) %04i.%02i.%02i.%02i.%02i.%02i.%04i] ", source, linenumber, time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds);
+		fprintf(fp, "Assertion failed! >> (%s)\n", line);
 		fclose(fp);
 	}
 }
 
 #include "renderer_shared.h"
 
+#define STB_TRUETYPE_IMPLEMENTATION  // force following include to generate implementation
+#include "stb_truetype.h"
+
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
 #define GAIXW_DEBUG
 #define GAIXW_OPENGL
+#define GAIXW_OPENGL_CORE_PROFILE
 #define GAIXW_IMPLEMENTATION
 #include "gai_xwindow.h"
 
 #define GAIRB_IMPLEMENTATION
 #include "gai_renderbuffer.h"
-
 
 #define GAIRGL_IMPLEMENTATION
 #include "gai_renderer_opengl.h"
@@ -98,6 +101,37 @@ CreateWhiteBitmap(int width, int height)
 	return result;
 }
 
+inline loaded_bitmap
+LoadFontFromFile(const char *ttf_filename)
+{
+	loaded_bitmap result = { 0, 0, 4096, 4096, 0, 1};
+
+	int oversample  = 4;
+	stbtt_pack_context font_context;
+	stbtt_packedchar  characters[255];
+
+	// Load file into temporary buffer
+	unsigned char *font_buffer;
+	long font_buffer_size = 0;
+	FILE *File = fopen(ttf_filename, "rb");
+	fseek(File, 0, SEEK_END);
+	font_buffer_size = ftell(File);
+	rewind(File);
+
+	font_buffer = (unsigned char *) malloc(font_buffer_size);
+	fread(font_buffer, 1, font_buffer_size, File);
+	fclose(File);
+
+	// Create temporary bitmap buffer for the texture
+	result.memory = (unsigned char *) malloc( result.width * result.height );
+
+	stbtt_PackBegin(&font_context, result.memory, result.width, result.height, 0, 1, 0);
+	stbtt_PackSetOversampling(&font_context, oversample, oversample);
+	stbtt_PackFontRange(&font_context, font_buffer, 0, 48, 32, 64, characters);
+	stbtt_PackEnd(&font_context);
+	return result;
+}
+
 int main(int argc, char **argv)
 {
 	platform_api platform = {};
@@ -113,9 +147,9 @@ int main(int argc, char **argv)
 	gaihr_file reloadable_file = {};
 	gaihr_Track(&reloadable_file, "renderer.dll", reloadDLL, 0, gaihr_FlagsDontHandleEvent);
 
-	u32 pbuffersize = 1024;
+	u32 pbuffersize = 1024 * 1024 * 8;
 	u8 *pbuffer = (u8*) VirtualAlloc(0, pbuffersize, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
-	u32 vertex_count_max = (1 << 16) * 2;
+	u32 vertex_count_max = (1 << 16) * 32;
 	gairb_textured_vertex *vbuffer = (gairb_textured_vertex*) VirtualAlloc(0, sizeof(gairb_textured_vertex) * vertex_count_max, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 
 	u32 quad_texture_count = vertex_count_max >> 2;;
@@ -123,9 +157,11 @@ int main(int argc, char **argv)
 
 	loaded_bitmap assets[64] = {};
 	assets[0] = CreateWhiteBitmap(128, 128);
-
+	assets[2] = LoadFontFromFile("C:/windows/fonts/consolab.ttf");
+	
 	gaihr_file texture;
 	gaihr_Track(&texture, "test.jpg", hotreloadtexture, &assets[1]);
+
 
 	platform.assets = assets;
 
@@ -133,6 +169,7 @@ int main(int argc, char **argv)
 	{
 		gaixw_Update(&window);
 		if (!window.is_running) break;
+		//if (window.dt.millis > 17) continue;
 
 		gairb_renderbuffer render_commands = gairb_RenderBuffer(V4(.0f, .0f, .0f, 1.0f), pbuffersize, pbuffer, vertex_count_max, vbuffer, quad_textures, &assets[0]);
 

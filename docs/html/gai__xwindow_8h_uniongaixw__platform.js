@@ -6,6 +6,7 @@ var gai__xwindow_8h_uniongaixw__platform =
       [ "window", "gai__xwindow_8h.html#abbf5ab09ddf03c12f7c6232849d9599e", null ]
     ] ],
     [ "WINDOWS", "gai__xwindow_8h.html#structgaixw__platform_1_1_w_i_n_d_o_w_s", [
+      [ "classname", "gai__xwindow_8h.html#a7d43133ae17f29830ae5c8b8aba74b28", null ],
       [ "hdc", "gai__xwindow_8h.html#a97f0ce74778809679f008d579c5bb0ce", null ],
       [ "hwnd", "gai__xwindow_8h.html#ae140b6b26127c3f9dab085854229ea43", null ],
       [ "instance", "gai__xwindow_8h.html#aa67a9cf5ac00f38a42ab21be99024b2c", null ],

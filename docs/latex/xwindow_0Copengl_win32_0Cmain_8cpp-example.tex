@@ -15,13 +15,13 @@
     retval = \hyperlink{gai__xwindow_8h_adec8bb998b6861c4d239b25634c8eb55}{gaixw\_Init}(&window, \textcolor{stringliteral}{"opengl example"}, 640, 480);
     \textcolor{keywordflow}{if} (retval != 1) \textcolor{keywordflow}{return} retval;
 
-    printf(\textcolor{stringliteral}{"Vendor: %s, Version: %s, Renderer: %s, Shading Language Version: %s, OpenGL Context: %p\(\backslash\)n"},
-           window.\hyperlink{gai__xwindow_8h_a5984d461e227d9028db4d9327bc9c2c4}{renderer}.interface.opengl.vendor, window.\hyperlink{gai__xwindow_8h_a5984d461e227d9028db4d9327bc9c2c4}{renderer}.interface.opengl.
-      version, window.\hyperlink{gai__xwindow_8h_a5984d461e227d9028db4d9327bc9c2c4}{renderer}.interface.opengl.renderer,
-           window.\hyperlink{gai__xwindow_8h_a5984d461e227d9028db4d9327bc9c2c4}{renderer}.interface.opengl.shading\_language\_version, window.
-      \hyperlink{gai__xwindow_8h_a5984d461e227d9028db4d9327bc9c2c4}{renderer}.interface.opengl.context);
+    \hyperlink{gai__xwindow_8h_structgaixw__graphics_1_1_o_p_e_n_g_l}{gaixw\_graphics::OPENGL} ogl = window.\hyperlink{gai__xwindow_8h_a5984d461e227d9028db4d9327bc9c2c4}{renderer}.
+      \hyperlink{gai__xwindow_8h_a9fc6dc47652f101ae6dd13b6348474f8}{graphics}.\hyperlink{gai__xwindow_8h_a7e427fc59e9f524b1f8f87532e46992e}{opengl};
+    printf(\textcolor{stringliteral}{"Vendor: %s, Version: %s, Renderer: %s, Shading Language Version: %s\(\backslash\)n"},
+           ogl.vendor, ogl.version, ogl.renderer, ogl.shading\_language\_version);
 
     \hyperlink{gai__xwindow_8h_a51eafe897c3737f146cda3c50884b9dd}{gaixw\_SetVerticalSync}(&window, 1);
+    \hyperlink{gai__xwindow_8h_ab75a5f7466b10622fab1a1cdb443b447}{gaixw\_ToggleFullscreen}(&window);
     glClearColor(0.f, 0.f, 0.f, 1.f);
     \textcolor{keywordflow}{for} (;;)
     \{

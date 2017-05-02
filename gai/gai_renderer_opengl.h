@@ -2,9 +2,9 @@
 #include "gai_renderbuffer.h"
 
 #ifdef GAIRGL_STATIC
-	#define GAIRGL_DEF static
+	#define GAIRGL_API static
 #else
-	#define GAIRGL_DEF extern
+	#define GAIRGL_API extern
 #endif
 
 #ifndef GAIRGL_ASSERT
@@ -12,8 +12,56 @@
 	#define GAIRGL_ASSERT(x) assert(x)
 #endif
 
+#define GL_ARRAY_BUFFER 								0x8892
+
+/* GL_ARB_buffer_storage */
+#define GL_MAP_READ_BIT                                	0x0001
+#define GL_MAP_WRITE_BIT                               	0x0002
+#define GL_MAP_PERSISTENT_BIT                          	0x0040
+#define GL_MAP_COHERENT_BIT                            	0x0080
+#define GL_DYNAMIC_STORAGE_BIT                         	0x0100
+#define GL_CLIENT_STORAGE_BIT                          	0x0200
+#define GL_BUFFER_IMMUTABLE_STORAGE                    	0x821F
+#define GL_BUFFER_STORAGE_FLAGS                        	0x8220
+#define GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT            	0x00004000
+/* GL_ARB_buffer_storage */
+
+/* GL_ARB_texture_storage */
+#define GL_TEXTURE_IMMUTABLE_FORMAT       				0x912F
+/* GL_ARB_texture_storage */
+
+/* GL_ARB_map_buffer_range */
+#define GL_MAP_INVALIDATE_RANGE_BIT    					0x0004
+#define GL_MAP_INVALIDATE_BUFFER_BIT   					0x0008
+#define GL_MAP_FLUSH_EXPLICIT_BIT      					0x0010
+#define GL_MAP_UNSYNCHRONIZED_BIT      					0x0020
+/* GL_ARB_map_buffer_range */
+
+/* GL_ARB_sync */
+#define GL_MAX_SERVER_WAIT_TIMEOUT         				0x9111
+#define GL_OBJECT_TYPE                     				0x9112
+#define GL_SYNC_CONDITION                  				0x9113
+#define GL_SYNC_STATUS                     				0x9114
+#define GL_SYNC_FLAGS                      				0x9115
+#define GL_SYNC_FENCE                      				0x9116
+#define GL_SYNC_GPU_COMMANDS_COMPLETE      				0x9117
+#define GL_UNSIGNALED                      				0x9118
+#define GL_SIGNALED                        				0x9119
+#define GL_SYNC_FLUSH_COMMANDS_BIT         				0x00000001
+#define GL_TIMEOUT_IGNORED                 				0xFFFFFFFFFFFFFFFFull
+#define GL_ALREADY_SIGNALED                				0x911A
+#define GL_TIMEOUT_EXPIRED                 				0x911B
+#define GL_CONDITION_SATISFIED             				0x911C
+#define GL_WAIT_FAILED                     				0x911D
+/* GL_ARB_sync */
+
 struct gairgl
 {
+	unsigned int  	GL_ARB_buffer_storage;
+	unsigned int 	GL_ARB_texture_storage;
+	unsigned int 	GL_ARB_map_buffer_range;
+	unsigned int 	GL_ARB_sync;
+
 	u32 shader;
 	u32 transform;
 
@@ -21,10 +69,14 @@ struct gairgl
 	u32 vbo;
 };
 
-GAIRGL_DEF void 	gairgl_Initialize(gairgl *opengl);
-GAIRGL_DEF GLuint 	gairgl_LoadShader(char *version, char *vertex, char *fragment);
+GAIRGL_API void 	gairgl_Initialize(gairgl *opengl);
+GAIRGL_API GLuint 	gairgl_LoadShader(char *version, char *vertex, char *fragment);
 
 #ifdef GAIRGL_IMPLEMENTATION
+
+#define USE_BUFFER_STORAGE 1
+
+
 
 #if _WIN32
 
@@ -37,11 +89,21 @@ void* _gairgl_IsOpenGLContextAvailable()
 
 #endif
 
-GAIRGL_DEF void
+GAIRGL_API void
 gairgl_Initialize(gairgl *opengl)
 {
 	_gairgl_IsOpenGLContextAvailable();
 	GAIRGL_ASSERT(opengl);
+
+
+#define IS_EXTENSION_SUPPORTED(ext) opengl->ext = gaixw_GLIsSupported(#ext)
+	IS_EXTENSION_SUPPORTED(GL_ARB_buffer_storage);
+	IS_EXTENSION_SUPPORTED(GL_ARB_texture_storage);
+	IS_EXTENSION_SUPPORTED(GL_ARB_map_buffer_range);
+	IS_EXTENSION_SUPPORTED(GL_ARB_sync);
+
+#undef IS_EXTENSION_SUPPORTED
+
 
 	char *version = R"GLSL(#version 330)GLSL";
 	char *vertex  = R"GLSL(
@@ -78,7 +140,11 @@ gairgl_Initialize(gairgl *opengl)
 
 	glGenBuffers(1, &opengl->vbo);
 	glBindBuffer(0x8892 /*  GL_ARRAY_BUFFER */, opengl->vbo);
+	#if USE_BUFFER_STORAGE
+	glBufferStorage(0x8892, 1024 * 1024 * 100, 0, GL_MAP_WRITE_BIT);
+	#else
 	glBufferData(0x8892, 0, 0,  0x88E8); //0x88E0);
+	#endif
 
 	glGenVertexArrays(1, &opengl->vao);
 	glBindVertexArray(opengl->vao);
@@ -101,7 +167,7 @@ gairgl_Initialize(gairgl *opengl)
 	glDisable(GL_CULL_FACE);
 }
 
-GAIRGL_DEF void
+GAIRGL_API void
 gairgl_Destroy(gairgl *opengl)
 {
 	glDeleteBuffers(1, &opengl->vbo);
@@ -109,62 +175,67 @@ gairgl_Destroy(gairgl *opengl)
 	glDeleteProgram(opengl->shader);
 }
 
-#define U32FromHandle(handle) ((u32) (size_t) (handle))
+#define U32FromHandle(handle) ((u32)   (size_t) (handle))
+#define HandleFromU32(value)  ((void*) (size_t) (value))
 u32
 gairgl_LoadTexture(gairgl *opengl, gairb_renderbuffer *commands, int quad_id)
 {
 	if (!commands->quad_textures) return -1;
 	loaded_bitmap *b = commands->quad_textures[quad_id];
+	GAIRGL_ASSERT(b);
+	if (!b) return -1;
 	if (b->handle) return U32FromHandle(b->handle);
 	else
 	{
-		if (!b->memory)
-		{
-			//			GAIRGL_ASSERT(commands->default_texture->handle);
-			return U32FromHandle(commands->default_texture->handle);
-		}
-		u32 *handle = (u32*) &b->handle;
-		glGenTextures(1, handle);
-		glBindTexture(GL_TEXTURE_2D, *handle);
+		if (!b->memory) return U32FromHandle(commands->default_texture->handle);
+		
+		GLuint handle;
+		glGenTextures(1, &handle);
+		glBindTexture(GL_TEXTURE_2D, handle);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, b->width, b->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, b->memory);
+		if (!b->is_font_texture)
+		{
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, b->width, b->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, b->memory);
+		}
+		else
+		{
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, b->width, b->height, 0, GL_RED, GL_UNSIGNED_BYTE, b->memory);
+		}
 		b->is_loaded = 1;
+		b->handle = HandleFromU32(handle);
 	}
 	return -1;
 }
 
-inline GAIRGL_DEF void
+inline GAIRGL_API void
 gairgl_UnloadTexture(void *handle)
 {
 	if (handle) glDeleteTextures(1, (GLuint *) handle);
 }
 
-inline GAIRGL_DEF void
+inline GAIRGL_API void
 gairgl_ManageOpenGLTextures()
 {
 
 }
 
-#define GL_ARRAY_BUFFER 				  0x8892
-#define GL_MAP_WRITE_BIT                  0x0002
-#define GL_MAP_INVALIDATE_RANGE_BIT       0x0004
-#define GL_MAP_INVALIDATE_BUFFER_BIT      0x0008
-#define GL_MAP_FLUSH_EXPLICIT_BIT         0x0010
-#define GL_MAP_UNSYNCHRONIZED_BIT         0x0020
 
-inline GAIRGL_DEF unsigned int
+
+inline GAIRGL_API unsigned int
 gairgl_Render(gairgl *opengl, gairb_renderbuffer *commands, v2 draw_region)
 {
+	int texture_switches_per_frame = 0;
 	int draw_calls = 0;
 	static GLsync fence = 0;
 	if (commands)
 	{
 		size_t offset 	 = 0;
 		size_t data_size = commands->vertex_count * sizeof(gairb_textured_vertex);
-		#if 0
+		#if USE_BUFFER_STORAGE
+
 		if (data_size)
 		{
 			glUseProgram(opengl->shader);
@@ -183,6 +254,7 @@ gairgl_Render(gairgl *opengl, gairb_renderbuffer *commands, v2 draw_region)
 			glBindVertexArray(opengl->vao);
 		}
 		#else
+
 		glUseProgram(opengl->shader);
 		glBindBuffer(GL_ARRAY_BUFFER, opengl->vbo);
 
@@ -193,7 +265,7 @@ gairgl_Render(gairgl *opengl, gairb_renderbuffer *commands, v2 draw_region)
 		glBufferData(0x8892,  data_size, commands->vertex_array, 0x88E8);
 		glBindVertexArray(opengl->vao);
 		#endif
-		
+
 		static u32 active_texture;
 		for (u8 *header_at = commands->pushbuffer_base; header_at < commands->pushbuffer_at; )//header_at += sizeof(gairb_entry_header))
 		{
@@ -225,8 +297,14 @@ gairgl_Render(gairgl *opengl, gairb_renderbuffer *commands, v2 draw_region)
 						glDrawArrays(GL_TRIANGLE_STRIP, vertex_index, 6);
 					}
 					#else
-					u32 textureid = gairgl_LoadTexture(opengl, commands, entry->vertex_array_offset >> 2);
-					if (textureid != -1) glBindTexture(GL_TEXTURE_2D, textureid);
+					int vertex_index = (entry->vertex_array_offset != 0 ? entry->vertex_array_offset / 6 : entry->vertex_array_offset);
+					u32 textureid = gairgl_LoadTexture(opengl, commands, vertex_index);
+					if (textureid != -1 && active_texture != textureid)
+					{
+						glBindTexture(GL_TEXTURE_2D, textureid);
+						texture_switches_per_frame++;
+						active_texture = textureid;
+					}
 					glDrawArrays(0x0005 /* GL_TRIANGLE_STRIP */, entry->vertex_array_offset, (6 * entry->quad_count));
 					draw_calls++;
 					#endif
@@ -244,7 +322,7 @@ gairgl_Render(gairgl *opengl, gairb_renderbuffer *commands, v2 draw_region)
 	return draw_calls;
 }
 
-GAIRGL_DEF GLuint
+GAIRGL_API GLuint
 gairgl_LoadShader(char *version, char *vertex, char *fragment)
 {
 	GLuint vertex_shader_id = glCreateShader(0x8B31 /* GL_VERTEX_SHADER */);
