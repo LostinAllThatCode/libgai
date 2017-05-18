@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['renderer',['renderer',['../gai__xwindow_8h.html#a5984d461e227d9028db4d9327bc9c2c4',1,'gaixw_context']]]
+  ['wheel',['wheel',['../gai__xwindow_8h.html#ae6229830f34a6c71c9c5ffad8a199f77',1,'gaixw_input']]],
+  ['width',['width',['../gai__xwindow_8h.html#a303c87d56adc742cf236b1ab00a7034b',1,'gaixw_context']]]
 ];

@@ -1,10 +1,6 @@
 #define GAIXW_DEBUG
 #define GAIXW_OPENGL
-#define GAIXW_IMPLEMENTATION
-#include "gai_xwindow.h"
-#define GAIRB_IMPLEMENTATION
-#include "gai_renderbuffer.h"
-
+#include <gai_engine.h>
 #include <stdlib.h>
 
 void render(gairb_renderbuffer *commands, v2 draw_region)
@@ -46,7 +42,6 @@ void render(gairb_renderbuffer *commands, v2 draw_region)
 
 int main(int argc, char **argv)
 {
-
 	unsigned int renderbuffer_size = 1024 * 1024 * 4;  // 4 megabytes
 	unsigned int vertex_count_max  = 120000;
 	unsigned int vertexbuffer_size = sizeof(gairb_textured_vertex) * vertex_count_max;
@@ -62,11 +57,11 @@ int main(int argc, char **argv)
 	{
 		gaixw_Update(&window);
 		if (!window.is_running) break;
-		time += window.dt.seconds;
+		time += window.dt;
 		gairb_renderbuffer MyRenderBuffer = gairb_RenderBuffer( V4(0.f), renderbuffer_size, renderbuffer, vertex_count_max, vertexbuffer, 0, 0);
 
-		gairb_group MyRenderGroup = gairb_BeginGroup(V2i(window.info.width, window.info.height), &MyRenderBuffer, 0);
-		gairb_setup OrthoProject = { Transpose(OrthographicProjection((float)window.info.width, (float)window.info.height, 1, -1)) };
+		gairb_group MyRenderGroup = gairb_BeginGroup(V2i(window.width, window.height), &MyRenderBuffer, 0);
+		gairb_setup OrthoProject = { Transpose(OrthographicProjection((float)window.width, (float)window.height, 1, -1)) };
 		gairb_PushSetup(&MyRenderGroup, &OrthoProject);
 
 		for ( int i = 0; i < 300; i++)
@@ -76,7 +71,7 @@ int main(int argc, char **argv)
 
 		gairb_EndGroup(&MyRenderGroup);
 
-		render(&MyRenderBuffer, V2i(window.info.width, window.info.height));
+		render(&MyRenderBuffer, V2i(window.width, window.height));
 		gaixw_SwapBuffers(&window);
 	}
 

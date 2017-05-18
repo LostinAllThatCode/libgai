@@ -1,4 +1,8 @@
 var searchData=
 [
-  ['last_5fwrite_5ftime',['last_write_time',['../gai__hotreload_8h.html#a38b2bc43116a1fd59715ca1714d80462',1,'gaihr_file']]]
+  ['mod_5falt',['mod_alt',['../gai__xwindow_8h.html#a14006c83a4700a575b76d90e2693d259',1,'gaixw_input']]],
+  ['mod_5fctrl',['mod_ctrl',['../gai__xwindow_8h.html#a3c44cc64408bb151f4046466c058481d',1,'gaixw_input']]],
+  ['mod_5fshift',['mod_shift',['../gai__xwindow_8h.html#a072cf4077b4a97d359c603410ef97ec8',1,'gaixw_input']]],
+  ['mouse',['mouse',['../gai__xwindow_8h.html#a73c877dd3212ebf00859ecbf940fef3c',1,'gaixw_input']]],
+  ['mouse_5fhistory',['mouse_history',['../gai__xwindow_8h.html#a9df96117629476b37b2666b4b60650f8',1,'gaixw_input']]]
 ];

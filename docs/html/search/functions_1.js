@@ -4,7 +4,7 @@ var searchData=
   ['gaihr_5funtrack',['gaihr_Untrack',['../gai__hotreload_8h.html#a288369c901929574624b267de90007cd',1,'gai_hotreload.h']]],
   ['gaihr_5fwaitforevent',['gaihr_WaitForEvent',['../gai__hotreload_8h.html#a79d4ca28cdaae457474d55a0a21dd326',1,'gai_hotreload.h']]],
   ['gaixw_5fdeinit',['gaixw_Deinit',['../gai__xwindow_8h.html#a986353262ac6038b69005bec8111ac56',1,'gai_xwindow.h']]],
-  ['gaixw_5fgetattribute',['gaixw_GetAttribute',['../gai__xwindow_8h.html#a11552275ad444bc3be3b6a5a5b214c7d',1,'gai_xwindow.h']]],
+  ['gaixw_5fgetattribute',['gaixw_GetAttribute',['../gai__xwindow_8h.html#a9722e61aa1c5329fe9726ea1780bfb10',1,'gai_xwindow.h']]],
   ['gaixw_5fgetproc',['gaixw_GetProc',['../gai__xwindow_8h.html#afb8573bf3e47bef617b0c575cabd56b1',1,'gai_xwindow.h']]],
   ['gaixw_5fhide',['gaixw_Hide',['../gai__xwindow_8h.html#a47de27dee38c387b49ac60e21b6b27af',1,'gai_xwindow.h']]],
   ['gaixw_5finit',['gaixw_Init',['../gai__xwindow_8h.html#adec8bb998b6861c4d239b25634c8eb55',1,'gai_xwindow.h']]],

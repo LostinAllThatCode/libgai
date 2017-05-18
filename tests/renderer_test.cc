@@ -9,43 +9,37 @@
 
 #include <stdio.h>
 
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+
 void
-WriteToLog(char *source, unsigned int linenumber, char *line)
+WriteToLog(const char *source, unsigned int linenumber, const char *line)
 {
 	SYSTEMTIME time;
 	GetLocalTime(&time);
-	FILE *fp = fopen("log.txt", "a+");
-	if (fp)
+
+	FILE *f;
+	const char *filename = "log.txt";
+	const char *mode	 = "a+";
+	#if defined(_MSC_VER) && _MSC_VER >= 1400
+	if (0 != fopen_s(&f, filename, mode))
+		f = 0;
+	#else
+	f = fopen(filename, mode);
+	#endif
+
+	if (f)
 	{
-		fprintf(fp, "[%s(%i) %04i.%02i.%02i.%02i.%02i.%02i.%04i] ", source, linenumber, time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds);
-		fprintf(fp, "Assertion failed! >> (%s)\n", line);
-		fclose(fp);
+		fprintf(f, "[%s(%i) %04i.%02i.%02i.%02i.%02i.%02i.%04i] ", source, linenumber, time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds);
+		fprintf(f, "Assertion failed! >> (%s)\n", line);
+		fclose(f);
 	}
 }
-
-#include "renderer_shared.h"
-
-#define STB_TRUETYPE_IMPLEMENTATION  // force following include to generate implementation
-#include "stb_truetype.h"
-
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
 
 #define GAIXW_DEBUG
 #define GAIXW_OPENGL
 #define GAIXW_OPENGL_CORE_PROFILE
-#define GAIXW_IMPLEMENTATION
-#include "gai_xwindow.h"
-
-#define GAIRB_IMPLEMENTATION
-#include "gai_renderbuffer.h"
-
-#define GAIRGL_IMPLEMENTATION
-#include "gai_renderer_opengl.h"
-
-#define GAIHR_IMPLEMENTATION
-#include "gai_hotreload.h"
+#include <gai_engine.h>
 
 
 PLATFORM_API_LOAD_BITMAP(win32_LoadBitmapFromFile)
@@ -158,7 +152,7 @@ int main(int argc, char **argv)
 	loaded_bitmap assets[64] = {};
 	assets[0] = CreateWhiteBitmap(128, 128);
 	assets[2] = LoadFontFromFile("C:/windows/fonts/consolab.ttf");
-	
+
 	gaihr_file texture;
 	gaihr_Track(&texture, "test.jpg", hotreloadtexture, &assets[1]);
 
@@ -178,7 +172,7 @@ int main(int argc, char **argv)
 		gaihr_WaitForEvent(&reloadable_file);
 		if (UpdateAndRender) UpdateAndRender(&window, &render_commands, &platform);
 
-		int draw_calls = gairgl_Render(&opengl, &render_commands, V2i(window.info.width, window.info.height));
+		int draw_calls = gairgl_Render(&opengl, &render_commands, V2i(window.width, window.height));
 		gaixw_SwapBuffers(&window);
 	}
 

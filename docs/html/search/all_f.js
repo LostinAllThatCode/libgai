@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['title',['title',['../gai__xwindow_8h.html#a7e93633a635a19ca5b6e4d8f8ad7ee52',1,'gaixw_info']]],
-  ['todo_20list',['Todo List',['../todo.html',1,'']]],
-  ['type',['type',['../gai__xwindow_8h.html#a287bd5241e45837849116cf46c5591ba',1,'gaixw_renderer']]]
+  ['x',['x',['../gai__xwindow_8h.html#adf849b2f92f76151cfad6633fde93279',1,'gaixw_input::x()'],['../gai__xwindow_8h.html#a562a7feb15e0c9e1aba48489b68529dc',1,'gaixw_context::x()']]]
 ];

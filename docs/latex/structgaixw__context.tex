@@ -1,100 +1,35 @@
 \hypertarget{structgaixw__context}{}\section{gaixw\+\_\+context Struct Reference}
 \label{structgaixw__context}\index{gaixw\+\_\+context@{gaixw\+\_\+context}}
+
+
+Collaboration diagram for gaixw\+\_\+context\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{structgaixw__context__coll__graph}
+\end{center}
+\end{figure}
 \subsection*{Public Attributes}
 \begin{DoxyCompactItemize}
 \item 
-\begin{tabbing}
-xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=\kill
-struct \{\\
-float {\bfseries seconds}\\
-float {\bfseries millis}\\
-float {\bfseries micros}\\
-\} \hyperlink{structgaixw__context_a63f66515f64f3870e4530f99f8627455}{frametime}\\
-
-\end{tabbing}\item 
-\mbox{\Hypertarget{structgaixw__context_ad08fec1e1f27bbf1b230ca3b2af55fbf}\label{structgaixw__context_ad08fec1e1f27bbf1b230ca3b2af55fbf}} 
-\begin{tabbing}
-xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=\kill
-struct \{\\
-const char $\ast$ {\bfseries title}\\
-int {\bfseries width}\\
-int {\bfseries height}\\
-int {\bfseries x}\\
-int {\bfseries y}\\
-int {\bfseries fps}\\
-\} {\bfseries info}\\
-
-\end{tabbing}\item 
-\mbox{\Hypertarget{structgaixw__context_af3f6e185424fdd693c76862a4ec187a0}\label{structgaixw__context_af3f6e185424fdd693c76862a4ec187a0}} 
-\begin{tabbing}
-xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=\kill
-struct \{\\
-int {\bfseries x}\\
-int {\bfseries y}\\
-int {\bfseries dx}\\
-int {\bfseries dy}\\
-int {\bfseries wheel}\\
-int {\bfseries dwheel}\\
-int {\bfseries mod\_alt}\\
-int {\bfseries mod\_ctrl}\\
-int {\bfseries mod\_shift}\\
-unsigned char {\bfseries keys} \mbox{[}256\mbox{]}\\
-unsigned char {\bfseries keys\_history} \mbox{[}256\mbox{]}\\
-unsigned char {\bfseries mouse} \mbox{[}3\mbox{]}\\
-unsigned char {\bfseries mouse\_history} \mbox{[}3\mbox{]}\\
-\} {\bfseries input}\\
-
-\end{tabbing}\item 
-\mbox{\Hypertarget{structgaixw__context_a9d391696a94058b975ca9ed4510db1af}\label{structgaixw__context_a9d391696a94058b975ca9ed4510db1af}} 
-\begin{tabbing}
-xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=\kill
-union \{\\
-\>struct \{\\
-\mbox{\Hypertarget{structgaixw__context_1_1_0D5_1_1_0D7_a1518b0714218c6a87198b90311b6d053}\label{structgaixw__context_1_1_0D5_1_1_0D7_a1518b0714218c6a87198b90311b6d053}} 
-HWND {\bfseries hwnd}\\
-\mbox{\Hypertarget{structgaixw__context_1_1_0D5_1_1_0D7_a91735d8b2b9572fbfb61d4b12b92ac75}\label{structgaixw__context_1_1_0D5_1_1_0D7_a91735d8b2b9572fbfb61d4b12b92ac75}} 
-HDC {\bfseries hdc}\\
-\mbox{\Hypertarget{structgaixw__context_1_1_0D5_1_1_0D7_a6535b73174816280ddab85485bc22c28}\label{structgaixw__context_1_1_0D5_1_1_0D7_a6535b73174816280ddab85485bc22c28}} 
-HINSTANCE {\bfseries instance}\\
-\mbox{\Hypertarget{structgaixw__context_1_1_0D5_1_1_0D7_abba6bf8f2631ee747247a93effc28371}\label{structgaixw__context_1_1_0D5_1_1_0D7_abba6bf8f2631ee747247a93effc28371}} 
-WINDOWPLACEMENT {\bfseries position}\\
-\>\} {\bfseries win32}\\
-\>struct \{\\
-\mbox{\Hypertarget{structgaixw__context_1_1_0D5_1_1_0D8_a9b10b2f62ae64ceaa64ca3b35b5f5d9c}\label{structgaixw__context_1_1_0D5_1_1_0D8_a9b10b2f62ae64ceaa64ca3b35b5f5d9c}} 
-Display $\ast$ {\bfseries display}\\
-\mbox{\Hypertarget{structgaixw__context_1_1_0D5_1_1_0D8_ae4df73e7f26ed1199bb9d589e498eb81}\label{structgaixw__context_1_1_0D5_1_1_0D8_ae4df73e7f26ed1199bb9d589e498eb81}} 
-Visual $\ast$ {\bfseries visual}\\
-\mbox{\Hypertarget{structgaixw__context_1_1_0D5_1_1_0D8_a49e27a47eae7d22a7c48cc37e4515de0}\label{structgaixw__context_1_1_0D5_1_1_0D8_a49e27a47eae7d22a7c48cc37e4515de0}} 
-Window $\ast$ {\bfseries window}\\
-\>\} {\bfseries linux}\\
-\} {\bfseries platform}\\
-
-\end{tabbing}\item 
-\mbox{\Hypertarget{structgaixw__context_a8daa7be3e670bf72b539b4ceee6d0bfb}\label{structgaixw__context_a8daa7be3e670bf72b539b4ceee6d0bfb}} 
-\begin{tabbing}
-xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=\kill
-struct \{\\
-gaixw\_renderer\_enum {\bfseries type}\\
-int {\bfseries attributes}\\
-\mbox{\Hypertarget{structgaixw__context_ae62471fb824617af62f5d51c03b3e48e}\label{structgaixw__context_ae62471fb824617af62f5d51c03b3e48e}} 
-\>union \{\\
-\mbox{\Hypertarget{uniongaixw__context_1_1_0D6_1_1_0D9_ade01fe5cc89617f53c4793612f8200d1}\label{uniongaixw__context_1_1_0D6_1_1_0D9_ade01fe5cc89617f53c4793612f8200d1}} 
-\>\>struct \{\\
-\mbox{\Hypertarget{structgaixw__context_1_1_0D6_1_1_0D9_1_1_0D10_a2fb5d2cdf49b39045da8c0eee73ee8ee}\label{structgaixw__context_1_1_0D6_1_1_0D9_1_1_0D10_a2fb5d2cdf49b39045da8c0eee73ee8ee}} 
-char $\ast$ {\bfseries vendor}\\
-\mbox{\Hypertarget{structgaixw__context_1_1_0D6_1_1_0D9_1_1_0D10_a9fac0600a3a7a531e67dcd508112c56e}\label{structgaixw__context_1_1_0D6_1_1_0D9_1_1_0D10_a9fac0600a3a7a531e67dcd508112c56e}} 
-char $\ast$ {\bfseries version}\\
-\mbox{\Hypertarget{structgaixw__context_1_1_0D6_1_1_0D9_1_1_0D10_a246df9525d37ffd502dc311fb2bf490e}\label{structgaixw__context_1_1_0D6_1_1_0D9_1_1_0D10_a246df9525d37ffd502dc311fb2bf490e}} 
-char $\ast$ {\bfseries renderer}\\
-\mbox{\Hypertarget{structgaixw__context_1_1_0D6_1_1_0D9_1_1_0D10_aa9bea20e89c3c8c4278593252c4f7189}\label{structgaixw__context_1_1_0D6_1_1_0D9_1_1_0D10_aa9bea20e89c3c8c4278593252c4f7189}} 
-char $\ast$ {\bfseries shading\_language\_version}\\
-\>\>\} {\bfseries opengl}\\
-\>\} {\bfseries info}\\
-\} {\bfseries renderer}\\
-
-\end{tabbing}\item 
-\mbox{\Hypertarget{structgaixw__context_a6f814f11e4a7ee0e262d3b7a87bde5ba}\label{structgaixw__context_a6f814f11e4a7ee0e262d3b7a87bde5ba}} 
-\hyperlink{structgaixw__deinit__callback}{gaixw\+\_\+deinit\+\_\+callback} {\bfseries deinit} \mbox{[}12\mbox{]}
+int \hyperlink{structgaixw__context_ab0f6565b924d7496d7445915f01294e2}{attributes}
+\item 
+int \hyperlink{structgaixw__context_a303c87d56adc742cf236b1ab00a7034b}{width}
+\item 
+int \hyperlink{structgaixw__context_a42531a46c276892a37d32595f819dd8e}{height}
+\item 
+int \hyperlink{structgaixw__context_a562a7feb15e0c9e1aba48489b68529dc}{x}
+\item 
+int \hyperlink{structgaixw__context_a8ae55e0362fe3112990d78e12a9e22c3}{y}
+\item 
+float \hyperlink{structgaixw__context_a7b04c4d4c59ab6354686a79221673ad8}{dt}
+\item 
+\hyperlink{structgaixw__input}{gaixw\+\_\+input} \hyperlink{structgaixw__context_a4a9d2e14ebb24977fb5df84d361c851f}{input}
+\item 
+\hyperlink{uniongaixw__platform}{gaixw\+\_\+platform} \hyperlink{structgaixw__context_aa297ac21e147f4cde74e021b62b3e673}{platform}
+\item 
+\hyperlink{structgaixw__renderer}{gaixw\+\_\+renderer} \hyperlink{structgaixw__context_a5984d461e227d9028db4d9327bc9c2c4}{renderer}
 \item 
 int \hyperlink{structgaixw__context_a7165f8e7f0c548dd3a11c8648fb8071a}{is\+\_\+running}
 \item 
@@ -103,57 +38,90 @@ int {\bfseries is\+\_\+visible}
 \end{DoxyCompactItemize}
 
 
+\subsection{Detailed Description}
+\begin{Desc}
+\item[Examples\+: ]\par
+\hyperlink{xwindow_0Cgdi_win32_0Cmain_8cpp-example}{xwindow\textbackslash{}gdi\+\_\+win32\textbackslash{}main.\+cpp}, and \hyperlink{xwindow_0Copengl_win32_0Cmain_8cpp-example}{xwindow\textbackslash{}opengl\+\_\+win32\textbackslash{}main.\+cpp}.\end{Desc}
+
+
 \subsection{Member Data Documentation}
-\mbox{\Hypertarget{structgaixw__context_a6f814f11e4a7ee0e262d3b7a87bde5ba}\label{structgaixw__context_a6f814f11e4a7ee0e262d3b7a87bde5ba}} 
-\index{gaixw\+\_\+context@{gaixw\+\_\+context}!deinit@{deinit}}
-\index{deinit@{deinit}!gaixw\+\_\+context@{gaixw\+\_\+context}}
-\subsubsection{\texorpdfstring{deinit}{deinit}}
-{\footnotesize\ttfamily \hyperlink{structgaixw__deinit__callback}{gaixw\+\_\+deinit\+\_\+callback} gaixw\+\_\+context\+::deinit\mbox{[}12\mbox{]}}
+\mbox{\Hypertarget{structgaixw__context_ab0f6565b924d7496d7445915f01294e2}\label{structgaixw__context_ab0f6565b924d7496d7445915f01294e2}} 
+\index{gaixw\+\_\+context@{gaixw\+\_\+context}!attributes@{attributes}}
+\index{attributes@{attributes}!gaixw\+\_\+context@{gaixw\+\_\+context}}
+\subsubsection{\texorpdfstring{attributes}{attributes}}
+{\footnotesize\ttfamily int gaixw\+\_\+context\+::attributes}
 
-\mbox{\Hypertarget{structgaixw__context_a63f66515f64f3870e4530f99f8627455}\label{structgaixw__context_a63f66515f64f3870e4530f99f8627455}} 
-\index{gaixw\+\_\+context@{gaixw\+\_\+context}!frametime@{frametime}}
-\index{frametime@{frametime}!gaixw\+\_\+context@{gaixw\+\_\+context}}
-\subsubsection{\texorpdfstring{frametime}{frametime}}
-{\footnotesize\ttfamily struct \{ ... \}   gaixw\+\_\+context\+::frametime}
+Current state of the window. See \hyperlink{gai__xwindow_8h_af7f3997c9f7d608f6f480d0a1ec341ec}{gaixw\+\_\+flags} \mbox{\Hypertarget{structgaixw__context_a7b04c4d4c59ab6354686a79221673ad8}\label{structgaixw__context_a7b04c4d4c59ab6354686a79221673ad8}} 
+\index{gaixw\+\_\+context@{gaixw\+\_\+context}!dt@{dt}}
+\index{dt@{dt}!gaixw\+\_\+context@{gaixw\+\_\+context}}
+\subsubsection{\texorpdfstring{dt}{dt}}
+{\footnotesize\ttfamily float gaixw\+\_\+context\+::dt}
 
-Time since last frame in seconds, milliseconds and microseconds. \mbox{\Hypertarget{structgaixw__context_ad08fec1e1f27bbf1b230ca3b2af55fbf}\label{structgaixw__context_ad08fec1e1f27bbf1b230ca3b2af55fbf}} 
-\index{gaixw\+\_\+context@{gaixw\+\_\+context}!info@{info}}
-\index{info@{info}!gaixw\+\_\+context@{gaixw\+\_\+context}}
-\subsubsection{\texorpdfstring{info}{info}}
-{\footnotesize\ttfamily struct \{ ... \}   gaixw\+\_\+context\+::info}
+Time since last frame in seconds, milliseconds and microseconds \mbox{\Hypertarget{structgaixw__context_a42531a46c276892a37d32595f819dd8e}\label{structgaixw__context_a42531a46c276892a37d32595f819dd8e}} 
+\index{gaixw\+\_\+context@{gaixw\+\_\+context}!height@{height}}
+\index{height@{height}!gaixw\+\_\+context@{gaixw\+\_\+context}}
+\subsubsection{\texorpdfstring{height}{height}}
+{\footnotesize\ttfamily int gaixw\+\_\+context\+::height}
 
-\mbox{\Hypertarget{structgaixw__context_af3f6e185424fdd693c76862a4ec187a0}\label{structgaixw__context_af3f6e185424fdd693c76862a4ec187a0}} 
+Current height of the window \begin{Desc}
+\item[Examples\+: ]\par
+\hyperlink{xwindow_0Copengl_win32_0Cmain_8cpp-example}{xwindow\textbackslash{}opengl\+\_\+win32\textbackslash{}main.\+cpp}.\end{Desc}
+\mbox{\Hypertarget{structgaixw__context_a4a9d2e14ebb24977fb5df84d361c851f}\label{structgaixw__context_a4a9d2e14ebb24977fb5df84d361c851f}} 
 \index{gaixw\+\_\+context@{gaixw\+\_\+context}!input@{input}}
 \index{input@{input}!gaixw\+\_\+context@{gaixw\+\_\+context}}
 \subsubsection{\texorpdfstring{input}{input}}
-{\footnotesize\ttfamily struct \{ ... \}   gaixw\+\_\+context\+::input}
+{\footnotesize\ttfamily \hyperlink{structgaixw__input}{gaixw\+\_\+input} gaixw\+\_\+context\+::input}
 
-\mbox{\Hypertarget{structgaixw__context_a7165f8e7f0c548dd3a11c8648fb8071a}\label{structgaixw__context_a7165f8e7f0c548dd3a11c8648fb8071a}} 
+Input states for mouse and keyboard \mbox{\Hypertarget{structgaixw__context_a7165f8e7f0c548dd3a11c8648fb8071a}\label{structgaixw__context_a7165f8e7f0c548dd3a11c8648fb8071a}} 
 \index{gaixw\+\_\+context@{gaixw\+\_\+context}!is\+\_\+running@{is\+\_\+running}}
 \index{is\+\_\+running@{is\+\_\+running}!gaixw\+\_\+context@{gaixw\+\_\+context}}
 \subsubsection{\texorpdfstring{is\+\_\+running}{is\_running}}
 {\footnotesize\ttfamily int gaixw\+\_\+context\+::is\+\_\+running}
 
-Running state of the window. If the window gets closed this value will be 0. \mbox{\Hypertarget{structgaixw__context_acb9eb436a1a802598abfbf6934c4d8d2}\label{structgaixw__context_acb9eb436a1a802598abfbf6934c4d8d2}} 
-\index{gaixw\+\_\+context@{gaixw\+\_\+context}!is\+\_\+visible@{is\+\_\+visible}}
-\index{is\+\_\+visible@{is\+\_\+visible}!gaixw\+\_\+context@{gaixw\+\_\+context}}
-\subsubsection{\texorpdfstring{is\+\_\+visible}{is\_visible}}
-{\footnotesize\ttfamily int gaixw\+\_\+context\+::is\+\_\+visible}
-
-\mbox{\Hypertarget{structgaixw__context_a9d391696a94058b975ca9ed4510db1af}\label{structgaixw__context_a9d391696a94058b975ca9ed4510db1af}} 
+Running state of the window. If the window gets closed this value will be 0. \begin{Desc}
+\item[Examples\+: ]\par
+\hyperlink{xwindow_0Copengl_win32_0Cmain_8cpp-example}{xwindow\textbackslash{}opengl\+\_\+win32\textbackslash{}main.\+cpp}.\end{Desc}
+\mbox{\Hypertarget{structgaixw__context_aa297ac21e147f4cde74e021b62b3e673}\label{structgaixw__context_aa297ac21e147f4cde74e021b62b3e673}} 
 \index{gaixw\+\_\+context@{gaixw\+\_\+context}!platform@{platform}}
 \index{platform@{platform}!gaixw\+\_\+context@{gaixw\+\_\+context}}
 \subsubsection{\texorpdfstring{platform}{platform}}
-{\footnotesize\ttfamily union \{ ... \}   gaixw\+\_\+context\+::platform}
+{\footnotesize\ttfamily \hyperlink{uniongaixw__platform}{gaixw\+\_\+platform} gaixw\+\_\+context\+::platform}
 
-\mbox{\Hypertarget{structgaixw__context_a8daa7be3e670bf72b539b4ceee6d0bfb}\label{structgaixw__context_a8daa7be3e670bf72b539b4ceee6d0bfb}} 
+Platform layer union for all supported platforms \begin{Desc}
+\item[Examples\+: ]\par
+\hyperlink{xwindow_0Cgdi_win32_0Cmain_8cpp-example}{xwindow\textbackslash{}gdi\+\_\+win32\textbackslash{}main.\+cpp}.\end{Desc}
+\mbox{\Hypertarget{structgaixw__context_a5984d461e227d9028db4d9327bc9c2c4}\label{structgaixw__context_a5984d461e227d9028db4d9327bc9c2c4}} 
 \index{gaixw\+\_\+context@{gaixw\+\_\+context}!renderer@{renderer}}
 \index{renderer@{renderer}!gaixw\+\_\+context@{gaixw\+\_\+context}}
 \subsubsection{\texorpdfstring{renderer}{renderer}}
-{\footnotesize\ttfamily struct \{ ... \}   gaixw\+\_\+context\+::renderer}
+{\footnotesize\ttfamily \hyperlink{structgaixw__renderer}{gaixw\+\_\+renderer} gaixw\+\_\+context\+::renderer}
 
+Renderer struct with the current render interface \begin{Desc}
+\item[Examples\+: ]\par
+\hyperlink{xwindow_0Cgdi_win32_0Cmain_8cpp-example}{xwindow\textbackslash{}gdi\+\_\+win32\textbackslash{}main.\+cpp}, and \hyperlink{xwindow_0Copengl_win32_0Cmain_8cpp-example}{xwindow\textbackslash{}opengl\+\_\+win32\textbackslash{}main.\+cpp}.\end{Desc}
+\mbox{\Hypertarget{structgaixw__context_a303c87d56adc742cf236b1ab00a7034b}\label{structgaixw__context_a303c87d56adc742cf236b1ab00a7034b}} 
+\index{gaixw\+\_\+context@{gaixw\+\_\+context}!width@{width}}
+\index{width@{width}!gaixw\+\_\+context@{gaixw\+\_\+context}}
+\subsubsection{\texorpdfstring{width}{width}}
+{\footnotesize\ttfamily int gaixw\+\_\+context\+::width}
 
+Current width of the window \begin{Desc}
+\item[Examples\+: ]\par
+\hyperlink{xwindow_0Copengl_win32_0Cmain_8cpp-example}{xwindow\textbackslash{}opengl\+\_\+win32\textbackslash{}main.\+cpp}.\end{Desc}
+\mbox{\Hypertarget{structgaixw__context_a562a7feb15e0c9e1aba48489b68529dc}\label{structgaixw__context_a562a7feb15e0c9e1aba48489b68529dc}} 
+\index{gaixw\+\_\+context@{gaixw\+\_\+context}!x@{x}}
+\index{x@{x}!gaixw\+\_\+context@{gaixw\+\_\+context}}
+\subsubsection{\texorpdfstring{x}{x}}
+{\footnotesize\ttfamily int gaixw\+\_\+context\+::x}
+
+Current x postion of the window \mbox{\Hypertarget{structgaixw__context_a8ae55e0362fe3112990d78e12a9e22c3}\label{structgaixw__context_a8ae55e0362fe3112990d78e12a9e22c3}} 
+\index{gaixw\+\_\+context@{gaixw\+\_\+context}!y@{y}}
+\index{y@{y}!gaixw\+\_\+context@{gaixw\+\_\+context}}
+\subsubsection{\texorpdfstring{y}{y}}
+{\footnotesize\ttfamily int gaixw\+\_\+context\+::y}
+
+Current y postion of the window 
 
 The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
 \item 
-gai\+\_\+xwindow.\+h\end{DoxyCompactItemize}
+\hyperlink{gai__xwindow_8h}{gai\+\_\+xwindow.\+h}\end{DoxyCompactItemize}

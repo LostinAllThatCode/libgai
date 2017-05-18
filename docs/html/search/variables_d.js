@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['seconds',['seconds',['../gai__xwindow_8h.html#a5f17165993624a474ce93aa99c1d1bd1',1,'gaixw_frametime']]]
+  ['x',['x',['../gai__xwindow_8h.html#adf849b2f92f76151cfad6633fde93279',1,'gaixw_input::x()'],['../gai__xwindow_8h.html#a562a7feb15e0c9e1aba48489b68529dc',1,'gaixw_context::x()']]]
 ];

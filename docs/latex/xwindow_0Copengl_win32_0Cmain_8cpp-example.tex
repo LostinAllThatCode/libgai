@@ -15,8 +15,7 @@
     retval = \hyperlink{gai__xwindow_8h_adec8bb998b6861c4d239b25634c8eb55}{gaixw\_Init}(&window, \textcolor{stringliteral}{"opengl example"}, 640, 480);
     \textcolor{keywordflow}{if} (retval != 1) \textcolor{keywordflow}{return} retval;
 
-    \hyperlink{gai__xwindow_8h_structgaixw__graphics_1_1_o_p_e_n_g_l}{gaixw\_graphics::OPENGL} ogl = window.\hyperlink{gai__xwindow_8h_a5984d461e227d9028db4d9327bc9c2c4}{renderer}.
-      \hyperlink{gai__xwindow_8h_a9fc6dc47652f101ae6dd13b6348474f8}{graphics}.\hyperlink{gai__xwindow_8h_a7e427fc59e9f524b1f8f87532e46992e}{opengl};
+    gaixw\_graphics::OPENGL ogl = window.renderer.graphics.opengl;
     printf(\textcolor{stringliteral}{"Vendor: %s, Version: %s, Renderer: %s, Shading Language Version: %s\(\backslash\)n"},
            ogl.vendor, ogl.version, ogl.renderer, ogl.shading\_language\_version);
 
@@ -40,7 +39,7 @@
             glVertex2f(.5f, -.5f);
         \}
         glEnd();
-        glViewport(0, 0, window.\hyperlink{gai__xwindow_8h_a488c7d5344206e2f55cd62ffc258e77b}{info}.\hyperlink{gai__xwindow_8h_acf87d56219f894f3bf3d3968c7a54447}{width}, window.\hyperlink{gai__xwindow_8h_a488c7d5344206e2f55cd62ffc258e77b}{info}.\hyperlink{gai__xwindow_8h_a0e0d7732967837269e7898794beba31b}{height});
+        glViewport(0, 0, window.info.\hyperlink{gai__xwindow_8h_a303c87d56adc742cf236b1ab00a7034b}{width}, window.info.\hyperlink{gai__xwindow_8h_a42531a46c276892a37d32595f819dd8e}{height});
         \hyperlink{gai__xwindow_8h_ac612fdfe7c233bf8ecaf7112318d5e1f}{gaixw\_SwapBuffers}(&window);
     \}
     \hyperlink{gai__xwindow_8h_a986353262ac6038b69005bec8111ac56}{gaixw\_Deinit}(&window);

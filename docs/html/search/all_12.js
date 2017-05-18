@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['wheel',['wheel',['../gai__xwindow_8h.html#ae6229830f34a6c71c9c5ffad8a199f77',1,'gaixw_input']]],
-  ['width',['width',['../gai__xwindow_8h.html#acf87d56219f894f3bf3d3968c7a54447',1,'gaixw_info']]],
-  ['windows',['WINDOWS',['../gai__hotreload_8h.html#structgaihr__platform_1_1_w_i_n_d_o_w_s',1,'gaihr_platform::WINDOWS'],['../gai__xwindow_8h.html#structgaixw__platform_1_1_w_i_n_d_o_w_s',1,'gaixw_platform::WINDOWS']]]
+  ['x',['x',['../gai__xwindow_8h.html#adf849b2f92f76151cfad6633fde93279',1,'gaixw_input::x()'],['../gai__xwindow_8h.html#a562a7feb15e0c9e1aba48489b68529dc',1,'gaixw_context::x()']]],
+  ['x11_2e_5f_5funnamed_5f_5f_2ex11',['X11.__unnamed__.x11',['../gai__xwindow_8h.html#structgaixw__renderer_1_1_x11_8____unnamed_____8x11',1,'']]]
 ];

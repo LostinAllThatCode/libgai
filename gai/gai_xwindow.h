@@ -191,30 +191,13 @@ enum gaixw_renderer_enum
 /**
  * @brief      Renderer flags
  */
-enum gaixw_renderer_flags
+enum gaixw_flags
 {
 	gaixwFlagsNone          = 0x00,
 	gaixwFlagsMinimized		= 0x01,			/**< Window is minimized */
 	gaixwFlagsMaximized		= 0x02,			/**< Window is maximized */
 	gaixwFlagsFullscreen    = 0x10,			/**< Window is in fullscreen mode */
 	gaixwFlagsVSYNC			= 0x20,			/**< Window has vertical sync enabled */
-};
-
-struct gaixw_frametime
-{
-	float seconds;							/**< Time since last frame in seconds. */
-	float millis;							/**< Time since last frame in milliseconds. */
-	float micros;							/**< Time since last frame in microseconds. */
-};
-
-struct gaixw_info
-{
-	const char *title; 						/**< A pointer to the window title string */
-	int width;								/**< Current width of the window */
-	int height;								/**< Current height of the window */
-	int x;									/**< Current x postion of the window */
-	int y;									/**< Current y postion of the window */
-	int fps;								/**< Current frames per seconds. @note Does not work for the default window */
 };
 
 struct gaixw_input
@@ -234,36 +217,17 @@ struct gaixw_input
 	unsigned char mouse_history[3];			/**< Last state of all mouse keys */
 };
 
-union gaixw_graphics
-{
-	struct OPENGL
-	{
-		char 			*vendor;
-		char 			*version;
-		char 			*renderer;
-		char 			*shading_language_version;
-		void			*context;
-	} opengl; /**< OpenGL renderer informations like vendor, version, renderer, shading language version */
-	struct DIRECTX 	{ int version; 		} directx;
-	struct X11 		{ void 	*__ignored; } x11;
-	struct GDI 		{ void 	*__ignored; } gdi;
-	struct VULCAN 	{ void 	*__ignored; } vulcan;
-};
-
-struct gaixw_renderer
-{
-	int 					attributes;		/**< Current state of the window. See @ref gaixw_renderer_flags */
-	gaixw_renderer_enum 	type;			/**< Type of the renderer. See @ref gaixw_renderer_enum */
-	gaixw_graphics 			graphics;		/**< Renderer interface union for all supported renderer backends. See @ref gaixw_renderer_enum */
-};
-
 struct gaixw_context
 {
-	gaixw_frametime 		dt; 			/**< Time since last frame in seconds, milliseconds and microseconds */
-	gaixw_info				info;			/**< Window information like title, width, height, x, y ... */
+	int 					attributes;		/**< Current state of the window. See @ref gaixw_flags */
+	int 					width;			/**< Current width of the window */
+	int 					height;			/**< Current height of the window */
+	int 					x;				/**< Current x postion of the window */
+	int 					y;				/**< Current y postion of the window */
+	float 					dt; 			/**< Time since last frame in seconds */
 	gaixw_input				input;			/**< Input states for mouse and keyboard */
 	gaixw_platform  		platform;		/**< Platform layer union for all supported platforms */
-	gaixw_renderer  		renderer;		/**< Renderer struct with the current render interface */
+	gaixw_renderer_enum 	type;			/**< Type of the renderer */
 	int is_running;							/**< Running state of the window. If the window gets closed this value will be 0. */
 	int is_visible;
 };
@@ -358,7 +322,7 @@ GAIXW_API void 			gaixw_SwapBuffers					(gaixw_context *window);
  * @brief      Current attribute state of the window
  *
  * @param      window  A pointer to a gaixw_context structure
- * @param  	   attrib  Attribute flags as specified in @ref gaixw_renderer_flags (@ref gaixwFlagsMinimized, @ref gaixwFlagsMaximized, @ref gaixwFlagsFullscreen, @ref gaixwFlagsVSYNC)
+ * @param  	   attrib  Attribute flags as specified in @ref gaixw_flags (@ref gaixwFlagsMinimized, @ref gaixwFlagsMaximized, @ref gaixwFlagsFullscreen, @ref gaixwFlagsVSYNC)
  *
  * @return
  * Return Code 	| Description
@@ -366,7 +330,7 @@ GAIXW_API void 			gaixw_SwapBuffers					(gaixw_context *window);
  * 1 			| Is Set
  * 0 			| Not set
  */
-GAIXW_API unsigned int  gaixw_GetAttribute					(gaixw_context *window, gaixw_renderer_flags attrib);
+GAIXW_API unsigned int  gaixw_GetAttribute					(gaixw_context *window, gaixw_flags attrib);
 /**
  * @brief      Sets vertical sync state
  * @note       This is a call to the graphics driver. Since the drivers implementations
@@ -383,7 +347,7 @@ GAIXW_API unsigned int  gaixw_GetAttribute					(gaixw_context *window, gaixw_ren
  */
 GAIXW_API int  			gaixw_SetVerticalSync				(gaixw_context *window, unsigned int state);
 /**
- * @brief      Gets the vertical sync 
+ * @brief      Gets the vertical sync
  * state
  * @note       This is a call to the graphics driver. Since the drivers implementations
  *             are different, this can have different results on different graphic cards.
@@ -568,7 +532,7 @@ typedef void (*DEBUGPROC)(GLenum source, GLenum type, GLuint id, GLenum severity
 	GAIXW_FUNC_DEF(, get_shader_source_fn, void, GetShaderSource, GLuint, GLsizei, GLsizei*, GLchar *) \
 	GAIXW_FUNC_DEF(, get_uniform_location_fn, GLint, GetUniformLocation, GLuint, const GLchar*) \
 	GAIXW_FUNC_DEF(, link_program_fn, void, LinkProgram, GLuint) \
-	GAIXW_FUNC_DEF(, shader_source_fn, void, ShaderSource, GLuint, GLsizei, GLchar**, GLint*) \
+	GAIXW_FUNC_DEF(, shader_source_fn, void, ShaderSource, GLuint, GLsizei, const GLchar**, GLint*) \
 	GAIXW_FUNC_DEF(, use_program, void, UseProgram, GLuint) \
 	GAIXW_FUNC_DEF(, uniform_1f_fn, void, Uniform1f, GLint, GLfloat) \
 	GAIXW_FUNC_DEF(, uniform_2f_fn,	void, Uniform2f, GLint, GLfloat, GLfloat) \
@@ -619,6 +583,7 @@ typedef void (*DEBUGPROC)(GLenum source, GLenum type, GLuint id, GLenum severity
 	GAIXW_FUNC_DEF(, tex_storage_1d_fn, void, TexStorage1D, GLenum, GLsizei, GLenum, GLsizei) /* GL_ARB_texture_storage */ \
 	GAIXW_FUNC_DEF(, tex_storage_2d_fn, void, TexStorage2D, GLenum, GLsizei, GLenum, GLsizei, GLsizei) /* GL_ARB_texture_storage */ \
 	GAIXW_FUNC_DEF(, tex_storage_3d_fn, void, TexStorage3D, GLenum, GLsizei, GLenum, GLsizei, GLsizei, GLsizei) /* GL_ARB_texture_storage */
+
 #define GAIXW_FUNC_DEF(ext, def, a, b, ...) typedef a (gl_##def) (__VA_ARGS__);
 GAIXW_FUNCWRAPPER
 #undef GAIXW_FUNC_DEF
@@ -658,7 +623,7 @@ gaixw_GLDebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GL
 }
 
 inline GAIXW_API unsigned int
-gaixw_GLIsSupported(char *extension)
+gaixw_GLIsSupported(const char *extension)
 {
 	if (glGetStringi && extension)
 	{
@@ -720,7 +685,6 @@ gaixw_GLInitFunctions(gaixw_context *window)
 GAIXW_API int
 gaixw_GLInit(gaixw_context *window)
 {
-	window->renderer.type = gaixwRendererOpenGL;
 	//timeBeginPeriod(1);
 	PIXELFORMATDESCRIPTOR pfd = {};
 	pfd.nSize                 = sizeof(pfd);
@@ -759,11 +723,6 @@ gaixw_GLInit(gaixw_context *window)
 		return -6;
 	}
 
-	window->renderer.graphics.opengl.context 	= old_glctx;
-	window->renderer.graphics.opengl.vendor     = (char *) glGetString(GL_VENDOR);
-	window->renderer.graphics.opengl.version    = (char *) glGetString(GL_VERSION);
-	window->renderer.graphics.opengl.renderer   = (char *) glGetString(GL_RENDERER);
-
 	if (gaixw_WGLIsSupported("WGL_ARB_create_context"))
 	{
 		void *wglCreateContextAttribsARB = wglGetProcAddress("wglCreateContextAttribsARB");
@@ -796,18 +755,11 @@ gaixw_GLInit(gaixw_context *window)
 				wglMakeCurrent(window->platform.win32.hdc, new_oglctx);
 
 				gaixw_GLInitFunctions(window);
-
-				window->renderer.graphics.opengl.context 				  = new_oglctx;
-				window->renderer.graphics.opengl.vendor                   = (char *) glGetString(GL_VENDOR);
-				window->renderer.graphics.opengl.version                  = (char *) glGetString(GL_VERSION);
-				window->renderer.graphics.opengl.renderer                 = (char *) glGetString(GL_RENDERER);
-				window->renderer.graphics.opengl.shading_language_version = (char *) glGetString(0x8B8C);  // 0x8B8C GL_SHADING_LANGUAGE_VERSION
-
 				gaixw_SetVerticalSync(window, 1);
 				//gaixw_GLInitMultisampling(window);
 
 				#ifdef GAIXW_OPENGL_DEBUG
-				glEnable(0x8242 /* GL_DEBUG_OUTPUT_SYNCHRONOUS */ ); // 0x92E0 /* GL_DEBUG_OUTPUT */
+				glEnable(0x92E0 /* GL_DEBUG_OUTPUT */); // 0x8242 /* GL_DEBUG_OUTPUT_SYNCHRONOUS */ 
 				glDebugMessageCallback(gaixw_GLDebugCallback, 0);
 				#endif
 			}
@@ -817,6 +769,7 @@ gaixw_GLInit(gaixw_context *window)
 	}
 	else GAIXW_ASSERT(!"This graphics card does not support \"WGL_ARB_create_context\".");
 
+	window->type = gaixwRendererOpenGL;
 	return 1;
 }
 
@@ -825,6 +778,16 @@ gaixw_GLInit(gaixw_context *window)
 #error gai_xwindow.h: Error. DirectX 10 is not implemented yet!
 #elif defined GAIXW_VULCAN
 #error gai_xwindow.h: Error. Vulcan is not implemented yet!
+#else
+#if _WIN32
+	#ifdef GAIXW_WNDPROC
+		LRESULT CALLBACK GAIXW_WNDPROC(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+	#endif
+#elif __linux__
+	#error This platform is not supported!
+#else
+	#error This platform is not supported!
+#endif
 #endif
 
 #pragma comment( lib, "user32.lib" )
@@ -837,7 +800,7 @@ GAIXW_API void
 gaixw_Deinit(gaixw_context *window)
 {
 	#ifdef GAIXW_OPENGL
-	HGLRC ctx = (HGLRC) window->renderer.graphics.opengl.context;
+	HGLRC ctx = wglGetCurrentContext();
 	if (ctx)
 	{
 		wglMakeCurrent(0, 0);
@@ -858,9 +821,9 @@ gaixw_Deinit(gaixw_context *window)
 }
 
 GAIXW_API unsigned int
-gaixw_GetAttribute(gaixw_context *window, gaixw_renderer_flags attrib)
+gaixw_GetAttribute(gaixw_context *window, gaixw_flags attrib)
 {
-	return (window->renderer.attributes & attrib ? 1 : 0);
+	return (window->attributes & attrib ? 1 : 0);
 }
 
 GAIXW_API int
@@ -922,6 +885,7 @@ gaixw_MouseReleased(gaixw_context *window, int key)
 LRESULT CALLBACK
 gaixw_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+	DWORD result = 0;
 	gaixw_context *window = (gaixw_context *) GetWindowLongPtr(hWnd, GWLP_USERDATA);
 	if (window)
 	{
@@ -929,45 +893,45 @@ gaixw_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		{
 			case WM_SIZE:
 			{
-				window->info.width  = LOWORD(lParam);
-				window->info.height = HIWORD(lParam);
+				window->width  = LOWORD(lParam);
+				window->height = HIWORD(lParam);
 				switch (wParam)
 				{
 					case SIZE_RESTORED:
 					{
-						if (window->renderer.attributes & gaixwFlagsMinimized) window->renderer.attributes = window->renderer.attributes & ~gaixwFlagsMinimized;
-						if (window->renderer.attributes & gaixwFlagsMaximized) window->renderer.attributes = window->renderer.attributes & ~gaixwFlagsMaximized;
+						if (window->attributes & gaixwFlagsMinimized) window->attributes = window->attributes & ~gaixwFlagsMinimized;
+						if (window->attributes & gaixwFlagsMaximized) window->attributes = window->attributes & ~gaixwFlagsMaximized;
 					} break;
 					case SIZE_MAXIMIZED:
 					{
-						if (window->renderer.attributes & gaixwFlagsMinimized) window->renderer.attributes = window->renderer.attributes & ~gaixwFlagsMinimized;
-						window->renderer.attributes |= gaixwFlagsMaximized;
+						if (window->attributes & gaixwFlagsMinimized) window->attributes = window->attributes & ~gaixwFlagsMinimized;
+						window->attributes |= gaixwFlagsMaximized;
 					} break;
 					case SIZE_MINIMIZED:
 					{
-						if (window->renderer.attributes & gaixwFlagsMaximized) window->renderer.attributes = window->renderer.attributes & ~gaixwFlagsMaximized;
-						window->renderer.attributes |= gaixwFlagsMinimized;
+						if (window->attributes & gaixwFlagsMaximized) window->attributes = window->attributes & ~gaixwFlagsMaximized;
+						window->attributes |= gaixwFlagsMinimized;
 					} break;
 				}
-				return 0;
-			}
-			case WM_MOVE: 			{ window->info.x = (int)(short) LOWORD(lParam); window->info.y = (int)(short) HIWORD(lParam); return 0; }
-			case WM_KEYDOWN: 		{ window->input.keys_history[wParam] = window->input.keys[wParam]; window->input.keys[wParam] = 1; return 0; }
-			case WM_KEYUP:			{ window->input.keys_history[wParam] = window->input.keys[wParam]; window->input.keys[wParam] = 0; return 0; }
-			case WM_MOUSEMOVE:		{ POINTS p = MAKEPOINTS(lParam); window->input.x  = p.x; window->input.y  = p.y; return 0; }
-			case WM_LBUTTONDOWN:	{ window->input.mouse_history[0] = window->input.mouse[0]; window->input.mouse[0] = 1; return 0; }
-			case WM_LBUTTONUP:		{ window->input.mouse_history[0] = window->input.mouse[0]; window->input.mouse[0] = 0; return 0; }
-			case WM_MBUTTONDOWN:	{ window->input.mouse_history[1] = window->input.mouse[1]; window->input.mouse[1] = 1; return 0; }
-			case WM_MBUTTONUP:		{ window->input.mouse_history[1] = window->input.mouse[1]; window->input.mouse[1] = 0; return 0; }
-			case WM_RBUTTONDOWN:	{ window->input.mouse_history[2] = window->input.mouse[2]; window->input.mouse[2] = 1; return 0; }
-			case WM_RBUTTONUP:		{ window->input.mouse_history[2] = window->input.mouse[2]; window->input.mouse[2] = 0; return 0; }
-			case WM_MOUSEWHEEL:		{ window->input.dwheel = GET_WHEEL_DELTA_WPARAM(wParam) / WHEEL_DELTA; window->input.wheel  += window->input.dwheel; return 0; }
+				result = 0;
+			} break;
+			case WM_MOVE: 			{ window->x = (int)(short) LOWORD(lParam); window->y = (int)(short) HIWORD(lParam); result = 0; } break;
+			case WM_KEYDOWN: 		{ window->input.keys_history[wParam] = window->input.keys[wParam]; window->input.keys[wParam] = 1; result = 0; } break;
+			case WM_KEYUP:			{ window->input.keys_history[wParam] = window->input.keys[wParam]; window->input.keys[wParam] = 0; result = 0; } break;
+			case WM_MOUSEMOVE:		{ POINTS p = MAKEPOINTS(lParam); window->input.x = p.x; window->input.y = p.y; result = 0; } break;
+			case WM_LBUTTONDOWN:	{ window->input.mouse_history[0] = window->input.mouse[0]; window->input.mouse[0] = 1; result = 0; } break;
+			case WM_LBUTTONUP:		{ window->input.mouse_history[0] = window->input.mouse[0]; window->input.mouse[0] = 0; result = 0; } break;
+			case WM_MBUTTONDOWN:	{ window->input.mouse_history[1] = window->input.mouse[1]; window->input.mouse[1] = 1; result = 0; } break;
+			case WM_MBUTTONUP:		{ window->input.mouse_history[1] = window->input.mouse[1]; window->input.mouse[1] = 0; result = 0; } break;
+			case WM_RBUTTONDOWN:	{ window->input.mouse_history[2] = window->input.mouse[2]; window->input.mouse[2] = 1; result = 0; } break;
+			case WM_RBUTTONUP:		{ window->input.mouse_history[2] = window->input.mouse[2]; window->input.mouse[2] = 0; result = 0; } break;
+			case WM_MOUSEWHEEL:		{ window->input.dwheel = GET_WHEEL_DELTA_WPARAM(wParam) / WHEEL_DELTA; window->input.wheel  += window->input.dwheel; result = 0; } break;
 			case WM_DESTROY:
 			{
 				#if 0
 				_gaiXWindowDeInit(window);
 				#ifdef GAIXW_OPENGL
-				if (window->renderer.info.opengl.is_modern)
+				if (window->opengl.is_modern)
 				{
 					HGLRC ctx = wglGetCurrentContext();
 					if (ctx)
@@ -980,9 +944,15 @@ gaixw_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				PostQuitMessage(0);
 				#endif
 				window->is_running = false;
-				return 0;
+				result = 0;
 			} break;
 		}
+
+		#ifdef GAIXW_WNDPROC
+		GAIXW_WNDPROC(hWnd, uMsg, wParam, lParam);
+		#endif
+
+		return DefWindowProc(hWnd, uMsg, wParam, lParam);
 	}
 	return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
@@ -1005,7 +975,7 @@ gaixw_ToggleFullscreen(gaixw_context *window)
 			             MonitorInfo.rcMonitor.bottom - MonitorInfo.rcMonitor.top,
 			             SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
 		}
-		window->renderer.attributes |= gaixwFlagsFullscreen;
+		window->attributes |= gaixwFlagsFullscreen;
 	}
 	else
 	{
@@ -1014,7 +984,7 @@ gaixw_ToggleFullscreen(gaixw_context *window)
 		SetWindowPos(hWnd, 0, 0, 0, 0, 0,
 		             SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER |
 		             SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
-		window->renderer.attributes &= ~gaixwFlagsFullscreen;
+		window->attributes &= ~gaixwFlagsFullscreen;
 	}
 }
 
@@ -1024,7 +994,6 @@ gaixw_SetTitle(gaixw_context *window, const char *title)
 	wchar_t buffer[4096];
 	MultiByteToWideChar(CP_UTF8, 0, title, -1, buffer, 4095);
 	SetWindowTextW(window->platform.win32.hwnd, buffer);
-	window->info.title = title;
 }
 
 GAIXW_API void
@@ -1043,7 +1012,7 @@ gaixw_SetVerticalSync(gaixw_context *window, unsigned int state)
 	#ifdef GAIXW_OPENGL
 	gaixw_GLSetSwapInterval(state);
 	result = gaixw_GLGetSwapInterval();
-	window->renderer.attributes = (result != 0 ? window->renderer.attributes | gaixwFlagsVSYNC : window->renderer.attributes & ~gaixwFlagsVSYNC);
+	window->attributes = (result != 0 ? window->attributes | gaixwFlagsVSYNC : window->attributes & ~gaixwFlagsVSYNC);
 	#endif
 	return result;
 }
@@ -1052,12 +1021,14 @@ inline GAIXW_API float
 gaixw_Update(gaixw_context *window)
 {
 	MSG msg;
+
 	#ifdef GAIXW_OPENGL
 	if (gaixw_KeyReleased(window, VK_F1)) gaixw_ToggleFullscreen(window);
 	if (gaixw_KeyReleased(window, VK_F2)) gaixw_SetVerticalSync(window, !gaixw_GetAttribute(window, gaixwFlagsVSYNC));
 
 	static LARGE_INTEGER _frequency;
 	static LARGE_INTEGER _ltframetime;
+
 	static int fps;
 	static int frames;
 	static long double frametime;
@@ -1073,19 +1044,16 @@ gaixw_Update(gaixw_context *window)
 	LARGE_INTEGER now, elapsed;
 	QueryPerformanceCounter(&now);
 	elapsed.QuadPart = now.QuadPart - _ltframetime.QuadPart;
-	elapsed.QuadPart *= 1000000;
-	elapsed.QuadPart /= _frequency.QuadPart;
 
-	window->dt.micros  = (float)elapsed.QuadPart;
-	window->dt.millis  = (float)elapsed.QuadPart / 1000.f;
-	window->dt.seconds = (float)elapsed.QuadPart / 1000000.f;
+	window->dt = (float) elapsed.QuadPart / (float) _frequency.QuadPart;
+
 	_ltframetime = now;
 
 	int old_x = window->input.x;
 	int old_y = window->input.y;
 	window->input.dwheel = 0;
 
-	while ( PeekMessageA(&msg, 0, 0, 0, PM_REMOVE) )
+	while ( PeekMessage(&msg, 0, 0, 0, PM_REMOVE) )
 	{
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
@@ -1099,9 +1067,10 @@ gaixw_Update(gaixw_context *window)
 	window->input.dx = window->input.x - old_x;
 	window->input.dy = window->input.y - old_y;
 
+	#if 0
 	if (frametime >= 1.0f)
 	{
-		window->info.fps = frames;
+		window->fps = frames;
 		frames = 0;
 		frametime = 0;
 	}
@@ -1110,7 +1079,7 @@ gaixw_Update(gaixw_context *window)
 		frametime += window->dt.seconds;
 		frames++;
 	}
-
+	#endif
 	#else
 
 	while (GetMessage(&msg, 0, 0, 0) != 0)
@@ -1122,7 +1091,7 @@ gaixw_Update(gaixw_context *window)
 
 	#endif
 
-	return (float) window->dt.seconds;
+	return window->dt;
 }
 
 GAIXW_API int
@@ -1147,8 +1116,14 @@ gaixw_Init(gaixw_context *window, const char *title, int width, int height, int 
 	GAIXW_ASSERT(window);
 	//if (!ConvertThreadToFiber(0) ) return 0;
 
-	gaixw_context init = { {0}, {title, width, height, x, y}, {0}, {0, 0, GetModuleHandle(0)}, { 0, gaixwRendererGDI, 0 } };
+	gaixw_context init = {0};
 	*window = init;
+	window->width = width;
+	window->height = height;
+	window->x = x;
+	window->y = y;
+	window->platform.win32.instance = GetModuleHandle(0);
+	window->type = gaixwRendererGDI;
 
 	WNDCLASSEXA wnd_class   = {};
 	wnd_class.cbSize        = sizeof(wnd_class);
@@ -1197,6 +1172,10 @@ gaixw_Init(gaixw_context *window, const char *title, int width, int height, int 
 		}
 	}
 	#else
+
+	#ifdef GAIXW_WNDPROC
+	//SetWindowLongPtr(window->platform.win32.hwnd, GWLP_WNDPROC, (LONG_PTR) GAIXW_WNDPROC);
+	#endif
 
 	#endif
 

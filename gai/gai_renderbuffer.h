@@ -92,7 +92,7 @@ inline m4x4 PerspectiveProjection(r32 aspect, r32 fov, r32 znear, r32 zfar)
 	return R;
 }
 
-union v2 { struct { r32 x, y; }; struct { r32 u, v; }; r32 E[2]; };
+//union v2 { struct { r32 x, y; }; struct { r32 u, v; }; r32 E[2]; };
 inline v2 V2(r32 x, r32 y) { v2 result = { x, y }; return result; }
 inline v2 V2(r32 xy) { v2 result = { xy, xy }; return result; }
 inline v2 V2i(i32 x, i32 y) { v2 result = { (r32)x, (r32)y }; return result; }
@@ -105,7 +105,7 @@ inline v2 &operator-=(v2 &a, v2 b) { a = a - b; return (a); }
 inline v2 operator+(v2 a, v2 b) { v2 result; result.x = a.x + b.x; result.y = a.y + b.y; return (result); }
 inline v2 &operator+=(v2 &a, v2 b) { a = a + b; return (a); }
 
-union v3 { struct { v2 xy; r32 _ignored0_; }; struct { r32 _ignored0_; v2 yz; }; struct { v2 uv; r32 _ignored0_; }; struct { r32 _ignored0_; v2 vw; }; struct { r32 x, y, z; }; struct { r32 r, g, b; }; struct { r32 u, v, w; }; r32 E[3]; };
+//union v3 { struct { v2 xy; r32 _ignored0_; }; struct { r32 _ignored0_; v2 yz; }; struct { v2 uv; r32 _ignored0_; }; struct { r32 _ignored0_; v2 vw; }; struct { r32 x, y, z; }; struct { r32 r, g, b; }; struct { r32 u, v, w; }; r32 E[3]; };
 inline v3 V3(r32 x, r32 y, r32 z) { v3 result = { x, y, z }; return result; }
 inline v3 V3(r32 xyz) { v3 result = { xyz, xyz, xyz }; return result; }
 inline v3 V3(v2 xy, r32 z) { v3 result = { xy.x, xy.y, z }; return result; }
@@ -129,7 +129,7 @@ inline r32 Dot(v3 A, v3 B) { r32 Result = A.x * B.x + A.y * B.y + A.z * B.z; ret
 inline r32 LengthSq(v3 A) { r32 Result = Dot(A, A); return (Result); }
 inline v3 Normalize(v3 a) { v3 result = a * (1.0f / LengthSq(a)); return (result); }
 
-union v4 { struct { union { v3 xyz; struct { r32 x, y, z; }; }; r32 w; }; struct { union { v3 rgb; struct { r32 r, g, b; }; }; r32 a; }; struct { v2 xy; r32 _ignored0_; r32 _ignored1_; }; struct { r32 _ignored0_; v2 yz; r32 _ignored1_; }; struct { r32 _ignored0_; r32 _ignored1_; v2 zw; }; r32 E[4]; };
+//union v4 { struct { union { v3 xyz; struct { r32 x, y, z; }; }; r32 w; }; struct { union { v3 rgb; struct { r32 r, g, b; }; }; r32 a; }; struct { v2 xy; r32 _ignored0_; r32 _ignored1_; }; struct { r32 _ignored0_; v2 yz; r32 _ignored1_; }; struct { r32 _ignored0_; r32 _ignored1_; v2 zw; }; r32 E[4]; };
 inline v4 V4(r32 x, r32 y, r32 z, r32 w) { v4 result = { x, y, z, w }; return result; }
 inline v4 V4(r32 xyzw) { v4 result = { xyzw, xyzw, xyzw, xyzw }; return result; }
 inline v4 V4(v2 xy, r32 z, r32 w) { v4 result = { xy.x, xy.y, z, w }; return result; }
@@ -229,8 +229,9 @@ GAIRB_API gairb_group 		gairb_BeginGroup(v2 screen_dim, gairb_renderbuffer *comm
 GAIRB_API void 				gairb_EndGroup(gairb_group *group);
 GAIRB_API void 				gairb_PushSetup(gairb_group *group, gairb_setup *new_setup);
 
-GAIRB_API void				gairb_PushRect(gairb_group *group, loaded_bitmap *bitmap, v4 p1, v2 uv1, v4 c1, v4 p2, v2 uv2, v4 c2, v4 p3, v2 uv3, v4 c3, v4 p4, v2 uv4, v4 c4);
-GAIRB_API void 				gairb_PushRect(gairb_group *group, loaded_bitmap *bitmap, v4 color, v4 p1, v2 uv1, v4 p2, v2 uv2, v4 p3, v2 uv3, v4 p4, v2 uv4);
+GAIRB_API void				gairb_PushQuad(gairb_group *group, loaded_bitmap *bitmap, v4 p1, v2 uv1, v4 c1, v4 p2, v2 uv2, v4 c2, v4 p3, v2 uv3, v4 c3, v4 p4, v2 uv4, v4 c4);
+GAIRB_API void 				gairb_PushQuad(gairb_group *group, loaded_bitmap *bitmap, v4 color, v4 p1, v2 uv1, v4 p2, v2 uv2, v4 p3, v2 uv3, v4 p4, v2 uv4);
+
 GAIRB_API void				gairb_PushRect(gairb_group *group, loaded_bitmap *bitmap, v4 color, v3 position, r32 width, r32 height, u16 align = gairb_AlignToTopLeft, u32 flipped = 0);
 GAIRB_API void				gairb_PushRect(gairb_group *group, v4 color, v3 position, r32 width, r32 height, u16 align = gairb_AlignToTopLeft);
 
@@ -302,18 +303,20 @@ _gairb_GetQuads(gairb_group *group, u32 quad_count)
 }
 
 inline GAIRB_API void
-gairb_PushRect(gairb_group *group, loaded_bitmap *bitmap, v4 p1, v2 uv1, v4 c1, v4 p2, v2 uv2, v4 c2, v4 p3, v2 uv3, v4 c3, v4 p4, v2 uv4, v4 c4)
+gairb_PushQuad(gairb_group *group, loaded_bitmap *bitmap,
+               v4 p1, v2 uv1, v4 c1,
+               v4 p2, v2 uv2, v4 c2,
+               v4 p3, v2 uv3, v4 c3,
+               v4 p4, v2 uv4, v4 c4)
 {
-	gairb_entry_textured_quads *entry = _gairb_GetQuads(group, 1);
-	if(!entry) return;
+	gairb_entry_textured_quads *entry = group->current_quads;
 	GAIRB_ASSERT(entry);
 
 	if (!bitmap) bitmap = group->commands->default_texture;
-	if (group->commands->quad_textures)
-	{
-		int vertex_index = (group->commands->vertex_count != 0 ? group->commands->vertex_count / 6 : group->commands->vertex_count);
-		group->commands->quad_textures[vertex_index] = bitmap;
-	}
+
+	int vertex_index = (group->commands->vertex_count != 0 ? group->commands->vertex_count / 6 : group->commands->vertex_count);
+	if( group->commands->quad_textures) group->commands->quad_textures[vertex_index] = bitmap;
+
 	++entry->quad_count;
 
 	gairb_textured_vertex *v = group->commands->vertex_array + group->commands->vertex_count;
@@ -342,30 +345,29 @@ gairb_PushRect(gairb_group *group, loaded_bitmap *bitmap, v4 p1, v2 uv1, v4 c1, 
 	v[5].uv.u  	 = uv4.u; v[5].uv.v 	= uv4.v;
 	v[5].p.x 	 = p4.x;  v[5].p.y 		= p4.y;  v[5].p.z 	  = p4.z; v[5].p.w 	   = p4.w;
 	v[5].color.x = c4.x;  v[5].color.y  = c4.y;  v[5].color.z = c4.z; v[5].color.w = c4.w;
-
-	#if 0
-	v[1].p = p2; v[1].uv = uv2; v[1].color = c2;
-	v[2].p = p3; v[2].uv = uv3; v[2].color = c3;
-	v[3].p = p4; v[3].uv = uv4; v[3].color = c4;
-	#endif
 }
 
 inline GAIRB_API void
-gairb_PushRect(gairb_group *group, loaded_bitmap *bitmap, v4 color, v4 p1, v2 uv1, v4 p2, v2 uv2, v4 p3, v2 uv3, v4 p4, v2 uv4)
+gairb_PushQuad(gairb_group *group, loaded_bitmap *bitmap, v4 color, v4 p1, v2 uv1, v4 p2, v2 uv2, v4 p3, v2 uv3, v4 p4, v2 uv4)
 {
-	gairb_PushRect(group, bitmap, p1, uv1, color, p2, uv2, color, p3, uv3, color, p4, uv4, color);
+	gairb_PushQuad(group, bitmap, p1, uv1, color, p2, uv2, color, p3, uv3, color, p4, uv4, color);
 }
 
 inline GAIRB_API void
-gairb_PushRect(gairb_group *group, v4 color, v4 p1, v2 uv1, v4 p2, v2 uv2, v4 p3, v2 uv3, v4 p4, v2 uv4)
+gairb_PushQuad(gairb_group *group, v4 color, v4 p1, v2 uv1, v4 p2, v2 uv2, v4 p3, v2 uv3, v4 p4, v2 uv4)
 {
 	loaded_bitmap *bitmap = group->commands->default_texture;
-	gairb_PushRect(group, bitmap, p1, uv1, color, p2, uv2, color, p3, uv3, color, p4, uv4, color);
+	gairb_PushQuad(group, bitmap, p1, uv1, color, p2, uv2, color, p3, uv3, color, p4, uv4, color);
 }
+
 
 inline GAIRB_API void
 gairb_PushRect(gairb_group *group, loaded_bitmap *bitmap, v4 color, v3 position, r32 width, r32 height, u16 align, u32 flipped)
 {
+	gairb_entry_textured_quads *entry = _gairb_GetQuads(group, 1);
+	if (!entry) return;
+	GAIRB_ASSERT(entry);
+
 	v4 tl = V4(0.f), bl = V4(0.f), br = V4(0.f), tr = V4(0.f);
 	switch (align)
 	{
@@ -408,8 +410,8 @@ gairb_PushRect(gairb_group *group, loaded_bitmap *bitmap, v4 color, v3 position,
 		} break;
 		default: { return; };
 	}
-	if (flipped) gairb_PushRect(group, bitmap, color, tl, V2i(0, 1), bl, V2i(0, 0), tr, V2i(1, 1), br, V2i(1, 0) );
-	else gairb_PushRect(group, bitmap, color, bl, V2i(0, 1), br, V2i(1, 1), tl, V2i(0, 0), tr, V2i(1, 0) );
+	if (flipped) gairb_PushQuad(group, bitmap, color, tl, V2i(0, 1), bl, V2i(0, 0), tr, V2i(1, 1), br, V2i(1, 0) );
+	else gairb_PushQuad(group, bitmap, color, bl, V2i(0, 1), br, V2i(1, 1), tl, V2i(0, 0), tr, V2i(1, 0) );
 }
 
 inline GAIRB_API void
@@ -437,7 +439,7 @@ GAIRB_API void
 gairb_PushCube(gairb_group *group, loaded_bitmap *bitmap, v4 color, v3 position, r32 radius, r32 height, i32 flip_texture)
 {
 	gairb_entry_textured_quads *entry = _gairb_GetQuads(group, 6);
-	if(!entry) return;
+	if (!entry) return;
 	GAIRB_ASSERT(entry);
 
 	r32 half_height = height * .5f;
@@ -446,34 +448,38 @@ gairb_PushCube(gairb_group *group, loaded_bitmap *bitmap, v4 color, v3 position,
 	if (flip_texture == 1) { uv1 = V2(0, 1); uv2 = V2(0, 0); uv3 = V2(1, 1); uv4 = V2(1, 0); }
 	else { uv1 = V2(0, 0); uv2 = V2(0, 1); uv3 = V2(1, 0); uv4 = V2(1, 1); }
 
-	v4 c1  = V4(color.xyz * .25f, color.a);
+	v4 c1;
+	c1.x = color.x * .25f;
+	c1.y = color.y * .25f;
+	c1.z = color.z * .25f;
+	c1.a = color.a;
 	v4 c2  = color;
 
-	v4 a = V4(position.x - half_width, position.y + half_height, position.z + half_width, 1.f);
-	v4 c = V4(position.x - half_width, position.y - half_height, position.z + half_width, 1.f);
-	v4 b = V4(position.x + half_width, position.y + half_height, position.z + half_width, 1.f);
-	v4 d = V4(position.x + half_width, position.y - half_height, position.z + half_width, 1.f);
-	v4 e = V4(position.x - half_width, position.y + half_height, position.z - half_width, 1.f);
-	v4 g = V4(position.x - half_width, position.y - half_height, position.z - half_width, 1.f);
-	v4 f = V4(position.x + half_width, position.y + half_height, position.z - half_width, 1.f);
-	v4 h = V4(position.x + half_width, position.y - half_height, position.z - half_width, 1.f);
+	v4 a, b, c, d, e, f, g, h;
+	a.x = position.x - half_width; a.y = position.y + half_height; a.z = position.z + half_width; a.a = 1.f;
+	c.x = position.x - half_width; c.y = position.y - half_height; c.z = position.z + half_width; c.a = 1.f;
+	b.x = position.x + half_width; b.y = position.y + half_height; b.z = position.z + half_width; b.a = 1.f;
+	d.x = position.x + half_width; d.y = position.y - half_height; d.z = position.z + half_width; d.a = 1.f;
+	e.x = position.x - half_width; e.y = position.y + half_height; e.z = position.z - half_width; e.a = 1.f;
+	g.x = position.x - half_width; g.y = position.y - half_height; g.z = position.z - half_width; g.a = 1.f;
+	f.x = position.x + half_width; f.y = position.y + half_height; f.z = position.z - half_width; f.a = 1.f;
+	h.x = position.x + half_width; h.y = position.y - half_height; h.z = position.z - half_width; h.a = 1.f;
 
 	#if GAIRB_DEBUG_VISUALGRADIENT_CUBE
-	gairb_PushRect(group, bitmap, c, uv2, c1, d, uv4, c1, a, uv1, c2, b, uv3, c2);
-	gairb_PushRect(group, bitmap, d, uv2, c1, h, uv4, c1, b, uv1, c2, f, uv3, c2);
-	gairb_PushRect(group, bitmap, h, uv2, c1, g, uv4, c1, f, uv1, c2, e, uv3, c2);
-	gairb_PushRect(group, bitmap, g, uv2, c1, c, uv4, c1, e, uv1, c2, a, uv3, c2);
-	gairb_PushRect(group, bitmap, a, uv2, c2, b, uv4, c2, e, uv1, c2, f, uv3, c2);
-	gairb_PushRect(group, bitmap, g, uv2, c1, h, uv4, c1, c, uv1, c1, d, uv3, c1);
+	gairb_PushQuad(group, bitmap, c, uv2, c1, d, uv4, c1, a, uv1, c2, b, uv3, c2);
+	gairb_PushQuad(group, bitmap, d, uv2, c1, h, uv4, c1, b, uv1, c2, f, uv3, c2);
+	gairb_PushQuad(group, bitmap, h, uv2, c1, g, uv4, c1, f, uv1, c2, e, uv3, c2);
+	gairb_PushQuad(group, bitmap, g, uv2, c1, c, uv4, c1, e, uv1, c2, a, uv3, c2);
+	gairb_PushQuad(group, bitmap, a, uv2, c2, b, uv4, c2, e, uv1, c2, f, uv3, c2);
+	gairb_PushQuad(group, bitmap, g, uv2, c1, h, uv4, c1, c, uv1, c1, d, uv3, c1);
 	#else
-	gairb_PushRect(group, bitmap, c, uv2, c2, d, uv4, c2, a, uv1, c2, b, uv3, c2);
-	gairb_PushRect(group, bitmap, d, uv2, c2, h, uv4, c2, b, uv1, c2, f, uv3, c2);
-	gairb_PushRect(group, bitmap, h, uv2, c2, g, uv4, c2, f, uv1, c2, e, uv3, c2);
-	gairb_PushRect(group, bitmap, g, uv2, c2, c, uv4, c2, e, uv1, c2, a, uv3, c2);
-	gairb_PushRect(group, bitmap, a, uv2, c2, b, uv4, c2, e, uv1, c2, f, uv3, c2);
-	gairb_PushRect(group, bitmap, g, uv2, c2, h, uv4, c2, c, uv1, c2, d, uv3, c2);
+	gairb_PushQuad(group, bitmap, c, uv2, c2, d, uv4, c2, a, uv1, c2, b, uv3, c2);
+	gairb_PushQuad(group, bitmap, d, uv2, c2, h, uv4, c2, b, uv1, c2, f, uv3, c2);
+	gairb_PushQuad(group, bitmap, h, uv2, c2, g, uv4, c2, f, uv1, c2, e, uv3, c2);
+	gairb_PushQuad(group, bitmap, g, uv2, c2, c, uv4, c2, e, uv1, c2, a, uv3, c2);
+	gairb_PushQuad(group, bitmap, a, uv2, c2, b, uv4, c2, e, uv1, c2, f, uv3, c2);
+	gairb_PushQuad(group, bitmap, g, uv2, c2, h, uv4, c2, c, uv1, c2, d, uv3, c2);
 	#endif
-
 }
 
 GAIRB_API void

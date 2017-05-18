@@ -1,5 +1,4 @@
 #ifndef _GAI_INCLUDE_RENDERER_OPENGL_H
-#include "gai_renderbuffer.h"
 
 #ifdef GAIRGL_STATIC
 	#define GAIRGL_API static
@@ -70,7 +69,7 @@ struct gairgl
 };
 
 GAIRGL_API void 	gairgl_Initialize(gairgl *opengl);
-GAIRGL_API GLuint 	gairgl_LoadShader(char *version, char *vertex, char *fragment);
+GAIRGL_API GLuint 	gairgl_LoadShader(const char *version, const char *vertex, const char *fragment);
 
 #ifdef GAIRGL_IMPLEMENTATION
 
@@ -105,8 +104,8 @@ gairgl_Initialize(gairgl *opengl)
 #undef IS_EXTENSION_SUPPORTED
 
 
-	char *version = R"GLSL(#version 330)GLSL";
-	char *vertex  = R"GLSL(
+	const char *version = R"GLSL(#version 330)GLSL";
+	const char *vertex  = R"GLSL(
 			layout (location = 0) in vec4 in_vertex;
 			layout (location = 1) in vec2 in_uv;
 			layout (location = 2) in vec4 in_color;
@@ -119,7 +118,7 @@ gairgl_Initialize(gairgl *opengl)
 				out_color 	= in_color;
 				out_uv    	= in_uv;
 			})GLSL";
-	char *frag = R"GLSL(
+	const char *frag = R"GLSL(
 	        in vec4 out_color;
 	        in vec2 out_uv;
 	        uniform sampler2D tex;
@@ -175,8 +174,6 @@ gairgl_Destroy(gairgl *opengl)
 	glDeleteProgram(opengl->shader);
 }
 
-#define U32FromHandle(handle) ((u32)   (size_t) (handle))
-#define HandleFromU32(value)  ((void*) (size_t) (value))
 u32
 gairgl_LoadTexture(gairgl *opengl, gairb_renderbuffer *commands, int quad_id)
 {
@@ -184,11 +181,11 @@ gairgl_LoadTexture(gairgl *opengl, gairb_renderbuffer *commands, int quad_id)
 	loaded_bitmap *b = commands->quad_textures[quad_id];
 	GAIRGL_ASSERT(b);
 	if (!b) return -1;
-	if (b->handle) return U32FromHandle(b->handle);
+	if (b->handle) return GAIPF_ValueFromPointer(u32, b->handle);
 	else
 	{
-		if (!b->memory) return U32FromHandle(commands->default_texture->handle);
-		
+		if (!b->memory) return GAIPF_ValueFromPointer(u32, commands->default_texture->handle);
+
 		GLuint handle;
 		glGenTextures(1, &handle);
 		glBindTexture(GL_TEXTURE_2D, handle);
@@ -205,7 +202,7 @@ gairgl_LoadTexture(gairgl *opengl, gairb_renderbuffer *commands, int quad_id)
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, b->width, b->height, 0, GL_RED, GL_UNSIGNED_BYTE, b->memory);
 		}
 		b->is_loaded = 1;
-		b->handle = HandleFromU32(handle);
+		b->handle = GAIPF_PointerFromValue(void, handle);
 	}
 	return -1;
 }
@@ -323,10 +320,10 @@ gairgl_Render(gairgl *opengl, gairb_renderbuffer *commands, v2 draw_region)
 }
 
 GAIRGL_API GLuint
-gairgl_LoadShader(char *version, char *vertex, char *fragment)
+gairgl_LoadShader(const char *version, const char *vertex, const char *fragment)
 {
 	GLuint vertex_shader_id = glCreateShader(0x8B31 /* GL_VERTEX_SHADER */);
-	GLchar *vertex_shader_code[] =
+	const GLchar *vertex_shader_code[] =
 	{
 		version,
 		vertex,
@@ -335,7 +332,7 @@ gairgl_LoadShader(char *version, char *vertex, char *fragment)
 	glCompileShader(vertex_shader_id);
 
 	GLuint fragment_shader_id = glCreateShader(0x8B30 /* GL_FRAGMENT_SHADER */);
-	GLchar *fragment_shader_code[] =
+	const GLchar *fragment_shader_code[] =
 	{
 		version,
 		fragment,

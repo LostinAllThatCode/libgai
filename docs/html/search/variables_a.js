@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['opengl',['opengl',['../gai__xwindow_8h.html#a7e427fc59e9f524b1f8f87532e46992e',1,'gaixw_graphics']]]
+  ['type',['type',['../gai__xwindow_8h.html#a386c9f4f9e1f7be6febaa54fedc329a1',1,'gaixw_context']]]
 ];

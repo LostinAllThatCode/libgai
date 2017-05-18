@@ -9,6 +9,13 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript">
+  $(document).ready(initResizable);
+</script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -42,6 +49,21 @@ $(function() {
 });
 </script>
 <div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){initNavTree('uniongaihr__platform.html','');});
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -56,45 +78,54 @@ $(function() {
 </iframe>
 </div>
 
-</div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="uniongaihr__platform-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">gaihr_platform Union Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-
-<p>Platform specific struct. This is different on each platform. Should not be used outside of this file!  
- <a href="uniongaihr__platform.html#details">More...</a></p>
-
-<p><code>#include &lt;<a class="el" href="gai__hotreload_8h_source.html">gai_hotreload.h</a>&gt;</code></p>
+<div class="dynheader">
+Collaboration diagram for gaihr_platform:</div>
+<div class="dyncontent">
+<div class="center"><img src="uniongaihr__platform__coll__graph.png" border="0" usemap="#gaihr__platform_coll__map" alt="Collaboration graph"/></div>
+<map name="gaihr__platform_coll__map" id="gaihr__platform_coll__map">
+<area shape="rect" id="node2" href="structgaihr__platform_1_1_w_i_n_d_o_w_s.html" title="gaihr_platform::WINDOWS" alt="" coords="5,5,157,29"/>
+<area shape="rect" id="node3" href="structgaihr__platform_1_1_l_i_n_u_x.html" title="gaihr_platform::LINUX" alt="" coords="182,5,311,29"/>
+</map>
+<center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structgaihr__platform_1_1_l_i_n_u_x.html">LINUX</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structgaihr__platform_1_1_w_i_n_d_o_w_s.html">WINDOWS</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:aedfb9de8ef3e57899ffdb423797ee38c"><td class="memItemLeft" align="right" valign="top"><a id="aedfb9de8ef3e57899ffdb423797ee38c"></a>
-void *&#160;</td><td class="memItemRight" valign="bottom"><b>mutex</b></td></tr>
-<tr class="separator:aedfb9de8ef3e57899ffdb423797ee38c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a632f16efa0c26719b6a05f4fbe4a1de7"><td class="memItemLeft" align="right" valign="top"><a id="a632f16efa0c26719b6a05f4fbe4a1de7"></a>
-void *&#160;</td><td class="memItemRight" valign="bottom"><b>event</b></td></tr>
-<tr class="separator:a632f16efa0c26719b6a05f4fbe4a1de7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad10bbb4f961b70e5d7c9609916bab3b3"><td class="memItemLeft" align="right" valign="top"><a id="ad10bbb4f961b70e5d7c9609916bab3b3"></a>
-unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>last_write_time</b></td></tr>
-<tr class="separator:ad10bbb4f961b70e5d7c9609916bab3b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3e8f59781b8c5c0d322c5c7b40ccce25"><td class="memItemLeft" align="right" valign="top"><a id="a3e8f59781b8c5c0d322c5c7b40ccce25"></a>
+struct <a class="el" href="structgaihr__platform_1_1_w_i_n_d_o_w_s.html">gaihr_platform::WINDOWS</a>&#160;</td><td class="memItemRight" valign="bottom"><b>win32</b></td></tr>
+<tr class="separator:a3e8f59781b8c5c0d322c5c7b40ccce25"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a681729ef2f92556fc4d402c31301abcc"><td class="memItemLeft" align="right" valign="top"><a id="a681729ef2f92556fc4d402c31301abcc"></a>
+struct <a class="el" href="structgaihr__platform_1_1_l_i_n_u_x.html">gaihr_platform::LINUX</a>&#160;</td><td class="memItemRight" valign="bottom"><b>linux</b></td></tr>
+<tr class="separator:a681729ef2f92556fc4d402c31301abcc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Platform specific struct. This is different on each platform. Should not be used outside of this file! </p>
-<p>This struct will vary on different platforms. </p><dl class="todo"><dt><b><a class="el" href="todo.html#_todo000001">Todo:</a></b></dt><dd>Add support for multiple platforms! </dd></dl>
-</div><hr/>The documentation for this union was generated from the following file:<ul>
+<hr/>The documentation for this union was generated from the following file:<ul>
 <li><a class="el" href="gai__hotreload_8h_source.html">gai_hotreload.h</a></li>
 </ul>
 </div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated on Tue Apr 25 2017 15:47:17 for libgai by &#160;<a href="http://www.doxygen.org/index.html">
-<img class="footer" src="doxygen.png" alt="doxygen"/>
-</a> 1.8.13
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="uniongaihr__platform.html">gaihr_platform</a></li>
+    <li class="footer">Generated on Thu May 4 2017 11:25:34 for libgai by
+    <a href="http://www.doxygen.org/index.html">
+    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
+  </ul>
+</div>
 </body>
 </html>

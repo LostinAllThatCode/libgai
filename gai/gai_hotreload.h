@@ -378,7 +378,7 @@ gaihr_WaitForEvent(gaihr_file * file)
 inline GAIHR_API int
 _gaihr_CompareFileTime(gaihr_filetime * a, gaihr_filetime * b)
 {
-	int result = (((b->time - a->time)) > 0) - (((b->time - a->time) < 0));
+	int result = ((((long long)b->time - (long long)a->time)) > 0) - ((((long long)b->time - (long long)a->time) < 0));
 	return result;
 }
 
