@@ -41,24 +41,19 @@ WriteToLog(const char *source, unsigned int linenumber, const char *line)
 #define GAIXW_OPENGL_CORE_PROFILE
 #include <gai_engine.h>
 
-
-PLATFORM_API_LOAD_BITMAP(win32_LoadBitmapFromFile)
+struct hr_texture
 {
-	if (!bitmap) assert(!"error");
-	int bpp;
-	stbi_set_flip_vertically_on_load(0);
-	bitmap->memory 		= stbi_load(filename, &bitmap->width, &bitmap->height, &bpp, 4);
-	bitmap->is_loaded 	= 0;
-	bitmap->handle 		= 0;
-}
+	gaipf_api *platform;
+	loaded_bitmap *bitmap;
+};
 
-void hotreloadtexture(gaihr_file *file)
+void HotreloadTexture(gaihr_file *file)
 {
-	loaded_bitmap *bitmap = (loaded_bitmap*) file->userdata;
-	if (bitmap)
+	hr_texture *texture 	= (hr_texture*) file->userdata; 
+	if (texture->bitmap)
 	{
-		if (bitmap->memory) stbi_image_free(bitmap->memory);
-		win32_LoadBitmapFromFile(bitmap, (char *)file->filename);
+		if (texture->bitmap->memory) stbi_image_free(texture->bitmap->memory);
+		texture->platform->LoadBitmapFromFile(texture->bitmap, (char *)file->filename);
 	}
 }
 
@@ -95,41 +90,40 @@ CreateWhiteBitmap(int width, int height)
 	return result;
 }
 
-inline loaded_bitmap
-LoadFontFromFile(const char *ttf_filename)
+int mb_to_unicode(int mb)
 {
-	loaded_bitmap result = { 0, 0, 4096, 4096, 0, 1};
-
-	int oversample  = 4;
-	stbtt_pack_context font_context;
-	stbtt_packedchar  characters[255];
-
-	// Load file into temporary buffer
-	unsigned char *font_buffer;
-	long font_buffer_size = 0;
-	FILE *File = fopen(ttf_filename, "rb");
-	fseek(File, 0, SEEK_END);
-	font_buffer_size = ftell(File);
-	rewind(File);
-
-	font_buffer = (unsigned char *) malloc(font_buffer_size);
-	fread(font_buffer, 1, font_buffer_size, File);
-	fclose(File);
-
-	// Create temporary bitmap buffer for the texture
-	result.memory = (unsigned char *) malloc( result.width * result.height );
-
-	stbtt_PackBegin(&font_context, result.memory, result.width, result.height, 0, 1, 0);
-	stbtt_PackSetOversampling(&font_context, oversample, oversample);
-	stbtt_PackFontRange(&font_context, font_buffer, 0, 48, 32, 64, characters);
-	stbtt_PackEnd(&font_context);
+	int result = 0;
+	int convert = mb;
+	unsigned char *l = (unsigned char*) &convert;
+	if( convert >= 0xF0000000 )
+	{
+		result += (l[3] & 7) << 18; 
+		result += ((l[2] & 0x3F) << 12); 
+		result += (l[1] & 0x3F) << 6;
+		result += (l[0] & 0x3F);
+	} 
+	else if( convert >= 0xE00000 ) 
+	{
+		result += ((l[2] & 0xF) << 12); 
+		result += (l[1] & 0x3F) << 6;
+		result += (l[0] & 0x3F);
+	}
+	else if( convert >= 0xC000 ) 
+	{
+		result += (l[1] & 0x1F) << 6;
+		result += (l[0] & 0x3F);
+	}
+	else
+	{
+		result += (l[0] & 0x7F);
+	}
 	return result;
 }
 
 int main(int argc, char **argv)
 {
-	platform_api platform = {};
-	platform.load_bitmap_fn = win32_LoadBitmapFromFile;
+	gaipf_api *platform = gaipf_GetPlatform();
+	if(!platform) return -1;
 
 	gaixw_context window;
 	if (!gaixw_Init(&window, "yolo")) return -1;
@@ -141,7 +135,7 @@ int main(int argc, char **argv)
 	gaihr_file reloadable_file = {};
 	gaihr_Track(&reloadable_file, "renderer.dll", reloadDLL, 0, gaihr_FlagsDontHandleEvent);
 
-	u32 pbuffersize = 1024 * 1024 * 8;
+	u32 pbuffersize = GAIPF_Megabytes(8);
 	u8 *pbuffer = (u8*) VirtualAlloc(0, pbuffersize, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 	u32 vertex_count_max = (1 << 16) * 32;
 	gairb_textured_vertex *vbuffer = (gairb_textured_vertex*) VirtualAlloc(0, sizeof(gairb_textured_vertex) * vertex_count_max, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
@@ -149,28 +143,30 @@ int main(int argc, char **argv)
 	u32 quad_texture_count = vertex_count_max >> 2;;
 	loaded_bitmap **quad_textures = (loaded_bitmap **) VirtualAlloc(0, sizeof(loaded_bitmap*) * quad_texture_count, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 
+	loaded_font consolab = GAIPF_FONT_NULL;
+	platform->LoadFontFromFile(&consolab, "C:/windows/fonts/consolab.ttf", 64);
+
 	loaded_bitmap assets[64] = {};
 	assets[0] = CreateWhiteBitmap(128, 128);
-	assets[2] = LoadFontFromFile("C:/windows/fonts/consolab.ttf");
+	assets[2] = consolab.bitmap;
 
+	hr_texture tex = { platform, &assets[1] };
 	gaihr_file texture;
-	gaihr_Track(&texture, "test.jpg", hotreloadtexture, &assets[1]);
+	gaihr_Track(&texture, "test.jpg", HotreloadTexture, &tex);
 
-
-	platform.assets = assets;
+	platform->assets = assets;
 
 	for (;;)
 	{
 		gaixw_Update(&window);
 		if (!window.is_running) break;
-		//if (window.dt.millis > 17) continue;
 
 		gairb_renderbuffer render_commands = gairb_RenderBuffer(V4(.0f, .0f, .0f, 1.0f), pbuffersize, pbuffer, vertex_count_max, vbuffer, quad_textures, &assets[0]);
 
 		if (gaixw_KeyPressed(&window, 'K')) gaihr_Untrack(&texture);
 
 		gaihr_WaitForEvent(&reloadable_file);
-		if (UpdateAndRender) UpdateAndRender(&window, &render_commands, &platform);
+		if (UpdateAndRender) UpdateAndRender(&window, &render_commands, platform);
 
 		int draw_calls = gairgl_Render(&opengl, &render_commands, V2i(window.width, window.height));
 		gaixw_SwapBuffers(&window);
@@ -185,7 +181,7 @@ int main(int argc, char **argv)
 	VirtualFree(vbuffer, 0, MEM_RELEASE);
 	VirtualFree(assets[0].memory, 0, MEM_RELEASE);
 	stbi_image_free(assets[1].memory);
-
+	VirtualFree(assets[2].memory, 0, MEM_RELEASE);
 
 	return 0;
 }

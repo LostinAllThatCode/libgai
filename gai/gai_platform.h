@@ -113,10 +113,10 @@ inline u32 gaipf_GetThreadID(void)
 #define GAIPF_ValueFromPointer( type, ptr )   	((type)(size_t)(ptr))
 #define GAIPF_PointerFromValue( type, value ) 	(type *)((size_t)value)
 
-#define GAIPF_KiloBytes( value ) 				((value)*1024LL)
-#define GAIPF_MegaBytes( value ) 				(Kilobytes(value)*1024LL)
-#define GAIPF_GigaBytes( value ) 				(Megabytes(value)*1024LL)
-#define GAIPF_TeraBytes( value ) 				(Gigabytes(value)*1024LL)
+#define GAIPF_Kilobytes( value ) 				((value)*1024LL)
+#define GAIPF_Megabytes( value ) 				(GAIPF_Kilobytes(value)*1024LL)
+#define GAIPF_Gigabytes( value ) 				(GAIPF_Megabytes(value)*1024LL)
+#define GAIPF_Terabytes( value ) 				(GAIPF_Gigabytes(value)*1024LL)
 
 #define GAIPF_ArrayCount( array ) 				(sizeof(array)/sizeof(array[0]))
 
@@ -124,11 +124,6 @@ struct gaipf_mutex
 {
 	u64 volatile mutex;
 	u64 volatile serving;
-};
-
-struct gaipf_api
-{
-
 };
 
 struct gaipf_textured_vertex

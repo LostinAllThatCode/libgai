@@ -70,6 +70,7 @@ struct gairgl
 
 GAIRGL_API void 	gairgl_Initialize(gairgl *opengl);
 GAIRGL_API GLuint 	gairgl_LoadShader(const char *version, const char *vertex, const char *fragment);
+GAIRGL_API GLuint 	gairgl_LoadShader(const char *vertex, const char *fragment);
 
 #ifdef GAIRGL_IMPLEMENTATION
 
@@ -131,7 +132,37 @@ gairgl_Initialize(gairgl *opengl)
 				#endif
 	        })GLSL";
 
-	GLuint shader = gairgl_LoadShader(version, vertex, frag);
+	const char *_vertex  = R"GLSL(
+			#version 330
+			layout (location = 0) in vec4 in_vertex;
+			layout (location = 1) in vec2 in_uv;
+			layout (location = 2) in vec4 in_color;
+			uniform mat4 transform = mat4(1);
+			out vec4 out_color;
+			out vec2 out_uv;
+			void main()
+			{
+				gl_Position = transform * vec4(in_vertex.x, in_vertex.y, in_vertex.z, in_vertex.w);
+				out_color 	= in_color;
+				out_uv    	= in_uv;
+			})GLSL";
+
+	const char *_frag  = R"GLSL(
+			#version 330
+	        in vec4 out_color;
+	        in vec2 out_uv;
+	        uniform sampler2D tex;
+	        void main() {
+	        	#if 0
+				gl_FragColor = out_color;
+				#else
+				vec4 tex = texture2D(tex, out_uv);
+				gl_FragColor = tex * out_color;
+				#endif
+	        })GLSL";
+
+	//	GLuint shader = gairgl_LoadShader(version, vertex, frag);
+	GLuint shader = gairgl_LoadShader(_vertex, _frag);
 	GAIRGL_ASSERT(shader != 0);
 
 	opengl->shader 		= shader;
@@ -366,6 +397,45 @@ gairgl_LoadShader(const char *version, const char *vertex, const char *fragment)
 
 	return program_id;
 }
+
+GAIRGL_API GLuint
+gairgl_LoadShader(const char *vertex, const char *fragment)
+{
+	GLuint vertex_shader_id = glCreateShader(0x8B31 /* GL_VERTEX_SHADER */);
+	glShaderSource(vertex_shader_id, 1, &vertex, 0);
+	glCompileShader(vertex_shader_id);
+
+	GLuint fragment_shader_id = glCreateShader(0x8B30 /* GL_FRAGMENT_SHADER */);
+	glShaderSource(fragment_shader_id,  1, &fragment, 0);
+	glCompileShader(fragment_shader_id);
+
+	GLuint program_id = glCreateProgram();
+	glAttachShader(program_id, vertex_shader_id);
+	glAttachShader(program_id, fragment_shader_id);
+	glLinkProgram(program_id);
+
+	glValidateProgram(program_id);
+	GLint linked = false;
+	glGetProgramiv(program_id, 0x8B82 /* GL_LINK_STATUS */, &linked);
+	if (!linked)
+	{
+		GLsizei ignored;
+		char vertex_code_errors[4096];
+		char fragment_code_errors[4096];
+		char program_errors[4096];
+		glGetShaderInfoLog(vertex_shader_id, sizeof(vertex_code_errors), &ignored, vertex_code_errors);
+		glGetShaderInfoLog(fragment_shader_id, sizeof(fragment_code_errors), &ignored, fragment_code_errors);
+		glGetProgramInfoLog(program_id, sizeof(program_errors), &ignored, program_errors);
+
+		GAIRB_ASSERT(!"Shader validation failed");
+	}
+
+	glDeleteShader(vertex_shader_id);
+	glDeleteShader(fragment_shader_id);
+
+	return program_id;
+}
+
 
 #endif
 
