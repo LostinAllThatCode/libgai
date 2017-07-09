@@ -1,0 +1,7 @@
+<map id="gai_window" name="gai_window">
+<area shape="rect" id="node2" href="$gai_8h.html#structgai__clock" title="gai_clock" alt="" coords="39,89,105,113"/>
+<area shape="rect" id="node3" href="$structgai__window.html#uniongai__window_1_1_c_t_x" title="gai_window::CTX" alt="" coords="129,89,234,113"/>
+<area shape="rect" id="node4" href="$structgai__window.html#structgai__window_1_1_c_t_x_1_1_d_i_r_e_c_t_x11" title="gai_window::CTX::DIRECTX11" alt="" coords="5,5,173,29"/>
+<area shape="rect" id="node5" href="$structgai__window.html#structgai__window_1_1_c_t_x_1_1_o_p_e_n_g_l" title="gai_window::CTX::OPENGL" alt="" coords="197,5,349,29"/>
+<area shape="rect" id="node6" href="$structgai__window.html#structgai__window_1_1_i_n_p_u_t" title="gai_window::INPUT" alt="" coords="258,89,374,113"/>
+</map>

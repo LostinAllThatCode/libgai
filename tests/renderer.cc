@@ -107,7 +107,7 @@ GAIPF_EXTERNAL update_and_render_(UpdateAndRender)
 	gairb_setup test = { OrthographicProjection((r32)window->width, (r32)window->height, -2, 2) * Translate(ZRotation(GAIRB_DEG2RAD(rotY)) , V3(window->width/2.f, window->height/2.f, 0.f)) };
 	gairb_PushSetup(&g1, &test);
 
-	gairb_PushRect(&g1, &platform->assets[2], V4(1.f, 1.f, 1.f, 1.0f), V3(0.f, 0.f, 0.f), window->width, window->height, gairb_AlignToCenter);
+	gairb_PushRect(&g1, &platform->assets[2], V4(1.f, 1.f, 1.f, .10f), V3(0.f, 0.f, 0.f), window->width, window->height, gairb_AlignToCenter);
 	#endif
 
 	gairb_setup ortho = { OrthographicProjection((r32)window->width, (r32)window->height, -2, 2) };

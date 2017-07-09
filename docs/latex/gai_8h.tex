@@ -1,0 +1,803 @@
+\hypertarget{gai_8h}{}\section{gai.\+h File Reference}
+\label{gai_8h}\index{gai.\+h@{gai.\+h}}
+
+
+designed as a cross platform single include header file for the most necessary features (window, dynamic array, qsort, network)  
+
+
+{\ttfamily \#include $<$windows.\+h$>$}\newline
+{\ttfamily \#include $<$gl\textbackslash{}gl.\+h$>$}\newline
+{\ttfamily \#include $<$d3d11.\+h$>$}\newline
+{\ttfamily \#include $<$stddef.\+h$>$}\newline
+{\ttfamily \#include $<$stdint.\+h$>$}\newline
+{\ttfamily \#include $<$assert.\+h$>$}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+Include dependency graph for gai.\+h\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{gai_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=143pt]{gai_8h__dep__incl}
+\end{center}
+\end{figure}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{gai_8h_structgai__growable__header}{gai\+\_\+growable\+\_\+header}
+\item 
+struct \hyperlink{gai_8h_structgai__clock}{gai\+\_\+clock}
+\item 
+struct \hyperlink{gai_8h_structgai__file}{gai\+\_\+file}
+\item 
+union \hyperlink{gai_8h_uniongai__filetime}{gai\+\_\+filetime}
+\item 
+union \hyperlink{gai_8h_uniongai__filesize}{gai\+\_\+filesize}
+\item 
+struct \hyperlink{gai_8h_structgai__fileinfo}{gai\+\_\+fileinfo}
+\item 
+struct \hyperlink{gai_8h_structgai__window__callback}{gai\+\_\+window\+\_\+callback}
+\item 
+struct \hyperlink{structgai__window}{gai\+\_\+window}
+\item 
+union \hyperlink{structgai__window_uniongai__window_1_1_c_t_x}{gai\+\_\+window\+::\+C\+TX}
+\item 
+struct \hyperlink{structgai__window_structgai__window_1_1_c_t_x_1_1_o_p_e_n_g_l}{gai\+\_\+window\+::\+C\+T\+X\+::\+O\+P\+E\+N\+GL}
+\item 
+struct \hyperlink{structgai__window_structgai__window_1_1_c_t_x_1_1_d_i_r_e_c_t_x11}{gai\+\_\+window\+::\+C\+T\+X\+::\+D\+I\+R\+E\+C\+T\+X11}
+\item 
+struct \hyperlink{structgai__window_structgai__window_1_1_i_n_p_u_t}{gai\+\_\+window\+::\+I\+N\+P\+UT}
+\item 
+struct \hyperlink{gai_8h_structgai__filetime_8____unnamed____}{gai\+\_\+filetime.\+\_\+\+\_\+unnamed\+\_\+\+\_\+}
+\item 
+struct \hyperlink{gai_8h_structgai__filesize_8____unnamed____}{gai\+\_\+filesize.\+\_\+\+\_\+unnamed\+\_\+\+\_\+}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{gai_8h_a779f25f23ca7656b2c51f62beb0ddcd7}\label{gai_8h_a779f25f23ca7656b2c51f62beb0ddcd7}} 
+\#define {\bfseries G\+A\+I\+\_\+\+O\+S\+\_\+\+R\+E\+S\+O\+L\+U\+T\+I\+ON}
+\item 
+\mbox{\Hypertarget{gai_8h_a41f9c5fb8b08eb5dc3edce4dcb37fee7}\label{gai_8h_a41f9c5fb8b08eb5dc3edce4dcb37fee7}} 
+\#define {\bfseries true}~1
+\item 
+\mbox{\Hypertarget{gai_8h_a65e9886d74aaee76545e83dd09011727}\label{gai_8h_a65e9886d74aaee76545e83dd09011727}} 
+\#define {\bfseries false}~0
+\item 
+\mbox{\Hypertarget{gai_8h_abc0bc067e1a88c12d70de5926e962368}\label{gai_8h_abc0bc067e1a88c12d70de5926e962368}} 
+\#define {\bfseries G\+A\+I\+\_\+\+T\+Y\+P\+E\+D\+E\+FS}~1
+\item 
+\#define \hyperlink{gai_8h_a335a7d91cecb2b1e5745c06803bdf23a}{G\+A\+I\+\_\+\+D\+EF}~extern
+\item 
+\mbox{\Hypertarget{gai_8h_aeb3ca9c144e88d45449d54e515dc0dce}\label{gai_8h_aeb3ca9c144e88d45449d54e515dc0dce}} 
+\#define {\bfseries G\+A\+I\+\_\+\+A\+S\+S\+E\+RT}(cond)~assert(cond)
+\item 
+\#define \hyperlink{gai_8h_a1acedd3479fb2a001b5f284e4de6b90e}{gai\+\_\+growable}(type)~type $\ast$
+\item 
+\mbox{\Hypertarget{gai_8h_af6553ddc52e978b3c13a65605c5a0a6c}\label{gai_8h_af6553ddc52e978b3c13a65605c5a0a6c}} 
+\#define {\bfseries G\+A\+I\+\_\+\+G\+R\+O\+W\+A\+B\+L\+E\+\_\+\+G\+R\+O\+W\+\_\+\+S\+T\+R\+A\+T\+E\+GY}(x)~(((x)$\ast$2)+8)
+\item 
+\mbox{\Hypertarget{gai_8h_ae22d900ee344bfb945857eeb78b42b0b}\label{gai_8h_ae22d900ee344bfb945857eeb78b42b0b}} 
+\#define {\bfseries G\+A\+I\+\_\+\+G\+R\+O\+W\+A\+B\+L\+E\+\_\+\+G\+E\+T\+\_\+\+H\+E\+A\+D\+ER}(x)~((\hyperlink{gai_8h_structgai__growable__header}{gai\+\_\+growable\+\_\+header}$\ast$)(x)-\/1)
+\item 
+\mbox{\Hypertarget{gai_8h_a8c72c7bd103b78930e2e237c9152d7dd}\label{gai_8h_a8c72c7bd103b78930e2e237c9152d7dd}} 
+\#define {\bfseries gai\+\_\+growable\+\_\+count}(x)~(G\+A\+I\+\_\+\+G\+R\+O\+W\+A\+B\+L\+E\+\_\+\+G\+E\+T\+\_\+\+H\+E\+A\+D\+ER(x)-\/$>$count)
+\item 
+\mbox{\Hypertarget{gai_8h_a5410a25f633c6ac232d0e6d0f6a6f4c0}\label{gai_8h_a5410a25f633c6ac232d0e6d0f6a6f4c0}} 
+\#define {\bfseries gai\+\_\+growable\+\_\+capacity}(x)~(G\+A\+I\+\_\+\+G\+R\+O\+W\+A\+B\+L\+E\+\_\+\+G\+E\+T\+\_\+\+H\+E\+A\+D\+ER(x)-\/$>$capacity)
+\item 
+\mbox{\Hypertarget{gai_8h_ad2016f2fe64172616fb67cf31ffe41e8}\label{gai_8h_ad2016f2fe64172616fb67cf31ffe41e8}} 
+\#define {\bfseries gai\+\_\+growable\+\_\+clear}(x)~(G\+A\+I\+\_\+\+G\+R\+O\+W\+A\+B\+L\+E\+\_\+\+G\+E\+T\+\_\+\+H\+E\+A\+D\+ER(x)-\/$>$count = 0)
+\item 
+\#define {\bfseries gai\+\_\+growable\+\_\+init}(x)
+\item 
+\#define {\bfseries gai\+\_\+growable\+\_\+free}(x)
+\item 
+\#define {\bfseries gai\+\_\+growable\+\_\+append}(x,  item)
+\item 
+\#define {\bfseries gai\+\_\+growable\+\_\+append\+\_\+array}(x,  items,  item\+\_\+count)
+\item 
+\#define \hyperlink{gai_8h_ac28875a4f36c342fb6ab07be087428a7}{G\+A\+I\+\_\+\+S\+O\+R\+T\+\_\+\+C\+O\+M\+P\+A\+R\+E\+\_\+\+P\+R\+OC}(name)~int name(void const $\ast$a, void const $\ast$b)
+\item 
+\mbox{\Hypertarget{gai_8h_a52383b5393250964d2cd0a452cf68c93}\label{gai_8h_a52383b5393250964d2cd0a452cf68c93}} 
+\#define {\bfseries gai\+\_\+sort\+\_\+array}(arr,  elements,  cmp\+\_\+fn)~gai\+\_\+sort((arr), (elements), sizeof($\ast$(arr)), cmp\+\_\+fn)
+\item 
+\mbox{\Hypertarget{gai_8h_a62a4d8b8a4b063264b85228bb45b0837}\label{gai_8h_a62a4d8b8a4b063264b85228bb45b0837}} 
+\#define {\bfseries gai\+\_\+sort\+\_\+array\+\_\+i32}(arr,  elements)~gai\+\_\+sort((arr), (elements), sizeof(i32), \+\_\+\+\_\+gai\+\_\+i32\+\_\+cmp)
+\item 
+\mbox{\Hypertarget{gai_8h_a14f9b7fd10cdd558ae274ed659771a82}\label{gai_8h_a14f9b7fd10cdd558ae274ed659771a82}} 
+\#define {\bfseries gai\+\_\+sort\+\_\+array\+\_\+i64}(arr,  elements)~gai\+\_\+sort((arr), (elements), sizeof(i64), \+\_\+\+\_\+gai\+\_\+i64\+\_\+cmp)
+\item 
+\mbox{\Hypertarget{gai_8h_a01f8e358d37bbd9fec27ac2cf10459b8}\label{gai_8h_a01f8e358d37bbd9fec27ac2cf10459b8}} 
+\#define {\bfseries gai\+\_\+sort\+\_\+array\+\_\+r32}(arr,  elements)~gai\+\_\+sort((arr), (elements), sizeof(r32), \+\_\+\+\_\+gai\+\_\+r32\+\_\+cmp)
+\item 
+\mbox{\Hypertarget{gai_8h_a317f4820c5c2cd3f39c009a4471a8280}\label{gai_8h_a317f4820c5c2cd3f39c009a4471a8280}} 
+\#define {\bfseries gai\+\_\+sort\+\_\+array\+\_\+r64}(arr,  elements)~gai\+\_\+sort((arr), (elements), sizeof(r64), \+\_\+\+\_\+gai\+\_\+r64\+\_\+cmp)
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{gai_8h_a92c50087ca0e64fa93fc59402c55f8ca}\label{gai_8h_a92c50087ca0e64fa93fc59402c55f8ca}} 
+typedef uint8\+\_\+t {\bfseries u8}
+\item 
+\mbox{\Hypertarget{gai_8h_ae3702327b5f47e83b431e22b33da7b58}\label{gai_8h_ae3702327b5f47e83b431e22b33da7b58}} 
+typedef int8\+\_\+t {\bfseries i8}
+\item 
+\mbox{\Hypertarget{gai_8h_ace9d960e74685e2cd84b36132dbbf8aa}\label{gai_8h_ace9d960e74685e2cd84b36132dbbf8aa}} 
+typedef uint16\+\_\+t {\bfseries u16}
+\item 
+\mbox{\Hypertarget{gai_8h_ad309dbcaeea13aa602d686964156ea0b}\label{gai_8h_ad309dbcaeea13aa602d686964156ea0b}} 
+typedef int16\+\_\+t {\bfseries i16}
+\item 
+\mbox{\Hypertarget{gai_8h_afaa62991928fb9fb18ff0db62a040aba}\label{gai_8h_afaa62991928fb9fb18ff0db62a040aba}} 
+typedef uint32\+\_\+t {\bfseries u32}
+\item 
+\mbox{\Hypertarget{gai_8h_a48d6cd8e4135fb2ff7e7f2dac84089ec}\label{gai_8h_a48d6cd8e4135fb2ff7e7f2dac84089ec}} 
+typedef int32\+\_\+t {\bfseries i32}
+\item 
+\mbox{\Hypertarget{gai_8h_aafa04bc3cb166e826b75a23f4add4b59}\label{gai_8h_aafa04bc3cb166e826b75a23f4add4b59}} 
+typedef float {\bfseries r32}
+\item 
+\mbox{\Hypertarget{gai_8h_a3f7e2bcbb0b4c338f3c4f6c937cd4234}\label{gai_8h_a3f7e2bcbb0b4c338f3c4f6c937cd4234}} 
+typedef uint64\+\_\+t {\bfseries u64}
+\item 
+\mbox{\Hypertarget{gai_8h_a85cb35fbe5bf2961d7ad5f26814a91a2}\label{gai_8h_a85cb35fbe5bf2961d7ad5f26814a91a2}} 
+typedef int64\+\_\+t {\bfseries i64}
+\item 
+\mbox{\Hypertarget{gai_8h_af3fb0780dd5bc8ff8740028f077610e7}\label{gai_8h_af3fb0780dd5bc8ff8740028f077610e7}} 
+typedef double {\bfseries r64}
+\item 
+\mbox{\Hypertarget{gai_8h_a9d1a1d99b6972446ae039de3d9599b96}\label{gai_8h_a9d1a1d99b6972446ae039de3d9599b96}} 
+typedef int32\+\_\+t {\bfseries b32}
+\item 
+\mbox{\Hypertarget{gai_8h_a2a7256d9664d3dc9c9b2edf2d04f2c53}\label{gai_8h_a2a7256d9664d3dc9c9b2edf2d04f2c53}} 
+typedef u8 {\bfseries gai\+\_\+key\+\_\+state}
+\item 
+\mbox{\Hypertarget{gai_8h_a9a839bb0a3523c7b93b73f6440acbbb1}\label{gai_8h_a9a839bb0a3523c7b93b73f6440acbbb1}} 
+typedef void {\bfseries gai\+\_\+window\+\_\+input\+\_\+callback}(i32 key, u8 state)
+\end{DoxyCompactItemize}
+\subsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \hyperlink{gai_8h_a157d385f60e2ae934dc7854ae787ee44}{gai\+\_\+window\+\_\+flags} \{ \newline
+{\bfseries gai\+Window\+Flags\+None} = 0x00, 
+\hyperlink{gai_8h_a157d385f60e2ae934dc7854ae787ee44a51e1f5f38bf0c41063c43c6fd5afe26d}{gai\+Window\+Flags\+Minimized} = 0x01, 
+\hyperlink{gai_8h_a157d385f60e2ae934dc7854ae787ee44adeacefd22a411eaf0e25ee9b072f9da6}{gai\+Window\+Flags\+Maximized} = 0x02, 
+\hyperlink{gai_8h_a157d385f60e2ae934dc7854ae787ee44a5269cdd41791072e9383c3758d5d87d6}{gai\+Window\+Flags\+Borderless} = 0x04, 
+\newline
+\hyperlink{gai_8h_a157d385f60e2ae934dc7854ae787ee44ade455488dffb8dca918636a11ebad5dd}{gai\+Window\+Flags\+Fullscreen} = 0x10
+ \}
+\item 
+\mbox{\Hypertarget{gai_8h_a9a29214276d175d59c57b660801d8015}\label{gai_8h_a9a29214276d175d59c57b660801d8015}} 
+enum {\bfseries gai\+\_\+renderer\+\_\+type} \{ {\bfseries gai\+Renderer\+Default}, 
+{\bfseries gai\+Renderer\+D\+X11}, 
+{\bfseries gai\+Renderer\+Open\+GL}, 
+{\bfseries gai\+Renderer\+Count}
+ \}
+\item 
+\mbox{\Hypertarget{gai_8h_a7917ae9cf8fe8da8c07dc2239574a45d}\label{gai_8h_a7917ae9cf8fe8da8c07dc2239574a45d}} 
+enum {\bfseries gai\+\_\+mouse\+\_\+button} \{ \newline
+{\bfseries gai\+Mouse\+Left}, 
+{\bfseries gai\+Mouse\+Middle}, 
+{\bfseries gai\+Mouse\+Right}, 
+{\bfseries gai\+Mouse\+Extra1}, 
+\newline
+{\bfseries gai\+Mouse\+Extra2}
+ \}
+\item 
+\mbox{\Hypertarget{gai_8h_a924104711ebf4eea20e17e8795d61a9d}\label{gai_8h_a924104711ebf4eea20e17e8795d61a9d}} 
+enum {\bfseries gai\+\_\+key\+\_\+state\+\_\+enum} \{ {\bfseries gai\+Keystate\+Down} = 0x1, 
+{\bfseries gai\+Keystate\+Pressed} = 0x2, 
+{\bfseries gai\+Keystate\+Released} = 0x4
+ \}
+\item 
+\mbox{\Hypertarget{gai_8h_ad8ecbc8c48164e83ea61c31197b0332a}\label{gai_8h_ad8ecbc8c48164e83ea61c31197b0332a}} 
+enum {\bfseries gai\+\_\+callback\+\_\+type\+\_\+enum} \{ {\bfseries gai\+Unhandled\+Event} = 0x0, 
+{\bfseries gai\+Input\+Event} = 0x1
+ \}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{gai_8h_aa02d51324b115958d15b739432c9695d}{gai\+\_\+memswap} (u8 $\ast$a, u8 $\ast$b, size\+\_\+t size)
+\item 
+\mbox{\Hypertarget{gai_8h_af09298232799c623b93bcff3ca8562c4}\label{gai_8h_af09298232799c623b93bcff3ca8562c4}} 
+void $\ast$ {\bfseries gai\+\_\+growable\+\_\+grow} (void $\ast$array, size\+\_\+t new\+\_\+capacity, size\+\_\+t element\+\_\+size)
+\item 
+\mbox{\Hypertarget{gai_8h_ac88d203d35eba85a32b0eaa10617e29e}\label{gai_8h_ac88d203d35eba85a32b0eaa10617e29e}} 
+typedef {\bfseries G\+A\+I\+\_\+\+S\+O\+R\+T\+\_\+\+C\+O\+M\+P\+A\+R\+E\+\_\+\+P\+R\+OC} (gai\+\_\+sort\+\_\+compare\+\_\+fn)
+\item 
+\mbox{\Hypertarget{gai_8h_a7b9bcec1c651acfd3284f5373eb2b5a5}\label{gai_8h_a7b9bcec1c651acfd3284f5373eb2b5a5}} 
+\hyperlink{gai_8h_a335a7d91cecb2b1e5745c06803bdf23a}{G\+A\+I\+\_\+\+D\+EF} void {\bfseries gai\+\_\+sort} (void $\ast$array, size\+\_\+t elements, size\+\_\+t element\+\_\+size, gai\+\_\+sort\+\_\+compare\+\_\+fn cmp)
+\item 
+\mbox{\Hypertarget{gai_8h_aad42663f47feda07b05dad333fa8eaab}\label{gai_8h_aad42663f47feda07b05dad333fa8eaab}} 
+\hyperlink{gai_8h_a335a7d91cecb2b1e5745c06803bdf23a}{G\+A\+I\+\_\+\+D\+EF} \hyperlink{gai_8h_structgai__clock}{gai\+\_\+clock} {\bfseries gai\+\_\+clock\+\_\+init} ()
+\item 
+\mbox{\Hypertarget{gai_8h_af560ae2c4195ca5e7859380435afd013}\label{gai_8h_af560ae2c4195ca5e7859380435afd013}} 
+\hyperlink{gai_8h_a335a7d91cecb2b1e5745c06803bdf23a}{G\+A\+I\+\_\+\+D\+EF} r64 {\bfseries gai\+\_\+clock\+\_\+get} (\hyperlink{gai_8h_structgai__clock}{gai\+\_\+clock} $\ast$clock)
+\item 
+\mbox{\Hypertarget{gai_8h_acc242c4caa720d7c754b3c11a6d7b70d}\label{gai_8h_acc242c4caa720d7c754b3c11a6d7b70d}} 
+\hyperlink{gai_8h_a335a7d91cecb2b1e5745c06803bdf23a}{G\+A\+I\+\_\+\+D\+EF} \hyperlink{gai_8h_structgai__file}{gai\+\_\+file} {\bfseries gai\+\_\+file\+\_\+open} (const char $\ast$filename, const char $\ast$mode)
+\item 
+\mbox{\Hypertarget{gai_8h_a95e48873b97b236f57dde64e83b061ff}\label{gai_8h_a95e48873b97b236f57dde64e83b061ff}} 
+\hyperlink{gai_8h_a335a7d91cecb2b1e5745c06803bdf23a}{G\+A\+I\+\_\+\+D\+EF} size\+\_\+t {\bfseries gai\+\_\+file\+\_\+write} (\hyperlink{gai_8h_structgai__file}{gai\+\_\+file} $\ast$file, void $\ast$data, size\+\_\+t length)
+\item 
+\mbox{\Hypertarget{gai_8h_a6d58326c4657cf1bd5e2e4b4f6cd0bec}\label{gai_8h_a6d58326c4657cf1bd5e2e4b4f6cd0bec}} 
+\hyperlink{gai_8h_a335a7d91cecb2b1e5745c06803bdf23a}{G\+A\+I\+\_\+\+D\+EF} size\+\_\+t {\bfseries gai\+\_\+file\+\_\+read} (\hyperlink{gai_8h_structgai__file}{gai\+\_\+file} $\ast$file, void $\ast$buffer, size\+\_\+t bytes\+\_\+to\+\_\+read, i32 offset)
+\item 
+\mbox{\Hypertarget{gai_8h_ad582bab01279c72c5a1b51b84e25fca7}\label{gai_8h_ad582bab01279c72c5a1b51b84e25fca7}} 
+\hyperlink{gai_8h_a335a7d91cecb2b1e5745c06803bdf23a}{G\+A\+I\+\_\+\+D\+EF} size\+\_\+t {\bfseries gai\+\_\+file\+\_\+read\+\_\+all} (\hyperlink{gai_8h_structgai__file}{gai\+\_\+file} $\ast$file, void $\ast$buffer)
+\item 
+\mbox{\Hypertarget{gai_8h_aa38b6f0895fff1d1f81f8e71fa0b42d3}\label{gai_8h_aa38b6f0895fff1d1f81f8e71fa0b42d3}} 
+\hyperlink{gai_8h_a335a7d91cecb2b1e5745c06803bdf23a}{G\+A\+I\+\_\+\+D\+EF} void {\bfseries gai\+\_\+file\+\_\+close} (\hyperlink{gai_8h_structgai__file}{gai\+\_\+file} $\ast$file)
+\item 
+\mbox{\Hypertarget{gai_8h_abbe50fe46424202d10e727549d790900}\label{gai_8h_abbe50fe46424202d10e727549d790900}} 
+\hyperlink{gai_8h_a335a7d91cecb2b1e5745c06803bdf23a}{G\+A\+I\+\_\+\+D\+EF} b32 {\bfseries gai\+\_\+file\+\_\+exists} (const char $\ast$filename)
+\item 
+\mbox{\Hypertarget{gai_8h_ae522af434bcfa8029fe46f0e5f9e90d5}\label{gai_8h_ae522af434bcfa8029fe46f0e5f9e90d5}} 
+\hyperlink{gai_8h_a335a7d91cecb2b1e5745c06803bdf23a}{G\+A\+I\+\_\+\+D\+EF} \hyperlink{gai_8h_structgai__fileinfo}{gai\+\_\+fileinfo} {\bfseries gai\+\_\+file\+\_\+getinfo} (const char $\ast$filename)
+\item 
+\mbox{\Hypertarget{gai_8h_a74b18b0b489ca0d9c827cdc873eff87b}\label{gai_8h_a74b18b0b489ca0d9c827cdc873eff87b}} 
+\hyperlink{gai_8h_a335a7d91cecb2b1e5745c06803bdf23a}{G\+A\+I\+\_\+\+D\+EF} i32 {\bfseries gai\+\_\+window\+\_\+init} (\hyperlink{structgai__window}{gai\+\_\+window} $\ast$window, const char $\ast$title, i32 width, i32 height, u32 flags)
+\item 
+\mbox{\Hypertarget{gai_8h_aa915b135dfb1bc12b51c10d7dc4e0e8c}\label{gai_8h_aa915b135dfb1bc12b51c10d7dc4e0e8c}} 
+\hyperlink{gai_8h_a335a7d91cecb2b1e5745c06803bdf23a}{G\+A\+I\+\_\+\+D\+EF} i32 {\bfseries gai\+\_\+window\+\_\+init\+\_\+gl} (\hyperlink{structgai__window}{gai\+\_\+window} $\ast$window, const char $\ast$title, i32 width, i32 height, u32 flags, i32 minor, i32 major, b32 core\+\_\+profile, b32 debug)
+\item 
+\mbox{\Hypertarget{gai_8h_ac08dcf962361fe69a25baf8dc212c1a5}\label{gai_8h_ac08dcf962361fe69a25baf8dc212c1a5}} 
+\hyperlink{gai_8h_a335a7d91cecb2b1e5745c06803bdf23a}{G\+A\+I\+\_\+\+D\+EF} i32 {\bfseries gai\+\_\+window\+\_\+init\+\_\+dx} (\hyperlink{structgai__window}{gai\+\_\+window} $\ast$window, const char $\ast$title, i32 width, i32 height, u32 flags)
+\item 
+\mbox{\Hypertarget{gai_8h_ac1bf3ce3bcef7ed6f0bcccb9f8e55906}\label{gai_8h_ac1bf3ce3bcef7ed6f0bcccb9f8e55906}} 
+\hyperlink{gai_8h_a335a7d91cecb2b1e5745c06803bdf23a}{G\+A\+I\+\_\+\+D\+EF} i32 {\bfseries gai\+\_\+window\+\_\+destroy} (\hyperlink{structgai__window}{gai\+\_\+window} $\ast$window)
+\item 
+\mbox{\Hypertarget{gai_8h_a71b19503c53dff4f70132cc96677ce17}\label{gai_8h_a71b19503c53dff4f70132cc96677ce17}} 
+\hyperlink{gai_8h_a335a7d91cecb2b1e5745c06803bdf23a}{G\+A\+I\+\_\+\+D\+EF} void {\bfseries gai\+\_\+window\+\_\+vsync} (\hyperlink{structgai__window}{gai\+\_\+window} $\ast$window, b32 state)
+\item 
+\mbox{\Hypertarget{gai_8h_a4d71a8be3cdb258f5950817dabaeb7ef}\label{gai_8h_a4d71a8be3cdb258f5950817dabaeb7ef}} 
+\hyperlink{gai_8h_a335a7d91cecb2b1e5745c06803bdf23a}{G\+A\+I\+\_\+\+D\+EF} b32 {\bfseries gai\+\_\+window\+\_\+vsync\+\_\+enabled} (\hyperlink{structgai__window}{gai\+\_\+window} $\ast$window)
+\item 
+\mbox{\Hypertarget{gai_8h_a2780b47a6e66338ec820f2e55dc3a172}\label{gai_8h_a2780b47a6e66338ec820f2e55dc3a172}} 
+\hyperlink{gai_8h_a335a7d91cecb2b1e5745c06803bdf23a}{G\+A\+I\+\_\+\+D\+EF} void {\bfseries gai\+\_\+window\+\_\+handle\+\_\+messages} (\hyperlink{structgai__window}{gai\+\_\+window} $\ast$window, b32 block)
+\item 
+\mbox{\Hypertarget{gai_8h_a1b9a78ec80c1195f0a65da06c36d0976}\label{gai_8h_a1b9a78ec80c1195f0a65da06c36d0976}} 
+\hyperlink{gai_8h_a335a7d91cecb2b1e5745c06803bdf23a}{G\+A\+I\+\_\+\+D\+EF} void {\bfseries gai\+\_\+window\+\_\+display} (\hyperlink{structgai__window}{gai\+\_\+window} $\ast$window)
+\item 
+\mbox{\Hypertarget{gai_8h_ad5c49787af9602418dddff1f1a2c8be9}\label{gai_8h_ad5c49787af9602418dddff1f1a2c8be9}} 
+\hyperlink{gai_8h_a335a7d91cecb2b1e5745c06803bdf23a}{G\+A\+I\+\_\+\+D\+EF} void {\bfseries gai\+\_\+window\+\_\+show} (\hyperlink{structgai__window}{gai\+\_\+window} $\ast$window)
+\item 
+\mbox{\Hypertarget{gai_8h_ac80f28c417a19209b074b263c382da36}\label{gai_8h_ac80f28c417a19209b074b263c382da36}} 
+\hyperlink{gai_8h_a335a7d91cecb2b1e5745c06803bdf23a}{G\+A\+I\+\_\+\+D\+EF} void {\bfseries gai\+\_\+window\+\_\+hide} (\hyperlink{structgai__window}{gai\+\_\+window} $\ast$window)
+\item 
+\mbox{\Hypertarget{gai_8h_a1211bfbe9d14ccc70e7272c8a2090276}\label{gai_8h_a1211bfbe9d14ccc70e7272c8a2090276}} 
+\hyperlink{gai_8h_a335a7d91cecb2b1e5745c06803bdf23a}{G\+A\+I\+\_\+\+D\+EF} b32 {\bfseries gai\+\_\+window\+\_\+set\+\_\+foreground} (\hyperlink{structgai__window}{gai\+\_\+window} $\ast$window)
+\item 
+\mbox{\Hypertarget{gai_8h_a8f53031dfe738cc41d8f89466447d32e}\label{gai_8h_a8f53031dfe738cc41d8f89466447d32e}} 
+\hyperlink{gai_8h_a335a7d91cecb2b1e5745c06803bdf23a}{G\+A\+I\+\_\+\+D\+EF} b32 {\bfseries gai\+\_\+window\+\_\+is\+\_\+foreground} (\hyperlink{structgai__window}{gai\+\_\+window} $\ast$window)
+\item 
+\mbox{\Hypertarget{gai_8h_a4b164149785308f03774a60fcb264554}\label{gai_8h_a4b164149785308f03774a60fcb264554}} 
+\hyperlink{gai_8h_a335a7d91cecb2b1e5745c06803bdf23a}{G\+A\+I\+\_\+\+D\+EF} void {\bfseries gai\+\_\+window\+\_\+set\+\_\+position} (\hyperlink{structgai__window}{gai\+\_\+window} $\ast$window, i32 x, i32 y)
+\item 
+\mbox{\Hypertarget{gai_8h_aba36a83b8437a1ec7a3a899fae3a02ec}\label{gai_8h_aba36a83b8437a1ec7a3a899fae3a02ec}} 
+\hyperlink{gai_8h_a335a7d91cecb2b1e5745c06803bdf23a}{G\+A\+I\+\_\+\+D\+EF} void {\bfseries gai\+\_\+window\+\_\+borderless} (\hyperlink{structgai__window}{gai\+\_\+window} $\ast$window, b32 state)
+\item 
+\mbox{\Hypertarget{gai_8h_ae003c1dc1301bbcf9ab94c2abfe8dcf5}\label{gai_8h_ae003c1dc1301bbcf9ab94c2abfe8dcf5}} 
+\hyperlink{gai_8h_a335a7d91cecb2b1e5745c06803bdf23a}{G\+A\+I\+\_\+\+D\+EF} void {\bfseries gai\+\_\+window\+\_\+register\+\_\+callback} (\hyperlink{structgai__window}{gai\+\_\+window} $\ast$window, gai\+\_\+callback\+\_\+type\+\_\+enum type, void $\ast$callback)
+\item 
+\mbox{\Hypertarget{gai_8h_a72b08fd434590118b949212e5e3b6199}\label{gai_8h_a72b08fd434590118b949212e5e3b6199}} 
+\hyperlink{gai_8h_a335a7d91cecb2b1e5745c06803bdf23a}{G\+A\+I\+\_\+\+D\+EF} void {\bfseries gai\+\_\+window\+\_\+unregister\+\_\+callback} (\hyperlink{structgai__window}{gai\+\_\+window} $\ast$window, void $\ast$callback)
+\item 
+\mbox{\Hypertarget{gai_8h_a8b00f5c92eba88e860faf7e41eb54680}\label{gai_8h_a8b00f5c92eba88e860faf7e41eb54680}} 
+\hyperlink{gai_8h_a335a7d91cecb2b1e5745c06803bdf23a}{G\+A\+I\+\_\+\+D\+EF} b32 {\bfseries gai\+\_\+key\+\_\+down} (\hyperlink{structgai__window}{gai\+\_\+window} $\ast$window, i32 key)
+\item 
+\mbox{\Hypertarget{gai_8h_ab357cabb11019a790466a99494b8ee9e}\label{gai_8h_ab357cabb11019a790466a99494b8ee9e}} 
+\hyperlink{gai_8h_a335a7d91cecb2b1e5745c06803bdf23a}{G\+A\+I\+\_\+\+D\+EF} b32 {\bfseries gai\+\_\+key\+\_\+released} (\hyperlink{structgai__window}{gai\+\_\+window} $\ast$window, i32 key)
+\item 
+\mbox{\Hypertarget{gai_8h_a2c9672c6544607970531970667f9ba0c}\label{gai_8h_a2c9672c6544607970531970667f9ba0c}} 
+\hyperlink{gai_8h_a335a7d91cecb2b1e5745c06803bdf23a}{G\+A\+I\+\_\+\+D\+EF} b32 {\bfseries gai\+\_\+key\+\_\+pressed} (\hyperlink{structgai__window}{gai\+\_\+window} $\ast$window, i32 key)
+\item 
+\mbox{\Hypertarget{gai_8h_a38f0bb922bf4ba1465b54f91056fee26}\label{gai_8h_a38f0bb922bf4ba1465b54f91056fee26}} 
+\hyperlink{gai_8h_a335a7d91cecb2b1e5745c06803bdf23a}{G\+A\+I\+\_\+\+D\+EF} b32 {\bfseries gai\+\_\+mouse\+\_\+down} (\hyperlink{structgai__window}{gai\+\_\+window} $\ast$window, i32 btnid)
+\item 
+\mbox{\Hypertarget{gai_8h_a7d5ec449d3810e49869e188a2c70031c}\label{gai_8h_a7d5ec449d3810e49869e188a2c70031c}} 
+\hyperlink{gai_8h_a335a7d91cecb2b1e5745c06803bdf23a}{G\+A\+I\+\_\+\+D\+EF} b32 {\bfseries gai\+\_\+mouse\+\_\+released} (\hyperlink{structgai__window}{gai\+\_\+window} $\ast$window, i32 btnid)
+\item 
+\mbox{\Hypertarget{gai_8h_a2bc4940f8086396ce917131a0c14412b}\label{gai_8h_a2bc4940f8086396ce917131a0c14412b}} 
+\hyperlink{gai_8h_a335a7d91cecb2b1e5745c06803bdf23a}{G\+A\+I\+\_\+\+D\+EF} b32 {\bfseries gai\+\_\+mouse\+\_\+pressed} (\hyperlink{structgai__window}{gai\+\_\+window} $\ast$window, i32 btnid)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+designed as a cross platform single include header file for the most necessary features (window, dynamic array, qsort, network) 
+
+{\bfseries Depends on the specific OS libraries and the standard c library} \begin{DoxyAuthor}{Author}
+Andreas Gaida 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+23.\+05.\+2017 
+\end{DoxyDate}
+
+
+\subsection{Class Documentation}
+\index{gai\+\_\+growable\+\_\+header@{gai\+\_\+growable\+\_\+header}}\label{structgai__growable__header}
+\Hypertarget{gai_8h_structgai__growable__header}
+\subsubsection{struct gai\+\_\+growable\+\_\+header}
+\begin{DoxyFields}{Class Members}
+\mbox{\Hypertarget{gai_8h_a2c34cb03293511a0c60a94a6681f210a}\label{gai_8h_a2c34cb03293511a0c60a94a6681f210a}} 
+size\_t&
+capacity&
+\\
+\hline
+
+\mbox{\Hypertarget{gai_8h_a4ada9b200324f877f22c4bf53ee50a0e}\label{gai_8h_a4ada9b200324f877f22c4bf53ee50a0e}} 
+size\_t&
+count&
+\\
+\hline
+
+\end{DoxyFields}
+\index{gai\+\_\+clock@{gai\+\_\+clock}}\label{structgai__clock}
+\Hypertarget{gai_8h_structgai__clock}
+\subsubsection{struct gai\+\_\+clock}
+time api
+
+
+
+ $\vert$ $\vert$ $\vert$ $\vert$ $\vert$ $\vert$\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+ $\vert$\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+$\vert$ $\vert$\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+\mbox{]} $\vert$ $\vert$ \+\_\+\+\_\+$\vert$\+\_\+\+\_\+ $\vert$ $\vert$ $\vert$ $\vert$\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+ $\vert$ $\vert$ $\vert$ \+\_\+\+\_\+$\vert$\+\_\+\+\_\+ \begin{DoxyFields}{Class Members}
+\mbox{\Hypertarget{gai_8h_ac5b1c8faa4ba4ea64abbf0250f39fb3b}\label{gai_8h_ac5b1c8faa4ba4ea64abbf0250f39fb3b}} 
+r64&
+frequency&
+\\
+\hline
+
+\mbox{\Hypertarget{gai_8h_a0c256402d36ae426f60a816936a5cbd0}\label{gai_8h_a0c256402d36ae426f60a816936a5cbd0}} 
+r64&
+last\_clock&
+\\
+\hline
+
+\end{DoxyFields}
+\index{gai\+\_\+file@{gai\+\_\+file}}\label{structgai__file}
+\Hypertarget{gai_8h_structgai__file}
+\subsubsection{struct gai\+\_\+file}
+file management api
+
+
+
+ $\vert$\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+ $\vert$ $\vert$ $\vert$\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+ $\vert$\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+$\vert$ $\vert$\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+\mbox{]} $\vert$ $\vert$ \+\_\+\+\_\+$\vert$\+\_\+\+\_\+ $\vert$\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+ $\vert$\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+ $\vert$ $\vert$ $\vert$ \+\_\+\+\_\+$\vert$\+\_\+\+\_\+
+
+For all of these functions the user has to provide the buffer. No memory allocation is happening in here! 
+\begin{DoxyCode}
+\hyperlink{gai_8h_structgai__file}{gai\_file} f = gai\_file\_open(\textcolor{stringliteral}{"mytest.txt"}, \textcolor{stringliteral}{"rb"});
+\{
+    u8 *buffer = (u8*) malloc(f.size + 1);
+    i32 read\_bytes = gai\_file\_read\_all(&f, buffer);
+    buffer[read\_bytes] = 0;
+    free(buffer);
+\}
+\end{DoxyCode}
+ \begin{DoxyFields}{Class Members}
+\mbox{\Hypertarget{gai_8h_ad56695ce19bc1ed60d5c5b922d5ddf9f}\label{gai_8h_ad56695ce19bc1ed60d5c5b922d5ddf9f}} 
+FILE $\ast$&
+fp&
+\\
+\hline
+
+\mbox{\Hypertarget{gai_8h_af9a348ebc291e2314db8d411eff252c4}\label{gai_8h_af9a348ebc291e2314db8d411eff252c4}} 
+size\_t&
+size&
+\\
+\hline
+
+\end{DoxyFields}
+\index{gai\+\_\+filetime@{gai\+\_\+filetime}}\label{uniongai__filetime}
+\Hypertarget{gai_8h_uniongai__filetime}
+\subsubsection{union gai\+\_\+filetime}
+\begin{DoxyFields}{Class Members}
+\mbox{\Hypertarget{gai_8h_a81ee39aa0aa1e4e5933cf1f16ef04c3e}\label{gai_8h_a81ee39aa0aa1e4e5933cf1f16ef04c3e}} 
+struct \hyperlink{gai_8h_structgai__filetime_8____unnamed____}{gai\_filetime}&
+\_\_unnamed\_\_&
+\\
+\hline
+
+\mbox{\Hypertarget{gai_8h_a4c2845b575bfc8c90c06b6211c9c9314}\label{gai_8h_a4c2845b575bfc8c90c06b6211c9c9314}} 
+i64&
+time&
+\\
+\hline
+
+\end{DoxyFields}
+\index{gai\+\_\+filesize@{gai\+\_\+filesize}}\label{uniongai__filesize}
+\Hypertarget{gai_8h_uniongai__filesize}
+\subsubsection{union gai\+\_\+filesize}
+\begin{DoxyFields}{Class Members}
+\mbox{\Hypertarget{gai_8h_add5e278e3cd49bf7bc9416e7b6ca5fbe}\label{gai_8h_add5e278e3cd49bf7bc9416e7b6ca5fbe}} 
+struct \hyperlink{gai_8h_structgai__filesize_8____unnamed____}{gai\_filesize}&
+\_\_unnamed\_\_&
+\\
+\hline
+
+\mbox{\Hypertarget{gai_8h_ae9d3b212e3398ec6af40665a6612d1e0}\label{gai_8h_ae9d3b212e3398ec6af40665a6612d1e0}} 
+i64&
+size&
+\\
+\hline
+
+\end{DoxyFields}
+\index{gai\+\_\+fileinfo@{gai\+\_\+fileinfo}}\label{structgai__fileinfo}
+\Hypertarget{gai_8h_structgai__fileinfo}
+\subsubsection{struct gai\+\_\+fileinfo}
+
+
+Collaboration diagram for gai\+\_\+fileinfo\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=223pt]{structgai__fileinfo__coll__graph}
+\end{center}
+\end{figure}
+\begin{DoxyFields}{Class Members}
+\mbox{\Hypertarget{gai_8h_a33e252c7ee367aedb5656e56f2565fa4}\label{gai_8h_a33e252c7ee367aedb5656e56f2565fa4}} 
+\hyperlink{gai_8h_uniongai__filetime}{gai\_filetime}&
+access\_time&
+\\
+\hline
+
+\mbox{\Hypertarget{gai_8h_a8dbcbec051863fe8fd5e89d9b6140616}\label{gai_8h_a8dbcbec051863fe8fd5e89d9b6140616}} 
+i32&
+attributes&
+\\
+\hline
+
+\mbox{\Hypertarget{gai_8h_a90d81f2fbc3fef3e335491a1c683019f}\label{gai_8h_a90d81f2fbc3fef3e335491a1c683019f}} 
+\hyperlink{gai_8h_uniongai__filetime}{gai\_filetime}&
+creation\_time&
+\\
+\hline
+
+\mbox{\Hypertarget{gai_8h_af920e342a1fb82c9bf022e2b94b2e74e}\label{gai_8h_af920e342a1fb82c9bf022e2b94b2e74e}} 
+\hyperlink{gai_8h_uniongai__filetime}{gai\_filetime}&
+modification\_time&
+\\
+\hline
+
+\mbox{\Hypertarget{gai_8h_a4bc6cf589dac9c3f29d096557630f27c}\label{gai_8h_a4bc6cf589dac9c3f29d096557630f27c}} 
+\hyperlink{gai_8h_uniongai__filesize}{gai\_filesize}&
+size&
+\\
+\hline
+
+\end{DoxyFields}
+\index{gai\+\_\+window\+\_\+callback@{gai\+\_\+window\+\_\+callback}}\label{structgai__window__callback}
+\Hypertarget{gai_8h_structgai__window__callback}
+\subsubsection{struct gai\+\_\+window\+\_\+callback}
+\begin{DoxyFields}{Class Members}
+\mbox{\Hypertarget{gai_8h_a2f106c6d1bd60b5ffd71630b9695019a}\label{gai_8h_a2f106c6d1bd60b5ffd71630b9695019a}} 
+void $\ast$&
+callback&
+\\
+\hline
+
+\mbox{\Hypertarget{gai_8h_ac1ce8e0a7eecf5066151b7801c8b0e5e}\label{gai_8h_ac1ce8e0a7eecf5066151b7801c8b0e5e}} 
+u16&
+type&
+\\
+\hline
+
+\end{DoxyFields}
+\index{gai\+\_\+window\+::\+C\+TX@{gai\+\_\+window\+::\+C\+TX}}\label{uniongai__window_1_1_c_t_x}
+\Hypertarget{structgai__window_uniongai__window_1_1_c_t_x}
+\subsubsection{union gai\+\_\+window\+:\+:C\+TX}
+
+
+Collaboration diagram for gai\+\_\+window\+:\+:C\+TX\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=338pt]{uniongai__window_1_1_c_t_x__coll__graph}
+\end{center}
+\end{figure}
+\begin{DoxyFields}{Class Members}
+\mbox{\Hypertarget{structgai__window_a2112189a9a1bc9b668a7c75a5527a52d}\label{structgai__window_a2112189a9a1bc9b668a7c75a5527a52d}} 
+struct \hyperlink{structgai__window_structgai__window_1_1_c_t_x_1_1_d_i_r_e_c_t_x11}{DIRECTX11}&
+dx11&
+\\
+\hline
+
+\mbox{\Hypertarget{structgai__window_a2b95d5e69bdf2e65fa3bafc4061d0ec7}\label{structgai__window_a2b95d5e69bdf2e65fa3bafc4061d0ec7}} 
+struct \hyperlink{structgai__window_structgai__window_1_1_c_t_x_1_1_o_p_e_n_g_l}{OPENGL}&
+opengl&
+\\
+\hline
+
+\end{DoxyFields}
+\index{gai\+\_\+window\+::\+C\+T\+X\+::\+O\+P\+E\+N\+GL@{gai\+\_\+window\+::\+C\+T\+X\+::\+O\+P\+E\+N\+GL}}\label{structgai__window_1_1_c_t_x_1_1_o_p_e_n_g_l}
+\Hypertarget{structgai__window_structgai__window_1_1_c_t_x_1_1_o_p_e_n_g_l}
+\subsubsection{struct gai\+\_\+window\+:\+:C\+TX\+:\+:O\+P\+E\+N\+GL}
+\begin{DoxyFields}{Class Members}
+\mbox{\Hypertarget{structgai__window_ada16321f77bce8bf810b71ac857c6895}\label{structgai__window_ada16321f77bce8bf810b71ac857c6895}} 
+void $\ast$&
+context&
+\\
+\hline
+
+\mbox{\Hypertarget{structgai__window_ac868cfbd6dde9272fb2935f7d52bf467}\label{structgai__window_ac868cfbd6dde9272fb2935f7d52bf467}} 
+i32&
+core&
+\\
+\hline
+
+\mbox{\Hypertarget{structgai__window_a0db9760ca37f00fd313884a70ebd7bc8}\label{structgai__window_a0db9760ca37f00fd313884a70ebd7bc8}} 
+i32&
+debug&
+\\
+\hline
+
+\mbox{\Hypertarget{structgai__window_a68cdd80ef3e595a05cac2120660ae735}\label{structgai__window_a68cdd80ef3e595a05cac2120660ae735}} 
+i32&
+major&
+\\
+\hline
+
+\mbox{\Hypertarget{structgai__window_a7f9d61b341b6103e00132c70fcad72d9}\label{structgai__window_a7f9d61b341b6103e00132c70fcad72d9}} 
+i32&
+minor&
+\\
+\hline
+
+\end{DoxyFields}
+\index{gai\+\_\+window\+::\+C\+T\+X\+::\+D\+I\+R\+E\+C\+T\+X11@{gai\+\_\+window\+::\+C\+T\+X\+::\+D\+I\+R\+E\+C\+T\+X11}}\label{structgai__window_1_1_c_t_x_1_1_d_i_r_e_c_t_x11}
+\Hypertarget{structgai__window_structgai__window_1_1_c_t_x_1_1_d_i_r_e_c_t_x11}
+\subsubsection{struct gai\+\_\+window\+:\+:C\+TX\+:\+:D\+I\+R\+E\+C\+T\+X11}
+\begin{DoxyFields}{Class Members}
+\mbox{\Hypertarget{structgai__window_a4d28167e5ae15236d11096e87c5e2313}\label{structgai__window_a4d28167e5ae15236d11096e87c5e2313}} 
+ID3D11Device $\ast$&
+dev&
+\\
+\hline
+
+\mbox{\Hypertarget{structgai__window_af23f6883eac7ec8cb0d2c41e27331816}\label{structgai__window_af23f6883eac7ec8cb0d2c41e27331816}} 
+ID3D11DeviceContext $\ast$&
+devcon&
+\\
+\hline
+
+\mbox{\Hypertarget{structgai__window_a1f73ef8164609f7caecb24954318ba22}\label{structgai__window_a1f73ef8164609f7caecb24954318ba22}} 
+IDXGISwapChain $\ast$&
+swapchain&
+\\
+\hline
+
+\end{DoxyFields}
+\index{gai\+\_\+window\+::\+I\+N\+P\+UT@{gai\+\_\+window\+::\+I\+N\+P\+UT}}\label{structgai__window_1_1_i_n_p_u_t}
+\Hypertarget{structgai__window_structgai__window_1_1_i_n_p_u_t}
+\subsubsection{struct gai\+\_\+window\+:\+:I\+N\+P\+UT}
+\begin{DoxyFields}{Class Members}
+\mbox{\Hypertarget{structgai__window_ad71dabdbe261a269c52bde2c8509dda7}\label{structgai__window_ad71dabdbe261a269c52bde2c8509dda7}} 
+gai\_key\_state&
+keyboard\_keys\mbox{[}255\mbox{]}&
+\\
+\hline
+
+\mbox{\Hypertarget{structgai__window_ac74ee49ef25854725042f071982280ae}\label{structgai__window_ac74ee49ef25854725042f071982280ae}} 
+gai\_key\_state&
+mouse\_buttons\mbox{[}5\mbox{]}&
+\\
+\hline
+
+\mbox{\Hypertarget{structgai__window_ae768fbdf4db1fd19b9a501b197ca9176}\label{structgai__window_ae768fbdf4db1fd19b9a501b197ca9176}} 
+i32&
+mouse\_dx&
+\\
+\hline
+
+\mbox{\Hypertarget{structgai__window_a7a8a489cec34e1df7d704b4338b1bcea}\label{structgai__window_a7a8a489cec34e1df7d704b4338b1bcea}} 
+i32&
+mouse\_dy&
+\\
+\hline
+
+\mbox{\Hypertarget{structgai__window_ab4fdfc85ac0563ad1daebfc354e5b6a4}\label{structgai__window_ab4fdfc85ac0563ad1daebfc354e5b6a4}} 
+i32&
+mouse\_wheel&
+\\
+\hline
+
+\mbox{\Hypertarget{structgai__window_aada9bddfeb8748fa82a5c3e648695968}\label{structgai__window_aada9bddfeb8748fa82a5c3e648695968}} 
+i32&
+mouse\_x&
+\\
+\hline
+
+\mbox{\Hypertarget{structgai__window_a1bf17e49446857bd04deaffb5e666bc5}\label{structgai__window_a1bf17e49446857bd04deaffb5e666bc5}} 
+i32&
+mouse\_y&
+\\
+\hline
+
+\end{DoxyFields}
+\index{gai\+\_\+filetime.\+\_\+\+\_\+unnamed\+\_\+\+\_\+@{gai\+\_\+filetime.\+\_\+\+\_\+unnamed\+\_\+\+\_\+}}\label{structgai__filetime_8____unnamed____}
+\Hypertarget{gai_8h_structgai__filetime_8____unnamed____}
+\subsubsection{struct gai\+\_\+filetime.\+\_\+\+\_\+unnamed\+\_\+\+\_\+}
+\begin{DoxyFields}{Class Members}
+\mbox{\Hypertarget{gai_8h_a8d966b2253a917086c8604959e152243}\label{gai_8h_a8d966b2253a917086c8604959e152243}} 
+i32&
+high&
+\\
+\hline
+
+\mbox{\Hypertarget{gai_8h_a53cced8d281a1a0ace3cb6594daaa4f7}\label{gai_8h_a53cced8d281a1a0ace3cb6594daaa4f7}} 
+i32&
+low&
+\\
+\hline
+
+\end{DoxyFields}
+\index{gai\+\_\+filesize.\+\_\+\+\_\+unnamed\+\_\+\+\_\+@{gai\+\_\+filesize.\+\_\+\+\_\+unnamed\+\_\+\+\_\+}}\label{structgai__filesize_8____unnamed____}
+\Hypertarget{gai_8h_structgai__filesize_8____unnamed____}
+\subsubsection{struct gai\+\_\+filesize.\+\_\+\+\_\+unnamed\+\_\+\+\_\+}
+\begin{DoxyFields}{Class Members}
+\mbox{\Hypertarget{gai_8h_a8d966b2253a917086c8604959e152243}\label{gai_8h_a8d966b2253a917086c8604959e152243}} 
+i32&
+high&
+\\
+\hline
+
+\mbox{\Hypertarget{gai_8h_a53cced8d281a1a0ace3cb6594daaa4f7}\label{gai_8h_a53cced8d281a1a0ace3cb6594daaa4f7}} 
+i32&
+low&
+\\
+\hline
+
+\end{DoxyFields}
+
+
+\subsection{Macro Definition Documentation}
+\mbox{\Hypertarget{gai_8h_a335a7d91cecb2b1e5745c06803bdf23a}\label{gai_8h_a335a7d91cecb2b1e5745c06803bdf23a}} 
+\index{gai.\+h@{gai.\+h}!G\+A\+I\+\_\+\+D\+EF@{G\+A\+I\+\_\+\+D\+EF}}
+\index{G\+A\+I\+\_\+\+D\+EF@{G\+A\+I\+\_\+\+D\+EF}!gai.\+h@{gai.\+h}}
+\subsubsection{\texorpdfstring{G\+A\+I\+\_\+\+D\+EF}{GAI\_DEF}}
+{\footnotesize\ttfamily \#define G\+A\+I\+\_\+\+D\+EF~extern}
+
+Define the macro {\bfseries G\+A\+I\+\_\+\+S\+T\+A\+T\+IC} to force all function to be {\bfseries static} instead of {\bfseries extern} \mbox{\Hypertarget{gai_8h_a1acedd3479fb2a001b5f284e4de6b90e}\label{gai_8h_a1acedd3479fb2a001b5f284e4de6b90e}} 
+\index{gai.\+h@{gai.\+h}!gai\+\_\+growable@{gai\+\_\+growable}}
+\index{gai\+\_\+growable@{gai\+\_\+growable}!gai.\+h@{gai.\+h}}
+\subsubsection{\texorpdfstring{gai\+\_\+growable}{gai\_growable}}
+{\footnotesize\ttfamily \#define gai\+\_\+growable(\begin{DoxyParamCaption}\item[{}]{type }\end{DoxyParamCaption})~type $\ast$}
+
+growable array -\/ use via macros
+
+
+
+ $\vert$ \+\_\+\+\_\+\+\_\+\+\_\+ $\vert$\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+/ $\vert$ $\vert$ $\vert$ $\vert$ $\vert$ $\vert$\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+$\vert$ $\vert$\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+\mbox{]} $\vert$ $\vert$\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+ $\vert$\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+$\vert$ $\vert$\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+\mbox{]} $\vert$ $\vert$\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+$\vert$ $\vert$ \+\_\+ $\vert$\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+$\vert$ $\vert$\+\_\+\+\_\+$\vert$\+\_\+\+\_\+$\vert$ $\vert$ $\vert$ $\vert$\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+\mbox{]} $\vert$\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+ $\vert$\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+ $\vert$ $\vert$ $\vert$ \+\_\+\+\_\+$\vert$\+\_\+\+\_\+
+
+Use /\+MD instead of /\+MT if you are you using the M\+S\+VC compiler. \mbox{\Hypertarget{gai_8h_aedd1a354f0b36afd613c9e38d95913aa}\label{gai_8h_aedd1a354f0b36afd613c9e38d95913aa}} 
+\index{gai.\+h@{gai.\+h}!gai\+\_\+growable\+\_\+append@{gai\+\_\+growable\+\_\+append}}
+\index{gai\+\_\+growable\+\_\+append@{gai\+\_\+growable\+\_\+append}!gai.\+h@{gai.\+h}}
+\subsubsection{\texorpdfstring{gai\+\_\+growable\+\_\+append}{gai\_growable\_append}}
+{\footnotesize\ttfamily \#define gai\+\_\+growable\+\_\+append(\begin{DoxyParamCaption}\item[{}]{x,  }\item[{}]{item }\end{DoxyParamCaption})}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}
+\textcolor{keywordflow}{do} \{ \(\backslash\)
+        gai\_growable\_header *\hyperlink{gai_8h_a1acedd3479fb2a001b5f284e4de6b90e}{gai\_growable} = GAI\_GROWABLE\_GET\_HEADER(x); \(\backslash\)
+        if (gai\_growable->capacity < gai\_growable->count+1) \(\backslash\)
+        \{ \(\backslash\)
+            void **\_\_gai\_growable\_array = (\textcolor{keywordtype}{void} **) &(x); \(\backslash\)
+            *\_\_gai\_growable\_array       = gai\_growable\_grow(gai\_growable, GAI\_GROWABLE\_GROW\_STRATEGY(
+      gai\_growable->capacity), \textcolor{keyword}{sizeof}(*(x)) ); \(\backslash\)
+            gai\_growable                = GAI\_GROWABLE\_GET\_HEADER(x); \(\backslash\)
+        \} \(\backslash\)
+        (x)[gai\_growable->count++] = (item); \(\backslash\)
+    \} \textcolor{keywordflow}{while} (0)
+\end{DoxyCode}
+\mbox{\Hypertarget{gai_8h_a8c49da52ca030dd35660975fb48beed1}\label{gai_8h_a8c49da52ca030dd35660975fb48beed1}} 
+\index{gai.\+h@{gai.\+h}!gai\+\_\+growable\+\_\+append\+\_\+array@{gai\+\_\+growable\+\_\+append\+\_\+array}}
+\index{gai\+\_\+growable\+\_\+append\+\_\+array@{gai\+\_\+growable\+\_\+append\+\_\+array}!gai.\+h@{gai.\+h}}
+\subsubsection{\texorpdfstring{gai\+\_\+growable\+\_\+append\+\_\+array}{gai\_growable\_append\_array}}
+{\footnotesize\ttfamily \#define gai\+\_\+growable\+\_\+append\+\_\+array(\begin{DoxyParamCaption}\item[{}]{x,  }\item[{}]{items,  }\item[{}]{item\+\_\+count }\end{DoxyParamCaption})}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}
+\textcolor{keywordflow}{do} \{ \(\backslash\)
+        gai\_growable\_header *\hyperlink{gai_8h_a1acedd3479fb2a001b5f284e4de6b90e}{gai\_growable} = GAI\_GROWABLE\_GET\_HEADER(x); \(\backslash\)
+        if (gai\_growable->capacity < gai\_growable->count+(item\_count)) \(\backslash\)
+        \{ \(\backslash\)
+            void **\_\_gai\_growable\_array = (\textcolor{keywordtype}{void} **) &(x); \(\backslash\)
+            *\_\_gai\_growable\_array       = gai\_growable\_grow(gai\_growable, gai\_growable->count+(item\_count),
+       \textcolor{keyword}{sizeof}(*(x)) ); \(\backslash\)
+            gai\_growable                = GAI\_GROWABLE\_GET\_HEADER(x); \(\backslash\)
+        \} \(\backslash\)
+        gai\_memcpy(x + gai\_growable->count, (items), \textcolor{keyword}{sizeof}( (items)[0])*(item\_count)); \(\backslash\)
+        gai\_growable->count += (item\_count); \(\backslash\)
+    \} \textcolor{keywordflow}{while} (0)
+\end{DoxyCode}
+\mbox{\Hypertarget{gai_8h_aa1940650b60c5c31dcd6e8a6c5cd5c1b}\label{gai_8h_aa1940650b60c5c31dcd6e8a6c5cd5c1b}} 
+\index{gai.\+h@{gai.\+h}!gai\+\_\+growable\+\_\+free@{gai\+\_\+growable\+\_\+free}}
+\index{gai\+\_\+growable\+\_\+free@{gai\+\_\+growable\+\_\+free}!gai.\+h@{gai.\+h}}
+\subsubsection{\texorpdfstring{gai\+\_\+growable\+\_\+free}{gai\_growable\_free}}
+{\footnotesize\ttfamily \#define gai\+\_\+growable\+\_\+free(\begin{DoxyParamCaption}\item[{}]{x }\end{DoxyParamCaption})}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}
+\textcolor{keywordflow}{do} \{ \(\backslash\)
+        gai\_growable\_header *\hyperlink{gai_8h_a1acedd3479fb2a001b5f284e4de6b90e}{gai\_growable} = GAI\_GROWABLE\_GET\_HEADER(x); \(\backslash\)
+        gai\_free(gai\_growable); \(\backslash\)
+    \} \textcolor{keywordflow}{while} (0)
+\end{DoxyCode}
+\mbox{\Hypertarget{gai_8h_ab2bd45222226b71b259178237a8a7a1b}\label{gai_8h_ab2bd45222226b71b259178237a8a7a1b}} 
+\index{gai.\+h@{gai.\+h}!gai\+\_\+growable\+\_\+init@{gai\+\_\+growable\+\_\+init}}
+\index{gai\+\_\+growable\+\_\+init@{gai\+\_\+growable\+\_\+init}!gai.\+h@{gai.\+h}}
+\subsubsection{\texorpdfstring{gai\+\_\+growable\+\_\+init}{gai\_growable\_init}}
+{\footnotesize\ttfamily \#define gai\+\_\+growable\+\_\+init(\begin{DoxyParamCaption}\item[{}]{x }\end{DoxyParamCaption})}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}
+\textcolor{keywordflow}{do} \{ \(\backslash\)
+        void **\_\_gai\_growable\_array         = (\textcolor{keywordtype}{void} **)&(x); \(\backslash\)
+        gai\_growable\_header *\hyperlink{gai_8h_a1acedd3479fb2a001b5f284e4de6b90e}{gai\_growable}   = (\hyperlink{gai_8h_structgai__growable__header}{gai\_growable\_header} *) 
+      gai\_malloc( \textcolor{keyword}{sizeof}(\hyperlink{gai_8h_structgai__growable__header}{gai\_growable\_header}) + \textcolor{keyword}{sizeof}(*(x)) * ( GAI\_GROWABLE\_GROW\_STRATEGY(0) )) ; \(\backslash\)
+        gai\_growable->count                 = 0; \(\backslash\)
+        gai\_growable->capacity              = GAI\_GROWABLE\_GROW\_STRATEGY(0); \(\backslash\)
+        *\_\_gai\_growable\_array               = (\textcolor{keywordtype}{void} *)(gai\_growable+1); \(\backslash\)
+    \} \textcolor{keywordflow}{while} (0)
+\end{DoxyCode}
+\mbox{\Hypertarget{gai_8h_ac28875a4f36c342fb6ab07be087428a7}\label{gai_8h_ac28875a4f36c342fb6ab07be087428a7}} 
+\index{gai.\+h@{gai.\+h}!G\+A\+I\+\_\+\+S\+O\+R\+T\+\_\+\+C\+O\+M\+P\+A\+R\+E\+\_\+\+P\+R\+OC@{G\+A\+I\+\_\+\+S\+O\+R\+T\+\_\+\+C\+O\+M\+P\+A\+R\+E\+\_\+\+P\+R\+OC}}
+\index{G\+A\+I\+\_\+\+S\+O\+R\+T\+\_\+\+C\+O\+M\+P\+A\+R\+E\+\_\+\+P\+R\+OC@{G\+A\+I\+\_\+\+S\+O\+R\+T\+\_\+\+C\+O\+M\+P\+A\+R\+E\+\_\+\+P\+R\+OC}!gai.\+h@{gai.\+h}}
+\subsubsection{\texorpdfstring{G\+A\+I\+\_\+\+S\+O\+R\+T\+\_\+\+C\+O\+M\+P\+A\+R\+E\+\_\+\+P\+R\+OC}{GAI\_SORT\_COMPARE\_PROC}}
+{\footnotesize\ttfamily \#define G\+A\+I\+\_\+\+S\+O\+R\+T\+\_\+\+C\+O\+M\+P\+A\+R\+E\+\_\+\+P\+R\+OC(\begin{DoxyParamCaption}\item[{}]{name }\end{DoxyParamCaption})~int name(void const $\ast$a, void const $\ast$b)}
+
+sorting api
+
+
+
+ $\vert$ \+\_\+\+\_\+$\vert$ $\vert$\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+ $\vert$ $\vert$ $\vert$\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+/ $\vert$ $\vert$\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+$\vert$ $\vert$\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+\mbox{]} $\vert$ $\vert$\+\_\+\+\_\+\+\_\+\+\_\+$|$ \+\_\+\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+$\vert$ $\vert$\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+$\vert$ $\vert$ \+\_\+ $\vert$ $\vert$ $\vert$ $\vert$ \+\_\+\+\_\+$\vert$\+\_\+\+\_\+ 
+
+\subsection{Enumeration Type Documentation}
+\mbox{\Hypertarget{gai_8h_a157d385f60e2ae934dc7854ae787ee44}\label{gai_8h_a157d385f60e2ae934dc7854ae787ee44}} 
+\index{gai.\+h@{gai.\+h}!gai\+\_\+window\+\_\+flags@{gai\+\_\+window\+\_\+flags}}
+\index{gai\+\_\+window\+\_\+flags@{gai\+\_\+window\+\_\+flags}!gai.\+h@{gai.\+h}}
+\subsubsection{\texorpdfstring{gai\+\_\+window\+\_\+flags}{gai\_window\_flags}}
+{\footnotesize\ttfamily enum \hyperlink{gai_8h_a157d385f60e2ae934dc7854ae787ee44}{gai\+\_\+window\+\_\+flags}}
+
+W\+I\+N\+D\+OW M\+A\+N\+A\+G\+E\+M\+E\+NT A\+PI
+
+
+
+ $\vert$ $\vert$ $\vert$ $\vert$ $\vert$ \textbackslash{} $\vert$ $\vert$ \textbackslash{} $\vert$ $\vert$ $\vert$ $\vert$ $\vert$ $\vert$\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+$\vert$ $\vert$\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+\mbox{]} $\vert$ $\vert$\+\_\+\+\_\+$\vert$\+\_\+\+\_\+$\vert$ \+\_\+\+\_\+$\vert$\+\_\+\+\_\+ $\vert$ \+\_\+$\vert$ $\vert$\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+/ $\vert$\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+$\vert$ $\vert$\+\_\+\+\_\+$\vert$\+\_\+\+\_\+$\vert$ $\vert$ $\vert$ $\vert$ \+\_\+\+\_\+$\vert$\+\_\+\+\_\+ \begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{gai\+Window\+Flags\+Minimized@{gai\+Window\+Flags\+Minimized}!gai.\+h@{gai.\+h}}\index{gai.\+h@{gai.\+h}!gai\+Window\+Flags\+Minimized@{gai\+Window\+Flags\+Minimized}}}\mbox{\Hypertarget{gai_8h_a157d385f60e2ae934dc7854ae787ee44a51e1f5f38bf0c41063c43c6fd5afe26d}\label{gai_8h_a157d385f60e2ae934dc7854ae787ee44a51e1f5f38bf0c41063c43c6fd5afe26d}} 
+gai\+Window\+Flags\+Minimized&Window is minimized \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{gai\+Window\+Flags\+Maximized@{gai\+Window\+Flags\+Maximized}!gai.\+h@{gai.\+h}}\index{gai.\+h@{gai.\+h}!gai\+Window\+Flags\+Maximized@{gai\+Window\+Flags\+Maximized}}}\mbox{\Hypertarget{gai_8h_a157d385f60e2ae934dc7854ae787ee44adeacefd22a411eaf0e25ee9b072f9da6}\label{gai_8h_a157d385f60e2ae934dc7854ae787ee44adeacefd22a411eaf0e25ee9b072f9da6}} 
+gai\+Window\+Flags\+Maximized&Window is maximized \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{gai\+Window\+Flags\+Borderless@{gai\+Window\+Flags\+Borderless}!gai.\+h@{gai.\+h}}\index{gai.\+h@{gai.\+h}!gai\+Window\+Flags\+Borderless@{gai\+Window\+Flags\+Borderless}}}\mbox{\Hypertarget{gai_8h_a157d385f60e2ae934dc7854ae787ee44a5269cdd41791072e9383c3758d5d87d6}\label{gai_8h_a157d385f60e2ae934dc7854ae787ee44a5269cdd41791072e9383c3758d5d87d6}} 
+gai\+Window\+Flags\+Borderless&Window is in borderless fullscreen mode \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{gai\+Window\+Flags\+Fullscreen@{gai\+Window\+Flags\+Fullscreen}!gai.\+h@{gai.\+h}}\index{gai.\+h@{gai.\+h}!gai\+Window\+Flags\+Fullscreen@{gai\+Window\+Flags\+Fullscreen}}}\mbox{\Hypertarget{gai_8h_a157d385f60e2ae934dc7854ae787ee44ade455488dffb8dca918636a11ebad5dd}\label{gai_8h_a157d385f60e2ae934dc7854ae787ee44ade455488dffb8dca918636a11ebad5dd}} 
+gai\+Window\+Flags\+Fullscreen&Window is in real fullscreen mode \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{gai_8h_aa02d51324b115958d15b739432c9695d}\label{gai_8h_aa02d51324b115958d15b739432c9695d}} 
+\index{gai.\+h@{gai.\+h}!gai\+\_\+memswap@{gai\+\_\+memswap}}
+\index{gai\+\_\+memswap@{gai\+\_\+memswap}!gai.\+h@{gai.\+h}}
+\subsubsection{\texorpdfstring{gai\+\_\+memswap()}{gai\_memswap()}}
+{\footnotesize\ttfamily void gai\+\_\+memswap (\begin{DoxyParamCaption}\item[{u8 $\ast$}]{a,  }\item[{u8 $\ast$}]{b,  }\item[{size\+\_\+t}]{size }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+memory api
+
+
+
+ $\vert$ $\vert$ $\vert$ $\vert$\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+ $\vert$ $\vert$ $\vert$ $\vert$ $\vert$ $\vert$\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+/ \+\_\+/ $\vert$\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+$\vert$ $\vert$\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+\mbox{]} $\vert$ $\vert$ $\vert$ $\vert$ $\vert$\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+ $\vert$ $\vert$ $\vert$ $\vert$\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+$\vert$ $\vert$ \+\_\+ $\vert$ $\vert$ $\vert$ $\vert$ \+\_\+\+\_\+$\vert$\+\_\+\+\_\+ 

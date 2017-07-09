@@ -1,19 +1,7 @@
 var searchData=
 [
-  ['gaihr_5fflagsdonthandleevent',['gaihr_FlagsDontHandleEvent',['../gai__hotreload_8h.html#aaebb069b6896f065efd75640e0e4150ba158375938f45efe930ee7416d19e5a6c',1,'gai_hotreload.h']]],
-  ['gaihr_5fflagsdontresetevent',['gaihr_FlagsDontResetEvent',['../gai__hotreload_8h.html#aaebb069b6896f065efd75640e0e4150babfc4c1c7557333f4e2cddf40cacefc7a',1,'gai_hotreload.h']]],
-  ['gaihr_5fflagsnone',['gaihr_FlagsNone',['../gai__hotreload_8h.html#aaebb069b6896f065efd75640e0e4150ba6c207a28fdce6637b4aa1e70e64c3e94',1,'gai_hotreload.h']]],
-  ['gaihr_5fflagsskipinitialchange',['gaihr_FlagsSkipInitialChange',['../gai__hotreload_8h.html#aaebb069b6896f065efd75640e0e4150baee50ce1492a508e5605592106fa00bd5',1,'gai_hotreload.h']]],
-  ['gaixwflagsfullscreen',['gaixwFlagsFullscreen',['../gai__xwindow_8h.html#af7f3997c9f7d608f6f480d0a1ec341eca1b5d286481622b104b8dd24bf3114cd2',1,'gai_xwindow.h']]],
-  ['gaixwflagsmaximized',['gaixwFlagsMaximized',['../gai__xwindow_8h.html#af7f3997c9f7d608f6f480d0a1ec341eca4c1b948394dbf097f6007e01ded11242',1,'gai_xwindow.h']]],
-  ['gaixwflagsminimized',['gaixwFlagsMinimized',['../gai__xwindow_8h.html#af7f3997c9f7d608f6f480d0a1ec341eca024bb28b1d09e6dabb43cca1db088cd1',1,'gai_xwindow.h']]],
-  ['gaixwflagsvsync',['gaixwFlagsVSYNC',['../gai__xwindow_8h.html#af7f3997c9f7d608f6f480d0a1ec341eca39f9d8a5253caf225480a80d1b52e4c2',1,'gai_xwindow.h']]],
-  ['gaixwrendererdx10',['gaixwRendererDX10',['../gai__xwindow_8h.html#a4eae6e51f0425197a4c1010fcc7c8c9da1217be504c773ce47ba76be4ddf9489d',1,'gai_xwindow.h']]],
-  ['gaixwrendererdx11',['gaixwRendererDX11',['../gai__xwindow_8h.html#a4eae6e51f0425197a4c1010fcc7c8c9dab19a6d88f34235d7333fbc209d1f178a',1,'gai_xwindow.h']]],
-  ['gaixwrendererdx12',['gaixwRendererDX12',['../gai__xwindow_8h.html#a4eae6e51f0425197a4c1010fcc7c8c9da8cd168a752459bca73bdea7b77eb421e',1,'gai_xwindow.h']]],
-  ['gaixwrenderergdi',['gaixwRendererGDI',['../gai__xwindow_8h.html#a4eae6e51f0425197a4c1010fcc7c8c9dab382f06ccd349a4749bfcea4fd5f3080',1,'gai_xwindow.h']]],
-  ['gaixwrendereropengl',['gaixwRendererOpenGL',['../gai__xwindow_8h.html#a4eae6e51f0425197a4c1010fcc7c8c9daf43570fcfedb502e88eb5c69f0eeecc1',1,'gai_xwindow.h']]],
-  ['gaixwrendererunknown',['gaixwRendererUnknown',['../gai__xwindow_8h.html#a4eae6e51f0425197a4c1010fcc7c8c9da25a9a692888d86fd6bf5f24e0c31a8e8',1,'gai_xwindow.h']]],
-  ['gaixwrenderervulcan',['gaixwRendererVulcan',['../gai__xwindow_8h.html#a4eae6e51f0425197a4c1010fcc7c8c9da4cd9efc9b0b4bcc5674423557a0214ab',1,'gai_xwindow.h']]],
-  ['gaixwrendererx11',['gaixwRendererX11',['../gai__xwindow_8h.html#a4eae6e51f0425197a4c1010fcc7c8c9da2ecf0eac74bd3c8d842991bd7c0e15a0',1,'gai_xwindow.h']]]
+  ['gaiwindowflagsborderless',['gaiWindowFlagsBorderless',['../gai_8h.html#a157d385f60e2ae934dc7854ae787ee44a5269cdd41791072e9383c3758d5d87d6',1,'gai.h']]],
+  ['gaiwindowflagsfullscreen',['gaiWindowFlagsFullscreen',['../gai_8h.html#a157d385f60e2ae934dc7854ae787ee44ade455488dffb8dca918636a11ebad5dd',1,'gai.h']]],
+  ['gaiwindowflagsmaximized',['gaiWindowFlagsMaximized',['../gai_8h.html#a157d385f60e2ae934dc7854ae787ee44adeacefd22a411eaf0e25ee9b072f9da6',1,'gai.h']]],
+  ['gaiwindowflagsminimized',['gaiWindowFlagsMinimized',['../gai_8h.html#a157d385f60e2ae934dc7854ae787ee44a51e1f5f38bf0c41063c43c6fd5afe26d',1,'gai.h']]]
 ];

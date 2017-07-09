@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['attributes',['attributes',['../gai__xwindow_8h.html#ab0f6565b924d7496d7445915f01294e2',1,'gaixw_context']]]
+  ['directx11',['DIRECTX11',['../structgai__window.html#structgai__window_1_1_c_t_x_1_1_d_i_r_e_c_t_x11',1,'gai_window::CTX']]]
 ];

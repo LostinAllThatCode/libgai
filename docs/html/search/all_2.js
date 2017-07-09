@@ -1,4 +1,32 @@
 var searchData=
 [
-  ['callback',['callback',['../gai__hotreload_8h.html#a9ac45c0142ff1eaf591b870e163d7f31',1,'gaihr_file']]]
+  ['gai_2eh',['gai.h',['../gai_8h.html',1,'']]],
+  ['gai_5fclock',['gai_clock',['../gai_8h.html#structgai__clock',1,'']]],
+  ['gai_5fdef',['GAI_DEF',['../gai_8h.html#a335a7d91cecb2b1e5745c06803bdf23a',1,'gai.h']]],
+  ['gai_5fengine',['gai_engine',['../structgai__engine.html',1,'']]],
+  ['gai_5fengine_5fplatform_5fapi',['gai_engine_platform_api',['../structgai__engine__platform__api.html',1,'']]],
+  ['gai_5fengine_5fsetup',['gai_engine_setup',['../structgai__engine__setup.html',1,'']]],
+  ['gai_5fengine_5fsetup_2e_5f_5funnamed_5f_5f',['gai_engine_setup.__unnamed__',['../uniongai__engine__setup_8____unnamed____.html',1,'']]],
+  ['gai_5fengine_5fsetup_2e_5f_5funnamed_5f_5f_2eopengl',['gai_engine_setup.__unnamed__.opengl',['../structgai__engine__setup_8____unnamed_____8opengl.html',1,'']]],
+  ['gai_5ffile',['gai_file',['../gai_8h.html#structgai__file',1,'']]],
+  ['gai_5ffileinfo',['gai_fileinfo',['../gai_8h.html#structgai__fileinfo',1,'']]],
+  ['gai_5ffilesize',['gai_filesize',['../gai_8h.html#uniongai__filesize',1,'']]],
+  ['gai_5ffilesize_2e_5f_5funnamed_5f_5f',['gai_filesize.__unnamed__',['../gai_8h.html#structgai__filesize_8____unnamed____',1,'']]],
+  ['gai_5ffiletime',['gai_filetime',['../gai_8h.html#uniongai__filetime',1,'']]],
+  ['gai_5ffiletime_2e_5f_5funnamed_5f_5f',['gai_filetime.__unnamed__',['../gai_8h.html#structgai__filetime_8____unnamed____',1,'']]],
+  ['gai_5fgrowable',['gai_growable',['../gai_8h.html#a1acedd3479fb2a001b5f284e4de6b90e',1,'gai.h']]],
+  ['gai_5fgrowable_5fheader',['gai_growable_header',['../gai_8h.html#structgai__growable__header',1,'']]],
+  ['gai_5floaded_5ffile',['gai_loaded_file',['../structgai__loaded__file.html',1,'']]],
+  ['gai_5fmemswap',['gai_memswap',['../gai_8h.html#aa02d51324b115958d15b739432c9695d',1,'gai.h']]],
+  ['gai_5frender_5fcommands',['gai_render_commands',['../structgai__render__commands.html',1,'']]],
+  ['gai_5frender_5fsettings',['gai_render_settings',['../structgai__render__settings.html',1,'']]],
+  ['gai_5frenderer',['gai_renderer',['../uniongai__renderer.html',1,'']]],
+  ['gai_5fsort_5fcompare_5fproc',['GAI_SORT_COMPARE_PROC',['../gai_8h.html#ac28875a4f36c342fb6ab07be087428a7',1,'gai.h']]],
+  ['gai_5fwindow',['gai_window',['../structgai__window.html',1,'']]],
+  ['gai_5fwindow_5fcallback',['gai_window_callback',['../gai_8h.html#structgai__window__callback',1,'']]],
+  ['gai_5fwindow_5fflags',['gai_window_flags',['../gai_8h.html#a157d385f60e2ae934dc7854ae787ee44',1,'gai.h']]],
+  ['gaiwindowflagsborderless',['gaiWindowFlagsBorderless',['../gai_8h.html#a157d385f60e2ae934dc7854ae787ee44a5269cdd41791072e9383c3758d5d87d6',1,'gai.h']]],
+  ['gaiwindowflagsfullscreen',['gaiWindowFlagsFullscreen',['../gai_8h.html#a157d385f60e2ae934dc7854ae787ee44ade455488dffb8dca918636a11ebad5dd',1,'gai.h']]],
+  ['gaiwindowflagsmaximized',['gaiWindowFlagsMaximized',['../gai_8h.html#a157d385f60e2ae934dc7854ae787ee44adeacefd22a411eaf0e25ee9b072f9da6',1,'gai.h']]],
+  ['gaiwindowflagsminimized',['gaiWindowFlagsMinimized',['../gai_8h.html#a157d385f60e2ae934dc7854ae787ee44a51e1f5f38bf0c41063c43c6fd5afe26d',1,'gai.h']]]
 ];

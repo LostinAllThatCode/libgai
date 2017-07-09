@@ -1,6 +1,6 @@
 var files =
 [
     [ "doxygen.h", "doxygen_8h_source.html", null ],
-    [ "gai_hotreload.h", "gai__hotreload_8h.html", "gai__hotreload_8h" ],
-    [ "gai_xwindow.h", "gai__xwindow_8h.html", "gai__xwindow_8h" ]
+    [ "gai.h", "gai_8h.html", "gai_8h" ],
+    [ "gai_engine.h", "gai__engine_8h_source.html", null ]
 ];

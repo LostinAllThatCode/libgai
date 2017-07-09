@@ -140,7 +140,7 @@ int main(int argc, char **argv)
 	u32 vertex_count_max = (1 << 16) * 32;
 	gairb_textured_vertex *vbuffer = (gairb_textured_vertex*) VirtualAlloc(0, sizeof(gairb_textured_vertex) * vertex_count_max, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 
-	u32 quad_texture_count = vertex_count_max >> 2;;
+	u32 quad_texture_count = vertex_count_max >> 2;
 	loaded_bitmap **quad_textures = (loaded_bitmap **) VirtualAlloc(0, sizeof(loaded_bitmap*) * quad_texture_count, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 
 	loaded_font consolab = GAIPF_FONT_NULL;

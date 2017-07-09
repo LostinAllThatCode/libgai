@@ -1,0 +1,12 @@
+<map id="gai_engine" name="gai_engine">
+<area shape="rect" id="node2" href="$structgai__render__commands.html" title="gai_render_commands" alt="" coords="62,173,193,197"/>
+<area shape="rect" id="node3" href="$unionv4.html" title="v4" alt="" coords="5,89,44,113"/>
+<area shape="rect" id="node4" href="$structgai__render__settings.html" title="gai_render_settings" alt="" coords="68,89,187,113"/>
+<area shape="rect" id="node5" href="$structgai__window.html" title="gai_window" alt="" coords="265,173,344,197"/>
+<area shape="rect" id="node6" href="$gai_8h.html#structgai__clock" title="gai_clock" alt="" coords="211,89,276,113"/>
+<area shape="rect" id="node7" href="$structgai__window.html#uniongai__window_1_1_c_t_x" title="gai_window::CTX" alt="" coords="300,89,405,113"/>
+<area shape="rect" id="node8" href="$structgai__window.html#structgai__window_1_1_c_t_x_1_1_d_i_r_e_c_t_x11" title="gai_window::CTX::DIRECTX11" alt="" coords="177,5,345,29"/>
+<area shape="rect" id="node9" href="$structgai__window.html#structgai__window_1_1_c_t_x_1_1_o_p_e_n_g_l" title="gai_window::CTX::OPENGL" alt="" coords="369,5,521,29"/>
+<area shape="rect" id="node10" href="$structgai__window.html#structgai__window_1_1_i_n_p_u_t" title="gai_window::INPUT" alt="" coords="429,89,545,113"/>
+<area shape="rect" id="node11" href="$uniongai__renderer.html" title="gai_renderer" alt="" coords="368,173,452,197"/>
+</map>
